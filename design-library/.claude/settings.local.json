@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run storybook:*)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run:*)",
+      "Bash(env)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

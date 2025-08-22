@@ -1,0 +1,266 @@
+// Design tokens extracted from Figma Library 2.0
+
+export const typography = {
+  fontFamily: {
+    heading: ['Bradford LL', 'serif'],
+    body: ['Söhne', 'system-ui', 'sans-serif'],
+    mono: ['Söhne Mono', 'monospace'],
+  },
+  fontSize: {
+    // Headlines
+    h1: '50px',    // XXL
+    h2: '32px',    // XL
+    // Subheadings  
+    subheadingL: '26px',  // L
+    subheadingM: '19px',  // ML
+    // Body text
+    bodyL: '14px',   // M/sm
+    bodyM: '12px',   // S/xsm
+    bodyS: '10px',   // XS
+    // Navigation
+    navM: '12px',    // S
+    navS: '10px',    // XS
+    // Captions
+    captionM: '14px', // M
+    captionS: '12px', // S
+    // Data
+    dataXXL: '26px',  // L
+    dataXS: '9px',    // XXS
+  },
+  fontWeight: {
+    light: 400,    // Regular/Buch
+    regular: 400,  // Regular
+    medium: 500,   // Kräftig/Medium
+    bold: 700,     // Bold
+  },
+  lineHeight: {
+    // Headlines
+    h1: 1.0,        // 50px/50px = 1.0
+    h2: 1.2,        // 38.4px/32px = 1.2
+    // Subheadings
+    subheadingL: 1.1,   // 28.6px/26px ≈ 1.1
+    subheadingM: 1.2,   // 22.8px/19px ≈ 1.2
+    // Body
+    bodyL: 1.3,     // 18.2px/14px ≈ 1.3
+    bodyM: 1.3,     // 15.6px/12px = 1.3
+    bodyS: 1.3,     // 13px/10px = 1.3
+    // Navigation
+    navM: 1.2,      // 14.4px/12px = 1.2
+    navS: 1.2,      // 12px/10px = 1.2
+    // Captions
+    captionM: 1.3,  // 18.2px/14px ≈ 1.3
+    captionS: 1.3,  // 15.6px/12px = 1.3
+    // Data
+    dataXXL: 1.3,   // 33.8px/26px ≈ 1.3
+    dataXS: 1.1,    // 9.9px/9px ≈ 1.1
+  },
+  letterSpacing: {
+    tight: '-1px',    // XS
+    normal: '-0.5px', // S  
+    wide: '0px',      // M
+    wider: '0.5px',   // L
+    widest: '1px',    // XL
+  },
+  // Complete typography styles as they appear in Figma
+  styles: {
+    // Headlines/Title
+    headlineH1: {
+      fontFamily: ['Bradford LL', 'serif'],
+      fontSize: '50px',
+      fontWeight: 400,
+      lineHeight: 1.0,
+      letterSpacing: '-1px',
+    },
+    headlineH2: {
+      fontFamily: ['Bradford LL', 'serif'],
+      fontSize: '32px',
+      fontWeight: 500,
+      lineHeight: 1.2,
+      letterSpacing: '-0.5px',
+    },
+    // Subtitles
+    subheadingL: {
+      fontFamily: ['Bradford LL', 'serif'],
+      fontSize: '26px',
+      fontWeight: 500,
+      lineHeight: 1.1,
+      letterSpacing: '-0.5px',
+    },
+    subheadingM: {
+      fontFamily: ['Söhne', 'system-ui', 'sans-serif'],
+      fontSize: '19px',
+      fontWeight: 500,
+      lineHeight: 1.2,
+      letterSpacing: '0px',
+    },
+    // Body
+    bodyL: {
+      fontFamily: ['Söhne', 'system-ui', 'sans-serif'],
+      fontSize: '14px',
+      fontWeight: 500,
+      lineHeight: 1.3,
+      letterSpacing: '0px',
+    },
+    bodyM: {
+      fontFamily: ['Söhne', 'system-ui', 'sans-serif'],
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: 1.3,
+      letterSpacing: '0px',
+    },
+    bodyS: {
+      fontFamily: ['Söhne', 'system-ui', 'sans-serif'],
+      fontSize: '10px',
+      fontWeight: 500,
+      lineHeight: 1.3,
+      letterSpacing: '0px',
+    },
+    // Navigation
+    navM: {
+      fontFamily: ['Söhne Mono', 'monospace'],
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: 1.2,
+      letterSpacing: '0.5px',
+    },
+    navS: {
+      fontFamily: ['Söhne Mono', 'monospace'],
+      fontSize: '10px',
+      fontWeight: 500,
+      lineHeight: 1.2,
+      letterSpacing: '0.5px',
+    },
+    // Caption
+    captionM: {
+      fontFamily: ['Bradford LL', 'serif'],
+      fontSize: '14px',
+      fontWeight: 700,
+      fontStyle: 'italic',
+      lineHeight: 1.3,
+      letterSpacing: '0px',
+    },
+    captionS: {
+      fontFamily: ['Bradford LL', 'serif'],
+      fontSize: '12px',
+      fontWeight: 700,
+      fontStyle: 'italic',
+      lineHeight: 1.3,
+      letterSpacing: '0px',
+    },
+    // Data
+    dataXXL: {
+      fontFamily: ['Söhne', 'system-ui', 'sans-serif'],
+      fontSize: '26px',
+      fontWeight: 400,
+      lineHeight: 1.3,
+      letterSpacing: '0px',
+    },
+    dataXS: {
+      fontFamily: ['Söhne', 'system-ui', 'sans-serif'],
+      fontSize: '9px',
+      fontWeight: 500,
+      lineHeight: 1.1,
+      letterSpacing: '0px',
+    },
+  },
+} as const;
+
+// Color palette from Figma
+export const colors = {
+  blackAndWhite: {
+    white: '#ffffff',
+    black100: '#dfdfdf',
+    black300: '#babdbb', 
+    black500: '#8b908d',
+    black700: '#5d6460',
+    black800: '#3a423d',
+    black900: '#17211b',
+  },
+  error: {
+    darkBorders: '#8a2628',
+    textAndStrokes: '#db2d31',
+    fill: '#ff8588',
+    fillLight: '#fee7e7',
+  },
+  warning: {
+    dark: '#d5a701',
+    textAndStrokes: '#ffdd61',
+    fill: '#ffdd61',
+    fillLight: '#fffbee',
+  },
+  success: {
+    textAndStrokes: '#2fa915',
+    fill: '#7fffb0',
+  },
+  // Product color schemes
+  reports: {
+    // Main colors
+    blue900: '#1c6297',
+    blue800: '#5b9cc7',
+    blue700: '#9ad5f7', // main color
+    blue600: '#bee4fb',
+    blue500: '#e1f3ff',
+    blue450: '#b4c2c5',
+    // Dynamic colors (lighter versions)
+    dynamic: {
+      blue400: '#D9E7EC', // updated stroke color
+      blue300: '#e8f4fe', // estimated from visual  
+      blue200: '#f4f9ff', // estimated from visual
+    },
+  },
+  marketplace: {
+    // Main colors
+    violet900: '#643ed8',
+    violet800: '#916ff8',
+    violet700: '#ceb5fb', // main color
+    violet600: '#e0bffb',
+    violet500: '#f0c9fc',
+    // Dynamic colors (lighter versions)
+    dynamic: {
+      violet400: '#e8d4fd', // estimated from visual
+      violet300: '#f0e6fe', // estimated from visual
+      violet200: '#f8f3ff', // estimated from visual
+    },
+  },
+} as const;
+
+export const spacing = {
+  0: '0',
+  1: '0.25rem',
+  2: '0.5rem',
+  3: '0.75rem',
+  4: '1rem',
+  5: '1.25rem',
+  6: '1.5rem',
+  8: '2rem',
+  10: '2.5rem',
+  12: '3rem',
+  16: '4rem',
+  20: '5rem',
+  24: '6rem',
+} as const;
+
+export const borderRadius = {
+  0: '0px',
+  4: '4px',
+  8: '8px',
+  12: '12px',
+  16: '16px',
+  24: '24px',
+  absolute: '9999px', // completely round
+} as const;
+
+export const strokes = {
+  // Default stroke colors for different contexts
+  reports: '#D9E7EC', // blue400 - used for borders, separators, and UI elements in reports
+  content: '#17211b', // black900 - used for icon content and high-contrast elements
+} as const;
+
+export const shadows = {
+  small: '0px 1px 3px rgba(23, 33, 27, 0.08)',
+  base: '0px 2px 6px rgba(23, 33, 27, 0.12)',
+  medium: '0px 4px 12px rgba(23, 33, 27, 0.16)',
+  large: '0px 8px 24px rgba(23, 33, 27, 0.20)',
+  extraLarge: '0px 16px 48px rgba(23, 33, 27, 0.24)',
+} as const;
+
