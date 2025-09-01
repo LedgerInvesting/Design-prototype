@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { colors, typography, borderRadius } from '../tokens';
+import { colors, typography, borderRadius, shadows } from '../tokens';
 import { SearchMedium, ChevronLeftSmall, ChevronRightSmall, PlusExtraSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
-import { ActionCell, ActionIcon } from './ActionCell';
+import { ActionCell, ActionType } from './ActionCell';
 
 // Base interfaces
 export type CellType = 'simple' | 'document' | 'action';
@@ -16,8 +16,9 @@ export interface TableColumn {
   align?: 'left' | 'center' | 'right';
   cellType?: CellType;
   onDownload?: (filename: string) => void; // For document cells
-  actionIcon?: ActionIcon; // For action cells (edit, add, plus)
-  onAction?: (text: string) => void; // For action cells
+  hoverIcon?: 'download' | 'config'; // For document cells hover icon
+  actionType?: ActionType; // For action cells (edit, upload, validate, add, delete, plus)
+  onAction?: (actionType: ActionType, text: string) => void; // For action cells
 }
 
 export interface TableRow {
@@ -37,8 +38,10 @@ export interface TableHeaderProps {
   showSearch?: boolean;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
-  showFilter?: boolean;
-  onFilterClick?: () => void;
+  showTabs?: boolean;
+  tabs?: string[];
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
   showPagination?: boolean;
   currentPage?: number;
   totalPages?: number;
@@ -53,8 +56,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   showSearch = true,
   searchValue = '',
   onSearchChange,
-  showFilter = true,
-  onFilterClick,
+  showTabs = true,
+  tabs = ['All', 'By Ceding Insurers', 'By Transaction name', 'By Year'],
+  activeTab = 'All',
+  onTabChange,
   showPagination = true,
   currentPage = 1,
   totalPages = 1,
@@ -125,60 +130,58 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     pointerEvents: 'none' as const,
   };
 
-  const filterButtonStyles = {
+  const tabContainerStyles = {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px', // Gap between plus icon and text
-    padding: '10px 18px', // From Figma
-    border: 'none',
-    borderRadius: borderRadius.absolute, // Pill shape
-    backgroundColor: '#eef5fa', // Light blue background from Figma
-    color: colors.blackAndWhite.black900,
-    fontSize: typography.styles.bodyM.fontSize,
+    gap: '5px',
+    height: '26px',
+  };
+
+  const tabButtonStyles = {
+    padding: '8px 12px',
+    backgroundColor: 'transparent',
+    border: `1px solid transparent`,
+    cursor: 'pointer',
     fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+    fontSize: typography.styles.bodyM.fontSize,
     fontWeight: typography.styles.bodyM.fontWeight,
     lineHeight: typography.styles.bodyM.lineHeight,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    height: '26px', // From Figma
+    letterSpacing: typography.styles.bodyM.letterSpacing,
+    color: colors.blackAndWhite.black500,
+    transition: 'all 0.2s',
+    borderRadius: borderRadius.absolute,
+    height: '26px',
     whiteSpace: 'nowrap' as const,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center' as const,
+  };
+
+  const activeTabStyles = {
+    backgroundColor: colors.blackAndWhite.white,
+    color: colors.blackAndWhite.black900,
+    border: `1px solid ${colors.reports.dynamic.blue400}`,
+    borderRadius: borderRadius.absolute,
+    fontWeight: 600,
+  };
+
+  const separatorStyles = {
+    width: '1px',
+    height: '16px',
+    backgroundColor: colors.reports.dynamic.blue400,
   };
 
   const paginationStyles = {
-    fontFamily: typography.styles.captionS.fontFamily.join(', '),
-    fontSize: typography.styles.captionS.fontSize, // 12px from Figma
-    fontWeight: typography.styles.captionS.fontWeight, // 700 (Bold Italic)
-    fontStyle: typography.styles.captionS.fontStyle, // italic
-    lineHeight: typography.styles.captionS.lineHeight,
-    letterSpacing: typography.letterSpacing.normal, // -0.5px
+    fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+    fontSize: typography.styles.bodyS.fontSize,
+    fontWeight: typography.styles.bodyS.fontWeight,
+    lineHeight: typography.styles.bodyS.lineHeight,
+    letterSpacing: typography.styles.bodyS.letterSpacing,
     color: '#838985', // Grey-700 from Figma
     margin: 0,
   };
 
-  const paginationButtonContainerStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px', // Gap between pagination buttons
-  };
-
-  const paginationButtonStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '12px', // Small icons from Figma (12x12px)
-    height: '12px',
-    border: 'none',
-    backgroundColor: 'transparent',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    padding: 0,
-  };
-
-  const disabledButtonStyles = {
-    ...paginationButtonStyles,
-    opacity: 0.5,
-    cursor: 'not-allowed',
-  };
 
   const startItem = Math.min((currentPage - 1) * itemsPerPage + 1, totalItems);
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
@@ -186,8 +189,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   return (
     <div style={headerStyles} className={className}>
       <div style={leftSectionStyles}>
-        {title && <h3 style={titleStyles}>{title}</h3>}
-        
         {showSearch && (
           <div style={searchContainerStyles}>
             <div style={searchIconStyles}>
@@ -196,15 +197,26 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           </div>
         )}
         
-        {showFilter && (
-          <button
-            onClick={onFilterClick}
-            style={filterButtonStyles}
-            type="button"
-          >
-            <PlusExtraSmall color={colors.blackAndWhite.black900} />
-            Add Filter
-          </button>
+        {showTabs && (
+          <div style={tabContainerStyles}>
+            {tabs.map((tab, index) => (
+              <React.Fragment key={tab}>
+                {index > 0 && (
+                  <div style={separatorStyles}></div>
+                )}
+                <button
+                  onClick={() => onTabChange?.(tab)}
+                  style={{
+                    ...tabButtonStyles,
+                    ...(activeTab === tab ? activeTabStyles : {})
+                  }}
+                  type="button"
+                >
+                  {tab}
+                </button>
+              </React.Fragment>
+            ))}
+          </div>
         )}
       </div>
 
@@ -213,26 +225,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           <span style={paginationStyles}>
             {startItem}-{endItem} of {totalItems} documents
           </span>
-          
-          <div style={paginationButtonContainerStyles}>
-            <button
-              onClick={() => onPageChange?.(currentPage - 1)}
-              disabled={currentPage <= 1}
-              style={currentPage <= 1 ? disabledButtonStyles : paginationButtonStyles}
-              type="button"
-            >
-              <ChevronLeftSmall color={currentPage <= 1 ? '#838985' : colors.blackAndWhite.black900} />
-            </button>
-            
-            <button
-              onClick={() => onPageChange?.(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              style={currentPage >= totalPages ? disabledButtonStyles : paginationButtonStyles}
-              type="button"
-            >
-              <ChevronRightSmall color={currentPage >= totalPages ? '#838985' : colors.blackAndWhite.black900} />
-            </button>
-          </div>
         </div>
       )}
     </div>
@@ -255,8 +247,9 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
 }) => {
   const isActive = sortState.column === column.key;
   const canSort = column.sortable;
+  const isActionColumn = column.cellType === 'action';
 
-  const headerStyles = {
+  const baseHeaderStyles = {
     padding: '8px 12px', // Compact padding for column headers
     backgroundColor: colors.blackAndWhite.white,
     cursor: canSort ? 'pointer' : 'default',
@@ -265,11 +258,24 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     borderRight: '1px solid #daebf1', // Right border for column separation
     borderTop: '1px solid #daebf1',
     borderBottom: '1px solid #daebf1',
+    borderLeft: 'none', // Explicitly set no left border for non-action columns
     position: 'relative' as const,
     textAlign: 'left' as const,
     verticalAlign: 'middle' as const,
-    minWidth: '120px', // Minimum width to accommodate icon + title + arrange icon
+    minWidth: '100px', // Minimum width to accommodate icon + title + arrange icon
   };
+
+  const headerStyles = isActionColumn ? {
+    ...baseHeaderStyles,
+    position: 'sticky' as const,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: '#ffffff', // Force white background
+    borderRight: '1px solid #daebf1', // Maintain right border
+    borderTop: '1px solid #daebf1', // Maintain top border
+    borderBottom: '1px solid #daebf1', // Maintain bottom border
+    boxShadow: `inset 1px 0 0 0 #D9E7EC, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
+  } : baseHeaderStyles;
 
   const headerContentStyles = {
     display: 'flex',
@@ -406,19 +412,22 @@ export const TableBody: React.FC<TableBodyProps> = ({
             <DocumentCell 
               filename={value} 
               onDownload={column.onDownload || ((filename) => console.log('Download:', filename))}
+              hoverIcon={column.hoverIcon}
             />
           );
         }
         // Fallback to simple if value is not a string
         return value;
       case 'action':
-        // For action cells, expect the value to be a string for the action text
+        // For action cells, expect the value to be an ActionType string
         if (typeof value === 'string') {
+          // Use the value as actionType if it's a valid ActionType, otherwise use column default
+          const validActionTypes = ['upload', 'validate', 'generate', 'setup'];
+          const actionType = validActionTypes.includes(value) ? value as ActionType : (column.actionType || 'upload');
           return (
             <ActionCell 
-              text={value}
-              icon={column.actionIcon || 'edit'}
-              onClick={column.onAction || ((text) => console.log('Action:', text))}
+              actionType={actionType}
+              onClick={column.onAction || ((actionType, text) => console.log('Action:', actionType, text))}
             />
           );
         }
@@ -476,7 +485,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
     verticalAlign: 'middle' as const,
     borderBottom: `1px solid #e3f0f4`, // Match Figma border color
     borderRight: '1px solid #daebf1', // Right border for column separation
-    height: '36px', // Reduced height for compact design
+    height: '45px', // Row height
     boxSizing: 'border-box' as const,
   };
 
@@ -503,25 +512,205 @@ export const TableBody: React.FC<TableBodyProps> = ({
     <tbody>
       {data.map((row, rowIndex) => (
         <tr key={rowIndex}>
-          {columns.map((column, columnIndex) => (
-            <td
-              key={column.key}
-              style={{
-                ...cellStyles,
-                textAlign: column.align || 'left',
-                width: column.width,
-                // Remove right border from last column to avoid double border
-                borderRight: columnIndex === columns.length - 1 ? 'none' : cellStyles.borderRight,
-                // Remove bottom border from last row to avoid double border
-                borderBottom: rowIndex === data.length - 1 ? 'none' : cellStyles.borderBottom,
-              }}
-            >
-              {renderCellContent(column, row[column.key])}
-            </td>
-          ))}
+          {columns.map((column, columnIndex) => {
+            const isActionColumn = column.cellType === 'action';
+            
+            const baseCellStyle = {
+              ...cellStyles,
+              textAlign: column.align || 'left',
+              width: column.width,
+              // Remove right border from last column to avoid double border
+              borderRight: columnIndex === columns.length - 1 ? 'none' : cellStyles.borderRight,
+              // Remove bottom border from last row to avoid double border
+              borderBottom: rowIndex === data.length - 1 ? 'none' : cellStyles.borderBottom,
+            };
+
+            const actionCellStyle = isActionColumn ? {
+              ...baseCellStyle,
+              position: 'sticky' as const,
+              right: 0,
+              zIndex: 10,
+              backgroundColor: '#ffffff', // Force white background
+              borderRight: '1px solid #daebf1', // Maintain right border
+              borderTop: rowIndex === 0 ? '1px solid #daebf1' : 'none', // Top border only for first row
+              borderBottom: rowIndex === data.length - 1 ? 'none' : '1px solid #e3f0f4', // Bottom border except last row
+              boxShadow: `inset 1px 0 0 0 #D9E7EC, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
+            } : baseCellStyle;
+
+            return (
+              <td key={column.key} style={actionCellStyle}>
+                {renderCellContent(column, row[column.key])}
+              </td>
+            );
+          })}
         </tr>
       ))}
     </tbody>
+  );
+};
+
+// Table Pagination Component
+export interface TablePaginationProps {
+  currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+  className?: string;
+}
+
+export const TablePagination: React.FC<TablePaginationProps> = ({
+  currentPage = 1,
+  totalPages = 1,
+  onPageChange,
+  className = '',
+}) => {
+  const paginationStyles = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '20px',
+    backgroundColor: colors.blackAndWhite.white,
+    borderBottomLeftRadius: borderRadius[8],
+    borderBottomRightRadius: borderRadius[8],
+    border: '1px solid #d9e7ec',
+    borderTop: 'none',
+    gap: '50px',
+  };
+
+  const navButtonStyles = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '12px',
+    height: '12px',
+    border: 'none',
+    backgroundColor: 'transparent',
+    cursor: 'pointer',
+    padding: 0,
+    transition: 'opacity 0.2s ease',
+  };
+
+  const disabledNavButtonStyles = {
+    ...navButtonStyles,
+    opacity: 0.3,
+    cursor: 'not-allowed',
+  };
+
+  const pageNumbersStyles = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+    fontSize: '12px',
+    fontWeight: 500,
+    lineHeight: 1.3,
+    letterSpacing: typography.letterSpacing.normal,
+  };
+
+  const pageNumberStyles = {
+    color: colors.blackAndWhite.black500,
+    cursor: 'pointer',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    transition: 'color 0.2s ease',
+    textDecoration: 'none',
+    border: 'none',
+    backgroundColor: 'transparent',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    lineHeight: 'inherit',
+  };
+
+  const activePageStyles = {
+    ...pageNumberStyles,
+    color: colors.blackAndWhite.black900,
+    fontWeight: 600,
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      onPageChange?.(page);
+    }
+  };
+
+  const getVisiblePages = () => {
+    const delta = 2; // Show 2 pages before and after current page
+    const range = [];
+    
+    // Always show first page
+    if (currentPage > delta + 1) {
+      range.push(1);
+      if (currentPage > delta + 2) {
+        range.push('...');
+      }
+    }
+
+    // Show pages around current page
+    for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) {
+      range.push(i);
+    }
+
+    // Always show last page
+    if (currentPage < totalPages - delta) {
+      if (currentPage < totalPages - delta - 1) {
+        range.push('...');
+      }
+      range.push(totalPages);
+    }
+
+    // Remove duplicates while preserving order
+    return range.filter((page, index, arr) => {
+      return arr.indexOf(page) === index;
+    });
+  };
+
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  return (
+    <div style={paginationStyles} className={className}>
+      <button
+        style={currentPage === 1 ? disabledNavButtonStyles : navButtonStyles}
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        type="button"
+        aria-label="Previous page"
+      >
+        <ChevronLeftSmall color={currentPage === 1 ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
+      </button>
+
+      <div style={pageNumbersStyles}>
+        {getVisiblePages().map((page, index) =>
+          page === '...' ? (
+            <span key={`ellipsis-${index}`} style={pageNumberStyles}>
+              ...
+            </span>
+          ) : (
+            <button
+              key={page}
+              style={currentPage === page ? activePageStyles : pageNumberStyles}
+              onClick={() => handlePageChange(Number(page))}
+              type="button"
+              aria-label={`Go to page ${page}`}
+              aria-current={currentPage === page ? 'page' : undefined}
+            >
+              {page}
+            </button>
+          )
+        )}
+      </div>
+
+      <button
+        style={currentPage === totalPages ? disabledNavButtonStyles : navButtonStyles}
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        type="button"
+        aria-label="Next page"
+      >
+        <ChevronRightSmall color={currentPage === totalPages ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
+      </button>
+    </div>
   );
 };
 
@@ -534,9 +723,12 @@ export interface TableProps {
   showSearch?: boolean;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
-  showFilter?: boolean;
-  onFilterClick?: () => void;
+  showTabs?: boolean;
+  tabs?: string[];
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
   showPagination?: boolean;
+  showFooterPagination?: boolean;
   currentPage?: number;
   totalPages?: number;
   totalItems?: number;
@@ -556,9 +748,12 @@ export const Table: React.FC<TableProps> = ({
   showSearch = true,
   searchValue = '',
   onSearchChange,
-  showFilter = true,
-  onFilterClick,
+  showTabs = true,
+  tabs = ['All', 'By Ceding Insurers', 'By Transaction name', 'By Year'],
+  activeTab = 'All',
+  onTabChange,
   showPagination = true,
+  showFooterPagination = false,
   currentPage = 1,
   totalPages = 1,
   totalItems = data.length,
@@ -589,13 +784,18 @@ export const Table: React.FC<TableProps> = ({
     width: '100%',
     overflowX: 'auto' as const, // Enable horizontal scroll
     overflowY: 'hidden' as const,
-    borderRadius: showHeader ? '0 0 8px 8px' : borderRadius[8],
+    borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : borderRadius[8],
     border: '1px solid #daebf1',
     borderTop: showHeader ? 'none' : '1px solid #daebf1',
+    borderBottom: showFooterPagination ? 'none' : '1px solid #daebf1',
+    // Force container to be constrained and show scrollbar
+    maxWidth: '100%',
+    boxSizing: 'border-box' as const,
   };
 
   const tableStyles = {
-    width: '1970px', // Fixed width: 350px + (9 × 180px) = 1970px total
+    width: '1550px', // Fixed width to ensure table content forces horizontal scroll when needed
+    minWidth: '1550px', // Minimum width: 300px + 200px + 200px + (5 × 130px) = 1550px total
     borderCollapse: 'collapse' as const,
     backgroundColor: colors.blackAndWhite.white,
     tableLayout: 'fixed' as const, // Enforce fixed column widths from width props
@@ -603,16 +803,25 @@ export const Table: React.FC<TableProps> = ({
     border: 'none', // No outer border, cells handle their own borders
   };
 
+  const mainContainerStyles = {
+    width: '100%',
+    maxWidth: '100vw', // Ensure it never exceeds viewport width
+    overflow: 'hidden', // Prevent any overflow at the main level
+    boxSizing: 'border-box' as const,
+  };
+
   return (
-    <div className={className}>
+    <div className={className} style={mainContainerStyles}>
       {showHeader && (
         <TableHeader
           title={title}
           showSearch={showSearch}
           searchValue={searchValue}
           onSearchChange={onSearchChange}
-          showFilter={showFilter}
-          onFilterClick={onFilterClick}
+          showTabs={showTabs}
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={onTabChange}
           showPagination={showPagination}
           currentPage={currentPage}
           totalPages={totalPages}
@@ -645,6 +854,14 @@ export const Table: React.FC<TableProps> = ({
           />
         </table>
       </div>
+      
+      {showFooterPagination && (
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
+      )}
     </div>
   );
 };

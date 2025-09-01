@@ -295,7 +295,7 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
 
 // Main page component
 interface ReportNavigationProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation') => void;
+  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management') => void;
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
@@ -358,6 +358,16 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
         <Sidebar
           onNavigate={(itemId, subitemId) => {
             console.log('Navigate to:', itemId, subitemId);
+            
+            // Handle Reports navigation
+            if (itemId === 'reports') {
+              if (subitemId === 'transactions') {
+                onNavigateToPage && onNavigateToPage('transaction-management');
+              } else if (subitemId === 'insights-explorer') {
+                // Already on report navigation page
+                console.log('Already on report navigation page');
+              }
+            }
           }}
           onInboxClick={() => {
             console.log('Inbox clicked');

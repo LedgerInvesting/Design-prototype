@@ -15,12 +15,19 @@ This document contains detailed documentation for all components in the Ledger D
 10. **Container**: Max-width container with responsive breakpoints for content centering
 11. **Spacer**: Flexible and fixed spacing component for layout control
 12. **Status**: Interactive status component with dropdown menu functionality (evolved from Chips), 5 semantic variants, 4 menu item states, design system integration
-13. **Table**: Complete data table with headers, sorting, pagination, grid structure, and multiple cell types
-14. **DocumentCell**: Interactive document cell for downloadable files with hover states and download functionality
-15. **ActionCell**: Interactive action cell with configurable icons (edit, add, plus) for table actions
+13. **Table**: Advanced responsive data table with intelligent column sizing, enhanced action buttons, and comprehensive Storybook showcases
+14. **DocumentCell**: Enhanced interactive document cell with DocumentTable icons and configurable hover icons (download/config modes)
+15. **ActionCell**: Interactive action cell with enhanced primary action styling - upload buttons feature light green background (#C6FFC1) for prominence
 
 ## Page Components
-16. **ReportNavigation**: Advanced report navigation interface with program selector, relationship indicators, and sophisticated metric cards
+16. **TransactionManagement**: Complete transaction management interface with intelligent table system
+    - Blue header section with SVG background pattern, document icon, and "New Transaction" button
+    - Transaction and Total Premium stats cards using reusable MetricCard components
+    - Advanced data table with tab selector functionality (5 tabs: All Transactions, Active, Pending, Draft, Cancelled)
+    - 12 rows of sample transaction data demonstrating proper scrolling/masking behavior
+    - Complete integration with Sidebar, TopNav, and enhanced Table component
+    - Responsive layout with 1300px max-width and proper component composition
+17. **ReportNavigation**: Advanced report navigation interface with program selector, relationship indicators, and sophisticated metric cards
     - Program selector card with dropdown functionality
     - Program relationship pills showing hierarchical connections  
     - Cession and Collateral metrics with growth indicators and trend charts
@@ -28,9 +35,9 @@ This document contains detailed documentation for all components in the Ledger D
     - Custom chart components (SmallChart, DataValidationChart) with SVG-based visualizations
     - Full design system integration with proper spacing and typography
 
-## Icon System (103 total icons)
+## Icon System (106 total icons)
 1. **Extra Small (8x8px)**: 9 icons - minimal UI elements (added chevronUp)
-2. **Small (12x12px)**: 29 icons - used in IconButton and small components (includes new ArrowUpSmall, ArrowDownSmall for growth indicators)
+2. **Small (12x12px)**: 32 icons - used in IconButton and small components (includes new CalculatorSmall, UploadSmall, ConfigSmall for action types)
 3. **Medium (22x22px)**: 56 icons - larger UI elements, headers, includes status icons (StatusWarning, StatusError, StatusSuccess)
 4. **Table (24x24px)**: 9 icons - specifically for table headers (includes new ArrangeTable icon)
 
@@ -182,25 +189,38 @@ This document contains detailed documentation for all components in the Ledger D
 - Comprehensive examples including binary choice forms and radio groups
 
 ### Table
-- Complete data table component with header, sortable columns, and customizable body content
-- **Compact Design**: Optimized dimensions matching Figma specifications for professional appearance
-- **Column Headers**: 32px height with 8px 12px padding and proper Figma-matched styling and typography
-- **Body Cells**: 36px height with 8px 12px padding for compact, readable layout
-- **Header Features**: Search input, add filter button, pagination controls with item counts
-- **Sort Functionality**: 12x12px ArrangeTable icons for sortable columns with consistent blue450 color
-- **Grid Structure**: Complete border system with single-width borders throughout
-  - Vertical column separators between all columns
-  - Horizontal row separators between all rows
-  - Clean outer border without double-border artifacts
-- **Typography**: Caption S with regular font weight (400) for optimal Figma matching
-- **Icons**: Uses design system table icons (24x24px) with proper color integration
-- **States**: Support for different column alignments, widths, and sortable/non-sortable columns
-- **Content Types**: Supports text, numbers, React components (chips, status icons), and mixed content
-- **Form Integration**: Checkbox selection in first column with proper styling
-- **Responsive Design**: Fixed table layout with consistent column widths
-- **Design Tokens**: Full integration with colors, typography, spacing, and border radius
-- Uses `colors.blackAndWhite.black500` for text, `colors.reports.blue450` for sort icons
-- Located in "Components" Storybook category with comprehensive examples
+- Advanced responsive data table component with tab selector, horizontal scrolling, and specialized cell types
+- **Enhanced Header Features**: Tab selector replacing filter functionality, search input, pagination controls with Figma-based design
+- **Tab Selector**: Interactive tab switching with blue400 dividers, smooth transitions, and proper state management
+  - Selected state: white background, blue400 border, black900 text, active tab functionality
+  - Default state: transparent border, black500 text, clickable interactions
+  - Proper event handling with useState integration
+- **Responsive Scrolling**: Horizontal scroll with single scrollbar, adapts to page size (no double scrollbars)
+- **Sticky Action Column**: Right-aligned action column with elevation and visual separation
+  - **Floating Behavior**: Always visible on right side during horizontal scroll
+  - **Visual Elevation**: Blue400 left border (1px) using inset shadow technique for sticky compatibility
+  - **Base Shadow**: Design token shadow for clear elevation above other columns  
+  - **White Background**: Covers underlying content when floating
+- **Intelligent Column Width System**: Automatic column sizing based on content analysis
+  - **Smart Rule**: If all cells in a column have < 11 characters, width = 150px
+  - **Special Cases**: Document columns = 300px, Action columns = 130px
+  - **Fallback**: Regular columns default to 200px for longer content
+  - **Dynamic Optimization**: Analyzes actual data to determine optimal widths
+- **Enhanced Action Types**: Streamlined action system with primary action highlighting
+  - **Upload (Primary)**: Light green background (#C6FFC1) with success green icon (#2fa915) to indicate primary actions
+  - **Validate**: Blue styling with CheckSmall icon + "Validate" text  
+  - **Generate**: Blue styling with CalculatorSmall icon + "Generate" text
+  - **Setup**: Blue styling with ConfigSmall icon + "Setup" text
+- **Three Specialized Cell Types**:
+  - **Simple cells**: Standard text with right/left/center alignment support
+  - **Document cells**: Enhanced with DocumentTable icons and configurable hover icons (download or config)
+  - **Action cells**: Button-style cells with row-specific action type selection
+- **Responsive Design**: Table adapts to container width while maintaining minimum column requirements
+- **Enhanced Dimensions**: 45px row height, intelligent column widths based on content analysis (150px for short content, 200px for long content, 300px for documents, 130px for actions)
+- **Footer Pagination**: Figma-based pagination component with proper navigation and styling
+- **Dynamic Width**: Automatically calculated based on intelligent column sizing (typically 1550px with optimized columns)
+- **Design Tokens**: Full integration with colors, typography, spacing, shadows, and border radius
+- Located in "Components" Storybook category with comprehensive interactive examples
 
 ## Layout Components
 
@@ -247,7 +267,11 @@ This document contains detailed documentation for all components in the Ledger D
 ## Cell Components
 
 ### DocumentCell
-- Interactive document cell component for downloadable files in table cells
+- Interactive document cell component for downloadable files in table cells with alignment support
+- **Alignment Awareness**: Accepts `align` prop ('left', 'center', 'right') for proper text positioning
+  - Left alignment: Standard icon + text layout
+  - Right alignment: Icon and text positioned to flex-end for proper right-aligned appearance
+  - Center alignment: Icon and text centered within cell container
 - **Default State**: Blue200 background (`colors.reports.dynamic.blue200`) with document icon + filename
 - **Hover State**: Blue300 background (`colors.reports.dynamic.blue300`) with download icon reveal
 - **Download Icon Container**: White background, 8px border radius, small shadow from design tokens
@@ -255,6 +279,7 @@ This document contains detailed documentation for all components in the Ledger D
 - **Accessibility**: Full keyboard support (Enter/Space), ARIA roles, focus management
 - **Design Integration**: Uses DocumentSmall and DownloadSmall icons from library
 - **Smooth Animations**: 0.2s ease transitions for background and icon opacity
+- **Table Integration**: Table component automatically passes column alignment to DocumentCell
 - **Form Integration**: Configurable onDownload callback for file handling
 - Uses design tokens: `colors.reports.dynamic.*`, `borderRadius[4]`, `shadows.sm`, `typography.styles.bodyM`
 
@@ -295,12 +320,14 @@ The Table component supports three distinct cell types through the `cellType` pr
    - Action callbacks via `onAction` property
 
 ### Table Features
-- **Compact Design**: Optimized for professional, space-efficient layout matching Figma specifications
+- **Responsive Design**: Adapts to container width while maintaining minimum requirements, single horizontal scrollbar
 - **Internal Cell Components**: DocumentCell and ActionCell are internal components (not exported)
-- **Fixed Column Widths**: First column 350px, all others 180px with strict enforcement
-- **Horizontal Scroll**: Table content scrolls while header (search, filter, pagination) stays fixed
-- **Smart Cell Rendering**: Automatically renders appropriate component based on cellType
+- **Optimized Column Widths**: First column 300px, standard columns 200px, action column 150px
+- **Sticky Action Column**: Right-side floating column with blue400 left border, base shadow, and white background
+- **Smart Cell Rendering**: Automatically renders appropriate component based on cellType with row-specific action types
 - **Consistent Overflow**: All cell types handle text overflow with ellipsis and tooltips
-- **Total Width**: 1970px (350px + 9×180px) for 10 columns with horizontal scroll activation
-- **Layout**: `tableLayout: 'fixed'` enforces exact column specifications regardless of content
-- **Clean Architecture**: Cell components properly encapsulated within Table component
+- **Enhanced Dimensions**: 45px row height for better visual spacing and content readability
+- **Total Width**: 2050px minimum (300px + 8×200px + 150px) with responsive expansion capability
+- **Layout**: `tableLayout: 'fixed'` enforces exact column specifications with sticky positioning support
+- **Action System**: Four distinct action types (upload, validate, generate, setup) with proper icon integration
+- **Professional Elevation**: Base shadow and border effects for clear visual hierarchy

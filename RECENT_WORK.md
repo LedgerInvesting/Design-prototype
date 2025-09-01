@@ -2,7 +2,168 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Report Navigation Page)
+## Latest Development Session (Intelligent Table System & Transaction Management)
+
+### Intelligent Column Width System
+129. **Created Intelligent Column Width Algorithm**:
+    - Implemented automatic column sizing based on content analysis
+    - Rule: If all cells in a column have < 11 characters, width = 150px
+    - Special cases: Document columns (300px), Action columns (130px)
+    - Fallback: Regular columns use 200px base width for longer content
+    - Dynamic optimization analyzes actual data to determine optimal widths
+
+130. **Enhanced Transaction Management Page**:
+    - Updated table with 8 comprehensive columns: Transaction Name, Ceding Company, Reinsurer Name, Effective Date, Expiry Date, Premium, Status, Actions
+    - Applied intelligent column sizing system for optimal space utilization
+    - Added proper table icons for all columns (DocumentTable, TextTable, CalendarTable, AmmountTable, StatusTable)
+    - Configured document cells with config hover icons for transaction names
+    - Implemented full pagination controls and enhanced search functionality
+
+131. **Added Intelligent Column Widths Storybook Story**:
+    - Created comprehensive demonstration of intelligent sizing system in Storybook
+    - Includes working code example with detailed documentation
+    - Visual explanation showing rule application and results
+    - Complete usage guide for developers to copy/paste and implement
+    - Interactive demo showing both short and long content column handling
+
+132. **Updated Table Component Infrastructure**:
+    - Reduced minimum column width from 120px to 100px to accommodate intelligent sizing
+    - Updated fixed table width calculation to 1550px for optimized column layout
+    - Enhanced TableColumn interface to support intelligent width calculations
+    - Maintained backward compatibility while enabling smart sizing features
+
+## Previous Development Session (Enhanced Table UI & Document Systems)
+
+### Primary Action Styling & Visual Hierarchy
+125. **Enhanced Upload Action Buttons**:
+    - Updated upload actions with light green background (#C6FFC1) to indicate primary action status
+    - Applied success green color (#2fa915) to upload icons for visual consistency
+    - All other actions (validate, generate, setup) maintain blue styling for secondary actions
+    - Clear visual hierarchy distinguishes primary upload actions from supporting actions
+
+126. **Improved Document Cell Icons**:
+    - Replaced DocumentSmall icons with DocumentTable icons in document cells for better semantic meaning
+    - Updated both column headers and document cell content to use consistent document table iconography
+    - Maintained black700 color for optimal contrast against blue document cell backgrounds
+
+127. **Added Configurable Document Cell Hover Icons**:
+    - Extended DocumentCell component with `hoverIcon` prop supporting 'download' and 'config' modes
+    - Created duplicate document column showcase demonstrating both hover icon variants
+    - Enhanced Table component to pass hover icon configuration through column definitions
+    - Added comprehensive Cell Types Showcase story for easy component comparison
+
+128. **Comprehensive Storybook Enhancements**:
+    - Added "Action Buttons Showcase" story displaying all 4 action types side-by-side
+    - Enhanced "Cell Types Showcase" with configurable document cell variants
+    - Updated table stories to use DocumentTable icons in appropriate columns
+    - Improved component documentation and interactive examples for better developer experience
+
+## Previous Development Session (Advanced Table Features & Action System)
+
+### Responsive Table & Sticky Action Column
+102. **Implemented Responsive Table Design**:
+    - Fixed double scrollbar issue by updating table container width management
+    - Table now adapts to page size while maintaining minimum column requirements
+    - Single horizontal scrollbar when content exceeds container width
+    - Main container constrained with `maxWidth: '100vw'` and `overflow: 'hidden'`
+
+103. **Created Sticky Action Column with Visual Elevation**:
+    - Action column now permanently floats on right side during horizontal scroll
+    - Implemented `position: 'sticky'` and `right: 0` for both header and body cells
+    - Added white background to cover underlying content when floating
+    - Used `zIndex: 10` to ensure proper layering above other columns
+
+104. **Enhanced Action Column Visual Design**:
+    - Added blue400 left border using inset shadow technique for sticky compatibility
+    - Applied design token "base" shadow (`shadows.base`) for professional elevation
+    - Inset shadow approach: `inset 1px 0 0 0 #D9E7EC` creates reliable border effect
+    - Combined with regular shadow for depth: `${shadows.base}`
+
+### New Action System & Icon Integration  
+105. **Streamlined Action Types System**:
+    - Reduced from 7 to 4 focused action types: upload, validate, generate, setup
+    - Each action type includes proper icon from design library and descriptive text
+    - Row-level control: each table row can specify its own action type
+    - Enhanced callback system: `onClick(actionType, text)` provides both parameters
+
+106. **Added New Design System Icons**:
+    - **CalculatorSmall**: Added from Figma for "generate" action type
+    - **UploadSmall**: Added from Figma for "upload" action type  
+    - **ConfigSmall**: Added from Figma for "setup" action type
+    - Updated icon system from 103 to 106 total icons (32 Small icons)
+
+107. **Updated Table Dimensions and Spacing**:
+    - Increased row height from 36px to 45px for better readability
+    - Adjusted column widths: first column 300px, standard columns 200px, action column 150px
+    - Total minimum width: 2050px (300px + 8×200px + 150px)
+    - ActionCell padding optimized to 6px top/bottom/left, 3px right for better fit
+
+108. **Enhanced Action Button Styling**:
+    - White background with blue400 stroke borders
+    - Hover effect: blue200 background with 50% alpha
+    - Base shadow for subtle elevation
+    - Action buttons now display proper icon + text combinations
+
+### Previous Development Session (Table Component Enhancement & Transaction Management)
+
+### Advanced Table Component with Tab Selector
+87. **Replaced Table Filter System with Tab Selector**:
+   - Removed "Add Filter" button functionality from table header
+   - Implemented interactive tab selector with 5 tabs: All Transactions, Active, Pending, Draft, Cancelled
+   - Added smooth transitions and proper state management for tab switching
+88. **Enhanced Tab Styling and Interaction**:
+   - Selected state: white background, blue400 border, black900 text, rounded corners
+   - Default state: black500 text with transparent border to prevent layout shift
+   - Added 5px spacing between tabs with center-aligned text
+   - Fixed tab movement issue by adding invisible borders to default state
+89. **Updated Table Pagination and Typography**:
+   - Changed pagination text from captionS to bodyS typography style
+   - Removed left/right arrow navigation buttons from pagination
+   - Simplified pagination to show only document count (e.g., "1-5 of 25 documents")
+
+### Table Scrolling and Masking System
+90. **Implemented Proper Table Scrolling/Masking**:
+   - Added maxHeight constraint (300px) to table container for content overflow
+   - Enabled vertical scrolling (overflowY: 'auto') when content exceeds height
+   - Fixed masking behavior so table properly contains content within height boundaries
+   - Added 12 rows of sample data to demonstrate scrolling functionality
+
+### Specialized Cell Types and Interactive Controls
+91. **Enhanced DocumentCell with Alignment Support**:
+   - Added `align` prop support ('left', 'center', 'right') to DocumentCell interface
+   - Updated DocumentCell layout to respect column alignment for proper text positioning
+   - Table component automatically passes column alignment to DocumentCell instances
+   - Left alignment: standard icon + text layout, Right alignment: content positioned to flex-end
+92. **Created Interactive Storybook Cell Type Selector**:
+   - Built CellTypeSelector story allowing real-time cell type switching through Storybook controls
+   - Added controls for each column's cellType (simple, document, action)
+   - Implemented control categories for better organization (Column Types, Action Settings)
+   - Added actionIcon selector for action cells (edit, add, plus icons)
+   - Included proper column icons (TextTable, FileTable, StatusTable) with blue450 color
+
+### TransactionManagement Page Integration  
+93. **Built Complete TransactionManagement Page**:
+   - Created comprehensive transaction management interface with Sidebar, TopNav, and Table integration
+   - Implemented blue header section with SVG background pattern and custom document icon
+   - Added "New Transaction" button with proper styling and width constraints (240px)
+94. **Transaction Stats Section**:
+   - Built Transaction and Total Premium stats cards using reusable MetricCard components
+   - Added custom transaction content with icon, numbers, and status indicators
+   - Implemented growth indicators with success colors and proper typography (subheadingM, blue800, black700)
+95. **Advanced Table Integration**:
+   - Integrated enhanced Table component with 5-tab selector functionality
+   - Added 12 rows of sample transaction data (Contract #2024-001 through #2024-012)
+   - Proper column definitions with sortable/non-sortable states and appropriate widths
+   - Responsive layout with 1300px max-width and proper component composition
+
+### Documentation and Standards Updates
+96. **Updated All Project Documentation**:
+   - Enhanced CLAUDE.md with TransactionManagement page details and table improvements
+   - Updated COMPONENTS.md with advanced table features, cell type details, and alignment support
+   - Added interactive controls guidance to STORYBOOK_STANDARDS.md with CellTypeSelector pattern
+   - Updated project structure to reflect new TransactionManagement page and enhanced functionality
+
+## Previous Development Session (Report Navigation Page)
 
 ### Advanced Report Navigation Interface
 60. Built comprehensive ReportNavigation page as new default landing page for external testing environment

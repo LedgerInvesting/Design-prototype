@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 import { Table, TableColumn, TableRow } from './Table';
 import { StatusWarning, StatusError, StatusSuccess } from '../icons';
 import { Chips, Status } from './';
-import { CalendarTable, TextTable, FileTable, StatusTable, AmmountTable } from '../icons';
+import { CalendarTable, TextTable, FileTable, StatusTable, AmmountTable, DocumentTable } from '../icons';
 import { colors } from '../tokens';
 
 const meta: Meta<typeof Table> = {
@@ -76,9 +77,9 @@ const sampleColumns: TableColumn[] = [
   {
     key: 'policyName',
     title: 'Policy Name',
-    icon: <TextTable color={colors.reports.blue450} />,
+    icon: <DocumentTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '350px',
+    width: '300px',
     cellType: 'document',
     onDownload: (filename: string) => {
       console.log('Downloading policy document:', filename);
@@ -90,28 +91,28 @@ const sampleColumns: TableColumn[] = [
     title: 'Cedent',
     icon: <FileTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '180px',
+    width: '200px',
   },
   {
     key: 'reinsurerName',
     title: 'Reinsurer Name',
     icon: <TextTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '180px',
+    width: '200px',
   },
   {
     key: 'effectiveDate',
     title: 'Effective Date',
     icon: <CalendarTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '180px',
+    width: '200px',
   },
   {
     key: 'contracts',
     title: 'Contracts',
     icon: <AmmountTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '180px',
+    width: '200px',
     align: 'center',
   },
   {
@@ -119,7 +120,7 @@ const sampleColumns: TableColumn[] = [
     title: 'Status',
     icon: <StatusTable color={colors.reports.blue450} />,
     sortable: false,
-    width: '180px',
+    width: '200px',
     align: 'center',
   },
   {
@@ -127,7 +128,7 @@ const sampleColumns: TableColumn[] = [
     title: 'GWP',
     icon: <AmmountTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '180px',
+    width: '200px',
     align: 'right',
   },
   {
@@ -135,7 +136,7 @@ const sampleColumns: TableColumn[] = [
     title: 'Premium',
     icon: <AmmountTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '180px',
+    width: '200px',
     align: 'right',
   },
   {
@@ -143,7 +144,7 @@ const sampleColumns: TableColumn[] = [
     title: 'Region',
     icon: <TextTable color={colors.reports.blue450} />,
     sortable: true,
-    width: '180px',
+    width: '200px',
     align: 'left',
   },
   {
@@ -151,12 +152,12 @@ const sampleColumns: TableColumn[] = [
     title: 'Actions',
     icon: <StatusTable color={colors.reports.blue450} />, // Using existing icon
     sortable: false,
-    width: '180px',
+    width: '150px',
     align: 'center',
     cellType: 'action',
-    actionIcon: 'edit', // Default to edit, can be overridden per row
-    onAction: (text: string) => {
-      console.log('Action clicked:', text);
+    actionType: 'upload', // Default action type, can be overridden per row
+    onAction: (actionType: string, text: string) => {
+      console.log('Action clicked:', actionType, text);
       // In real implementation, this would handle the action
     },
   },
@@ -173,7 +174,7 @@ const sampleData: TableRow[] = [
     gwp: '$650K',
     premium: '$3.1M',
     region: 'North America Regional Division',
-    actions: 'Contract Config',
+    actions: 'upload', // ActionType - Shows upload icon + "Upload" text
   },
   {
     policyName: 'blue_re_policy_agreement.docx',
@@ -185,7 +186,7 @@ const sampleData: TableRow[] = [
     gwp: '$1.2M',
     premium: '$750K',
     region: 'Europe',
-    actions: 'Upload BDX',
+    actions: 'validate', // ActionType - Shows check icon + "Validate" text
   },
   {
     policyName: 'violet_re_terms_conditions.pdf',
@@ -197,7 +198,7 @@ const sampleData: TableRow[] = [
     gwp: '$2.5M',
     premium: '$1.1M',
     region: 'Asia Pacific',
-    actions: 'Contract Config',
+    actions: 'generate', // ActionType - Shows calculator icon + "Generate" text
   },
   {
     policyName: 'gray_re_contract_summary.xlsx',
@@ -209,7 +210,7 @@ const sampleData: TableRow[] = [
     gwp: '$900K',
     premium: '$1.8M',
     region: 'Latin America',
-    actions: 'Upload BDX',
+    actions: 'setup', // ActionType - Shows config icon + "Setup" text
   },
   {
     policyName: 'olive_re_policy_details.pdf',
@@ -221,34 +222,122 @@ const sampleData: TableRow[] = [
     gwp: '$500K',
     premium: '$600K',
     region: 'Middle East',
-    actions: 'Contract Config',
+    actions: 'upload', // ActionType - Shows upload icon + "Upload" text (repeated for demo)
+  },
+  {
+    policyName: 'green_re_insurance_policy.pdf',
+    cedent: 'Lime Insurers LLC',
+    reinsurerName: 'Mountain Re LLC',
+    effectiveDate: '05/01/2024',
+    contracts: '6',
+    status: <Chips variant="success" size="small" text="Active" showDot={true} showChevron={false} />,
+    gwp: '$1.8M',
+    premium: '$950K',
+    region: 'North America',
+    actions: 'validate', // ActionType - Shows check icon + "Validate" text
+  },
+  {
+    policyName: 'orange_re_contract_terms.xlsx',
+    cedent: 'Citrus Insurers LLC',
+    reinsurerName: 'Valley Re LLC',
+    effectiveDate: '05/15/2024',
+    contracts: '3',
+    status: <Chips variant="warning" size="small" text="Pending" showDot={true} showChevron={false} />,
+    gwp: '$750K',
+    premium: '$1.2M',
+    region: 'Europe',
+    actions: 'generate', // ActionType - Shows calculator icon + "Generate" text
   },
 ];
 
 // Default table
 export const Default: Story = {
+  render: (args) => {
+    const [activeTab, setActiveTab] = useState('All');
+    
+    return (
+      <div style={{ 
+        width: '100%',
+        maxWidth: '1200px', // Realistic container width to demonstrate scrolling
+        margin: '0 auto',
+        padding: '20px',
+        boxSizing: 'border-box',
+      }}>
+        <Table
+          {...args}
+          activeTab={activeTab}
+          onTabChange={(tab) => {
+            setActiveTab(tab);
+            console.log('Tab clicked:', tab);
+          }}
+        />
+      </div>
+    );
+  },
   args: {
     columns: sampleColumns,
-    data: sampleData.slice(0, 3), // Show first 3 rows
+    data: sampleData, // Show all 7 rows with all action types
     title: 'Policy Groups',
     showHeader: true,
     showSearch: true,
-    showFilter: true,
+    showTabs: true,
+    tabs: ['All', 'By Ceding Insurers', 'By Transaction name', 'By Year'],
+    activeTab: 'All',
     showPagination: true,
+    showFooterPagination: true,
     currentPage: 1,
     totalPages: 5,
     totalItems: 50,
     itemsPerPage: 10,
   },
-  render: (args) => (
-    <div style={{ 
-      width: '1100px', 
-      maxWidth: '1100px',
-      margin: '0 auto',
-    }}>
-      <Table {...args} />
-    </div>
-  ),
+};
+
+// Interactive tabs story with state management
+export const InteractiveTabs: StoryObj<typeof Table> = {
+  render: (args) => {
+    const [activeTab, setActiveTab] = useState('All');
+    
+    return (
+      <div style={{ 
+        width: '100%',
+        maxWidth: '1200px', // Realistic container width to demonstrate scrolling
+        margin: '0 auto',
+        padding: '20px',
+        boxSizing: 'border-box',
+      }}>
+        <Table
+          {...args}
+          activeTab={activeTab}
+          onTabChange={(tab) => {
+            setActiveTab(tab);
+            console.log('Tab changed to:', tab);
+          }}
+        />
+      </div>
+    );
+  },
+  args: {
+    columns: sampleColumns,
+    data: sampleData, // Show all rows with all action types
+    showHeader: true,
+    showSearch: true,
+    showTabs: true,
+    tabs: ['All', 'By Ceding Insurers', 'By Transaction name', 'By Year'],
+    activeTab: 'All',
+    showPagination: true,
+    showFooterPagination: true,
+    currentPage: 1,
+    totalPages: 5,
+    totalItems: 50,
+    itemsPerPage: 10,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Interactive table with functional tab selector. Click on different tabs to see the active state change with blue400 divider lines.',
+      },
+    },
+  },
 };
 
 // Full table with all features
@@ -322,14 +411,14 @@ export const CustomColumns: Story = {
         key: 'revenue',
         title: 'Revenue',
         sortable: true,
-        width: '180px',
+        width: '200px',
         align: 'right',
       },
       {
         key: 'status',
         title: 'Status',
         sortable: false,
-        width: '180px',
+        width: '200px',
         align: 'center',
       },
     ],
@@ -454,20 +543,20 @@ export const SortableColumns: Story = {
         key: 'date',
         title: 'Date',
         sortable: true,
-        width: '180px',
+        width: '200px',
       },
       {
         key: 'amount',
         title: 'Amount',
         sortable: true,
-        width: '180px',
+        width: '200px',
         align: 'right',
       },
       {
         key: 'category',
         title: 'Category',
         sortable: false,
-        width: '180px',
+        width: '200px',
       },
     ],
     data: [
@@ -564,11 +653,24 @@ export const CellTypesShowcase: Story = {
       {
         key: 'document',
         title: 'Document Files',
+        icon: <DocumentTable color={colors.reports.blue450} />,
         sortable: false,
         width: '250px',
         cellType: 'document', // Document download cells
         onDownload: (filename: string) => {
           console.log('Downloading document:', filename);
+        },
+      },
+      {
+        key: 'documentConfig',
+        title: 'Document Config',
+        icon: <DocumentTable color={colors.reports.blue450} />,
+        sortable: false,
+        width: '250px',
+        cellType: 'document', // Document cells with config icon
+        hoverIcon: 'config', // Use config icon on hover instead of download
+        onDownload: (filename: string) => {
+          console.log('Configuring document:', filename);
         },
       },
       {
@@ -587,16 +689,19 @@ export const CellTypesShowcase: Story = {
       {
         simple: 'Policy Alpha',
         document: 'policy_alpha_contract.pdf',
+        documentConfig: 'policy_alpha_config.json',
         action: 'Edit Policy',
       },
       {
         simple: 'Policy Beta',
         document: 'policy_beta_terms.docx',
+        documentConfig: 'policy_beta_config.json',
         action: 'Configure',
       },
       {
         simple: 'Policy Gamma',
         document: 'policy_gamma_summary.xlsx',
+        documentConfig: 'policy_gamma_config.json',
         action: 'Review',
       },
     ],
@@ -615,6 +720,282 @@ export const CellTypesShowcase: Story = {
   },
 };
 
+// Action buttons showcase - demonstrates all 4 action types
+export const ActionButtonsShowcase: Story = {
+  args: {
+    columns: [
+      {
+        key: 'type',
+        title: 'Action Type',
+        sortable: false,
+        width: '150px',
+        cellType: 'simple',
+      },
+      {
+        key: 'description',
+        title: 'Description',
+        sortable: false,
+        width: '250px',
+        cellType: 'simple',
+      },
+      {
+        key: 'uploadAction',
+        title: 'Upload (Green)',
+        sortable: false,
+        width: '150px',
+        cellType: 'action',
+        actionType: 'upload',
+        onAction: (actionType: string, text: string) => {
+          console.log('Upload action clicked:', actionType, text);
+        },
+      },
+      {
+        key: 'validateAction',
+        title: 'Validate (Blue)',
+        sortable: false,
+        width: '150px',
+        cellType: 'action',
+        actionType: 'validate',
+        onAction: (actionType: string, text: string) => {
+          console.log('Validate action clicked:', actionType, text);
+        },
+      },
+      {
+        key: 'generateAction',
+        title: 'Generate (Blue)',
+        sortable: false,
+        width: '150px',
+        cellType: 'action',
+        actionType: 'generate',
+        onAction: (actionType: string, text: string) => {
+          console.log('Generate action clicked:', actionType, text);
+        },
+      },
+      {
+        key: 'setupAction',
+        title: 'Setup (Blue)',
+        sortable: false,
+        width: '150px',
+        cellType: 'action',
+        actionType: 'setup',
+        onAction: (actionType: string, text: string) => {
+          console.log('Setup action clicked:', actionType, text);
+        },
+      },
+    ],
+    data: [
+      {
+        type: 'Upload',
+        description: 'Primary action with light green background and success green icon',
+        uploadAction: 'upload',
+        validateAction: 'validate',
+        generateAction: 'generate',
+        setupAction: 'setup',
+      },
+      {
+        type: 'Validate',
+        description: 'Check/validation action with blue styling',
+        uploadAction: 'upload',
+        validateAction: 'validate',
+        generateAction: 'generate',
+        setupAction: 'setup',
+      },
+      {
+        type: 'Generate',
+        description: 'Calculator/generation action with blue styling',
+        uploadAction: 'upload',
+        validateAction: 'validate',
+        generateAction: 'generate',
+        setupAction: 'setup',
+      },
+      {
+        type: 'Setup',
+        description: 'Configuration action with blue styling',
+        uploadAction: 'upload',
+        validateAction: 'validate',
+        generateAction: 'generate',
+        setupAction: 'setup',
+      },
+    ],
+    title: 'Action Buttons Showcase',
+    showHeader: false,
+    showSearch: false,
+    showTabs: false,
+    showPagination: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Complete showcase of all four action button types with their distinct styling. Upload actions have light green background (#C6FFC1) with success green icon, while validate, generate, and setup actions use blue styling. Each button shows proper hover states and click interactions.',
+      },
+    },
+  },
+};
+
+// Intelligent Column Width Showcase
+export const IntelligentColumnWidths: Story = {
+  render: () => {
+    // Utility function for intelligent column width sizing
+    const getOptimizedColumnWidth = (data: any[], columnKey: string, baseWidth: string = '200px'): string => {
+      // Skip action columns and document columns (they have special requirements)
+      if (columnKey === 'actions' || columnKey.includes('document') || columnKey.includes('file')) {
+        return columnKey === 'actions' ? '130px' : '300px';
+      }
+      
+      // Check if all values in this column have less than 11 characters
+      const allValuesShort = data.every(row => {
+        const value = row[columnKey];
+        if (typeof value === 'string') {
+          return value.length < 11;
+        }
+        return String(value).length < 11;
+      });
+      
+      // Return 150px if all values are short, otherwise use base width
+      return allValuesShort ? '150px' : baseWidth;
+    };
+
+    // Example data with mixed content lengths
+    const intelligentData = [
+      { shortText: 'ABC', longText: 'Very Long Company Name LLC', date: '01/01/2024', amount: '$1,234', status: 'Active', actions: 'upload' },
+      { shortText: 'DEF', longText: 'Another Extended Business Corp', date: '02/15/2024', amount: '$5,678', status: 'Pending', actions: 'validate' },
+      { shortText: 'GHI', longText: 'Comprehensive Solutions Ltd', date: '03/30/2024', amount: '$9,012', status: 'Complete', actions: 'generate' },
+    ];
+
+    // Columns with automatic width optimization
+    const intelligentColumns = [
+      {
+        key: 'shortText',
+        title: 'Short Content',
+        icon: <TextTable color={colors.reports.blue450} />,
+        sortable: true,
+        width: getOptimizedColumnWidth(intelligentData, 'shortText'), // Will be 150px
+      },
+      {
+        key: 'longText',
+        title: 'Long Content',
+        icon: <TextTable color={colors.reports.blue450} />,
+        sortable: true,
+        width: getOptimizedColumnWidth(intelligentData, 'longText'), // Will be 200px
+      },
+      {
+        key: 'date',
+        title: 'Dates',
+        icon: <CalendarTable color={colors.reports.blue450} />,
+        sortable: true,
+        width: getOptimizedColumnWidth(intelligentData, 'date'), // Will be 150px
+      },
+      {
+        key: 'amount',
+        title: 'Amounts',
+        icon: <AmmountTable color={colors.reports.blue450} />,
+        sortable: true,
+        width: getOptimizedColumnWidth(intelligentData, 'amount'), // Will be 150px
+      },
+      {
+        key: 'status',
+        title: 'Status',
+        icon: <StatusTable color={colors.reports.blue450} />,
+        sortable: false,
+        width: getOptimizedColumnWidth(intelligentData, 'status'), // Will be 150px
+      },
+      {
+        key: 'actions',
+        title: 'Actions',
+        icon: <StatusTable color={colors.reports.blue450} />,
+        sortable: false,
+        width: getOptimizedColumnWidth(intelligentData, 'actions'), // Will be 130px
+        cellType: 'action' as const,
+        actionType: 'upload' as const,
+        onAction: (actionType: string, text: string) => {
+          console.log('Action clicked:', actionType, text);
+        },
+      },
+    ];
+
+    return (
+      <div style={{ 
+        width: '100%',
+        maxWidth: '1000px',
+        margin: '0 auto',
+        padding: '20px',
+        boxSizing: 'border-box',
+      }}>
+        <div style={{ 
+          marginBottom: '20px', 
+          padding: '16px', 
+          backgroundColor: '#f8f9fa', 
+          borderRadius: '8px',
+          fontSize: '14px',
+          lineHeight: '1.6'
+        }}>
+          <h4 style={{ margin: '0 0 12px 0', color: '#333' }}>🧠 Intelligent Column Width Rule</h4>
+          <p style={{ margin: '0 0 8px 0' }}>
+            <strong>Rule:</strong> If all cells in a column have less than 11 characters, width = 150px
+          </p>
+          <p style={{ margin: '0 0 8px 0' }}>
+            <strong>Special cases:</strong> Documents = 300px, Actions = 130px
+          </p>
+          <p style={{ margin: '0', color: '#666' }}>
+            <strong>Result:</strong> Short Content, Dates, Amounts, Status = 150px | Long Content = 200px
+          </p>
+        </div>
+        
+        <Table
+          columns={intelligentColumns}
+          data={intelligentData}
+          showHeader={false}
+          showTabs={false}
+          showPagination={false}
+        />
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**Intelligent Column Width System** - Automatically optimizes column widths based on content length.
+
+### The Rule
+If all cells in a column contain less than 11 characters, the column width is automatically set to 150px. Otherwise, it uses the base width (default 200px).
+
+### Special Cases
+- **Document columns**: Always 300px (for long filenames)
+- **Action columns**: Always 130px (for buttons)
+
+### Usage
+\`\`\`typescript
+const getOptimizedColumnWidth = (data: any[], columnKey: string, baseWidth: string = '200px'): string => {
+  // Skip special columns
+  if (columnKey === 'actions' || columnKey.includes('document')) {
+    return columnKey === 'actions' ? '130px' : '300px';
+  }
+  
+  // Check if all values are short (< 11 characters)
+  const allValuesShort = data.every(row => {
+    const value = row[columnKey];
+    return String(value).length < 11;
+  });
+  
+  return allValuesShort ? '150px' : baseWidth;
+};
+
+// Use in column definitions
+{
+  key: 'columnName',
+  title: 'Column Title',
+  width: getOptimizedColumnWidth(data, 'columnName'),
+}
+\`\`\`
+
+This system creates more efficient, readable tables by automatically sizing columns based on their content.
+        `,
+      },
+    },
+  },
+};
+
 // Data types showcase
 export const DataTypesShowcase: Story = {
   args: {
@@ -623,34 +1004,34 @@ export const DataTypesShowcase: Story = {
         key: 'text',
         title: 'Text',
         sortable: true,
-        width: '180px',
+        width: '200px',
       },
       {
         key: 'number',
         title: 'Number',
         sortable: true,
-        width: '180px',
+        width: '200px',
         align: 'right',
       },
       {
         key: 'status',
         title: 'Status',
         sortable: false,
-        width: '180px',
+        width: '200px',
         align: 'center',
       },
       {
         key: 'badge',
         title: 'Badge',
         sortable: false,
-        width: '180px',
+        width: '200px',
         align: 'center',
       },
       {
         key: 'mixed',
         title: 'Mixed Content',
         sortable: false,
-        width: '180px',
+        width: '200px',
       },
     ],
     data: [

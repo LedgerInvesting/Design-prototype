@@ -43,8 +43,13 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Page Components**: 
   - **Sidebar** (220px width) with brand logos, expandable menu structure, custom inbox button with notification badge
   - **TopNav** with breadcrumb navigation, share button, user profile dropdown (updated to match Figma design)
-- **Icons**: Complete 4-tier icon system with 103 total icons + 5 brand logos (includes new ArrowUpSmall and ArrowDownSmall icons)
-- **Storybook**: Comprehensive showcase with interactive controls for all components, running on localhost:6006
+- **Icons**: Complete 4-tier icon system with 106 total icons + 5 brand logos (includes DocumentTable, AddMedium, ReloadMedium, CloseMedium, CalculatorSmall, UploadSmall, ConfigSmall icons)
+- **Enhanced Table System**: 
+  - **Action Buttons**: Upload actions now feature light green styling (#C6FFC1 background, success green icon) to highlight primary actions
+  - **Document Cells**: Enhanced with DocumentTable icons and configurable hover icons (download or config)
+  - **Intelligent Column Sizing**: Automatic width optimization based on content length (< 11 chars = 150px)
+  - **Comprehensive Storybook**: Action Buttons Showcase, Cell Types Showcase, and Intelligent Column Widths for easy testing
+- **Storybook**: Comprehensive showcase with interactive controls for all components, running on localhost:6006 (or 6007 if port conflict)
 - **External Testing Environment**: React development environment in `/pages` folder for testing real component integration
 
 ## Technical Details
@@ -107,7 +112,7 @@ E:\Ledger design library/
 │   │   │   ├── Sidebar.tsx & .stories.tsx
 │   │   │   ├── TopNav.tsx & .stories.tsx
 │   │   │   └── index.ts
-│   │   ├── icons/index.tsx            # Complete icon system (101 icons)
+│   │   ├── icons/index.tsx            # Complete icon system (106 icons)
 │   │   ├── tokens/
 │   │   │   ├── index.ts               # Design tokens from Figma
 │   │   │   └── DesignTokens.stories.tsx
@@ -116,6 +121,8 @@ E:\Ledger design library/
 │   ├── package.json                   # Library dependencies & scripts
 │   └── [other config files]
 ├── pages/                             # External testing environment
+│   ├── TransactionManagement.tsx     # Transaction management page with advanced table and transaction modal
+│   ├── NewTransactionModal.tsx       # Transaction type selection modal component
 │   ├── ReportNavigation.tsx           # Advanced report navigation page (default)
 │   ├── CashSettlement.tsx             # Financial dashboard page
 │   ├── App.tsx                        # Main React app with navigation
@@ -137,7 +144,14 @@ E:\Ledger design library/
 - **Dropdown**: Same specs as Input, custom styling, 6 states
 - **Selector**: Unified checkbox/radio component with 2 variants
 - **ButtonSelector**: Button-style selectors for prominent binary choices
-- **Table**: Complete data table with multiple cell types, compact design, sort functionality
+- **Table**: Advanced responsive data table with intelligent features:
+  - **3 specialized cell types**: simple, document (with configurable hover icons), action
+  - **Enhanced Action Buttons**: Upload buttons with light green styling (#C6FFC1) for primary actions
+  - **Document Cells**: DocumentTable icons with download/config hover options
+  - **Intelligent Column Sizing**: Automatic width optimization based on content analysis
+  - **Tab selector, horizontal scrolling, sort functionality, pagination**
+  - **Sticky action column with elevation shadow**
+  - **4 action types**: upload (green), validate, generate, setup (all others blue)
 - **Layout**: Stack, Grid, Container, Spacer for flexible layouts
 
 For detailed component documentation, see [COMPONENTS.md](./COMPONENTS.md)
@@ -156,6 +170,24 @@ The `/pages` folder contains a complete React development environment for testin
 - **Vite Configuration**: Optimized build system with design library path aliases
 
 **Current Pages:**
+- **TransactionManagement.tsx**: Complete transaction management interface featuring:
+  - Blue header with SVG background pattern, document icon, and "New Transaction" button
+  - **NewTransactionModal**: Dropdown-style modal for transaction type selection featuring:
+    - Two transaction options: Brand New (blue icon + AddMedium) and Renewal (green + ReloadMedium)
+    - Design system radio buttons using Selector component
+    - 670px modal width with 275px cards and 20px spacing
+    - Positioned below and aligned to "New Transaction" button
+    - Close button with blue300 background and CloseMedium icon
+    - Subheading L typography and proper design token integration
+  - Transaction and Total Premium stats cards with custom MetricCard components
+  - Advanced data table with intelligent column sizing and comprehensive functionality:
+    - Tab selector (All Transactions, Active, Pending, Draft, Cancelled)
+    - Document cells with config hover icons for transaction names
+    - Automatic column width optimization based on content length
+    - Full pagination controls and search functionality
+    - 8 columns with proper icons, sorting, and action buttons
+  - **Design System Integration**: Complete component integration with Sidebar, TopNav, enhanced Table, and modal system
+  - **Responsive Layout**: Centered content (1300px max-width) with white background
 - **ReportNavigation.tsx** (Default): Advanced report navigation interface featuring:
   - Program selector card with dropdown functionality
   - Program relationship pills showing hierarchical connections  
@@ -192,11 +224,18 @@ npm run dev  # Start on http://localhost:5173
 3. Use design tokens: `import { colors, typography } from '@design-library/tokens'`
 4. Add to App.tsx for navigation
 
+## Recent Enhancements
+- **Modal System**: Implemented NewTransactionModal with dropdown-style positioning and design system integration
+  - Transaction type selection with Brand New vs Renewal options
+  - Proper icon integration (AddMedium, ReloadMedium) with design system colors
+  - Radio button functionality using Selector component from design library
+  - Responsive 670px modal with 275px cards and consistent 20px spacing
+
 ## Next Steps / Future Work
 - Add form validation system to Input/Dropdown components
 - Create theme support (light/dark mode switching)
 - Add animation system with consistent timing and easing
-- Create more specialized components (modals, overlays, navigation)
+- Expand modal system with form-based modals and confirmation dialogs
 - Standardize prop naming patterns across components
 - Expand external testing environment with more example pages
 

@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { colors, typography, borderRadius, shadows } from '../tokens';
-import { DocumentSmall, DownloadSmall } from '../icons';
+import { DocumentTable, DownloadSmall, ConfigSmall } from '../icons';
 
 export interface DocumentCellProps {
   filename: string;
   onDownload?: (filename: string) => void;
   className?: string;
+  align?: 'left' | 'center' | 'right';
+  hoverIcon?: 'download' | 'config';
 }
 
 export const DocumentCell: React.FC<DocumentCellProps> = ({
   filename,
   onDownload,
   className = '',
+  align = 'left',
+  hoverIcon = 'download',
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -41,6 +45,7 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     gap: '8px',
     flex: 1,
     minWidth: 0, // Allow text to truncate
+    justifyContent: align === 'right' ? 'flex-end' : align === 'center' ? 'center' : 'flex-start',
   };
 
   const textStyles = {
@@ -88,12 +93,16 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
       }}
     >
       <div style={leftSectionStyles}>
-        <DocumentSmall color={colors.blackAndWhite.black700} />
+        <DocumentTable color={colors.blackAndWhite.black700} />
         <span style={textStyles}>{filename}</span>
       </div>
       
       <div style={downloadIconStyles}>
-        <DownloadSmall color={colors.blackAndWhite.black700} />
+        {hoverIcon === 'config' ? (
+          <ConfigSmall color={colors.blackAndWhite.black700} />
+        ) : (
+          <DownloadSmall color={colors.blackAndWhite.black700} />
+        )}
       </div>
     </div>
   );

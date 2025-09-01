@@ -48,6 +48,42 @@ export const Default: Story = {
 - **Component Description**: Concise, focus on main features and use cases
 - **Prop Descriptions**: Clear, actionable descriptions explaining what each prop does
 - **Story Names**: Use PascalCase (Default, AllStates, ComplexExample)
+
+### Showcase Story Patterns:
+For complex components with multiple variants or sub-components, include dedicated showcase stories:
+
+```typescript
+// Example: Action Buttons Showcase for Table component
+export const ActionButtonsShowcase: Story = {
+  args: {
+    // Structured data to demonstrate all variants side-by-side
+    columns: [
+      { key: 'description', title: 'Description', cellType: 'simple' },
+      { key: 'upload', title: 'Upload (Green)', cellType: 'action', actionType: 'upload' },
+      { key: 'validate', title: 'Validate (Blue)', cellType: 'action', actionType: 'validate' },
+      // ... more variants
+    ],
+    showHeader: false, // Clean layout for focused showcase
+    showTabs: false,
+    showPagination: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Complete showcase of all variants with clear visual comparison and interaction examples.',
+      },
+    },
+  },
+};
+```
+
+**Showcase Story Guidelines**:
+- Use clear, descriptive names ending with "Showcase" 
+- Focus on variant comparison (ActionButtonsShowcase, CellTypesShowcase, IntelligentColumnWidths)
+- Disable unnecessary UI elements (headers, pagination) for clean presentation
+- Include comprehensive descriptions explaining what's being demonstrated
+- Add visual explanation boxes for complex systems (intelligent sizing, algorithms)
+- Provide working code examples that developers can copy and implement
 - **Categories**: 'Components/' for UI components, 'Layout/' for layout components
 
 ### Visual Presentation:
@@ -125,6 +161,62 @@ Use for design system documentation:
 - Typography
 - Spacing
 
+## Advanced Interactive Controls
+
+### Cell Type Selector Pattern (Table Component)
+For components with multiple configuration options, use interactive controls with categorized argTypes:
+
+```typescript
+export const CellTypeSelector: StoryObj<typeof Table> = {
+  render: (args) => {
+    const [activeTab, setActiveTab] = useState('All');
+    
+    return (
+      <Table
+        {...args}
+        activeTab={activeTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          console.log('Tab changed to:', tab);
+        }}
+      />
+    );
+  },
+  argTypes: {
+    // Add controls for specific configuration options
+    'columns[0].cellType': {
+      name: 'Name Column Type',
+      description: 'Cell type for the Name column',
+      control: {
+        type: 'select',
+        options: ['simple', 'document', 'action'],
+      },
+      table: {
+        category: 'Column Types', // Group related controls
+      },
+    },
+    'columns[2].actionIcon': {
+      name: 'Action Icon',
+      description: 'Icon type for action cells',
+      control: {
+        type: 'select',
+        options: ['edit', 'add', 'plus'],
+      },
+      table: {
+        category: 'Action Settings',
+      },
+    },
+  },
+};
+```
+
+### Interactive Story Guidelines:
+- **State Management**: Use useState for interactive functionality (tabs, dropdowns, selections)
+- **Real Callbacks**: Provide meaningful callbacks that show interaction in action panel
+- **Control Categories**: Group related controls using `table.category` for better organization
+- **Descriptive Names**: Use clear names for nested property controls (e.g., 'Name Column Type')
+- **Realistic Options**: Provide actual configuration options users would encounter
+
 ## Best Practices
 
 ### Story Naming:
@@ -133,6 +225,8 @@ Use for design system documentation:
 - `WithIcons` - Demonstrates icon integration
 - `ComplexExample` - Real-world usage example
 - `Playground` - Extensive customization example
+- `CellTypeSelector` - Interactive story for selecting component configuration options (Table pattern)
+- `InteractiveTabs` - State-managed story demonstrating tab or navigation functionality
 
 ### Args Best Practices:
 - Set reasonable default values that showcase the component well

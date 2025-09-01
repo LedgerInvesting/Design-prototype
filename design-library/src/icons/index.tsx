@@ -548,6 +548,47 @@ export const TrashSmall: React.FC<SmallIconProps> = ({
     </svg>
 );
 
+export const CalculatorSmall: React.FC<SmallIconProps> = ({ 
+  color = 'currentColor', 
+  className 
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M8.85985 10.8735H2.48242V1.17754H9.74902V9.93763" stroke={color} strokeWidth="1.6"/>
+    <rect x="4.27734" y="3.36914" width="3.73535" height="1.48592" fill={color}/>
+    <rect x="4.27832" y="5.85506" width="1.53805" height="0.965044" fill={color}/>
+    <rect x="4.27832" y="7.8201" width="1.53805" height="0.965044" fill={color}/>
+    <rect x="6.46973" y="5.85506" width="1.53805" height="0.965044" fill={color}/>
+    <rect x="6.46973" y="7.8201" width="1.53805" height="0.965044" fill={color}/>
+  </svg>
+);
+
+export const UploadSmall: React.FC<SmallIconProps> = ({ 
+  color = 'currentColor', 
+  className 
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M6.00051 7.42175L6.00051 1.3828M6.00051 1.3828L2.37224 4.76259M6.00051 1.3828L9.70215 4.79488" stroke={color} strokeWidth="1.4"/>
+    <path d="M1.82227 9.80004V7.40665M10.1777 9.79688V7.40665M2.51827 10.4967H9.49538" stroke={color} strokeWidth="1.4"/>
+  </svg>
+);
+
+export const ConfigSmall: React.FC<SmallIconProps> = ({ 
+  color = 'currentColor', 
+  className 
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <circle cx="5.99728" cy="6.00336" r="3.37716" stroke={color} strokeWidth="1.5"/>
+    <path d="M6.00098 0.496643V2.81317" stroke={color} strokeWidth="1.5"/>
+    <path d="M6.00098 9.15709V11.4736" stroke={color} strokeWidth="1.5"/>
+    <path d="M11.4951 5.979L9.17859 5.979" stroke={color} strokeWidth="1.5"/>
+    <path d="M2.83398 5.979L0.517452 5.979" stroke={color} strokeWidth="1.5"/>
+    <path d="M9.88281 2.10014L8.24478 3.73818" stroke={color} strokeWidth="1.5"/>
+    <path d="M3.75977 8.224L2.12173 9.86203" stroke={color} strokeWidth="1.5"/>
+    <path d="M9.8916 9.86176L8.25357 8.22372" stroke={color} strokeWidth="1.5"/>
+    <path d="M3.76758 3.73788L2.12954 2.09985" stroke={color} strokeWidth="1.5"/>
+  </svg>
+);
+
 // Medium Icons (22x22px) - Auto-generated from SVG files
 
 export const AddMedium: React.FC<MediumIconProps> = ({ 

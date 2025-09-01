@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { CashSettlement } from './CashSettlement';
 import { ReportNavigation } from './ReportNavigation';
+import { TransactionManagement } from './TransactionManagement';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 
-type PageType = 'cash-settlement' | 'report-navigation';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management';
 
 function App() {
   // Function to handle page navigation
   const setPage = (page: PageType) => {
     setCurrentPage(page);
   };
-  const [currentPage, setCurrentPage] = useState<PageType>('report-navigation');
+  const [currentPage, setCurrentPage] = useState<PageType>('transaction-management');
 
   const renderPage = () => {
     switch (currentPage) {
@@ -20,8 +21,10 @@ function App() {
         return <CashSettlement onNavigateToPage={setPage} />;
       case 'report-navigation':
         return <ReportNavigation onNavigateToPage={setPage} />;
+      case 'transaction-management':
+        return <TransactionManagement onNavigateToPage={setPage} />;
       default:
-        return <CashSettlement />;
+        return <TransactionManagement onNavigateToPage={setPage} />;
     }
   };
 
