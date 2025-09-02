@@ -67,9 +67,9 @@ const sidebarItems: SidebarItem[] = [
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ onNavigate, onInboxClick }) => {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const [selectedItem, setSelectedItem] = useState<string>('');
-  const [selectedSubitem, setSelectedSubitem] = useState<string>('');
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['reports']));
+  const [selectedItem, setSelectedItem] = useState<string>('reports');
+  const [selectedSubitem, setSelectedSubitem] = useState<string>('transactions');
 
   const toggleExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);

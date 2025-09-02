@@ -60,7 +60,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     boxShadow: shadows.small, // Small shadow
     cursor: 'pointer',
     transition: 'all 0.2s ease',
-    height: '29px', // Fixed height to fit within 45px table row (45px - 2*8px padding = 29px)
+    height: '32px', // Fill more of the cell height (cell is ~45px, padding is 6px top/bottom = 33px available)
     width: '100%',
     boxSizing: 'border-box' as const,
   };

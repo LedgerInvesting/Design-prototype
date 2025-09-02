@@ -68,6 +68,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   onPageChange,
   className = '',
 }) => {
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const headerStyles = {
     display: 'flex',
     justifyContent: 'space-between',
@@ -107,11 +108,13 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     display: 'flex',
     alignItems: 'center',
     backgroundColor: '#eef5fa', // Light blue background from Figma
-    borderRadius: borderRadius.absolute, // Pill shape (400px in Figma)
+    borderRadius: borderRadius.absolute, // Pill shape
     height: '30px',
-    width: '58px', // Width from Figma when collapsed
-    padding: '4px 18px', // From Figma padding
-    justifyContent: 'flex-end',
+    width: isSearchExpanded ? '200px' : '58px', // Expand when clicked
+    padding: isSearchExpanded ? '4px 12px 4px 12px' : '4px 18px', // Reduced right padding when expanded
+    justifyContent: isSearchExpanded ? 'space-between' : 'flex-end',
+    transition: 'all 0.3s ease', // Smooth animation
+    cursor: 'pointer',
   };
 
   const searchInputStyles = {
@@ -120,14 +123,21 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     outline: 'none',
     fontSize: typography.styles.bodyM.fontSize,
     fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+    fontWeight: typography.styles.bodyM.fontWeight,
+    lineHeight: typography.styles.bodyM.lineHeight,
+    letterSpacing: typography.styles.bodyM.letterSpacing,
     color: colors.blackAndWhite.black900,
-    width: '0px', // Hidden by default, would expand on focus
+    width: isSearchExpanded ? '140px' : '0px', // Show input when expanded
     padding: '0',
+    opacity: isSearchExpanded ? 1 : 0, // Fade in/out
+    transition: 'all 0.3s ease',
+    cursor: 'text',
   };
 
   const searchIconStyles = {
     flexShrink: 0,
     pointerEvents: 'none' as const,
+    transition: 'all 0.3s ease',
   };
 
   const tabContainerStyles = {
@@ -187,10 +197,52 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div style={headerStyles} className={className}>
-      <div style={leftSectionStyles}>
+    <>
+      <style>
+        {`
+          .table-search-input::placeholder {
+            color: ${colors.blackAndWhite.black500};
+            opacity: 1;
+            font-family: ${typography.styles.bodyM.fontFamily.join(', ')};
+            font-size: ${typography.styles.bodyM.fontSize};
+            font-weight: ${typography.styles.bodyM.fontWeight};
+            line-height: ${typography.styles.bodyM.lineHeight};
+            letter-spacing: ${typography.styles.bodyM.letterSpacing};
+          }
+        `}
+      </style>
+      <div style={headerStyles} className={className}>
+        <div style={leftSectionStyles}>
         {showSearch && (
-          <div style={searchContainerStyles}>
+          <div 
+            style={searchContainerStyles}
+            onClick={() => {
+              if (!isSearchExpanded) {
+                setIsSearchExpanded(true);
+                // Focus the input after expansion animation
+                setTimeout(() => {
+                  const input = document.querySelector('.table-search-input') as HTMLInputElement;
+                  if (input) input.focus();
+                }, 300);
+              }
+            }}
+          >
+            {isSearchExpanded && (
+              <input
+                className="table-search-input"
+                style={searchInputStyles}
+                type="text"
+                placeholder="Type to search…"
+                value={searchValue}
+                onChange={(e) => onSearchChange?.(e.target.value)}
+                onBlur={() => {
+                  if (!searchValue) {
+                    setIsSearchExpanded(false);
+                  }
+                }}
+                onClick={(e) => e.stopPropagation()} // Prevent container click when clicking input
+              />
+            )}
             <div style={searchIconStyles}>
               <SearchMedium color={colors.blackAndWhite.black900} />
             </div>
@@ -227,7 +279,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           </span>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 
@@ -478,14 +531,14 @@ export const TableBody: React.FC<TableBodyProps> = ({
   };
 
   const cellStyles = {
-    padding: '8px 12px', // Compact padding for body cells
+    padding: '6px 12px', // Reduced padding for more compact rows
     fontFamily: typography.styles.bodyM.fontFamily.join(', '),
     fontSize: typography.styles.bodyM.fontSize,
     color: colors.blackAndWhite.black900,
     verticalAlign: 'middle' as const,
     borderBottom: `1px solid #e3f0f4`, // Match Figma border color
     borderRight: '1px solid #daebf1', // Right border for column separation
-    height: '45px', // Row height
+    height: '33px', // Updated row height (45px target - 12px padding = 33px)
     boxSizing: 'border-box' as const,
   };
 

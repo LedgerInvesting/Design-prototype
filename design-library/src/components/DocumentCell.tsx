@@ -29,12 +29,12 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '8px 12px',
+    padding: '4px 8px',
     borderRadius: borderRadius[4],
     backgroundColor: isHovered ? colors.reports.dynamic.blue300 : colors.reports.dynamic.blue200, // Blue200 default, Blue300 hover
     cursor: 'pointer',
     transition: 'all 0.2s ease',
-    minHeight: '32px',
+    minHeight: '24px',
     width: '100%',
     boxSizing: 'border-box' as const,
   };
