@@ -1,7 +1,7 @@
 import React from 'react';
 // Import page components
-import { TopNav, Sidebar } from '@design-library/pages';
-import type { BreadcrumbItem, TopNavProps } from '@design-library/pages';
+import { Layout } from '@design-library/pages';
+import type { BreadcrumbItem } from '@design-library/pages';
 
 // Import base components  
 import { Card, Button, Stack, Grid, Container } from '@design-library/components';
@@ -305,27 +305,6 @@ interface CashSettlementProps {
 }
 
 export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage }) => {
-  const pageStyles: React.CSSProperties = {
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundColor: colors.blackAndWhite.black900,
-  };
-
-  const mainContentStyles: React.CSSProperties = {
-    flex: 1,
-    marginLeft: '220px', // Sidebar width
-    backgroundColor: colors.blackAndWhite.white, // White background for full area
-  };
-
-  const contentAreaStyles: React.CSSProperties = {
-    backgroundColor: colors.blackAndWhite.white,
-    marginTop: '60px', // TopNav height
-    padding: '50px 60px',
-    minHeight: 'calc(100vh - 60px)',
-    maxWidth: '1200px', // Center content with max width
-    margin: '60px auto 0 auto', // Center horizontally
-  };
-
   const backButtonStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
@@ -349,83 +328,54 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
   };
 
   return (
-    <div style={pageStyles}>
-      {/* Sidebar */}
-      <div style={{ position: 'fixed', top: 0, left: 0, height: '100vh', width: '220px', zIndex: 1000 }}>
-        <Sidebar
-          onNavigate={(itemId, subitemId) => {
-            console.log('Navigate to:', itemId, subitemId);
-          }}
-          onInboxClick={() => {
-            console.log('Inbox clicked');
-          }}
-        />
-      </div>
-
-      <div style={mainContentStyles}>
-        {/* Top Navigation */}
-        <div style={{ 
-          position: 'fixed', 
-          top: 0, 
-          right: 0, 
-          width: 'calc(100% - 220px)', 
-          zIndex: 999,
-          backgroundColor: colors.blackAndWhite.black900,
-          borderRadius: '0 0 12px 12px'
+    <Layout
+      breadcrumbs={[
+        { label: 'REPORTS', href: '/reports' },
+        { label: 'CUCUMBER GL SEASONAL', href: '/reports/cucumber' },
+        { label: 'CESSION STATEMENT', isActive: true }
+      ]}
+      onNavigate={(itemId, subitemId) => {
+        console.log('Navigate to:', itemId, subitemId);
+      }}
+      onInboxClick={() => {
+        console.log('Inbox clicked');
+      }}
+    >
+      {/* Back Button and Title */}
+      <div style={backButtonStyles} onClick={() => onNavigateToPage?.('report-navigation')}>
+        <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
+          <path d="M4.25 0.5L2.5 2.25L0.75 0.5" stroke={colors.reports.dynamic.blue400} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" transform="rotate(90)" />
+        </svg>
+        <span style={{ 
+          ...typography.styles.bodyM, 
+          color: colors.blackAndWhite.black700,
+          textDecoration: 'underline',
+          cursor: 'pointer'
         }}>
-          <TopNav
-            breadcrumbs={[
-              { label: 'REPORTS', href: '/reports' },
-              { label: 'CUCUMBER GL SEASONAL', href: '/reports/cucumber' },
-              { label: 'CESSION STATEMENT', isActive: true }
-            ]}
-            userName="ALEC WHITTEN"
-            userInitials="AW"
-            profileColor={colors.reports.blue700}
-            onShareClick={() => alert('Share clicked')}
-            onUserMenuClick={() => alert('User menu clicked')}
-          />
-        </div>
-
-        {/* Main Content */}
-        <div style={contentAreaStyles}>
-          {/* Back Button and Title */}
-          <div style={backButtonStyles} onClick={() => onNavigateToPage?.('report-navigation')}>
-            <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
-              <path d="M4.25 0.5L2.5 2.25L0.75 0.5" stroke={colors.reports.dynamic.blue400} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" transform="rotate(90)" />
-            </svg>
-            <span style={{ 
-              ...typography.styles.bodyM, 
-              color: colors.blackAndWhite.black700,
-              textDecoration: 'underline',
-              cursor: 'pointer'
-            }}>
-              Back
-            </span>
-          </div>
-
-          <div style={titleStyles}>
-            <span style={{ color: colors.blackAndWhite.black500 }}>You're now reviewing Contracts from </span>
-            <span style={{ color: colors.blackAndWhite.black900 }}>Cucumber GL Seasonal.</span>
-            <span style={{ color: colors.blackAndWhite.black500 }}> Cession statement</span>
-          </div>
-
-          {/* Metrics Grid */}
-          <div style={gridStyles}>
-            {metricsData.map((metric) => (
-              <div
-                key={metric.id}
-                style={{
-                  gridColumn: metric.fullWidth ? '1 / -1' : 'auto',
-                }}
-              >
-                <MetricCard {...metric} />
-              </div>
-            ))}
-          </div>
-        </div>
+          Back
+        </span>
       </div>
-    </div>
+
+      <div style={titleStyles}>
+        <span style={{ color: colors.blackAndWhite.black500 }}>You're now reviewing Contracts from </span>
+        <span style={{ color: colors.blackAndWhite.black900 }}>Cucumber GL Seasonal.</span>
+        <span style={{ color: colors.blackAndWhite.black500 }}> Cession statement</span>
+      </div>
+
+      {/* Metrics Grid */}
+      <div style={gridStyles}>
+        {metricsData.map((metric) => (
+          <div
+            key={metric.id}
+            style={{
+              gridColumn: metric.fullWidth ? '1 / -1' : 'auto',
+            }}
+          >
+            <MetricCard {...metric} />
+          </div>
+        ))}
+      </div>
+    </Layout>
   );
 };
 

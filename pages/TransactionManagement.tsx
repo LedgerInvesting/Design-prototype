@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // Import page components
-import { TopNav, Sidebar } from '@design-library/pages';
-import type { BreadcrumbItem, TopNavProps } from '@design-library/pages';
+import { Layout } from '@design-library/pages';
+import type { BreadcrumbItem } from '@design-library/pages';
 
 // Import base components  
 import { Card, Button, Stack, Grid, Container, Table } from '@design-library/components';
@@ -46,10 +46,11 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: borderRadius[12],
-    margin: '0 60px',
-    height: '200px', // Fixed height
+    minHeight: '200px', // Changed from fixed height to minHeight
     position: 'relative',
     overflow: 'hidden',
+    width: '100%',
+    boxSizing: 'border-box',
     backgroundImage: `url('data:image/svg+xml;base64,${btoa(`<svg width="601" height="204" viewBox="0 0 601 204" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect opacity="0.8" width="119.615" height="3" transform="matrix(-1 0 0 1 480.088 83.3247)" fill="#C1F2FF"/>
 <rect opacity="0.8" width="119.615" height="2" transform="matrix(-1 0 0 1 480.088 35.1255)" fill="#C1F2FF"/>
@@ -78,12 +79,22 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top right',
     backgroundSize: '60%',
+    '@media (max-width: 768px)': {
+      flexDirection: 'column',
+      gap: '20px',
+      padding: '30px 20px',
+      textAlign: 'center',
+    },
   };
 
   const leftContentStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     gap: '5px',
+    '@media (max-width: 768px)': {
+      flexDirection: 'column',
+      textAlign: 'center',
+    },
   };
 
   const textContentStyles: React.CSSProperties = {
@@ -298,9 +309,10 @@ const MetricCard: React.FC<MetricCardProps> = ({
 const TransactionStats: React.FC = () => {
   const statsContainerStyles: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
     gap: '30px',
-    margin: '40px 60px',
+    marginTop: '40px',
+    width: '100%',
   };
 
   // Custom content for transactions card
@@ -610,12 +622,17 @@ const TransactionTable: React.FC = () => {
     },
   ];
 
-  const tableStyles: React.CSSProperties = {
-    margin: '40px 60px',
+  const tableContainerStyles: React.CSSProperties = {
+    marginTop: '40px',
+    width: '100%',
+    overflowX: 'auto',
+    '@media (max-width: 1200px)': {
+      marginTop: '30px',
+    },
   };
 
   return (
-    <div style={tableStyles}>
+    <div style={tableContainerStyles}>
       <Table
         columns={tableColumns}
         data={sampleData}
@@ -665,87 +682,37 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
     };
   }, []);
 
-  const pageStyles: React.CSSProperties = {
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundColor: colors.blackAndWhite.black900,
-  };
-
-  const mainContentStyles: React.CSSProperties = {
-    flex: 1,
-    marginLeft: '220px', // Sidebar width
-    backgroundColor: colors.blackAndWhite.white, // White background for full area
-  };
-
-  const contentAreaStyles: React.CSSProperties = {
-    backgroundColor: colors.blackAndWhite.white,
-    marginTop: '60px', // TopNav height
-    minHeight: 'calc(100vh - 60px)',
-    maxWidth: '1300px', // Slightly wider for table content
-    margin: '60px auto 0 auto', // Center horizontally
-  };
-
   return (
-    <div style={pageStyles}>
-      {/* Sidebar */}
-      <div style={{ position: 'fixed', top: 0, left: 0, height: '100vh', width: '220px', zIndex: 1000 }}>
-        <Sidebar
-          onNavigate={(itemId, subitemId) => {
-            console.log('Navigate to:', itemId, subitemId);
-            
-            // Handle Reports navigation
-            if (itemId === 'reports') {
-              if (subitemId === 'transactions') {
-                // Already on transaction management page
-                console.log('Already on transaction management page');
-              } else if (subitemId === 'insights-explorer') {
-                onNavigateToPage && onNavigateToPage('report-navigation');
-              }
-            }
-          }}
-          onInboxClick={() => {
-            console.log('Inbox clicked');
-          }}
-        />
-      </div>
-
-      <div style={mainContentStyles}>
-        {/* Top Navigation */}
-        <div style={{ 
-          position: 'fixed', 
-          top: 0, 
-          right: 0, 
-          width: 'calc(100% - 220px)', 
-          zIndex: 999,
-          backgroundColor: colors.blackAndWhite.black900,
-          borderRadius: '0 0 12px 12px'
-        }}>
-          <TopNav
-            breadcrumbs={[
-              { label: 'TRANSACTION MANAGEMENT', isActive: true }
-            ]}
-            userName="ALEC WHITTEN"
-            userInitials="AW"
-            profileColor={colors.reports.blue700}
-            onShareClick={() => alert('Share clicked')}
-            onUserMenuClick={() => alert('User menu clicked')}
-          />
-        </div>
-
-        {/* Main Content */}
-        <div style={contentAreaStyles}>
-          {/* Header Section */}
-          <div style={{ paddingTop: '40px' }}>
-            <TransactionHeader onNewTransactionClick={() => setIsModalOpen(true)} />
-          </div>
-          
-          {/* Stats Section */}
-          <TransactionStats />
-          
-          {/* Table Section */}
-          <TransactionTable />
-        </div>
-      </div>
+    <Layout
+      breadcrumbs={[
+        { label: 'TRANSACTION MANAGEMENT', isActive: true }
+      ]}
+maxWidth="1200px"
+      onNavigate={(itemId, subitemId) => {
+        console.log('Navigate to:', itemId, subitemId);
+        
+        // Handle Reports navigation
+        if (itemId === 'reports') {
+          if (subitemId === 'transactions') {
+            // Already on transaction management page
+            console.log('Already on transaction management page');
+          } else if (subitemId === 'insights-explorer') {
+            onNavigateToPage && onNavigateToPage('report-navigation');
+          }
+        }
+      }}
+      onInboxClick={() => {
+        console.log('Inbox clicked');
+      }}
+    >
+      {/* Header Section */}
+      <TransactionHeader onNewTransactionClick={() => setIsModalOpen(true)} />
+      
+      {/* Stats Section */}
+      <TransactionStats />
+      
+      {/* Table Section */}
+      <TransactionTable />
       
       {/* New Transaction Modal */}
       <NewTransactionModal
@@ -776,7 +743,7 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
           // TODO: Handle input method selection (upload-pdf or enter-manually)
         }}
       />
-    </div>
+    </Layout>
   );
 };
 

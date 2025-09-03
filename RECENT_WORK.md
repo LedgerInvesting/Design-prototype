@@ -2,7 +2,37 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Intelligent Table System & Transaction Management)
+## Latest Development Session (Responsive Design & Custom Selection Colors)
+
+### Layout Component & Responsive Design
+133. **Created Unified Layout Component**:
+    - Built new Layout component combining TopNav and Sidebar for consistent page structure
+    - Centralized navigation handling and breadcrumb management
+    - Configurable maxWidth (default 1200px) for responsive behavior
+    - Automatic import of base styles including custom selection colors
+
+134. **Implemented Full Responsive Design for TransactionManagement**:
+    - Updated Layout maxWidth from 1300px to 1200px to match ReportNavigation
+    - Mobile-optimized header with flexDirection: 'column' for screens under 768px
+    - Responsive stats cards using CSS Grid auto-fit with 300px minimum width
+    - Table container with horizontal scrolling (overflowX: 'auto') for mobile devices
+    - Header padding adjustments and text centering for smaller screens
+
+135. **Custom Text Selection Styling**:
+    - Implemented design system text selection colors using blue700 (#9ad5f7)
+    - Cross-browser support with ::selection and ::-moz-selection pseudo-elements
+    - Applied globally via base.css for automatic inheritance to all pages
+    - Black text color on blue700 background for optimal contrast
+
+### Project Structure Enhancements
+136. **Updated Documentation and File Structure**:
+    - Added Layout component to design library pages architecture
+    - Updated CLAUDE.md with responsive design details and custom selection colors
+    - Enhanced "Adding New Pages" section with Layout component usage
+    - Added styles/base.css documentation in project structure
+    - Updated Recent Enhancements section with latest responsive improvements
+
+## Previous Development Session (Intelligent Table System & Transaction Management)
 
 ### Intelligent Column Width System
 129. **Created Intelligent Column Width Algorithm**:

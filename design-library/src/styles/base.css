@@ -253,6 +253,17 @@ p, h1, h2, h3, h4, h5, h6 {
   letter-spacing: var(--ls-wide);
 }
 
+/* Custom text selection color */
+::selection {
+  background-color: #9ad5f7; /* Blue 700 from design tokens */
+  color: #000000;
+}
+
+::-moz-selection {
+  background-color: #9ad5f7; /* Blue 700 from design tokens */
+  color: #000000;
+}
+
 /* Animation for loading icons */
 @keyframes spin {
   to {

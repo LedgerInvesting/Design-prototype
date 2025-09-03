@@ -41,6 +41,7 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Components**: Button, InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card
 - **Layout Components**: Stack, Grid, Container, Spacer
 - **Page Components**: 
+  - **Layout**: Unified page component combining TopNav and Sidebar with consistent responsive behavior
   - **Sidebar** (220px width) with brand logos, expandable menu structure, custom inbox button with notification badge
   - **TopNav** with breadcrumb navigation, share button, user profile dropdown (updated to match Figma design)
 - **Icons**: Complete 4-tier icon system with 106 total icons + 5 brand logos (includes DocumentTable, AddMedium, ReloadMedium, CloseMedium, CalculatorSmall, UploadSmall, ConfigSmall icons)
@@ -49,6 +50,8 @@ This is a React design library built with TypeScript and Storybook, containing d
   - **Document Cells**: Enhanced with DocumentTable icons and configurable hover icons (download or config)
   - **Intelligent Column Sizing**: Automatic width optimization based on content length (< 11 chars = 150px)
   - **Comprehensive Storybook**: Action Buttons Showcase, Cell Types Showcase, and Intelligent Column Widths for easy testing
+- **Global Styling**: Custom text selection color using design system's blue700 (#9ad5f7) applied across all pages
+- **Responsive Design**: All page components feature mobile-first responsive design with consistent breakpoints
 - **Storybook**: Comprehensive showcase with interactive controls for all components, running on localhost:6006 (or 6007 if port conflict)
 - **External Testing Environment**: React development environment in `/pages` folder for testing real component integration
 
@@ -109,9 +112,12 @@ E:\Ledger design library/
 │   │   │   ├── Card/ (existing)
 │   │   │   └── index.ts
 │   │   ├── pages/                     # Page-level components
+│   │   │   ├── Layout.tsx & .stories.tsx
 │   │   │   ├── Sidebar.tsx & .stories.tsx
 │   │   │   ├── TopNav.tsx & .stories.tsx
 │   │   │   └── index.ts
+│   │   ├── styles/                    # Global styles
+│   │   │   └── base.css               # Base styles with custom selection colors
 │   │   ├── icons/index.tsx            # Complete icon system (106 icons)
 │   │   ├── tokens/
 │   │   │   ├── index.ts               # Design tokens from Figma
@@ -132,6 +138,7 @@ E:\Ledger design library/
 │   └── README.md                      # Usage instructions
 ├── CLAUDE.md                          # This context file
 ├── COMPONENTS.md                      # Component documentation
+├── PAGES.md                           # Pages documentation
 ├── RECENT_WORK.md                     # Work history
 └── STORYBOOK_STANDARDS.md             # Storybook guidelines
 ```
@@ -153,8 +160,10 @@ E:\Ledger design library/
   - **Sticky action column with elevation shadow**
   - **4 action types**: upload (green), validate, generate, setup (all others blue)
 - **Layout**: Stack, Grid, Container, Spacer for flexible layouts
+- **Page Layout**: Layout component that combines TopNav and Sidebar with responsive design and consistent maxWidth settings
 
 For detailed component documentation, see [COMPONENTS.md](./COMPONENTS.md)
+For pages and external testing environment, see [PAGES.md](./PAGES.md)
 For Storybook standards and guidelines, see [STORYBOOK_STANDARDS.md](./STORYBOOK_STANDARDS.md)
 For recent work history and changelog, see [RECENT_WORK.md](./RECENT_WORK.md)
 
@@ -187,7 +196,7 @@ The `/pages` folder contains a complete React development environment for testin
     - Full pagination controls and search functionality
     - 8 columns with proper icons, sorting, and action buttons
   - **Design System Integration**: Complete component integration with Sidebar, TopNav, enhanced Table, and modal system
-  - **Responsive Layout**: Centered content (1300px max-width) with white background
+  - **Responsive Layout**: Centered content (1200px max-width) with white background and mobile-optimized header/stats sections
 - **ReportNavigation.tsx** (Default): Advanced report navigation interface featuring:
   - Program selector card with dropdown functionality
   - Program relationship pills showing hierarchical connections  
@@ -220,11 +229,25 @@ npm run dev  # Start on http://localhost:5173
 
 **Adding New Pages:**
 1. Create new `.tsx` files in `/pages` folder
-2. Import design library components: `import { TopNav, Sidebar } from '@design-library/pages'`
+2. Import Layout component: `import { Layout } from '@design-library/pages'`
 3. Use design tokens: `import { colors, typography } from '@design-library/tokens'`
-4. Add to App.tsx for navigation
+4. Wrap content with Layout component for consistent navigation and responsive behavior
+5. Add to App.tsx for navigation
+6. Text selection will automatically use blue700 (#9ad5f7) via base.css import
 
 ## Recent Enhancements
+- **Layout Component**: Created unified Layout component combining TopNav and Sidebar for consistent page structure
+  - Centralized navigation handling and breadcrumb management
+  - Responsive behavior with configurable maxWidth (default 1200px)
+  - Automatic import of base styles including custom selection colors
+- **Responsive Design**: Made TransactionManagement page fully responsive
+  - Mobile-optimized header with column layout on smaller screens
+  - Responsive stats cards using CSS Grid auto-fit with 300px minimum width
+  - Table container with horizontal scrolling for mobile devices
+- **Custom Selection Colors**: Implemented design system text selection styling
+  - Blue700 (#9ad5f7) selection background across all pages
+  - Cross-browser support (Chrome, Firefox, Safari)
+  - Automatically applied to all pages via base.css import
 - **Modal System**: Implemented NewTransactionModal with dropdown-style positioning and design system integration
   - Transaction type selection with Brand New vs Renewal options
   - Proper icon integration (AddMedium, ReloadMedium) with design system colors

@@ -299,6 +299,12 @@ interface ReportNavigationProps {
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
+  const titleStyles: React.CSSProperties = {
+    ...typography.styles.headlineH2,
+    color: colors.blackAndWhite.black900,
+    marginBottom: '40px',
+    lineHeight: '1.2',
+  };
 
   // Mock data for the current program
   const currentProgram = {
@@ -339,32 +345,31 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
         console.log('Inbox clicked');
       }}
     >
+      {/* Program Selector Card */}
+      <ProgramSelectorCard
+        currentProgram={currentProgram}
+        onProgramChange={() => {
+          console.log('Program selector clicked');
+          alert('Program selector functionality would open here');
+        }}
+      />
 
-          {/* Program Selector Card */}
-          <ProgramSelectorCard
-            currentProgram={currentProgram}
-            onProgramChange={() => {
-              console.log('Program selector clicked');
-              alert('Program selector functionality would open here');
-            }}
-          />
+      {/* Program Relationship Pills */}
+      <ProgramRelationship
+        primaryProgram={relatedPrograms.primaryProgram}
+        additionalPrograms={relatedPrograms.additionalPrograms}
+      />
 
-          {/* Program Relationship Pills */}
-          <ProgramRelationship
-            primaryProgram={relatedPrograms.primaryProgram}
-            additionalPrograms={relatedPrograms.additionalPrograms}
-          />
-
-          {/* Metric Cards */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '24px',
-            marginTop: '40px',
-            maxWidth: '1120px'
-          }}>
-            {/* Cession and Collateral Card */}
-            <div style={{
+      {/* Metric Cards */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '24px',
+        marginTop: '40px',
+        maxWidth: '1120px'
+      }}>
+        {/* Cession and Collateral Card */}
+        <div style={{
               backgroundColor: colors.blackAndWhite.white,
               border: `1px solid ${colors.reports.dynamic.blue400}`,
               borderRadius: borderRadius[12],
@@ -1164,6 +1169,21 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
     </Layout>
   );
 };
+
+export default ReportNavigation; // Fixed JSX structure
