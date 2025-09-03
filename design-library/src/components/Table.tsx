@@ -843,7 +843,9 @@ export const Table: React.FC<TableProps> = ({
     borderBottom: showFooterPagination ? 'none' : '1px solid #daebf1',
     // Force container to be constrained and show scrollbar
     maxWidth: '100%',
+    minWidth: 0, // Allow shrinking
     boxSizing: 'border-box' as const,
+    display: 'block' as const, // Ensure block layout
   };
 
   const tableStyles = {
@@ -858,7 +860,7 @@ export const Table: React.FC<TableProps> = ({
 
   const mainContainerStyles = {
     width: '100%',
-    maxWidth: '100vw', // Ensure it never exceeds viewport width
+    maxWidth: '100%', // Respect parent container width instead of viewport
     overflow: 'hidden', // Prevent any overflow at the main level
     boxSizing: 'border-box' as const,
   };

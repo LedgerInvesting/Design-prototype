@@ -62,18 +62,18 @@ export const Layout: React.FC<LayoutProps> = ({
     marginLeft: sidebarWidth,
     backgroundColor: colors.blackAndWhite.white,
     transition: 'margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+    maxWidth: `calc(100vw - ${sidebarWidth})`, // Prevent expanding beyond viewport minus sidebar
+    overflow: 'hidden', // Contain any overflow
   };
 
   const contentAreaStyles: React.CSSProperties = {
     backgroundColor: colors.blackAndWhite.white,
-    marginTop: '60px', // TopNav height
-    padding: '40px 60px 60px 60px', // 40px top, 60px left/right, 60px bottom
     minHeight: 'calc(100vh - 60px)',
-    maxWidth,
+    maxWidth: `calc(${maxWidth} + 120px)`, // Add padding to ensure content area is exactly maxWidth
     margin: '60px auto 0 auto', // Center horizontally, 60px top offset for TopNav
-    paddingLeft: '60px', // Left margin as requested
-    paddingRight: '60px', // Right margin as requested
-    paddingTop: '40px', // Top margin as requested
+    padding: '40px 60px 60px 60px', // 40px top, 60px left/right, 60px bottom
+    overflow: 'hidden', // Prevent any content from overflowing
+    boxSizing: 'border-box', // Include padding in width calculation
   };
 
   return (

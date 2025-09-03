@@ -625,14 +625,17 @@ const TransactionTable: React.FC = () => {
   const tableContainerStyles: React.CSSProperties = {
     marginTop: '40px',
     width: '100%',
+    maxWidth: '100%', // Ensure container doesn't exceed parent
     overflowX: 'auto',
-    '@media (max-width: 1200px)': {
-      marginTop: '30px',
-    },
+    overflowY: 'visible',
   };
 
   return (
-    <div style={tableContainerStyles}>
+    <div style={{
+      ...tableContainerStyles,
+      minWidth: 0, // Allow container to shrink
+      display: 'block', // Ensure block display
+    }}>
       <Table
         columns={tableColumns}
         data={sampleData}
