@@ -172,7 +172,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         display: 'flex', 
         alignItems: 'center', 
         gap: spacing[2], 
-        marginBottom: spacing[2],
+        marginBottom: spacing[1],
         height: '20px'
       }}>
         <label style={{

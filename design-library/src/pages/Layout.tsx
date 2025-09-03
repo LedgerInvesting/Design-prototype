@@ -18,6 +18,7 @@ export interface LayoutProps {
   className?: string;
   selectedSidebarItem?: string;
   selectedSidebarSubitem?: string;
+  tabs?: React.ReactNode; // Optional tabs component to render between TopNav and content
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -33,7 +34,8 @@ export const Layout: React.FC<LayoutProps> = ({
   maxWidth = '1200px',
   className,
   selectedSidebarItem,
-  selectedSidebarSubitem
+  selectedSidebarSubitem,
+  tabs
 }) => {
   const [isCompact, setIsCompact] = useState<boolean>(false);
 
@@ -118,8 +120,26 @@ export const Layout: React.FC<LayoutProps> = ({
           />
         </div>
 
+        {/* Optional Tabs - Full width under TopNav */}
+        {tabs && (
+          <div style={{ 
+            position: 'fixed', 
+            top: '60px', // Right under TopNav (TopNav height is 60px)
+            right: 0, 
+            width: `calc(100% - ${sidebarWidth})`, 
+            zIndex: 998, // Just below TopNav
+            backgroundColor: colors.blackAndWhite.white,
+            transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
+          }}>
+            {tabs}
+          </div>
+        )}
+
         {/* Main Content Area */}
-        <div style={contentAreaStyles}>
+        <div style={{
+          ...contentAreaStyles,
+          marginTop: tabs ? '90px' : '60px', // Adjust top margin when tabs are present (60px TopNav + 30px tabs)
+        }}>
           {children}
         </div>
       </div>

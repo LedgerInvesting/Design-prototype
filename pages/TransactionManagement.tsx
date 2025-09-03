@@ -760,7 +760,12 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
         }}
         onContinue={(inputMethod) => {
           console.log('Brand new transaction input method:', inputMethod);
-          // TODO: Handle input method selection (upload-pdf or enter-manually)
+          if (inputMethod === 'enter-manually') {
+            onNavigateToPage && onNavigateToPage('new-transaction-form');
+          } else if (inputMethod === 'upload-pdf') {
+            // TODO: Handle PDF upload flow
+            console.log('Handling PDF upload flow');
+          }
         }}
       />
     </Layout>

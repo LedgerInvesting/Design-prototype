@@ -225,7 +225,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
         display: 'flex', 
         alignItems: 'center', 
         gap: spacing[2], 
-        marginBottom: spacing[2],
+        marginBottom: spacing[1],
         height: '20px'
       }}>
         <label style={{

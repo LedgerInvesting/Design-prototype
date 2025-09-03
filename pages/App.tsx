@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { CashSettlement } from './CashSettlement';
 import { ReportNavigation } from './ReportNavigation';
 import { TransactionManagement } from './TransactionManagement';
+import { NewTransactionForm } from './NewTransactionForm';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form';
 
 function App() {
   // Function to handle page navigation
@@ -23,6 +24,8 @@ function App() {
         return <ReportNavigation onNavigateToPage={setPage} />;
       case 'transaction-management':
         return <TransactionManagement onNavigateToPage={setPage} />;
+      case 'new-transaction-form':
+        return <NewTransactionForm />;
       default:
         return <TransactionManagement onNavigateToPage={setPage} />;
     }

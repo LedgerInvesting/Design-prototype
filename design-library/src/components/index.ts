@@ -39,6 +39,9 @@ export type { SeparatorProps } from './Separator';
 export { Tabs } from './Tabs';
 export type { TabsProps, Tab } from './Tabs';
 
+export { FormTabs } from './FormTabs';
+export type { FormTabsProps, FormTab } from './FormTabs';
+
 
 export { Status, Chips } from './Chips';
 export type { StatusProps, ChipsProps } from './Chips';
