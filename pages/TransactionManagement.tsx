@@ -36,9 +36,10 @@ const DocumentIcon: React.FC = () => (
 // Header component for the Transaction Management page
 interface TransactionHeaderProps {
   onNewTransactionClick: () => void;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
-const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionClick }) => {
+const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionClick, buttonRef }) => {
   const headerStyles: React.CSSProperties = {
     backgroundColor: colors.reports.blue700, // Reports blue 700
     padding: '40px 60px',
@@ -150,6 +151,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
         width: '260px', // Container width: 240px button + 20px padding (10px each side)
       }}>
         <Button
+          ref={buttonRef}
           variant="primary"
           color="black"
           icon={<span style={{ color: colors.reports.blue700 }}>+</span>}
@@ -667,6 +669,7 @@ interface TransactionManagementProps {
 export const TransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
+  const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
 
   // Add CSS for button width override
   useEffect(() => {
@@ -711,7 +714,10 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       }}
     >
       {/* Header Section */}
-      <TransactionHeader onNewTransactionClick={() => setIsModalOpen(true)} />
+      <TransactionHeader 
+        onNewTransactionClick={() => setIsModalOpen(true)} 
+        buttonRef={newTransactionButtonRef}
+      />
       
       {/* Stats Section */}
       <TransactionStats />
@@ -723,6 +729,7 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       <NewTransactionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        buttonRef={newTransactionButtonRef}
         onContinue={(transactionType) => {
           console.log('Selected transaction type:', transactionType);
           if (transactionType === 'brand-new') {

@@ -40,7 +40,7 @@ export interface ButtonProps extends BaseButtonProps {
   shape?: ButtonShape;
 }
 
-export const Button: React.FC<ButtonProps> = (props) => {
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const {
     children,
     disabled = false,
@@ -382,6 +382,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
 
   return (
     <button
+      ref={ref}
       style={buttonStyles}
       onClick={disabled ? undefined : onClick}
       onMouseEnter={() => !disabled && setIsHovered(true)}
@@ -393,6 +394,8 @@ export const Button: React.FC<ButtonProps> = (props) => {
       {renderContent()}
     </button>
   );
-};
+});
+
+Button.displayName = 'Button';
 
 export default Button;
