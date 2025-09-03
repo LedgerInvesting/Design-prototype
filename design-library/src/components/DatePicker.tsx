@@ -143,9 +143,9 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
     const baseStyles = {
       display: 'flex',
       alignItems: 'center',
-      height: '48px',
-      padding: '8px 10px 10px 20px',
-      borderRadius: borderRadius[8],
+      height: '34px',
+      padding: '8px 10px 10px 12px',
+      borderRadius: borderRadius[4],
       backgroundColor: colors.blackAndWhite.white,
       border: '1px solid',
       gap: spacing[2],
@@ -229,10 +229,10 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
         height: '20px'
       }}>
         <label style={{
-          fontFamily: typography.styles.bodyL.fontFamily.join(', '),
-          fontSize: typography.styles.bodyL.fontSize,
-          fontWeight: typography.styles.bodyL.fontWeight,
-          lineHeight: typography.styles.bodyL.lineHeight,
+          fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+          fontSize: typography.styles.bodyM.fontSize,
+          fontWeight: typography.styles.bodyM.fontWeight,
+          lineHeight: typography.styles.bodyM.lineHeight,
           color: colors.blackAndWhite.black900,
         }}>
           {label}
