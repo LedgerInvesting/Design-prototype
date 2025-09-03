@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Selector } from '@design-library/components';
 import { colors, typography, borderRadius, shadows, spacing } from '@design-library/tokens';
 import { AddMedium, ReloadMedium, CloseMedium, ContractsLogo, UploadSmall } from '@design-library/icons';
@@ -8,6 +8,7 @@ export interface BrandNewTransactionModalProps {
   onClose: () => void;
   onContinue: (inputMethod: 'upload-pdf' | 'enter-manually') => void;
   onBack?: () => void;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
 export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> = ({
@@ -15,8 +16,21 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
   onClose,
   onContinue,
   onBack,
+  buttonRef,
 }) => {
   const [selectedMethod, setSelectedMethod] = useState<'upload-pdf' | 'enter-manually' | null>(null);
+  const [buttonPosition, setButtonPosition] = useState({ top: 0, right: 0 });
+
+  // Calculate button position when modal opens
+  useEffect(() => {
+    if (isOpen && buttonRef?.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      setButtonPosition({
+        top: buttonRect.bottom + 20, // 20px gap below button (relative to viewport)
+        right: window.innerWidth - buttonRect.right, // Distance from right edge
+      });
+    }
+  }, [isOpen, buttonRef]);
 
   if (!isOpen) return null;
 
@@ -35,13 +49,17 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
     right: 0,
     bottom: 0,
     backgroundColor: 'transparent',
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-end',
     zIndex: 1000,
-    padding: '0',
-    paddingTop: '240px', // Position closer to button
-    paddingRight: '190px', // Move 70px left from 120px to 190px
+    pointerEvents: 'none', // Allow clicks to pass through backdrop
+  };
+
+  // Modal positioning styles
+  const modalPositionStyles: React.CSSProperties = {
+    position: 'absolute',
+    top: `${buttonPosition.top + window.scrollY}px`, // Add scroll offset
+    right: `${buttonPosition.right}px`,
+    zIndex: 1001,
+    pointerEvents: 'auto', // Re-enable clicks on modal
   };
 
   // Modal container styles
@@ -150,8 +168,10 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
   };
 
   return (
-    <div style={backdropStyles}>
-      <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
+    <>
+      <div style={backdropStyles} onClick={onClose} />
+      <div style={modalPositionStyles}>
+        <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div style={headerStyles}>
           <h2 style={titleStyles}>Contract Terms Input Method</h2>
@@ -328,8 +348,9 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
             Continue
           </Button>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

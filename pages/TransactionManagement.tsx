@@ -209,7 +209,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    height: '180px',
+    minHeight: '180px', // Allow card to expand beyond 180px if needed
   };
 
   const headerStyles: React.CSSProperties = {
@@ -319,7 +319,8 @@ const TransactionStats: React.FC = () => {
 
   // Custom content for transactions card
   const transactionContent = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '-10px', flex: 1 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+      {/* Line 1: "You currently have" */}
       <div style={{
         ...typography.styles.subheadingM,
         color: colors.blackAndWhite.black900,
@@ -328,57 +329,63 @@ const TransactionStats: React.FC = () => {
         You currently have
       </div>
       
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '-10px' }}>
-        <img 
-          src="/transactions_icon.png" 
-          alt="transactions" 
-          style={{}} 
-        />
-        <span style={{ 
-          ...typography.styles.subheadingM,
-          color: colors.reports.blue800,
-          fontWeight: 600,
-          margin: 0
-        }}>25</span>
-        <span style={{ 
-          ...typography.styles.subheadingM,
-          color: colors.blackAndWhite.black900,
-          margin: 0
-        }}>transactions</span>
-        <span style={{ 
-          ...typography.styles.subheadingM,
-          color: colors.blackAndWhite.black500,
-          margin: 0
-        }}>of which</span>
-        
-        <div style={{
-          width: '24px',
-          height: '24px',
-          backgroundColor: '#C6FFC1',
-          borderRadius: borderRadius.absolute,
-          marginLeft: '4px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <div style={{
-            width: '8px',
-            height: '8px',
-            backgroundColor: colors.success.textAndStrokes,
-            borderRadius: borderRadius.absolute,
-          }}></div>
+      {/* Line 2: "(icon) 25 transactions (icon) of which 11 are active" - wraps to 3 lines on small screens */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        {/* First group: transactions info */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <img 
+            src="/transactions_icon.png" 
+            alt="transactions" 
+            style={{}} 
+          />
+          <span style={{ 
+            ...typography.styles.subheadingM,
+            color: colors.reports.blue800,
+            fontWeight: 600,
+            margin: 0
+          }}>25</span>
+          <span style={{ 
+            ...typography.styles.subheadingM,
+            color: colors.blackAndWhite.black900,
+            margin: 0
+          }}>transactions</span>
         </div>
-        <span style={{ 
-          ...typography.styles.subheadingM,
-          color: colors.success.textAndStrokes,
-          fontWeight: 600,
-          margin: 0
-        }}>11</span>
-        <span style={{ 
-          ...typography.styles.subheadingM,
-          color: colors.blackAndWhite.black900,
-          margin: 0
-        }}>are active</span>
+        
+        {/* Second group: active info - keeps together when wrapping */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          <div style={{
+            width: '24px',
+            height: '24px',
+            backgroundColor: '#C6FFC1',
+            borderRadius: borderRadius.absolute,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              backgroundColor: colors.success.textAndStrokes,
+              borderRadius: borderRadius.absolute,
+            }}></div>
+          </div>
+          <span style={{ 
+            ...typography.styles.subheadingM,
+            color: colors.blackAndWhite.black500,
+            margin: 0
+          }}>of which</span>
+          <span style={{ 
+            ...typography.styles.subheadingM,
+            color: colors.success.textAndStrokes,
+            fontWeight: 600,
+            margin: 0
+          }}>11</span>
+          <span style={{ 
+            ...typography.styles.subheadingM,
+            color: colors.blackAndWhite.black900,
+            margin: 0
+          }}>are active</span>
+        </div>
       </div>
     </div>
   );
@@ -746,6 +753,7 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       <BrandNewTransactionModal
         isOpen={isBrandNewModalOpen}
         onClose={() => setIsBrandNewModalOpen(false)}
+        buttonRef={newTransactionButtonRef}
         onBack={() => {
           setIsBrandNewModalOpen(false);
           setIsModalOpen(true);

@@ -186,7 +186,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     justifyContent: showFullMode ? 'space-between' : 'center',
     alignItems: 'center',
     marginBottom: spacing[8],
-    padding: `0 ${spacing[2]}`
+    padding: `0 ${spacing[2]}`,
+    minHeight: '32px', // Ensure consistent height for both modes
   };
 
   const mainItemStyles: React.CSSProperties = {
@@ -212,7 +213,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: spacing[3], // Keep consistent gap
-    justifyContent: 'flex-start'
+    justifyContent: showFullMode ? 'flex-start' : 'center', // Center icons in compact mode
+    width: '100%',
+    position: 'relative' // For absolute positioned text
   };
 
   const mainItemTextStyles: React.CSSProperties = {
@@ -327,16 +330,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 style={{
                   ...mainItemStyles,
-                  ...(selectedItem === item.id ? { backgroundColor: colors.blackAndWhite.black800 } : {})
+                  // In full mode: only highlight if no subitem is selected
+                  // In compact mode: highlight if item is selected (regardless of subitem)
+                  ...((selectedItem === item.id && (!showFullMode || !selectedSubitem)) ? { backgroundColor: colors.blackAndWhite.black800 } : {})
                 }}
                 onClick={() => handleMainItemClick(item)}
                 onMouseEnter={(e) => {
-                  if (selectedItem !== item.id) {
+                  const isMainItemSelected = selectedItem === item.id && (!showFullMode || !selectedSubitem);
+                  if (!isMainItemSelected) {
                     Object.assign(e.currentTarget.style, mainItemHoverStyles);
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (selectedItem !== item.id) {
+                  const isMainItemSelected = selectedItem === item.id && (!showFullMode || !selectedSubitem);
+                  if (!isMainItemSelected) {
                     e.currentTarget.style.backgroundColor = 'transparent';
                   }
                 }}

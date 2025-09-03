@@ -24,7 +24,7 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
     if (isOpen && buttonRef?.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect();
       setButtonPosition({
-        top: buttonRect.bottom + 10, // 10px gap below button
+        top: buttonRect.bottom + 20, // 20px gap below button (relative to viewport)
         right: window.innerWidth - buttonRect.right, // Distance from right edge
       });
     }
@@ -53,8 +53,8 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
 
   // Modal positioning styles
   const modalPositionStyles: React.CSSProperties = {
-    position: 'fixed',
-    top: `${buttonPosition.top}px`,
+    position: 'absolute',
+    top: `${buttonPosition.top + window.scrollY}px`, // Add scroll offset
     right: `${buttonPosition.right}px`,
     zIndex: 1001,
     pointerEvents: 'auto', // Re-enable clicks on modal
