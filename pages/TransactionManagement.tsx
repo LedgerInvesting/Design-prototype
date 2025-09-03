@@ -687,7 +687,9 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       breadcrumbs={[
         { label: 'TRANSACTION MANAGEMENT', isActive: true }
       ]}
-maxWidth="1200px"
+      maxWidth="1200px"
+      selectedSidebarItem="reports"
+      selectedSidebarSubitem="transactions"
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
         

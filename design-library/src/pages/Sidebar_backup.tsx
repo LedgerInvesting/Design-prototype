@@ -24,8 +24,6 @@ interface SidebarItem {
 interface SidebarProps {
   onNavigate?: (itemId: string, subitemId?: string) => void;
   onInboxClick?: () => void;
-  selectedItem?: string;
-  selectedSubitem?: string;
 }
 
 const sidebarItems: SidebarItem[] = [
@@ -69,71 +67,10 @@ const sidebarItems: SidebarItem[] = [
   }
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-  onNavigate, 
-  onInboxClick, 
-  selectedItem: propSelectedItem, 
-  selectedSubitem: propSelectedSubitem 
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ onNavigate, onInboxClick }) => {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['reports']));
-  
-  // Use controlled state if provided, otherwise fall back to internal state
-  const [internalSelectedItem, setInternalSelectedItem] = useState<string>('reports');
-  const [internalSelectedSubitem, setInternalSelectedSubitem] = useState<string>('transactions');
-  
-  const selectedItem = propSelectedItem !== undefined ? propSelectedItem : internalSelectedItem;
-  const selectedSubitem = propSelectedSubitem !== undefined ? propSelectedSubitem : internalSelectedSubitem;
-
-  // Auto-expand the selected item if it has subitems and a subitem is selected
-  useEffect(() => {
-    if (selectedItem && selectedSubitem) {
-      setExpandedItems(prev => new Set([...prev, selectedItem]));
-    }
-  }, [selectedItem, selectedSubitem]);
-  const [isCompact, setIsCompact] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
-
-  // Check viewport width and update compact mode
-  useEffect(() => {
-    const checkViewportWidth = () => {
-      setIsCompact(window.innerWidth <= 1650);
-    };
-
-    checkViewportWidth(); // Check on mount
-    window.addEventListener('resize', checkViewportWidth);
-    return () => window.removeEventListener('resize', checkViewportWidth);
-  }, []);
-
-  // Handle hover with debouncing
-  const handleMouseEnter = () => {
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-    }
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-    }
-    const timeout = setTimeout(() => {
-      setIsHovered(false);
-    }, 100); // Small delay to prevent flickering
-    setHoverTimeout(timeout);
-  };
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimeout) {
-        clearTimeout(hoverTimeout);
-      }
-    };
-  }, [hoverTimeout]);
-
-  // Determine if sidebar should show in full mode (either not compact or hovered)
-  const showFullMode = !isCompact || isHovered;
+  const [selectedItem, setSelectedItem] = useState<string>('reports');
+  const [selectedSubitem, setSelectedSubitem] = useState<string>('transactions');
 
   const toggleExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);
@@ -149,45 +86,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (item.subitems && item.subitems.length > 0) {
       toggleExpanded(item.id);
     } else {
-      // Only update internal state if not controlled
-      if (propSelectedItem === undefined) {
-        setInternalSelectedItem(item.id);
-        setInternalSelectedSubitem('');
-      }
+      setSelectedItem(item.id);
+      setSelectedSubitem('');
       onNavigate?.(item.id);
     }
   };
 
   const handleSubitemClick = (parentId: string, subitemId: string) => {
-    // Only update internal state if not controlled
-    if (propSelectedItem === undefined) {
-      setInternalSelectedItem(parentId);
-      setInternalSelectedSubitem(subitemId);
-    }
+    setSelectedItem(parentId);
+    setSelectedSubitem(subitemId);
     onNavigate?.(parentId, subitemId);
   };
 
   const sidebarStyles: React.CSSProperties = {
-    width: showFullMode ? '220px' : '80px',
+    width: '220px',
     minHeight: '100vh',
     backgroundColor: colors.blackAndWhite.black900,
     padding: `${spacing[6]} ${spacing[4]}`,
     display: 'flex',
     flexDirection: 'column',
-    gap: spacing[1],
-    transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-    overflow: 'hidden',
-    position: 'relative',
-    zIndex: isHovered && isCompact ? 1000 : 'auto'
+    gap: spacing[1]
   };
 
   const headerStyles: React.CSSProperties = {
     display: 'flex',
-    justifyContent: showFullMode ? 'space-between' : 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing[8],
     padding: `0 ${spacing[2]}`
   };
+
 
   const mainItemStyles: React.CSSProperties = {
     display: 'flex',
@@ -200,8 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     borderRadius: borderRadius[4],
     cursor: 'pointer',
     transition: 'background-color 0.2s ease',
-    textAlign: 'left',
-    minHeight: '48px' // Fixed height to prevent collapse
+    textAlign: 'left'
   };
 
   const mainItemHoverStyles: React.CSSProperties = {
@@ -211,8 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const mainItemContentStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: spacing[3], // Keep consistent gap
-    justifyContent: 'flex-start'
+    gap: spacing[3]
   };
 
   const mainItemTextStyles: React.CSSProperties = {
@@ -251,68 +177,58 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div 
-      style={sidebarStyles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div style={sidebarStyles}>
       {/* Header with logo and inbox button */}
       <div style={headerStyles}>
-        {showFullMode ? (
-          <>
-            <KorraLogo color={colors.blackAndWhite.white} />
-            <div style={{ position: 'relative' }}>
-              <button
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  backgroundColor: colors.blackAndWhite.black800,
-                  borderRadius: borderRadius[4],
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'background-color 0.2s ease'
-                }}
-                onClick={onInboxClick}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = colors.blackAndWhite.black700;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = colors.blackAndWhite.black800;
-                }}
-              >
-                <div style={{ width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <InboxMedium color={colors.blackAndWhite.white} />
-                </div>
-              </button>
-              {/* Notification badge */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: -7,
-                  right: -10,
-                  minWidth: '18px',
-                  height: '16px',
-                  backgroundColor: colors.success.fill,
-                  borderRadius: borderRadius.absolute,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '10px',
-                  fontWeight: 'bold',
-                  color: colors.blackAndWhite.black900,
-                  padding: '0 8px'
-                }}
-              >
-                3
-              </div>
+        <KorraLogo color={colors.blackAndWhite.white} />
+        <div style={{ position: 'relative' }}>
+          <button
+            style={{
+              width: '32px',
+              height: '32px',
+              backgroundColor: colors.blackAndWhite.black800,
+              borderRadius: borderRadius[4],
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'background-color 0.2s ease'
+            }}
+            onClick={onInboxClick}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = colors.blackAndWhite.black700;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = colors.blackAndWhite.black800;
+            }}
+          >
+            <div style={{ width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <InboxMedium color={colors.blackAndWhite.white} />
             </div>
-          </>
-        ) : (
-          <KLogo color={colors.blackAndWhite.white} />
-        )}
+          </button>
+          {/* Notification badge */}
+          <div
+            style={{
+              position: 'absolute',
+              top: -7,
+              right: -10,
+              minWidth: '18px',
+              height: '16px',
+              backgroundColor: colors.success.fill,
+              borderRadius: borderRadius.absolute,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '10px',
+              fontWeight: 'bold',
+              color: colors.blackAndWhite.black900,
+              padding: '0 8px'
+            }}
+          >
+            3
+          </div>
+        </div>
       </div>
 
       {/* Navigation items */}
@@ -327,48 +243,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 style={{
                   ...mainItemStyles,
-                  ...(selectedItem === item.id ? { backgroundColor: colors.blackAndWhite.black800 } : {})
+                  ...(selectedItem === item.id && !selectedSubitem ? { backgroundColor: colors.blackAndWhite.black800 } : {})
                 }}
                 onClick={() => handleMainItemClick(item)}
                 onMouseEnter={(e) => {
-                  if (selectedItem !== item.id) {
+                  if (selectedItem !== item.id || selectedSubitem) {
                     Object.assign(e.currentTarget.style, mainItemHoverStyles);
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (selectedItem !== item.id) {
+                  if (selectedItem !== item.id || selectedSubitem) {
                     e.currentTarget.style.backgroundColor = 'transparent';
                   }
                 }}
               >
                 <div style={mainItemContentStyles}>
                   <item.icon />
-                  <span style={{
-                    ...mainItemTextStyles,
-                    opacity: showFullMode ? 1 : 0,
-                    transition: 'opacity 0.2s ease',
-                    visibility: showFullMode ? 'visible' : 'hidden',
-                    position: showFullMode ? 'static' : 'absolute'
-                  }}>{item.label}</span>
+                  <span style={mainItemTextStyles}>{item.label}</span>
                 </div>
                 {hasSubitems && (
-                  <div style={{
-                    opacity: showFullMode ? 1 : 0,
-                    transition: 'opacity 0.2s ease',
-                    visibility: showFullMode ? 'visible' : 'hidden',
-                    position: showFullMode ? 'static' : 'absolute'
-                  }}>
-                    {isExpanded ? (
-                      <ChevronDownExtraSmall color={colors.blackAndWhite.black700} />
-                    ) : (
-                      <ChevronRightExtraSmall color={colors.blackAndWhite.black700} />
-                    )}
-                  </div>
+                  isExpanded ? (
+                    <ChevronDownExtraSmall color={colors.blackAndWhite.black700} />
+                  ) : (
+                    <ChevronRightExtraSmall color={colors.blackAndWhite.black700} />
+                  )
                 )}
               </button>
 
-              {/* Subitems - only show in full mode */}
-              {showFullMode && hasSubitems && isExpanded && (
+              {/* Subitems */}
+              {hasSubitems && isExpanded && (
                 <Stack direction="vertical" gap={0}>
                   {item.subitems!.map((subitem) => {
                     const isSelected = selectedItem === item.id && selectedSubitem === subitem.id;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TopNav, Sidebar } from './';
 import type { BreadcrumbItem } from './TopNav';
 import { colors } from '../tokens';
@@ -16,6 +16,8 @@ export interface LayoutProps {
   onInboxClick?: () => void;
   maxWidth?: string;
   className?: string;
+  selectedSidebarItem?: string;
+  selectedSidebarSubitem?: string;
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -29,8 +31,26 @@ export const Layout: React.FC<LayoutProps> = ({
   onNavigate,
   onInboxClick,
   maxWidth = '1200px',
-  className
+  className,
+  selectedSidebarItem,
+  selectedSidebarSubitem
 }) => {
+  const [isCompact, setIsCompact] = useState<boolean>(false);
+
+  // Check viewport width and update compact mode
+  useEffect(() => {
+    const checkViewportWidth = () => {
+      setIsCompact(window.innerWidth <= 1650);
+    };
+
+    checkViewportWidth(); // Check on mount
+    window.addEventListener('resize', checkViewportWidth);
+    return () => window.removeEventListener('resize', checkViewportWidth);
+  }, []);
+
+  // Calculate sidebar width based on compact mode
+  const sidebarWidth = isCompact ? '80px' : '220px';
+
   const pageStyles: React.CSSProperties = {
     display: 'flex',
     minHeight: '100vh',
@@ -39,8 +59,9 @@ export const Layout: React.FC<LayoutProps> = ({
 
   const mainContentStyles: React.CSSProperties = {
     flex: 1,
-    marginLeft: '220px', // Sidebar width
+    marginLeft: sidebarWidth,
     backgroundColor: colors.blackAndWhite.white,
+    transition: 'margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
   };
 
   const contentAreaStyles: React.CSSProperties = {
@@ -63,12 +84,15 @@ export const Layout: React.FC<LayoutProps> = ({
         top: 0, 
         left: 0, 
         height: '100vh', 
-        width: '220px', 
-        zIndex: 1000 
+        width: sidebarWidth, 
+        zIndex: 1000,
+        transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
       }}>
         <Sidebar
           onNavigate={onNavigate || (() => {})}
           onInboxClick={onInboxClick || (() => {})}
+          selectedItem={selectedSidebarItem}
+          selectedSubitem={selectedSidebarSubitem}
         />
       </div>
 
@@ -78,10 +102,11 @@ export const Layout: React.FC<LayoutProps> = ({
           position: 'fixed', 
           top: 0, 
           right: 0, 
-          width: 'calc(100% - 220px)', 
+          width: `calc(100% - ${sidebarWidth})`, 
           zIndex: 999,
           backgroundColor: colors.blackAndWhite.black900,
-          borderRadius: '0 0 12px 12px'
+          borderRadius: '0 0 12px 12px',
+          transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
         }}>
           <TopNav
             breadcrumbs={breadcrumbs || []}

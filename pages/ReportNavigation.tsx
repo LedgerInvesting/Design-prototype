@@ -322,6 +322,8 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
         { label: 'REPORTS', href: '/reports' },
         { label: 'NAVIGATION', isActive: true }
       ]}
+      selectedSidebarItem="reports"
+      selectedSidebarSubitem="insights-explorer"
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
         

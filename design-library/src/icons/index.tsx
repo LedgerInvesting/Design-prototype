@@ -1383,6 +1383,16 @@ export const ContractsLogo: React.FC<LogoIconProps> = ({
   </svg>
 );
 
+export const KLogo: React.FC<LogoIconProps> = ({ 
+  color = 'white', 
+  className 
+}) => (
+  <svg width="20" height="20" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M4.24689 1.45764H2.41797V14.4264H4.24689V1.45764Z" fill={color}/>
+    <path d="M11.2945 5.17413V7.01663H7.29534V7.64329C7.29534 9.91231 9.27133 11.9227 11.447 12.5314L11.5832 12.5696V14.4593L11.3584 14.4114C8.2088 13.7352 5.46642 10.889 5.46642 7.64404V6.09688C5.46642 5.5879 5.8764 5.17488 6.38162 5.17488H11.2945V5.17413Z" fill={color}/>
+  </svg>
+);
+
 // Icon categories structure
 export const icons = {
   extraSmall: {
@@ -1498,6 +1508,7 @@ export const icons = {
   logos: {
     // Brand and navigation logos
     korra: KorraLogo,
+    k: KLogo,
     marketplace: MarketplaceLogo,
     reports: ReportsLogo,
     analytics: AnalyticsLogo,

@@ -334,6 +334,8 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
         { label: 'CUCUMBER GL SEASONAL', href: '/reports/cucumber' },
         { label: 'CESSION STATEMENT', isActive: true }
       ]}
+      selectedSidebarItem="reports"
+      selectedSidebarSubitem="reports-explorer"
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
       }}
