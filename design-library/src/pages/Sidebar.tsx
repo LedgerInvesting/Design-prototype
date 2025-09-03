@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Stack } from '../components/Stack';
 import { Button } from '../components/Button';
 import { colors, typography, spacing, borderRadius } from '../tokens';
 import { 
@@ -319,7 +318,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Navigation items */}
-      <Stack direction="vertical" gap={1}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[1] }}>
         {sidebarItems.map((item) => {
           const isExpanded = expandedItems.has(item.id);
           const hasSubitems = item.subitems && item.subitems.length > 0;
@@ -376,7 +375,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               {/* Subitems - only show in full mode */}
               {showFullMode && hasSubitems && isExpanded && (
-                <Stack direction="vertical" gap={0}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                   {item.subitems!.map((subitem) => {
                     const isSelected = selectedItem === item.id && selectedSubitem === subitem.id;
                     
@@ -410,12 +409,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       </button>
                     );
                   })}
-                </Stack>
+                </div>
               )}
             </div>
           );
         })}
-      </Stack>
+      </div>
     </div>
   );
 };
