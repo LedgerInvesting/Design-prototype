@@ -173,7 +173,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       alignItems: 'center',
       justifyContent: 'center',
       gap: '10px',
-      padding: '10px 12px',
+      height: '30px', // Fixed height of 30px
+      padding: '0 12px', // Remove vertical padding since we have fixed height
       borderRadius: borderRadius[4],
       border: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
@@ -332,6 +333,41 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     }
   };
 
+  // Get icon color for small buttons
+  const getSmallIconColor = () => {
+    if (disabled) {
+      switch (color) {
+        case 'black':
+          return colors.reports.dynamic.blue400;
+        case 'main':
+          return colors.reports.dynamic.blue400;
+        case 'light':
+          return colors.blackAndWhite.black900;
+        case 'green':
+          return colors.blackAndWhite.black900;
+        case 'white':
+          return colors.blackAndWhite.black500;
+        default:
+          return colors.reports.dynamic.blue400;
+      }
+    }
+    
+    switch (color) {
+      case 'black':
+        return colors.reports.blue700; // Updated to blue700
+      case 'main':
+        return colors.blackAndWhite.black900;
+      case 'light':
+        return colors.blackAndWhite.black900;
+      case 'green':
+        return colors.blackAndWhite.black900;
+      case 'white':
+        return colors.reports.blue700; // Updated to blue700
+      default:
+        return colors.blackAndWhite.black900;
+    }
+  };
+
   // Get styles based on variant
   const getButtonStyles = () => {
     switch (variant) {
@@ -351,10 +387,34 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     if (!showIcon || variant !== 'primary') return null;
     
     if (icon) {
-      return <span style={{ display: 'flex', alignItems: 'center' }}>{icon}</span>;
+      // Clone the icon and pass the color prop
+      const iconColor = getPrimaryIconColor();
+      return (
+        <span style={{ display: 'flex', alignItems: 'center', color: iconColor }}>
+          {React.cloneElement(icon as React.ReactElement, { color: iconColor })}
+        </span>
+      );
     }
     
     return <ArrowIcon color={getPrimaryIconColor()} />;
+  };
+
+  // Render icon for small buttons
+  const renderSmallIcon = () => {
+    if (!showIcon || variant !== 'small') return null;
+    
+    if (icon) {
+      // Clone the icon and pass the color prop
+      const iconColor = getSmallIconColor();
+      return (
+        <span style={{ display: 'flex', alignItems: 'center', color: iconColor }}>
+          {React.cloneElement(icon as React.ReactElement, { color: iconColor })}
+        </span>
+      );
+    }
+    
+    // No default icon - only show icon when explicitly provided
+    return null;
   };
 
   // Render content based on variant
@@ -374,7 +434,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       );
     }
 
-    // Small variant
+    if (variant === 'small') {
+      return (
+        <>
+          {iconPosition === 'left' && renderSmallIcon()}
+          <span style={{ marginLeft: showIcon && iconPosition === 'left' ? '6px' : '0', marginRight: showIcon && iconPosition === 'right' ? '6px' : '0' }}>{children}</span>
+          {iconPosition === 'right' && renderSmallIcon()}
+        </>
+      );
+    }
+
+    // Fallback
     return <span>{children}</span>;
   };
 

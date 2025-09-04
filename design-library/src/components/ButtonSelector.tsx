@@ -89,6 +89,7 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
           borderColor: colors.reports.dynamic.blue400,
           backgroundColor: colors.blackAndWhite.white,
           color: colors.blackAndWhite.black900,
+          borderWidth: '1px',
         };
       case 'filled':
         return {
@@ -96,6 +97,7 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
           borderColor: colors.reports.dynamic.blue400,
           backgroundColor: colors.blackAndWhite.white,
           color: colors.blackAndWhite.black900,
+          borderWidth: '1px',
         };
       case 'disabled':
         return {
@@ -104,6 +106,7 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
           backgroundColor: colors.blackAndWhite.white,
           color: colors.blackAndWhite.black500,
           opacity: 0.6,
+          borderWidth: '1px',
         };
       default:
         return baseStyles;
@@ -116,7 +119,7 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
       width: '18px',
       height: '18px',
       borderRadius: selectorType === 'radio' ? borderRadius.absolute : borderRadius[4],
-      border: '1.5px solid',
+      border: '1px solid',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -134,7 +137,7 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
       case 'filled':
         return {
           ...baseStyles,
-          border: 'none',
+          border: '1px solid transparent',
           backgroundColor: colors.blackAndWhite.black900,
         };
       case 'disabled':

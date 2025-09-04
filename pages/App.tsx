@@ -25,7 +25,7 @@ function App() {
       case 'transaction-management':
         return <TransactionManagement onNavigateToPage={setPage} />;
       case 'new-transaction-form':
-        return <NewTransactionForm />;
+        return <NewTransactionForm onNavigateToPage={setPage} />;
       default:
         return <TransactionManagement onNavigateToPage={setPage} />;
     }

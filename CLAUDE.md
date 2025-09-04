@@ -38,12 +38,12 @@ This is a React design library built with TypeScript and Storybook, containing d
 
 ## Current State
 - **Design Tokens**: Complete color system including new black800, typography, spacing, and border radius from Figma
-- **Components**: Button, InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card
-- **Layout Components**: Stack, Grid, Container, Spacer
+- **Components**: Button, InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs
 - **Page Components**: 
-  - **Layout**: Unified page component combining TopNav and Sidebar with consistent responsive behavior
+  - **Layout**: Enhanced unified page component combining TopNav and Sidebar with optional tabs integration
   - **Sidebar** (220px width) with brand logos, expandable menu structure, custom inbox button with notification badge
   - **TopNav** with breadcrumb navigation, share button, user profile dropdown (updated to match Figma design)
+  - **FormTabs**: 30px height step-based tabs with blue color variants and 2px spacing
 - **Icons**: Complete 4-tier icon system with 106 total icons + 5 brand logos (includes DocumentTable, AddMedium, ReloadMedium, CloseMedium, CalculatorSmall, UploadSmall, ConfigSmall icons)
 - **Enhanced Table System**: 
   - **Action Buttons**: Upload actions now feature light green styling (#C6FFC1 background, success green icon) to highlight primary actions
@@ -102,10 +102,7 @@ E:\Ledger design library/
 │   │   │   ├── Selector.tsx & .stories.tsx
 │   │   │   ├── ButtonSelector.tsx & .stories.tsx
 │   │   │   ├── Status.stories.tsx
-│   │   │   ├── Stack.tsx & .stories.tsx
-│   │   │   ├── Grid.tsx & .stories.tsx
-│   │   │   ├── Container.tsx & .stories.tsx
-│   │   │   ├── Spacer.tsx & .stories.tsx
+│   │   │   ├── FormTabs.tsx & .stories.tsx
 │   │   │   ├── Table.tsx & .stories.tsx
 │   │   │   ├── DocumentCell.tsx (internal to Table)
 │   │   │   ├── ActionCell.tsx (internal to Table)
