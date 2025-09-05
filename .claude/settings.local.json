@@ -57,7 +57,9 @@
       "Bash(git commit:*)",
       "Bash(git checkout:*)",
       "Bash(del Stack.tsx Stack.stories.tsx Grid.tsx Grid.stories.tsx Container.tsx Container.stories.tsx Spacer.tsx Spacer.stories.tsx)",
-      "mcp__figma-mcp__get_document_info"
+      "mcp__figma-mcp__get_document_info",
+      "Bash(curl:*)",
+      "Read(//tmp/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

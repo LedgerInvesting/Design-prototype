@@ -105,69 +105,85 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
     };
 
 
+    const textareaStyles: React.CSSProperties = {
+      gridColumn: '1 / -1',
+      marginBottom: '0',
+    };
+
     return (
       <div style={formContainerStyles}>
-        {/* First Row: Transaction Name & Reinsurer Name */}
+        {/* First Row: Transaction Name & Policy Group ID */}
         <div style={formGridStyles}>
           <Input
             label="Transaction Name"
-            placeholder="e.g., Q1 2024 Commercial Property Treaty"
+            placeholder="Enter transaction name"
             value={formData.transactionName}
             onChange={(e) => handleInputChange('transactionName', e.target.value)}
           />
-          <Dropdown
-            label="Reinsurer Name"
-            placeholder="e.g., Q1 2024 Commercial Property Treaty"
+          <Input
+            label="Policy Group ID"
+            placeholder="Enter policy group ID"
             value={formData.reinsurerName}
-            options={[
-              { value: 'reinsurer1', label: 'Q1 2024 Commercial Property Treaty' },
-              { value: 'reinsurer2', label: 'Global Re LLC' },
-              { value: 'reinsurer3', label: 'Eagle Re LLC' },
-            ]}
-            onChange={(value) => handleInputChange('reinsurerName', value)}
+            onChange={(e) => handleInputChange('reinsurerName', e.target.value)}
           />
         </div>
 
-        {/* Second Row: Ceding (Re) Insurer & Subject Business */}
+        {/* Second Row: Ceding (Re) Insurer & Reinsurer */}
         <div style={formGridStyles}>
           <Dropdown
             label="Ceding (Re) Insurer"
-            placeholder="Select ceding re insurer"
+            placeholder="Select ceding (re) insurer"
             value={formData.cedingReinsurer}
             options={[
-              { value: 'ceding1', label: 'Select ceding re insurer' },
+              { value: 'ceding1', label: 'Select ceding (re) insurer' },
               { value: 'ceding2', label: 'Lime Insurers LLC' },
               { value: 'ceding3', label: 'Pear Insurers LLC' },
             ]}
             onChange={(value) => handleInputChange('cedingReinsurer', value)}
           />
-          <Input
-            label="Subject Business"
-            placeholder="e.g., Q1 2024 Commercial Property Treaty"
+          <Dropdown
+            label="Reinsurer"
+            placeholder="Select reinsurer"
             value={formData.subjectBusiness}
-            onChange={(e) => handleInputChange('subjectBusiness', e.target.value)}
+            options={[
+              { value: 'reinsurer1', label: 'Select reinsurer' },
+              { value: 'reinsurer2', label: 'Global Re LLC' },
+              { value: 'reinsurer3', label: 'Eagle Re LLC' },
+            ]}
+            onChange={(value) => handleInputChange('subjectBusiness', value)}
           />
         </div>
 
-        {/* Third Row: Date Fields */}
-        <div style={fullWidthRowStyles}>
-          <DatePicker
-            label="Risk Period Date"
-            placeholder="Select Date"
-            value={formData.riskPeriodStart}
-            onChange={(value) => handleInputChange('riskPeriodStart', value)}
-          />
-          <DatePicker
-            label="Risk Period End"
-            placeholder="Select Date"
-            value={formData.riskPeriodEnd}
-            onChange={(value) => handleInputChange('riskPeriodEnd', value)}
-          />
-          <DatePicker
-            label="Ramp Up Period End Date"
-            placeholder="Select Date"
-            value={formData.rampUpPeriodEnd}
-            onChange={(value) => handleInputChange('rampUpPeriodEnd', value)}
+        {/* Subject Business (full width textarea) */}
+        <div style={textareaStyles}>
+          <label style={{
+            ...typography.styles.bodyL,
+            color: colors.blackAndWhite.black900,
+            display: 'block',
+            marginBottom: spacing[1],
+          }}>
+            Subject Business
+          </label>
+          <textarea
+            placeholder="Describe the subject business"
+            value=""
+            onChange={(e) => console.log('Subject Business:', e.target.value)}
+            style={{
+              width: '100%',
+              minHeight: '80px',
+              padding: '12px 16px',
+              border: `1px solid ${colors.reports.dynamic.blue400}`,
+              borderRadius: borderRadius[4],
+              fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+              fontSize: typography.styles.bodyM.fontSize,
+              fontWeight: typography.styles.bodyM.fontWeight,
+              lineHeight: typography.styles.bodyM.lineHeight,
+              color: colors.blackAndWhite.black900,
+              backgroundColor: colors.blackAndWhite.white,
+              resize: 'vertical',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
           />
         </div>
 
@@ -321,20 +337,15 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
 
         {/* First Row: Policy Group Name & Description */}
         <div style={formGridStyles}>
-          <Dropdown
+          <Input
             label="Policy Group Name"
-            placeholder="Select type"
+            placeholder="Enter policy group name"
             value=""
-            options={[
-              { value: 'type1', label: 'Property Treaty' },
-              { value: 'type2', label: 'Casualty Treaty' },
-              { value: 'type3', label: 'Motor Treaty' },
-            ]}
-            onChange={(value) => console.log('Policy Group Name:', value)}
+            onChange={(e) => console.log('Policy Group Name:', e.target.value)}
           />
           <Input
             label="Description"
-            placeholder="e.g., Q1 2024 Commercial Property Treaty"
+            placeholder="Enter policy group description"
             value=""
             onChange={(e) => console.log('Description:', e.target.value)}
           />
@@ -344,15 +355,22 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
         <div style={formGridStyles}>
           <Input
             label="Originator Name"
-            placeholder="e.g., Q1 2024 Commercial Property Treaty"
+            placeholder="Enter Originator Name"
             value=""
             onChange={(e) => console.log('Originator Name:', e.target.value)}
           />
-          <Input
+          <Dropdown
             label="Statutory Product Lines"
-            placeholder="e.g., Q1 2024 Commercial Property Treaty"
+            placeholder="Select statutory product lines"
             value=""
-            onChange={(e) => console.log('Statutory Product Lines:', e.target.value)}
+            options={[
+              { value: 'property', label: 'Property' },
+              { value: 'casualty', label: 'Casualty' },
+              { value: 'motor', label: 'Motor' },
+              { value: 'marine', label: 'Marine' },
+              { value: 'aviation', label: 'Aviation' },
+            ]}
+            onChange={(value) => console.log('Statutory Product Lines:', value)}
           />
         </div>
 
@@ -477,11 +495,15 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
               </div>
             </div>
           </div>
-          <Input
+          <Dropdown
             label="Admitted Status"
-            placeholder="e.g., Q1 2024 Commercial Property Treaty"
+            placeholder="Select admitted status"
             value=""
-            onChange={(e) => console.log('Admitted Status:', e.target.value)}
+            options={[
+              { value: 'admitted', label: 'Admitted' },
+              { value: 'non-admitted', label: 'Non-Admitted' },
+            ]}
+            onChange={(value) => console.log('Admitted Status:', value)}
           />
         </div>
 
@@ -584,7 +606,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
         <div style={formGridStyles}>
           <Dropdown
             label="Reporting Frequency"
-            placeholder="Select Type"
+            placeholder="Select frequency"
             value=""
             options={[
               { value: 'monthly', label: 'Monthly' },
@@ -595,7 +617,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
           />
           <Dropdown
             label="Business Scope"
-            placeholder="Select Basis"
+            placeholder="Select scope"
             value=""
             options={[
               { value: 'global', label: 'Global' },

@@ -651,7 +651,7 @@ const TransactionTable: React.FC = () => {
         showHeader={true}
         showSearch={true}
         showTabs={true}
-        tabs={['All Transactions', 'Active', 'Pending', 'Draft', 'Cancelled']}
+        tabs={['All Transactions', 'By Ceding Insurer', 'By Transaction Name', 'By Year']}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         showPagination={true}
