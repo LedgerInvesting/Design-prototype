@@ -135,9 +135,39 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             placeholder="Select ceding (re) insurer"
             value={formData.cedingReinsurer}
             options={[
-              { value: 'ceding1', label: 'Select ceding (re) insurer' },
-              { value: 'ceding2', label: 'Lime Insurers LLC' },
-              { value: 'ceding3', label: 'Pear Insurers LLC' },
+              { value: 'lloyds', label: "Lloyd's of London" },
+              { value: 'swiss-re', label: 'Swiss Re' },
+              { value: 'munich-re', label: 'Munich Re' },
+              { value: 'hannover-re', label: 'Hannover Re' },
+              { value: 'scor-se', label: 'Scor SE' },
+              { value: 'berkshire-hathaway', label: 'Berkshire Hathaway Re' },
+              { value: 'renaissance-re', label: 'RenaissanceRe' },
+              { value: 'partner-re', label: 'PartnerRe' },
+              { value: 'everest-re', label: 'Everest Re' },
+              { value: 'trans-re', label: 'TransRe' },
+              { value: 'arch-capital', label: 'Arch Capital' },
+              { value: 'argo-group', label: 'Argo Group' },
+              { value: 'aspen-re', label: 'Aspen Re' },
+              { value: 'axis-capital', label: 'Axis Capital' },
+              { value: 'beazley', label: 'Beazley' },
+              { value: 'canopius', label: 'Canopius' },
+              { value: 'catlin', label: 'Catlin' },
+              { value: 'cna-hardy', label: 'CNA Hardy' },
+              { value: 'endurance', label: 'Endurance Specialty' },
+              { value: 'hiscox', label: 'Hiscox' },
+              { value: 'lancashire', label: 'Lancashire' },
+              { value: 'markel', label: 'Markel' },
+              { value: 'validus-re', label: 'Validus Re' },
+              { value: 'xl-catlin', label: 'XL Catlin' },
+              { value: 'zurich-re', label: 'Zurich Re' },
+              { value: 'abc-insurance', label: 'ABC Insurance Company' },
+              { value: 'xyz-insurance', label: 'XYZ Insurance Corp' },
+              { value: 'def-mutual', label: 'DEF Mutual Insurance' },
+              { value: 'ghi-insurance', label: 'GHI Insurance Ltd' },
+              { value: 'jkl-insurance', label: 'JKL Insurance Group' },
+              { value: 'mno-reinsurance', label: 'MNO Reinsurance' },
+              { value: 'pqr-global', label: 'PQR Global Re' },
+              { value: 'stu-capital', label: 'STU Capital Re' },
             ]}
             onChange={(value) => handleInputChange('cedingReinsurer', value)}
           />
@@ -146,9 +176,39 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             placeholder="Select reinsurer"
             value={formData.subjectBusiness}
             options={[
-              { value: 'reinsurer1', label: 'Select reinsurer' },
-              { value: 'reinsurer2', label: 'Global Re LLC' },
-              { value: 'reinsurer3', label: 'Eagle Re LLC' },
+              { value: 'lloyds', label: "Lloyd's of London" },
+              { value: 'swiss-re', label: 'Swiss Re' },
+              { value: 'munich-re', label: 'Munich Re' },
+              { value: 'hannover-re', label: 'Hannover Re' },
+              { value: 'scor-se', label: 'Scor SE' },
+              { value: 'berkshire-hathaway', label: 'Berkshire Hathaway Re' },
+              { value: 'renaissance-re', label: 'RenaissanceRe' },
+              { value: 'partner-re', label: 'PartnerRe' },
+              { value: 'everest-re', label: 'Everest Re' },
+              { value: 'trans-re', label: 'TransRe' },
+              { value: 'arch-capital', label: 'Arch Capital' },
+              { value: 'argo-group', label: 'Argo Group' },
+              { value: 'aspen-re', label: 'Aspen Re' },
+              { value: 'axis-capital', label: 'Axis Capital' },
+              { value: 'beazley', label: 'Beazley' },
+              { value: 'canopius', label: 'Canopius' },
+              { value: 'catlin', label: 'Catlin' },
+              { value: 'cna-hardy', label: 'CNA Hardy' },
+              { value: 'endurance', label: 'Endurance Specialty' },
+              { value: 'hiscox', label: 'Hiscox' },
+              { value: 'lancashire', label: 'Lancashire' },
+              { value: 'markel', label: 'Markel' },
+              { value: 'validus-re', label: 'Validus Re' },
+              { value: 'xl-catlin', label: 'XL Catlin' },
+              { value: 'zurich-re', label: 'Zurich Re' },
+              { value: 'abc-insurance', label: 'ABC Insurance Company' },
+              { value: 'xyz-insurance', label: 'XYZ Insurance Corp' },
+              { value: 'def-mutual', label: 'DEF Mutual Insurance' },
+              { value: 'ghi-insurance', label: 'GHI Insurance Ltd' },
+              { value: 'jkl-insurance', label: 'JKL Insurance Group' },
+              { value: 'mno-reinsurance', label: 'MNO Reinsurance' },
+              { value: 'pqr-global', label: 'PQR Global Re' },
+              { value: 'stu-capital', label: 'STU Capital Re' },
             ]}
             onChange={(value) => handleInputChange('subjectBusiness', value)}
           />
@@ -364,11 +424,26 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             placeholder="Select statutory product lines"
             value=""
             options={[
-              { value: 'property', label: 'Property' },
-              { value: 'casualty', label: 'Casualty' },
-              { value: 'motor', label: 'Motor' },
-              { value: 'marine', label: 'Marine' },
               { value: 'aviation', label: 'Aviation' },
+              { value: 'commercial-auto', label: 'Commercial Auto' },
+              { value: 'workers-compensation', label: 'Workers Compensation' },
+              { value: 'general-liability', label: 'General Liability' },
+              { value: 'commercial-property', label: 'Commercial Property' },
+              { value: 'professional-liability', label: 'Professional Liability' },
+              { value: 'directors-officers', label: 'Directors & Officers' },
+              { value: 'cyber-liability', label: 'Cyber Liability' },
+              { value: 'marine', label: 'Marine' },
+              { value: 'energy', label: 'Energy' },
+              { value: 'environmental', label: 'Environmental' },
+              { value: 'product-liability', label: 'Product Liability' },
+              { value: 'employment-practices', label: 'Employment Practices' },
+              { value: 'crime-fidelity', label: 'Crime & Fidelity' },
+              { value: 'surety', label: 'Surety' },
+              { value: 'health-medical', label: 'Health & Medical' },
+              { value: 'life-annuities', label: 'Life & Annuities' },
+              { value: 'casualty', label: 'Casualty' },
+              { value: 'specialty-lines', label: 'Specialty Lines' },
+              { value: 'other', label: 'Other' },
             ]}
             onChange={(value) => console.log('Statutory Product Lines:', value)}
           />
@@ -611,7 +686,6 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             options={[
               { value: 'monthly', label: 'Monthly' },
               { value: 'quarterly', label: 'Quarterly' },
-              { value: 'annually', label: 'Annually' },
             ]}
             onChange={(value) => console.log('Reporting Frequency:', value)}
           />
@@ -620,9 +694,8 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             placeholder="Select scope"
             value=""
             options={[
-              { value: 'global', label: 'Global' },
-              { value: 'regional', label: 'Regional' },
-              { value: 'local', label: 'Local' },
+              { value: 'entire-subject-business', label: 'Entire subject business' },
+              { value: 'by-policy-groups', label: 'By policy groups (market segments)' },
             ]}
             onChange={(value) => console.log('Business Scope:', value)}
           />
@@ -632,23 +705,23 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
         <div style={formGridStyles}>
           <Dropdown
             label="Data Format"
-            placeholder="Select data format"
+            placeholder="Select format"
             value=""
             options={[
-              { value: 'csv', label: 'CSV' },
-              { value: 'json', label: 'JSON' },
-              { value: 'xml', label: 'XML' },
+              { value: 'incremental', label: 'Incremental' },
+              { value: 'cumulative', label: 'Cumulative' },
+              { value: 'transactional', label: 'Transactional' },
             ]}
             onChange={(value) => console.log('Data Format:', value)}
           />
           <Dropdown
             label="Data Level"
-            placeholder="Select data level"
+            placeholder="Select level"
             value=""
             options={[
-              { value: 'summary', label: 'Summary' },
-              { value: 'detailed', label: 'Detailed' },
-              { value: 'granular', label: 'Granular' },
+              { value: 'aggregated-level', label: 'Aggregated level' },
+              { value: 'detailed-level-policies', label: 'Detailed level (by policies)' },
+              { value: 'detailed-level-claims', label: 'Detailed level (by claims)' },
             ]}
             onChange={(value) => console.log('Data Level:', value)}
           />

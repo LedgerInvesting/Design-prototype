@@ -2,7 +2,61 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (NewTransactionForm Implementation & Component Enhancements)
+## Latest Development Session (Form Field Updates & Real Reinsurance Data Integration)
+
+### Transaction Table Filter Updates
+151. **Updated Transaction Management Table Filters**:
+    - Changed from status-based filters (Active, Pending, Draft, Cancelled) to functional filters
+    - New filters: All Transactions, By Ceding Insurer, By Transaction Name, By Year
+    - Enhanced filtering capabilities for better transaction management workflow
+    - Maintained existing table functionality and design consistency
+
+### Basic Information Tab Form Field Restructuring
+152. **Redesigned Basic Information Form Layout**:
+    - Updated field structure based on Figma design requirements
+    - **Transaction Name**: Maintained as input field with updated placeholder "Enter transaction name"
+    - **Policy Group ID**: New input field replacing previous dropdown (placeholder: "Enter policy group ID")
+    - **Ceding (Re) Insurer**: Updated dropdown with comprehensive real reinsurance company list
+    - **Reinsurer**: New dropdown field with same comprehensive reinsurance company list
+    - **Subject Business**: Converted to full-width textarea with placeholder "Describe the subject business"
+
+### Comprehensive Reinsurance Data Integration
+153. **Real-World Reinsurer Dropdown Options**:
+    - Integrated 33 actual reinsurance companies from industry data
+    - Major global reinsurers: Lloyd's of London, Swiss Re, Munich Re, Hannover Re, Scor SE, Berkshire Hathaway Re
+    - Specialty markets: RenaissanceRe, PartnerRe, Everest Re, TransRe, Arch Capital, Argo Group
+    - London market: Beazley, Canopius, Catlin, CNA Hardy, Hiscox, Lancashire, Markel
+    - Capital markets: Aspen Re, Axis Capital, Validus Re, XL Catlin, Zurich Re
+    - Additional companies: ABC Insurance Company, XYZ Insurance Corp, DEF Mutual Insurance, GHI Insurance Ltd, JKL Insurance Group, MNO Reinsurance, PQR Global Re, STU Capital Re
+
+### Policy Groups Tab Field Type Updates
+154. **Enhanced Policy Groups Form Fields**:
+    - **Policy Group Name**: Changed from dropdown to input field (placeholder: "Enter policy group name")
+    - **Description**: Updated placeholder to "Enter policy group description"
+    - **Originator Name**: Updated placeholder to "Enter Originator Name"
+    - **Statutory Product Lines**: Enhanced dropdown with 20 comprehensive industry-standard options:
+      - Aviation, Commercial Auto, Workers Compensation, General Liability, Commercial Property
+      - Professional Liability, Directors & Officers, Cyber Liability, Marine, Energy
+      - Environmental, Product Liability, Employment Practices, Crime & Fidelity, Surety
+      - Health & Medical, Life & Annuities, Casualty, Specialty Lines, Other
+    - **Admitted Status**: Updated dropdown with proper regulatory options (Admitted, Non-Admitted)
+
+### Reporting Parameters Tab Dropdown Enhancements
+155. **Updated Reporting Configuration Options**:
+    - **Reporting Frequency**: Streamlined to Monthly, Quarterly (removed Annually)
+    - **Business Scope**: Updated to industry-specific options: "Entire subject business", "By policy groups (market segments)"
+    - **Data Format**: Updated to data processing types: Incremental, Cumulative, Transactional
+    - **Data Level**: Enhanced with detailed granularity options: "Aggregated level", "Detailed level (by policies)", "Detailed level (by claims)"
+    - Updated all placeholders to be more concise and user-friendly
+
+### Design System Consistency Improvements
+156. **Form Field Standardization**:
+    - All dropdown options now use consistent kebab-case values with proper labels
+    - Maintained design system integration across all new fields
+    - Applied consistent placeholder text patterns throughout the form
+    - Preserved existing styling and layout structure while enhancing functionality
+
+## Previous Development Session (NewTransactionForm Implementation & Component Enhancements)
 
 ### Form Infrastructure & Navigation
 137. **Created FormTopNav Component**:

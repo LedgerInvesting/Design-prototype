@@ -54,6 +54,8 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Responsive Design**: All page components feature mobile-first responsive design with consistent breakpoints
 - **Storybook**: Comprehensive showcase with interactive controls for all components, running on localhost:6006 (or 6007 if port conflict)
 - **External Testing Environment**: React development environment in `/pages` folder for testing real component integration
+- **Enhanced Form System**: Complete NewTransactionForm with comprehensive dropdown options from real reinsurance data
+- **Updated Table Filters**: Transaction management table now uses filtering by Ceding Insurer, Transaction Name, and Year
 
 ## Technical Details
 - Framework: React 18 + TypeScript
@@ -187,13 +189,31 @@ The `/pages` folder contains a complete React development environment for testin
     - Subheading L typography and proper design token integration
   - Transaction and Total Premium stats cards with custom MetricCard components
   - Advanced data table with intelligent column sizing and comprehensive functionality:
-    - Tab selector (All Transactions, Active, Pending, Draft, Cancelled)
+    - **Updated Tab Filters**: All Transactions, By Ceding Insurer, By Transaction Name, By Year
     - Document cells with config hover icons for transaction names
     - Automatic column width optimization based on content length
     - Full pagination controls and search functionality
     - 8 columns with proper icons, sorting, and action buttons
   - **Design System Integration**: Complete component integration with Sidebar, TopNav, enhanced Table, and modal system
   - **Responsive Layout**: Centered content (1200px max-width) with white background and mobile-optimized header/stats sections
+- **NewTransactionForm.tsx**: Comprehensive multi-tab transaction creation form featuring:
+  - **FormTabs Integration**: 4-tab progressive workflow (Basic Info, Policy Groups, Structure & Key Terms, Reporting Parameters)
+  - **Basic Information Tab**: Enhanced field structure with real industry data
+    - Transaction Name and Policy Group ID input fields
+    - **Comprehensive Reinsurer Dropdowns**: 33 real-world reinsurance companies including Lloyd's of London, Swiss Re, Munich Re, Berkshire Hathaway Re, etc.
+    - Subject Business full-width textarea for detailed descriptions
+  - **Policy Groups Tab**: Advanced policy configuration with industry-standard options
+    - Policy Group Name and Description input fields with proper placeholders
+    - **20 Statutory Product Lines**: Aviation, Commercial Auto, Workers Compensation, General Liability, Commercial Property, Professional Liability, Directors & Officers, Cyber Liability, Marine, Energy, Environmental, Product Liability, Employment Practices, Crime & Fidelity, Surety, Health & Medical, Life & Annuities, Casualty, Specialty Lines, Other
+    - Custom frequency selector with 1-5 scale visualization
+    - Admitted Status dropdown (Admitted/Non-Admitted)
+  - **Reporting Parameters Tab**: Professional reporting configuration
+    - Reporting Frequency: Monthly, Quarterly
+    - Business Scope: Entire subject business, By policy groups (market segments)
+    - Data Format: Incremental, Cumulative, Transactional
+    - Data Level: Aggregated level, Detailed level (by policies), Detailed level (by claims)
+    - Dynamic requirements system with expandable requirement boxes
+  - **Design System Integration**: Complete form styling with blue200 containers, proper spacing, and responsive grid layouts
 - **ReportNavigation.tsx** (Default): Advanced report navigation interface featuring:
   - Program selector card with dropdown functionality
   - Program relationship pills showing hierarchical connections  
@@ -233,23 +253,28 @@ npm run dev  # Start on http://localhost:5173
 6. Text selection will automatically use blue700 (#9ad5f7) via base.css import
 
 ## Recent Enhancements
+- **Real-World Data Integration**: Comprehensive reinsurance industry data integration
+  - 33 actual reinsurance companies in dropdown options across forms
+  - 20 industry-standard statutory product lines covering all major insurance categories
+  - Professional reporting configuration options aligned with industry standards
+  - Enhanced form field placeholders for better user experience
+- **Transaction Management Improvements**: Enhanced filtering and navigation capabilities
+  - Updated table filters from status-based to functional filtering (By Ceding Insurer, Transaction Name, Year)
+  - Improved transaction workflow with better categorization options
+  - Maintained existing table functionality while adding new filtering dimensions
+- **Form Field Restructuring**: Complete overhaul of NewTransactionForm based on Figma designs
+  - Restructured Basic Information tab with proper field types and industry data
+  - Enhanced Policy Groups tab with comprehensive dropdown options and proper field types
+  - Updated Reporting Parameters with professional configuration options
+  - Consistent placeholder text patterns and design system integration
 - **Layout Component**: Created unified Layout component combining TopNav and Sidebar for consistent page structure
   - Centralized navigation handling and breadcrumb management
   - Responsive behavior with configurable maxWidth (default 1200px)
   - Automatic import of base styles including custom selection colors
-- **Responsive Design**: Made TransactionManagement page fully responsive
-  - Mobile-optimized header with column layout on smaller screens
-  - Responsive stats cards using CSS Grid auto-fit with 300px minimum width
-  - Table container with horizontal scrolling for mobile devices
 - **Custom Selection Colors**: Implemented design system text selection styling
   - Blue700 (#9ad5f7) selection background across all pages
   - Cross-browser support (Chrome, Firefox, Safari)
   - Automatically applied to all pages via base.css import
-- **Modal System**: Implemented NewTransactionModal with dropdown-style positioning and design system integration
-  - Transaction type selection with Brand New vs Renewal options
-  - Proper icon integration (AddMedium, ReloadMedium) with design system colors
-  - Radio button functionality using Selector component from design library
-  - Responsive 670px modal with 275px cards and consistent 20px spacing
 
 ## Next Steps / Future Work
 - Add form validation system to Input/Dropdown components
