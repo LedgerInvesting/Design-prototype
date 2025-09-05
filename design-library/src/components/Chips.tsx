@@ -112,7 +112,7 @@ export const Status: React.FC<StatusProps> = ({
     gap: config.gap,
     padding: config.padding,
     backgroundColor: colorScheme.background,
-    borderRadius: borderRadius.absolute, // Fully rounded pill shape
+    borderRadius: borderRadius[4], // 4px border radius
     height: config.height,
     cursor: onSelect ? 'pointer' : 'default',
     transition: 'all 0.2s ease',

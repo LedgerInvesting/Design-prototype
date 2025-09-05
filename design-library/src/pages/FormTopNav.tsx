@@ -42,7 +42,7 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
   const leftSectionStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: spacing[4], // Same as default TopNav
+    gap: '10px', // 10px distance between pills
   };
 
   const titleStyles: React.CSSProperties = {
@@ -96,9 +96,29 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
 
   return (
     <nav className={className} style={containerStyles}>
-      {/* Left Section: Title + Status */}
+      {/* Left Section: Title + Manual Entry + Status */}
       <div style={leftSectionStyles}>
         <span style={titleStyles}>{title}</span>
+        {/* Manual Entry Pill */}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '3px',
+          padding: '0 5px',
+          backgroundColor: colors.reports.dynamic.blue200,
+          borderRadius: borderRadius[4],
+          height: '20px',
+          fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+          fontSize: typography.styles.bodyS.fontSize,
+          fontWeight: typography.styles.bodyS.fontWeight,
+          lineHeight: typography.styles.bodyS.lineHeight,
+          letterSpacing: typography.letterSpacing.wide,
+          color: colors.blackAndWhite.black700,
+          whiteSpace: 'nowrap',
+        }}>
+          Manual Entry
+        </div>
         <Status 
           variant={statusVariant}
           size="small"
