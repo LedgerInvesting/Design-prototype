@@ -59,7 +59,8 @@
       "Bash(del Stack.tsx Stack.stories.tsx Grid.tsx Grid.stories.tsx Container.tsx Container.stories.tsx Spacer.tsx Spacer.stories.tsx)",
       "mcp__figma-mcp__get_document_info",
       "Bash(curl:*)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

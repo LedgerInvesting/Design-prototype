@@ -1,7 +1,10 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import { colors, borderRadius, typography, spacing } from '../tokens';
+import { colors, borderRadius, spacing } from '../tokens';
 import { icons } from '../icons';
 import { InfoTooltip, InfoTooltipSection } from './InfoTooltip';
+import { commonStyles } from '../utils/styleInjection';
+import { commonTypographyStyles } from '../utils/typography';
+import { standardTransition } from '../utils/commonStyles';
 
 export interface InputProps {
   /** Input label */
@@ -55,25 +58,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   
-  // Add CSS to hide number input spinners
+  // Initialize number input styles
   useEffect(() => {
-    const styleId = 'hide-number-spinners';
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement('style');
-      style.id = styleId;
-      style.textContent = `
-        .hide-number-spinners::-webkit-outer-spin-button,
-        .hide-number-spinners::-webkit-inner-spin-button {
-          -webkit-appearance: none !important;
-          margin: 0 !important;
-          display: none !important;
-        }
-        .hide-number-spinners[type=number] {
-          -moz-appearance: textfield !important;
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    commonStyles.hideNumberSpinners('input');
   }, []);
   
   // Determine actual state - prioritize error/warning, then check if filled, then use internal state
@@ -141,20 +128,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       border: 'none',
       outline: 'none',
       backgroundColor: 'transparent',
-      fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-      fontSize: typography.styles.bodyM.fontSize,
-      fontWeight: typography.styles.bodyM.fontWeight,
-      lineHeight: typography.styles.bodyM.lineHeight,
+      ...commonTypographyStyles.field(),
       color: actualState === 'disabled' ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
     };
   };
 
   const getHelperTextStyles = () => {
     return {
-      fontFamily: typography.styles.bodyS.fontFamily.join(', '),
-      fontSize: typography.styles.bodyS.fontSize,
-      fontWeight: typography.styles.bodyS.fontWeight,
-      lineHeight: typography.styles.bodyS.lineHeight,
+      ...commonTypographyStyles.helper(),
       marginTop: spacing[2],
       color: isError ? colors.error.darkBorders : isWarning ? colors.warning.dark : colors.blackAndWhite.black500,
     };
@@ -176,10 +157,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         height: '20px'
       }}>
         <label style={{
-          fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-          fontSize: typography.styles.bodyM.fontSize,
-          fontWeight: typography.styles.bodyM.fontWeight,
-          lineHeight: typography.styles.bodyM.lineHeight,
+          ...commonTypographyStyles.label(),
           color: colors.blackAndWhite.black900,
         }}>
           {label}
@@ -203,9 +181,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
             height: '16px',
             display: 'flex',
             alignItems: 'center',
-            fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-            fontSize: typography.styles.bodyM.fontSize,
-            fontWeight: typography.styles.bodyM.fontWeight,
+            ...commonTypographyStyles.field(),
             lineHeight: 1.5,
             color: colors.blackAndWhite.black900,
           }}>

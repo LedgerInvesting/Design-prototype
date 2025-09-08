@@ -331,11 +331,11 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
     <Layout
       breadcrumbs={[
         { label: 'REPORTS', href: '/reports' },
-        { label: 'CUCUMBER GL SEASONAL', href: '/reports/cucumber' },
-        { label: 'CESSION STATEMENT', isActive: true }
+        { label: 'INSIGHTS EXPLORER', href: '/reports/insights-explorer' },
+        { label: 'CESSION AND COLLATERAL', isActive: true }
       ]}
       selectedSidebarItem="reports"
-      selectedSidebarSubitem="reports-explorer"
+      selectedSidebarSubitem="insights-explorer"
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
       }}

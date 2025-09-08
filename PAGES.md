@@ -84,7 +84,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ---
 
 ### 3. CashSettlement.tsx
-**Purpose:** Comprehensive financial dashboard demonstrating design system integration and data visualization.
+**Purpose:** Cession and Collateral subpage under Insights Explorer, demonstrating financial dashboard with design system integration.
 
 **Key Features:**
 - **Financial Metrics:** MetricCard components with dataXXL typography for large numbers
@@ -94,8 +94,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 **Layout Configuration:**
 - MaxWidth: 1200px
-- Breadcrumb: "CASH SETTLEMENT"
-- Navigation: Accessible from main navigation menu
+- Breadcrumb: "REPORTS > INSIGHTS EXPLORER > CESSION AND COLLATERAL"
+- Navigation: Subpage under Insights Explorer
 
 **Components Used:**
 - Layout, Grid, Container components

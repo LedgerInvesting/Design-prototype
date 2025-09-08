@@ -320,7 +320,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
     <Layout
       breadcrumbs={[
         { label: 'REPORTS', href: '/reports' },
-        { label: 'NAVIGATION', isActive: true }
+        { label: 'INSIGHTS EXPLORER', isActive: true }
       ]}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="insights-explorer"

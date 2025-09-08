@@ -10,10 +10,8 @@ This document contains detailed documentation for all components in the Ledger D
 5. **Dropdown**: Complete dropdown component with same Input field specifications and interactive behavior
 6. **Selector**: Unified selector component with 2 variants (checkbox, radio), form integration, disabled support
 7. **ButtonSelector**: Button-style selector combining button design with embedded checkbox/radio, 3 states, perfect for binary choices
-8. **Stack**: Linear layout component for horizontal/vertical arrangements with design token spacing
-9. **Grid**: Grid layout component with responsive columns and consistent gaps
-10. **Container**: Max-width container with responsive breakpoints for content centering
-11. **Spacer**: Flexible and fixed spacing component for layout control
+8. **Utilities**: Shared utility functions for styling, typography, and common patterns
+9. **Custom Hooks**: Reusable hooks for common component behaviors (outside clicks, hover states)
 12. **Status**: Interactive status component with dropdown menu functionality (evolved from Chips), 5 semantic variants, 4 menu item states, design system integration
 13. **Table**: Advanced responsive data table with intelligent column sizing, enhanced action buttons, and comprehensive Storybook showcases
 14. **DocumentCell**: Enhanced interactive document cell with DocumentTable icons and configurable hover icons (download/config modes)
@@ -222,47 +220,26 @@ This document contains detailed documentation for all components in the Ledger D
 - **Design Tokens**: Full integration with colors, typography, spacing, shadows, and border radius
 - Located in "Components" Storybook category with comprehensive interactive examples
 
-## Layout Components
+## Utilities & Hooks
 
-### Stack
-- Flexible linear layout component for horizontal and vertical arrangements
-- **Direction**: horizontal or vertical stacking
-- **Gap**: Consistent spacing using design tokens (0-24)
-- **Alignment**: Control cross-axis alignment (start, center, end, stretch)
-- **Justification**: Control main-axis distribution (start, center, end, between, around, evenly)
-- **Wrapping**: Optional flex-wrap support for responsive layouts
-- **Semantic**: Customizable HTML element (div, section, nav, etc.)
-- Perfect for forms, navigation, button groups, and any linear layouts
-- Uses design tokens: `spacing.*` for consistent gaps
+### Typography Utilities
+- **applyTypographyStyle()**: Applies design system typography styles consistently
+- **commonTypographyStyles**: Pre-configured styles for labels, fields, helpers, buttons, etc.
+- Eliminates repetitive typography object creation across components
+- Ensures consistent font application throughout the design system
 
-### Grid
-- Two-dimensional grid layout with responsive capabilities
-- **Columns**: Fixed columns (1-12) or responsive auto-fit behavior
-- **Gap**: Consistent spacing using design tokens
-- **Auto-fit**: Responsive columns with customizable minimum width
-- **Alignment**: Control item alignment within grid areas
-- **Responsive**: Built-in responsive behavior with minmax()
-- Perfect for card layouts, image galleries, dashboards, and responsive grids
-- Uses design tokens: `spacing.*` for consistent gaps
+### Style Utilities
+- **injectGlobalStyles()**: Utility for injecting CSS into document head safely
+- **commonStyles**: Pre-configured injections for number spinners and custom scrollbars
+- **flexCenter, flexAlign()**: Common flex alignment patterns
+- **standardTransition()**: Consistent animation transitions
+- **colorWithOpacity()**: Color manipulation utility
 
-### Container
-- Max-width container with responsive breakpoints for content centering
-- **Max Width**: Predefined breakpoints (sm: 640px, md: 768px, lg: 1024px, xl: 1280px, 2xl: 1536px)
-- **Custom Width**: Support for custom width values (e.g., "900px")
-- **Padding**: Consistent horizontal padding using design tokens
-- **Centering**: Automatic horizontal centering (optional)
-- **Semantic**: Customizable HTML element
-- Perfect for page layouts, content sections, and maintaining consistent content width
-- Uses design tokens: `spacing.*` for consistent padding
-
-### Spacer
-- Flexible and fixed spacing component for precise layout control
-- **Flexible Growth**: Grows to fill available space by default
-- **Fixed Size**: Use design tokens for consistent fixed spacing
-- **Direction**: Works in both horizontal and vertical layouts
-- **Invisible**: Creates space without visual elements
-- Perfect for pushing elements apart, creating flexible layouts, and navbar spacing
-- Uses design tokens: `spacing.*` for consistent fixed spacing
+### Custom Hooks
+- **useOutsideClick**: Handles clicks outside referenced elements (dropdowns, modals)
+- **useHoverState**: Manages hover state consistently with proper handlers
+- Reduces duplicate event handling logic across components
+- Provides consistent behavior patterns throughout the library
 
 ## Cell Components
 

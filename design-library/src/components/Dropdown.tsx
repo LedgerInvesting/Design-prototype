@@ -1,7 +1,10 @@
 import React, { forwardRef, useState, useEffect, useRef } from 'react';
-import { colors, borderRadius, typography, spacing, shadows } from '../tokens';
+import { colors, borderRadius, spacing, shadows, typography } from '../tokens';
 import { icons } from '../icons';
 import { InfoTooltip, InfoTooltipSection } from './InfoTooltip';
+import { commonStyles } from '../utils/styleInjection';
+import { commonTypographyStyles } from '../utils/typography';
+import { useOutsideClick } from '../hooks/useOutsideClick';
 
 export interface DropdownOption {
   value: string;
@@ -60,36 +63,9 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
-  // Add CSS for custom scrollbar
+  // Initialize scrollbar styles
   useEffect(() => {
-    const styleId = 'dropdown-scrollbar';
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement('style');
-      style.id = styleId;
-      style.textContent = `
-        .dropdown-list::-webkit-scrollbar {
-          width: 6px;
-        }
-        .dropdown-list::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .dropdown-list::-webkit-scrollbar-thumb {
-          background-color: ${colors.blackAndWhite.black900};
-          border-radius: 3px;
-        }
-        .dropdown-list::-webkit-scrollbar-thumb:hover {
-          background-color: ${colors.blackAndWhite.black700};
-        }
-        .dropdown-list::-webkit-scrollbar-button {
-          display: none;
-        }
-        .dropdown-list {
-          scrollbar-width: thin;
-          scrollbar-color: ${colors.blackAndWhite.black900} transparent;
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    commonStyles.customScrollbar('dropdown');
   }, []);
 
   // Determine actual state - prioritize error/warning, then check if filled, then use internal state
@@ -101,26 +77,16 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   const isWarning = state === 'warning';
   const isActive = actualState === 'active';
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        if (!disabled && state !== 'error' && state !== 'warning') {
-          setInternalState(value ? 'filled' : 'default');
-        }
-        onBlur?.();
-      }
-    };
-
+  // Handle outside clicks
+  useOutsideClick(dropdownRef, () => {
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      setIsOpen(false);
+      if (!disabled && state !== 'error' && state !== 'warning') {
+        setInternalState(value ? 'filled' : 'default');
+      }
+      onBlur?.();
     }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, disabled, state, value, onBlur]);
+  });
 
   // Get styles based on state
   const getDropdownContainerStyles = () => {
@@ -178,10 +144,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   const getDisplayTextStyles = () => {
     return {
       flex: 1,
-      fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-      fontSize: typography.styles.bodyM.fontSize,
-      fontWeight: typography.styles.bodyM.fontWeight,
-      lineHeight: typography.styles.bodyM.lineHeight,
+      ...commonTypographyStyles.field(),
       color: value 
         ? (actualState === 'disabled' ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900)
         : colors.blackAndWhite.black500,

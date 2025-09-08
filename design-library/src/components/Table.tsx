@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { colors, typography, borderRadius, shadows } from '../tokens';
-import { SearchMedium, ChevronLeftSmall, ChevronRightSmall, PlusExtraSmall } from '../icons';
+import { SearchMedium, ChevronLeftSmall, ChevronRightSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
 import { ActionCell, ActionType } from './ActionCell';
 
