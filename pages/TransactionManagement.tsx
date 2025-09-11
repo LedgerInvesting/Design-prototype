@@ -56,6 +56,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top right',
     backgroundSize: '50%',
+    boxShadow: shadows.base,
     '@media (max-width: 768px)': {
       flexDirection: 'column',
       gap: '20px',

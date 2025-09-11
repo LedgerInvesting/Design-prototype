@@ -1,21 +1,21 @@
-<svg width="601" height="204" viewBox="0 0 601 204" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="479" height="106" viewBox="0 0 479 106" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- Define the fade animation -->
     <style>
       .line-group-1 { 
-        animation: fadeInOut 7.2s ease-in-out infinite; 
+        animation: fadeInOut 5.76s ease-in-out infinite; 
         opacity: 0.3;
       }
       .line-group-2 { 
-        animation: fadeInOut 7.2s ease-in-out infinite 1.44s; 
+        animation: fadeInOut 5.76s ease-in-out infinite 1.152s; 
         opacity: 0.3;
       }
       .line-group-3 { 
-        animation: fadeInOut 7.2s ease-in-out infinite 2.88s; 
+        animation: fadeInOut 5.76s ease-in-out infinite 2.304s; 
         opacity: 0.3;
       }
       .line-group-4 { 
-        animation: fadeInOut 7.2s ease-in-out infinite 4.32s; 
+        animation: fadeInOut 5.76s ease-in-out infinite 3.456s; 
         opacity: 0.3;
       }
       
@@ -31,40 +31,29 @@
   
   <!-- Group 1: Top scattered lines -->
   <g class="line-group-1">
-    <rect opacity="0.8" width="119.615" height="3" transform="matrix(-1 0 0 1 480.088 83.3247)" fill="#C1F2FF"/>
-    <rect opacity="0.8" width="119.615" height="2" transform="matrix(-1 0 0 1 480.088 35.1255)" fill="#C1F2FF"/>
-    <rect width="119.594" height="3" transform="matrix(-1 0 0 1 240.055 23.4868)" fill="#C1F2FF"/>
-    <rect width="119.594" height="2" transform="matrix(-1 0 0 1 120.461 7.74268)" fill="#C1F2FF"/>
+    <rect opacity="0.8" width="119.615" height="3" transform="matrix(-1 0 0 1 479.234 79.627)" fill="#C1F2FF"/>
+    <rect opacity="0.8" width="119.615" height="2" transform="matrix(-1 0 0 1 479.234 31.4277)" fill="#C1F2FF"/>
+    <rect width="119.594" height="3" transform="matrix(-1 0 0 1 239.197 19.7891)" fill="#C1F2FF"/>
   </g>
   
-  <!-- Group 2: Right side top cluster -->
+  <!-- Group 2: Right side lines -->
   <g class="line-group-2">
-    <rect opacity="0.8" width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 102.817)" fill="#C1F2FF"/>
-    <rect opacity="0.8" width="120.769" height="3" transform="matrix(-1 0 0 1 600.854 79.147)" fill="#C1F2FF"/>
-    <rect opacity="0.8" width="120.769" height="2" transform="matrix(-1 0 0 1 600.854 55.479)" fill="#C1F2FF"/>
-    <rect opacity="0.8" width="120.769" height="2" transform="matrix(-1 0 0 1 600.854 31.8091)" fill="#C1F2FF"/>
-    <rect opacity="0.8" width="120.769" height="2" transform="matrix(-1 0 0 1 600.854 0.393066)" fill="#C1F2FF"/>
+    <rect width="119.594" height="2" transform="matrix(-1 0 0 1 119.604 4.04492)" fill="#C1F2FF"/>
+    <rect opacity="0.8" width="120.599" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.971 47.4121)" fill="#C1F2FF"/>
+    <rect opacity="0.8" width="120.769" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.947 58.4629)" fill="#C1F2FF"/>
   </g>
   
-  <!-- Group 3: Right side bottom cluster -->
+  <!-- Group 3: Thin center lines -->
   <g class="line-group-3">
-    <rect width="120.599" height="4" transform="matrix(-1 0 0 1 600.83 200)" fill="#C1F2FF"/>
-    <rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 164.358)" fill="#C1F2FF"/>
-    <rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 153)" fill="#C1F2FF"/>
-    <rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 142)" fill="#C1F2FF"/>
-    <rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 131)" fill="#C1F2FF"/>
-    <rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 117)" fill="#C1F2FF"/>
+    <rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.971 35.043)" fill="#C1F2FF"/>
+    <rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.971 18.4668)" fill="#C1F2FF"/>
+    <rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.971 1.72656)" fill="#C1F2FF"/>
   </g>
   
-  <!-- Group 4: Left side lines -->
+  <!-- Group 4: Bottom thick lines -->
   <g class="line-group-4">
-    <rect opacity="0.8" width="120.599" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 51.1099)" fill="#C1F2FF"/>
-    <rect opacity="0.8" width="120.769" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 62.1606)" fill="#C1F2FF"/>
-    <rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 38.7407)" fill="#C1F2FF"/>
-    <rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 22.1646)" fill="#C1F2FF"/>
-    <rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 5.42432)" fill="#C1F2FF"/>
-    <rect opacity="0.8" width="120.769" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 84.1958)" fill="#C1F2FF"/>
-    <rect width="120.769" height="3" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 96.2466)" fill="#C1F2FF"/>
-    <rect width="120.769" height="3" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 108.727)" fill="#C1F2FF"/>
+    <rect opacity="0.8" width="120.769" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.947 80.498)" fill="#C1F2FF"/>
+    <rect width="120.769" height="3" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.947 92.5488)" fill="#C1F2FF"/>
+    <rect width="120.769" height="3" transform="matrix(1 1.74846e-07 1.74846e-07 -1 238.947 105.029)" fill="#C1F2FF"/>
   </g>
 </svg>
