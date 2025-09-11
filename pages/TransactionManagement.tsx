@@ -52,34 +52,10 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
     overflow: 'hidden',
     width: '100%',
     boxSizing: 'border-box',
-    backgroundImage: `url('data:image/svg+xml;base64,${btoa(`<svg width="601" height="204" viewBox="0 0 601 204" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect opacity="0.8" width="119.615" height="3" transform="matrix(-1 0 0 1 480.088 83.3247)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="119.615" height="2" transform="matrix(-1 0 0 1 480.088 35.1255)" fill="#C1F2FF"/>
-<rect width="119.594" height="3" transform="matrix(-1 0 0 1 240.055 23.4868)" fill="#C1F2FF"/>
-<rect width="119.594" height="2" transform="matrix(-1 0 0 1 120.461 7.74268)" fill="#C1F2FF"/>
-<rect width="120.599" height="4" transform="matrix(-1 0 0 1 600.83 200)" fill="#C1F2FF"/>
-<rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 164.358)" fill="#C1F2FF"/>
-<rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 153)" fill="#C1F2FF"/>
-<rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 142)" fill="#C1F2FF"/>
-<rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 131)" fill="#C1F2FF"/>
-<rect width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 117)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.769" height="4" transform="matrix(-1 0 0 1 600.854 102.817)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.769" height="3" transform="matrix(-1 0 0 1 600.854 79.147)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.769" height="2" transform="matrix(-1 0 0 1 600.854 55.479)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.769" height="2" transform="matrix(-1 0 0 1 600.854 31.8091)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.769" height="2" transform="matrix(-1 0 0 1 600.854 0.393066)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.599" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 51.1099)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.769" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 62.1606)" fill="#C1F2FF"/>
-<rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 38.7407)" fill="#C1F2FF"/>
-<rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 22.1646)" fill="#C1F2FF"/>
-<rect opacity="0.7" width="120.599" height="1" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.828 5.42432)" fill="#C1F2FF"/>
-<rect opacity="0.8" width="120.769" height="2" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 84.1958)" fill="#C1F2FF"/>
-<rect width="120.769" height="3" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 96.2466)" fill="#C1F2FF"/>
-<rect width="120.769" height="3" transform="matrix(1 1.74846e-07 1.74846e-07 -1 239.805 108.727)" fill="#C1F2FF"/>
-</svg>`)}')`,
+    backgroundImage: `url('/header_bg_animated.svg')`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top right',
-    backgroundSize: '60%',
+    backgroundSize: '50%',
     '@media (max-width: 768px)': {
       flexDirection: 'column',
       gap: '20px',

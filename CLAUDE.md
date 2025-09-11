@@ -54,6 +54,7 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Responsive Design**: All page components feature mobile-first responsive design with consistent breakpoints
 - **Storybook**: Comprehensive showcase with interactive controls for all components, running on localhost:6006 (or 6007 if port conflict)
 - **External Testing Environment**: React development environment in `/pages` folder for testing real component integration
+- **Static Assets**: Images stored in `/pages/public/` folder for proper Vercel deployment and serving
 - **Enhanced Form System**: Complete NewTransactionForm with comprehensive dropdown options from real reinsurance data
 - **Updated Table Filters**: Transaction management table now uses filtering by Ceding Insurer, Transaction Name, and Year
 
@@ -188,6 +189,7 @@ The `/pages` folder contains a complete React development environment for testin
 - **Hot Reloading**: Instant updates during development (http://localhost:5173)
 - **TypeScript Support**: Full type safety with design library component types
 - **Vite Configuration**: Optimized build system with design library path aliases
+- **Static Assets**: All images must be placed in `/pages/public/` folder and referenced with absolute paths (e.g., `/image.png`) for proper Vercel deployment
 
 **Current Pages:**
 - **TransactionManagement.tsx**: Complete transaction management interface featuring:
