@@ -19,7 +19,9 @@ This document contains detailed documentation for all components in the Ledger D
 
 ## Page Components
 16. **TransactionManagement**: Complete transaction management interface with intelligent table system
-    - Blue header section with SVG background pattern, document icon, and "New Transaction" button
+    - **Animated Header**: Blue header with subtle SVG line animation (5.76s cycle, parallax entrance effect)
+    - Header includes base shadow, document icon, and "New Transaction" button
+    - Complete new transaction workflow with proper navigation flow
     - Transaction and Total Premium stats cards using reusable MetricCard components
     - Advanced data table with tab selector functionality (5 tabs: All Transactions, Active, Pending, Draft, Cancelled)
     - 12 rows of sample transaction data demonstrating proper scrolling/masking behavior
@@ -44,7 +46,9 @@ This document contains detailed documentation for all components in the Ledger D
 ### Button
 - Unified component with 3 variants: primary, small, icon
 - **Primary variant**: Full-featured buttons with text, icons, 5 colors (black, white, main, light, green)
-- **Small variant**: Compact buttons for secondary actions, 5 colors (black, white, main, light, green)  
+- **Small variant**: Compact buttons for secondary actions, 5 colors (black, white, main, light, green)
+  - **Enhanced centering**: Perfect text alignment when `showIcon={false}` - no extra spacing for hidden icons
+  - **Dynamic gap**: Automatically adjusts spacing based on icon presence (10px with icon, 0px without)
 - **Icon variant**: Icon-only buttons, 5 colors (black, main, light, green, white), 2 shapes (circle, square)
 - **Interactive hover effects**: Subtle 15% white overlay for colored buttons, blue200 solid for white buttons
 - **Smart icon colors**: White icons on dark backgrounds, black icons on light backgrounds
@@ -188,7 +192,7 @@ This document contains detailed documentation for all components in the Ledger D
 
 ### Table
 - Advanced responsive data table component with tab selector, horizontal scrolling, and specialized cell types
-- **Enhanced Header Features**: Tab selector replacing filter functionality, search input, pagination controls with Figma-based design
+- **Enhanced Header Features**: Tab selector replacing filter functionality, search input, dual pagination options (header/footer) with Figma-based design
 - **Tab Selector**: Interactive tab switching with blue400 dividers, smooth transitions, and proper state management
   - Selected state: white background, blue400 border, black900 text, active tab functionality
   - Default state: transparent border, black500 text, clickable interactions
@@ -210,12 +214,12 @@ This document contains detailed documentation for all components in the Ledger D
   - **Generate**: Blue styling with CalculatorSmall icon + "Generate" text
   - **Setup**: Blue styling with ConfigSmall icon + "Setup" text
 - **Three Specialized Cell Types**:
-  - **Simple cells**: Standard text with right/left/center alignment support
+  - **Simple cells**: Standard text with black700 color and right/left/center alignment support
   - **Document cells**: Enhanced with DocumentTable icons and configurable hover icons (download or config)
   - **Action cells**: Button-style cells with row-specific action type selection
 - **Responsive Design**: Table adapts to container width while maintaining minimum column requirements
 - **Enhanced Dimensions**: 45px row height, intelligent column widths based on content analysis (150px for short content, 200px for long content, 300px for documents, 130px for actions)
-- **Footer Pagination**: Figma-based pagination component with proper navigation and styling
+- **Dual Pagination Options**: Header pagination (default) and footer pagination with blue400 separator line
 - **Dynamic Width**: Automatically calculated based on intelligent column sizing (typically 1550px with optimized columns)
 - **Design Tokens**: Full integration with colors, typography, spacing, shadows, and border radius
 - Located in "Components" Storybook category with comprehensive interactive examples

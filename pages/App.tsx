@@ -3,11 +3,12 @@ import { CashSettlement } from './CashSettlement';
 import { ReportNavigation } from './ReportNavigation';
 import { TransactionManagement } from './TransactionManagement';
 import { NewTransactionForm } from './NewTransactionForm';
+import { ContractsExplorer } from './ContractsExplorer';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer';
 
 function App() {
   // Function to handle page navigation
@@ -26,6 +27,8 @@ function App() {
         return <TransactionManagement onNavigateToPage={setPage} />;
       case 'new-transaction-form':
         return <NewTransactionForm onNavigateToPage={setPage} />;
+      case 'contracts-explorer':
+        return <ContractsExplorer onNavigateToPage={setPage} />;
       default:
         return <TransactionManagement onNavigateToPage={setPage} />;
     }

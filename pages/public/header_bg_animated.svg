@@ -3,28 +3,29 @@
     <!-- Define the fade animation -->
     <style>
       .line-group-1 { 
-        animation: fadeInOut 5.76s ease-in-out infinite; 
-        opacity: 0.3;
+        animation: slideInThenFade 5.76s ease-in-out infinite; 
+        opacity: 0;
       }
       .line-group-2 { 
-        animation: fadeInOut 5.76s ease-in-out infinite 1.152s; 
-        opacity: 0.3;
+        animation: slideInThenFade 5.76s ease-in-out infinite 1.152s; 
+        opacity: 0;
       }
       .line-group-3 { 
-        animation: fadeInOut 5.76s ease-in-out infinite 2.304s; 
-        opacity: 0.3;
+        animation: slideInThenFade 5.76s ease-in-out infinite 2.304s; 
+        opacity: 0;
       }
       .line-group-4 { 
-        animation: fadeInOut 5.76s ease-in-out infinite 3.456s; 
-        opacity: 0.3;
+        animation: slideInThenFade 5.76s ease-in-out infinite 3.456s; 
+        opacity: 0;
       }
       
-      @keyframes fadeInOut {
-        0% { opacity: 0.3; }
-        25% { opacity: 1; }
-        50% { opacity: 1; }
-        75% { opacity: 0.3; }
-        100% { opacity: 0.3; }
+      @keyframes slideInThenFade {
+        0% { opacity: 0; transform: translateX(20px); }
+        10% { opacity: 0.3; transform: translateX(0px); }
+        35% { opacity: 1; transform: translateX(0px); }
+        60% { opacity: 1; transform: translateX(0px); }
+        85% { opacity: 0.3; transform: translateX(0px); }
+        100% { opacity: 0.3; transform: translateX(0px); }
       }
     </style>
   </defs>

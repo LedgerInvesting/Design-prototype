@@ -37,8 +37,12 @@ The server will start on http://localhost:6006/ - navigation to the `design-libr
 This is a React design library built with TypeScript and Storybook, containing design tokens, components, and a comprehensive icon system extracted from Figma using MCP server integration.
 
 ## Current State
-- **Design Tokens**: Complete color system including new black800, typography, spacing, and border radius from Figma
-- **Components**: Button, InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs
+- **Design Tokens**: Complete design system from Figma Library 2.0 including:
+  - **Colors**: Updated color palette with semantic variants 
+  - **Shadows**: Updated shadow system with new values (small, base, medium, large, extraLarge) using pure black with precise opacity levels
+  - **Typography**: Complete 12 text styles with proper font stacks and letter spacing
+  - **Spacing & Border Radius**: Consistent spacing scale and border radius system
+- **Components**: Button (with improved small variant centering), InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs
 - **Page Components**: 
   - **Layout**: Enhanced unified page component combining TopNav and Sidebar with optional tabs integration
   - **Sidebar** (220px width) with brand logos, expandable menu structure, custom inbox button with notification badge
@@ -143,6 +147,7 @@ E:\Ledger design library/
 │   ├── NewTransactionModal.tsx       # Transaction type selection modal component
 │   ├── ReportNavigation.tsx           # Advanced report navigation page (default) - uses Layout
 │   ├── CashSettlement.tsx             # Cession and Collateral subpage under Insights Explorer - uses Layout
+│   ├── ContractsExplorer.tsx          # Contracts subpage with dual table interface - uses Layout
 │   ├── App.tsx                        # Main React app with navigation
 │   ├── index.tsx                      # React entry point
 │   ├── vite.config.ts                 # Vite configuration
@@ -164,10 +169,11 @@ E:\Ledger design library/
 - **Selector**: Unified checkbox/radio component with 2 variants
 - **ButtonSelector**: Button-style selectors for prominent binary choices
 - **Table**: Advanced responsive data table with intelligent features:
-  - **3 specialized cell types**: simple, document (with configurable hover icons), action
+  - **3 specialized cell types**: simple (black700 text), document (with configurable hover icons), action
   - **Enhanced Action Buttons**: Upload buttons with light green styling (#C6FFC1) for primary actions
   - **Document Cells**: DocumentTable icons with download/config hover options
   - **Intelligent Column Sizing**: Automatic width optimization based on content analysis
+  - **Dual Pagination Options**: Header pagination (default) and footer pagination with blue400 separator
   - **Tab selector, horizontal scrolling, sort functionality, pagination**
   - **Sticky action column with elevation shadow**
   - **4 action types**: upload (green), validate, generate, setup (all others blue)
@@ -193,7 +199,9 @@ The `/pages` folder contains a complete React development environment for testin
 
 **Current Pages:**
 - **TransactionManagement.tsx**: Complete transaction management interface featuring:
-  - Blue header with SVG background pattern, document icon, and "New Transaction" button
+  - **Animated Header**: Subtle SVG line animation with parallax entrance effect (5.76s cycle, staggered fade patterns)
+  - Blue header banner with base shadow and responsive design
+  - Complete new transaction workflow with proper navigation back to transactions page
   - **NewTransactionModal**: Dropdown-style modal for transaction type selection featuring:
     - Two transaction options: Brand New (blue icon + AddMedium) and Renewal (green + ReloadMedium)
     - Design system radio buttons using Selector component
@@ -212,6 +220,7 @@ The `/pages` folder contains a complete React development environment for testin
   - **Responsive Layout**: Centered content (1200px max-width) with white background and mobile-optimized header/stats sections
 - **NewTransactionForm.tsx**: Comprehensive multi-tab transaction creation form featuring:
   - **FormTabs Integration**: 4-tab progressive workflow (Basic Info, Policy Groups, Structure & Key Terms, Reporting Parameters)
+  - **Complete Navigation Flow**: "Create Transaction" button navigates back to Transaction Management page
   - **Basic Information Tab**: Enhanced field structure with real industry data
     - Transaction Name and Policy Group ID input fields
     - **Comprehensive Reinsurer Dropdowns**: 33 real-world reinsurance companies including Lloyd's of London, Swiss Re, Munich Re, Berkshire Hathaway Re, etc.
@@ -251,6 +260,13 @@ The `/pages` folder contains a complete React development environment for testin
   - Interactive elements and proper component integration
   - **Design System Integration**: Complete typography token usage (dataXXL, bodyM, bodyL)
   - **Responsive Layout**: Centered content (1200px max-width) with white background
+- **ContractsExplorer.tsx**: Contracts subpage under Insights Explorer, featuring:
+  - Dual table interface: "Reinsurance Trust" and "Reinsurance Schedule"
+  - **Advanced Table Features**: Document cells with download functionality, intelligent column sizing (280px contract names)
+  - **Footer Pagination**: Second table demonstrates footer pagination with blue400 separator line
+  - **Optimized Layout**: Compact column sizing for no-scroll viewing within 1200px container
+  - **Enhanced Table Styling**: Simple text cells use black700 color, proper breadcrumb active states
+  - **Design System Integration**: Complete Layout component usage with proper navigation and responsive design
 
 **Usage:**
 ```bash

@@ -257,10 +257,10 @@ export const strokes = {
 } as const;
 
 export const shadows = {
-  small: '0px 1px 3px rgba(23, 33, 27, 0.08)',
-  base: '0px 2px 6px rgba(23, 33, 27, 0.12)',
-  medium: '0px 4px 12px rgba(23, 33, 27, 0.16)',
-  large: '0px 8px 24px rgba(23, 33, 27, 0.20)',
-  extraLarge: '0px 16px 48px rgba(23, 33, 27, 0.24)',
+  small: '0px 2px 4px rgba(0, 0, 0, 0.05)',
+  base: '0px 4px 6px rgba(0, 0, 0, 0.06)',
+  medium: '0px 8px 10px -1px rgba(0, 0, 0, 0.08)',
+  large: '0px 10px 12px -1px rgba(0, 0, 0, 0.12)',
+  extraLarge: '0px 12px 14px -1px rgba(0, 0, 0, 0.14)',
 } as const;
 

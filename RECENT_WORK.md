@@ -2,7 +2,74 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Form Field Updates & Real Reinsurance Data Integration)
+## Latest Development Session (Contracts Explorer & Table Enhancements)
+
+### Contracts Explorer Page
+158. **New Contracts Subpage Implementation**:
+    - Created ContractsExplorer.tsx as subpage under Insights Explorer
+    - Dual table interface: "Reinsurance Trust" (4 items) and "Reinsurance Schedule" (11 items)  
+    - Implemented intelligent column sizing for compact layout (280px contract names)
+    - Document cell type integration with download functionality for contract names
+    - Proper breadcrumb navigation with active state styling (black500)
+    - Added navigation from Contracts card "Explore" button to new subpage
+
+### Table Component Enhancements
+159. **Enhanced Table Cell Styling**:
+    - Updated simple text cells to use black700 color (was black900) for better hierarchy
+    - Maintained document and action cell styling consistency
+    - Improved visual balance in table content presentation
+
+160. **Dual Pagination System Implementation**:
+    - Added `showFooterPagination` prop to Table component
+    - Footer pagination features blue400 separator line between table and footer
+    - Header pagination remains default behavior
+    - ContractsExplorer demonstrates both pagination styles: header (first table) and footer (second table)
+    - Enhanced pagination controls with proper navigation and styling
+
+161. **Breadcrumb Active State Standardization**:
+    - Updated all pages to properly set `isActive: true` on current page breadcrumb
+    - Automatic black500 styling for active breadcrumbs via existing TopNav logic
+    - Consistent behavior across TransactionManagement, ReportNavigation, CashSettlement, and ContractsExplorer
+    - No need for manual reminders - pattern is now standardized
+
+## Previous Development Session (SVG Animation, Design Tokens & Navigation Updates)
+
+### SVG Background Animation System
+154. **Animated Transaction Header Background**:
+    - Created animated SVG background for Transaction Management header
+    - Implemented subtle fade-in/fade-out animation with 4 line groups
+    - 5.76s animation cycle with staggered timing (1.152s delays between groups)
+    - Added parallax entrance effect: lines slide in from right (20px translateX) while fading in
+    - Smooth transitions from invisible → dim → bright → dim in continuous loop
+    - Updated from inline base64 SVG to external animated file for better performance
+
+### Design Token Updates (Figma Library 2.0)
+155. **Shadow System Overhaul**:
+    - Updated all shadow tokens based on Figma Library 2.0 specifications
+    - **Small**: `0px 2px 4px rgba(0, 0, 0, 0.05)` (was 1px 3px with 8% opacity)
+    - **Base**: `0px 4px 6px rgba(0, 0, 0, 0.06)` (was 2px 6px with 12% opacity)
+    - **Medium**: `0px 8px 10px -1px rgba(0, 0, 0, 0.08)` (added -1px spread)
+    - **Large**: `0px 10px 12px -1px rgba(0, 0, 0, 0.12)` (added -1px spread)  
+    - **Extra Large**: `0px 12px 14px -1px rgba(0, 0, 0, 0.14)` (added -1px spread)
+    - Changed from green-tinted black to pure black rgba values
+    - Added negative spread to medium/large/extra-large for tighter appearance
+
+### Button Component Improvements
+156. **Small Button Centering Fix**:
+    - Fixed text centering issue in small button variant when `showIcon={false}`
+    - Changed gap property to be dynamic: `showIcon && icon ? '10px' : '0px'`
+    - Removed fixed margins on text span that caused off-center appearance
+    - Updated TopNav share button to explicitly use `showIcon={false}`
+    - Perfect text centering achieved for buttons without icons
+
+### Navigation Flow Completion
+157. **New Transaction Workflow Navigation**:
+    - Added proper navigation from "Create Transaction" button back to Transaction Management page
+    - Complete user flow: Transaction Management → Modal Selection → Form → Back to Transaction Management
+    - Updated NewTransactionForm component to use `onNavigateToPage('transaction-management')`
+    - Seamless integration with existing page routing system
+
+## Previous Development Session (Form Field Updates & Real Reinsurance Data Integration)
 
 ### Transaction Table Filter Updates
 151. **Updated Transaction Management Table Filters**:

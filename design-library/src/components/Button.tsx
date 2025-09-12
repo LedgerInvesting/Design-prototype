@@ -172,7 +172,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '10px',
+      gap: showIcon && icon ? '10px' : '0px', // Only add gap when icon is actually shown
       height: '30px', // Fixed height of 30px
       padding: '0 12px', // Remove vertical padding since we have fixed height
       borderRadius: borderRadius[4],
@@ -438,7 +438,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       return (
         <>
           {iconPosition === 'left' && renderSmallIcon()}
-          <span style={{ marginLeft: showIcon && iconPosition === 'left' ? '6px' : '0', marginRight: showIcon && iconPosition === 'right' ? '6px' : '0' }}>{children}</span>
+          <span>{children}</span>
           {iconPosition === 'right' && renderSmallIcon()}
         </>
       );

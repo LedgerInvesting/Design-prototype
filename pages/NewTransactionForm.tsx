@@ -848,7 +848,8 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
           color="black"
           onClick={() => {
             console.log('Create Transaction clicked');
-            // TODO: Handle transaction creation
+            // Navigate back to transaction management page after creation
+            onNavigateToPage?.('transaction-management');
           }}
           showIcon={false}
         >

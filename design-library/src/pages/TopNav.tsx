@@ -180,6 +180,7 @@ export const TopNav: React.FC<TopNavProps> = ({
           variant="small"
           color="black"
           onClick={onShareClick}
+          showIcon={false}
         >
           share
         </Button>

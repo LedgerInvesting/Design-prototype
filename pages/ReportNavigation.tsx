@@ -295,7 +295,7 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
 
 // Main page component
 interface ReportNavigationProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management') => void;
+  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer') => void;
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
@@ -1104,7 +1104,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               </div>
             </div>
 
-            {/* New Empty Card */}
+            {/* Contracts Card */}
             <div style={{
               backgroundColor: colors.blackAndWhite.white,
               border: `1px solid ${colors.reports.dynamic.blue400}`,
@@ -1123,19 +1123,21 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   color: colors.blackAndWhite.black900,
                   margin: 0
                 }}>
-                  New Card
+                  Contracts
                 </h3>
-                <button style={{
-                  backgroundColor: colors.reports.dynamic.blue200,
-                  border: 'none',
-                  borderRadius: borderRadius.absolute,
-                  padding: '6px 12px',
-                  ...typography.styles.bodyS,
-                  fontWeight: 600,
-                  color: colors.blackAndWhite.black900,
-                  cursor: 'pointer',
-                  textTransform: 'uppercase'
-                }}>
+                <button 
+                  onClick={() => onNavigateToPage?.('contracts-explorer')}
+                  style={{
+                    backgroundColor: colors.reports.dynamic.blue200,
+                    border: 'none',
+                    borderRadius: borderRadius.absolute,
+                    padding: '6px 12px',
+                    ...typography.styles.bodyS,
+                    fontWeight: 600,
+                    color: colors.blackAndWhite.black900,
+                    cursor: 'pointer',
+                    textTransform: 'uppercase'
+                  }}>
                   EXPLORE
                 </button>
               </div>
@@ -1148,20 +1150,56 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 margin: '0',
               }} />
 
-              {/* Empty Card Content */}
+              {/* Card Content */}
               <div style={{ 
                 padding: '30px 30px 26px 30px',
                 textAlign: 'center',
                 minHeight: '200px',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                gap: '20px'
               }}>
+                {/* Blue 700 Container */}
                 <div style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black500,
+                  backgroundColor: colors.reports.blue700,
+                  borderRadius: borderRadius[12],
+                  padding: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}>
-                  Content coming soon...
+                  {/* Contract Icon - using same as transaction management */}
+                  <img 
+                    src="/transaction header icon.png" 
+                    alt="contracts" 
+                    style={{ 
+                      width: '80px', 
+                      height: 'auto',
+                      display: 'block'
+                    }}
+                  />
+                </div>
+                
+                {/* Text Content */}
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}>
+                  <div style={{
+                    ...typography.styles.bodyL,
+                    color: colors.blackAndWhite.black900,
+                  }}>
+                    58 Contracts available
+                  </div>
+                  <div style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black500,
+                  }}>
+                    5 Contracts executed in past 30 days
+                  </div>
                 </div>
               </div>
             </div>

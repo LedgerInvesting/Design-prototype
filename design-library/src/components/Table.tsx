@@ -213,6 +213,11 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       </style>
       <div style={headerStyles} className={className}>
         <div style={leftSectionStyles}>
+        {!showSearch && title && (
+          <div style={titleStyles}>
+            {title}
+          </div>
+        )}
         {showSearch && (
           <div 
             style={searchContainerStyles}
@@ -534,7 +539,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
     padding: '6px 12px', // Reduced padding for more compact rows
     fontFamily: typography.styles.bodyM.fontFamily.join(', '),
     fontSize: typography.styles.bodyM.fontSize,
-    color: colors.blackAndWhite.black900,
+    color: colors.blackAndWhite.black700,
     verticalAlign: 'middle' as const,
     borderBottom: `1px solid #e3f0f4`, // Match Figma border color
     borderRight: '1px solid #daebf1', // Right border for column separation
@@ -625,7 +630,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
     borderBottomLeftRadius: borderRadius[8],
     borderBottomRightRadius: borderRadius[8],
     border: '1px solid #d9e7ec',
-    borderTop: 'none',
+    borderTop: `1px solid ${colors.reports.blue400}`,
     gap: '50px',
   };
 
@@ -849,8 +854,8 @@ export const Table: React.FC<TableProps> = ({
   };
 
   const tableStyles = {
-    width: '1550px', // Fixed width to ensure table content forces horizontal scroll when needed
-    minWidth: '1550px', // Minimum width: 300px + 200px + 200px + (5 × 130px) = 1550px total
+    width: '100%', // Responsive width to fit container
+    minWidth: '920px', // Minimum width for 5 columns: 400px + 120px + 140px + 140px + 120px = 920px
     borderCollapse: 'collapse' as const,
     backgroundColor: colors.blackAndWhite.white,
     tableLayout: 'fixed' as const, // Enforce fixed column widths from width props
