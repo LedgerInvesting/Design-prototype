@@ -301,7 +301,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
 // Main page component
 interface CashSettlementProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation') => void;
+  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation') => void;
 }
 
 export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage }) => {
@@ -338,6 +338,25 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
       selectedSidebarSubitem="insights-explorer"
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
+        
+        // Handle Reports navigation
+        if (itemId === 'reports') {
+          if (subitemId === 'transactions') {
+            onNavigateToPage && onNavigateToPage('transaction-management');
+          } else if (subitemId === 'insights-explorer') {
+            onNavigateToPage && onNavigateToPage('report-navigation');
+          }
+        }
+        // Handle Analytics navigation
+        else if (itemId === 'analytics') {
+          if (subitemId === 'valuation') {
+            onNavigateToPage && onNavigateToPage('analytics-valuation');
+          }
+        }
+        // Handle Contracts navigation
+        else if (itemId === 'contracts') {
+          onNavigateToPage && onNavigateToPage('contracts-explorer');
+        }
       }}
       onInboxClick={() => {
         console.log('Inbox clicked');

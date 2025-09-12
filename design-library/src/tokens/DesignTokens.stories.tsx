@@ -212,6 +212,18 @@ const DesignTokensShowcase: React.FC = () => {
           <ColorSwatch color={colors.marketplace.dynamic.violet300} name="Violet 300" description="Dynamic" />
           <ColorSwatch color={colors.marketplace.dynamic.violet200} name="Violet 200" description="Dynamic" />
         </div>
+
+        <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Analytics</h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '32px' }}>
+          <ColorSwatch color={colors.analytics.green900} name="Green 900" />
+          <ColorSwatch color={colors.analytics.green800} name="Green 800" />
+          <ColorSwatch color={colors.analytics.green700} name="Green 700" description="Main" />
+          <ColorSwatch color={colors.analytics.green600} name="Green 600" />
+          <ColorSwatch color={colors.analytics.green500} name="Green 500" />
+          <ColorSwatch color={colors.analytics.dynamic.green400} name="Green 400" description="Dynamic" />
+          <ColorSwatch color={colors.analytics.dynamic.green300} name="Green 300" description="Dynamic" />
+          <ColorSwatch color={colors.analytics.dynamic.green200} name="Green 200" description="Dynamic" />
+        </div>
       </section>
 
       {/* Typography Section */}
@@ -334,11 +346,11 @@ const DesignTokensShowcase: React.FC = () => {
       <section style={{ marginBottom: '48px' }}>
         <h2 style={{ fontSize: '32px', marginBottom: '24px', color: '#1f2937' }}>Shadows</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', backgroundColor: '#f9fafb', padding: '24px', borderRadius: '8px' }}>
-          <ShadowExample shadow={shadows.sm} name="Small" />
+          <ShadowExample shadow={shadows.small} name="Small" />
           <ShadowExample shadow={shadows.base} name="Base" />
-          <ShadowExample shadow={shadows.md} name="Medium" />
-          <ShadowExample shadow={shadows.lg} name="Large" />
-          <ShadowExample shadow={shadows.xl} name="Extra Large" />
+          <ShadowExample shadow={shadows.medium} name="Medium" />
+          <ShadowExample shadow={shadows.large} name="Large" />
+          <ShadowExample shadow={shadows.extraLarge} name="Extra Large" />
         </div>
       </section>
 

@@ -57,6 +57,10 @@ export type { TableProps, TableHeaderProps, TableColumnHeaderProps, TableBodyPro
 export * from '../tokens';
 export * from '../icons/index';
 
+// Themed Components
+export { ThemedCard } from './ThemedCard';
+export type { ThemedCardProps } from './ThemedCard';
+
 // Export utilities and hooks
 export * from '../utils';
 export * from '../hooks';

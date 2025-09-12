@@ -692,6 +692,16 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
             onNavigateToPage && onNavigateToPage('report-navigation');
           }
         }
+        // Handle Analytics navigation
+        else if (itemId === 'analytics') {
+          if (subitemId === 'valuation') {
+            onNavigateToPage && onNavigateToPage('analytics-valuation');
+          }
+        }
+        // Handle other navigation
+        else if (itemId === 'contracts') {
+          onNavigateToPage && onNavigateToPage('contracts-explorer');
+        }
       }}
       onInboxClick={() => {
         console.log('Inbox clicked');

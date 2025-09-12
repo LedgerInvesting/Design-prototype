@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { colors, borderRadius, typography } from '../tokens';
+import { borderRadius, typography, useSemanticColors } from '../tokens';
 
 export type SelectorVariant = 'checkbox' | 'radio';
 
@@ -39,6 +39,7 @@ export const Selector: React.FC<SelectorProps> = ({
   value,
 }) => {
   const [internalChecked, setInternalChecked] = useState(defaultChecked);
+  const colors = useSemanticColors();
 
   // Use controlled value if provided, otherwise use internal state
   const isSelected = checked !== undefined ? checked : internalChecked;
@@ -81,7 +82,7 @@ export const Selector: React.FC<SelectorProps> = ({
       case 'default':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: colors.theme.primary400,
           backgroundColor: colors.blackAndWhite.white,
         };
       case 'filled':

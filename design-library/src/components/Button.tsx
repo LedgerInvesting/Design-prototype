@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { typography, colors, borderRadius } from '../tokens';
+import { typography, borderRadius, useSemanticColors } from '../tokens';
 import { icons } from '../icons';
 
 export type ButtonVariant = 'primary' | 'small' | 'icon';
@@ -49,6 +49,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   } = props;
 
   const [isHovered, setIsHovered] = useState(false);
+  const colors = useSemanticColors();
 
   // Extract variant-specific props with defaults
   const variant = props.variant || 'primary';
@@ -136,11 +137,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           color: colors.blackAndWhite.white,
         };
       case 'main':
-        const mainBg = disabled ? colors.reports.dynamic.blue200 : colors.reports.blue700;
+        const mainBg = disabled ? colors.theme.primary200 : colors.theme.primary700;
         return {
           ...baseStyles,
           ...getSimpleBackground(mainBg, 'main'),
-          color: disabled ? colors.reports.dynamic.blue400 : colors.blackAndWhite.black900,
+          color: disabled ? colors.theme.primary400 : colors.blackAndWhite.black900,
         };
       case 'light':
         return {
@@ -195,11 +196,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           color: colors.blackAndWhite.white,
         };
       case 'main':
-        const smallMainBg = disabled ? colors.reports.dynamic.blue200 : colors.reports.blue700;
+        const smallMainBg = disabled ? colors.theme.primary200 : colors.theme.primary700;
         return {
           ...baseStyles,
           ...getSimpleBackground(smallMainBg, 'main'),
-          color: disabled ? colors.reports.dynamic.blue400 : colors.blackAndWhite.black900,
+          color: disabled ? colors.theme.primary400 : colors.blackAndWhite.black900,
         };
       case 'light':
         return {
@@ -256,7 +257,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         return {
           ...baseStyles,
           ...shapeStyles,
-          ...getSimpleBackground(colors.reports.blue700, 'main'),
+          ...getSimpleBackground(colors.theme.primary700, 'main'),
         };
       case 'light':
         return {
@@ -281,7 +282,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         return {
           ...baseStyles,
           ...shapeStyles,
-          ...getSimpleBackground(colors.reports.blue700, 'main'),
+          ...getSimpleBackground(colors.theme.primary700, 'main'),
         };
     }
   };
@@ -291,9 +292,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     if (disabled) {
       switch (color) {
         case 'black':
-          return colors.reports.blue700;
+          return colors.theme.primary700;
         case 'main':
-          return colors.reports.dynamic.blue400;
+          return colors.theme.primary400;
         case 'light':
           return colors.blackAndWhite.black900;
         case 'green':
@@ -307,7 +308,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     
     switch (color) {
       case 'black':
-        return colors.reports.blue700;
+        return colors.theme.primary700;
       case 'main':
         return colors.blackAndWhite.black900;
       case 'light':
@@ -315,7 +316,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'green':
         return colors.blackAndWhite.black900;
       case 'white':
-        return colors.reports.blue700;
+        return colors.theme.primary700;
       default:
         return 'currentColor';
     }
@@ -325,9 +326,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   const getIconColor = () => {
     switch (color) {
       case 'black':
-        return colors.reports.blue700;
+        return colors.theme.primary700;
       case 'white':
-        return colors.reports.blue700;
+        return colors.theme.primary700;
       default:
         return colors.blackAndWhite.black900;
     }
@@ -338,9 +339,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     if (disabled) {
       switch (color) {
         case 'black':
-          return colors.reports.dynamic.blue400;
+          return colors.theme.primary400;
         case 'main':
-          return colors.reports.dynamic.blue400;
+          return colors.theme.primary400;
         case 'light':
           return colors.blackAndWhite.black900;
         case 'green':
@@ -348,13 +349,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         case 'white':
           return colors.blackAndWhite.black500;
         default:
-          return colors.reports.dynamic.blue400;
+          return colors.theme.primary400;
       }
     }
     
     switch (color) {
       case 'black':
-        return colors.reports.blue700; // Updated to blue700
+        return colors.theme.primary700; // Updated to blue700
       case 'main':
         return colors.blackAndWhite.black900;
       case 'light':
@@ -362,7 +363,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'green':
         return colors.blackAndWhite.black900;
       case 'white':
-        return colors.reports.blue700; // Updated to blue700
+        return colors.theme.primary700; // Updated to blue700
       default:
         return colors.blackAndWhite.black900;
     }

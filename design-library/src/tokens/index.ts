@@ -222,6 +222,20 @@ export const colors = {
       violet200: '#f8f3ff', // estimated from visual
     },
   },
+  analytics: {
+    // Main colors
+    green900: '#0f9342',
+    green800: '#42c172',
+    green700: '#74efa3', // main color
+    green600: '#9df7b2',
+    green500: '#c6ffc1',
+    // Dynamic colors (lighter versions)
+    dynamic: {
+      green400: '#e1eae5',
+      green300: '#e9f3f7',
+      green200: '#f2f8fb',
+    },
+  },
 } as const;
 
 export const spacing = {
@@ -263,4 +277,8 @@ export const shadows = {
   large: '0px 10px 12px -1px rgba(0, 0, 0, 0.12)',
   extraLarge: '0px 12px 14px -1px rgba(0, 0, 0, 0.14)',
 } as const;
+
+// Export theming system
+export * from './theme';
+export * from './ThemeProvider';
 

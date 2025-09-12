@@ -148,6 +148,7 @@ E:\Ledger design library/
 │   ├── ReportNavigation.tsx           # Advanced report navigation page (default) - uses Layout
 │   ├── CashSettlement.tsx             # Cession and Collateral subpage under Insights Explorer - uses Layout
 │   ├── ContractsExplorer.tsx          # Contracts subpage with dual table interface - uses Layout
+│   ├── AnalyticsValuation.tsx         # Analytics Valuation page with themed banner - uses Layout + ThemeProvider
 │   ├── App.tsx                        # Main React app with navigation
 │   ├── index.tsx                      # React entry point
 │   ├── vite.config.ts                 # Vite configuration
@@ -170,7 +171,7 @@ E:\Ledger design library/
 - **ButtonSelector**: Button-style selectors for prominent binary choices
 - **Table**: Advanced responsive data table with intelligent features:
   - **3 specialized cell types**: simple (black700 text), document (with configurable hover icons), action
-  - **Enhanced Action Buttons**: Upload buttons with light green styling (#C6FFC1) for primary actions
+  - **Enhanced Action Buttons**: Upload buttons with light green styling (#C6FFC1) for primary actions, theme-aware color integration for Analytics/Reports contexts
   - **Document Cells**: DocumentTable icons with download/config hover options
   - **Intelligent Column Sizing**: Automatic width optimization based on content analysis
   - **Dual Pagination Options**: Header pagination (default) and footer pagination with blue400 separator
@@ -267,6 +268,15 @@ The `/pages` folder contains a complete React development environment for testin
   - **Optimized Layout**: Compact column sizing for no-scroll viewing within 1200px container
   - **Enhanced Table Styling**: Simple text cells use black700 color, proper breadcrumb active states
   - **Design System Integration**: Complete Layout component usage with proper navigation and responsive design
+- **AnalyticsValuation.tsx**: Analytics Valuation page demonstrating theme system integration, featuring:
+  - **Analytics Theme Integration**: Uses ThemeProvider with "analytics" theme for automatic green color theming
+  - **Themed Header Banner**: Matches Transaction Management layout but with Analytics green700 background
+  - **Semantic Color Usage**: Uses `colors.theme.main` for proper theme-aware coloring (green in Analytics context)
+  - **New Valuation Button**: Features AddSmall icon in Analytics green with 240px width matching other pages
+  - **Layout Component**: Uses Layout with proper Analytics sidebar navigation (selectedSidebarItem="analytics", selectedSidebarSubitem="valuation")
+  - **Navigation Integration**: Connected to main app navigation with proper routing from sidebar clicks
+  - **Design System Compliance**: Clean, minimal implementation following established patterns
+  - **Theme-Aware Styling**: Demonstrates proper use of semantic colors vs hardcoded colors
 
 **Usage:**
 ```bash
@@ -284,7 +294,22 @@ npm run dev  # Start on http://localhost:5173
 
 ## Recent Major Updates & Code Cleanup
 
-### 🧹 **Comprehensive Codebase Cleanup (Latest - September 2025)**
+### 🎯 **Theme System Integration & Navigation Fixes (Latest - December 2025)**
+- **ActionCell Theme Integration**: Updated ActionCell.tsx to use semantic theme colors instead of hardcoded Reports blue colors
+  - Moved actionConfigs inside component to access dynamic theme colors
+  - Updated icon colors to use `colors.theme.main` for validate, generate, and setup actions
+  - Updated container styling to use `colors.theme.primary300/400` for hover states and borders
+  - Updated icon container background to use `colors.theme.primary500`
+  - Full Analytics green theme support now working across all table components
+- **Comprehensive Navigation Fixes**: Fixed sidebar navigation not working in subpages
+  - **CashSettlement.tsx**: Added complete navigation handler for all menu sections (was previously empty)
+  - **ContractsExplorer.tsx**: Enhanced navigation to include Analytics valuation and improved structure
+  - **AnalyticsValuation.tsx**: Fixed inconsistent navigation routing (insights-explorer now correctly goes to report-navigation)
+  - **NewTransactionForm.tsx**: Added missing Analytics and Contracts navigation handlers to FormLayout component
+  - **Interface Updates**: Extended PageType interfaces across all components to include all navigation options
+- **Code Consistency**: Standardized navigation patterns across all subpages with consistent error handling and logging
+
+### 🧹 **Comprehensive Codebase Cleanup (September 2025)**
 - **Removed Dead Code**: Eliminated broken backup files (ReportNavigation-broken.tsx), unused imports, outdated references
 - **Consolidated Logic**: Created shared utilities for common patterns (typography, styling, CSS injection)
   - `utils/typography.ts`: Typography style application helpers

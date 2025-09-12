@@ -2,7 +2,72 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Contracts Explorer & Table Enhancements)
+## Latest Development Session (Theme Integration & Navigation Fixes - December 2025)
+
+### ActionCell Theme System Integration
+166. **ActionCell Theme Compatibility**:
+    - Updated ActionCell.tsx to use semantic theme colors instead of hardcoded Reports blue
+    - Moved actionConfigs inside component to access dynamic theme colors via useSemanticColors()
+    - Updated validate, generate, and setup action icons to use `colors.theme.main` (Analytics green/Reports blue)
+    - Updated container hover background to use `colors.theme.primary300`
+    - Updated container border to use `colors.theme.primary400`
+    - Updated icon container background to use `colors.theme.primary500`
+    - Full Analytics theme integration now working across all table sub-components
+
+### Comprehensive Navigation Fixes
+167. **CashSettlement Navigation**:
+    - Fixed empty onNavigate handler that was only logging without performing navigation
+    - Added complete navigation handling for Reports, Analytics, and Contracts sections
+    - Extended interface to include all page navigation types
+
+168. **ContractsExplorer Navigation**:
+    - Enhanced navigation structure to include Analytics valuation support
+    - Added 'analytics-valuation' to PageType interface
+    - Improved navigation handler consistency with other pages
+
+169. **AnalyticsValuation Navigation**:
+    - Fixed inconsistent navigation routing (insights-explorer now correctly navigates to report-navigation)
+    - Reorganized navigation handler for better structure and consistency
+
+170. **NewTransactionForm Navigation**:
+    - Added missing Analytics and Contracts navigation handlers to FormLayout component
+    - Extended PageType interface to include all navigation options
+    - Fixed sidebar navigation not working from transaction workflow pages
+
+171. **Navigation Pattern Standardization**:
+    - Standardized navigation patterns across all subpages with consistent structure
+    - All pages now handle: Reports→transactions, Reports→insights-explorer, Analytics→valuation, Contracts
+    - Added proper error handling and logging across all navigation handlers
+
+## Previous Development Session (Analytics Valuation & Theme System)
+
+### Analytics Valuation Page Implementation
+162. **New Analytics Valuation Page**:
+    - Created AnalyticsValuation.tsx as first Analytics product page
+    - Implemented proper sidebar navigation integration (Analytics → Valuation)
+    - Added routing support in App.tsx and TransactionManagement.tsx for cross-product navigation
+    - Connected to main app navigation system with proper page type definitions
+
+163. **Analytics-Themed Header Banner**:
+    - Created AnalyticsHeader component matching Transaction Management banner layout
+    - Uses Analytics green700 background with semantic theming (`colors.theme.main`)
+    - "New Valuation" button with AddSmall icon and proper 240px width sizing
+    - Same animated SVG background and responsive behavior as other page banners
+
+164. **Theme System Integration**:
+    - Wrapped page with ThemeProvider using `initialTheme="analytics"` for proper theme context
+    - Components automatically use Analytics green colors instead of Reports blue
+    - Demonstrates proper semantic color usage (`colors.theme.main`) vs hardcoded colors
+    - Fixed prop naming issue (theme vs initialTheme) for proper ThemeProvider integration
+
+165. **Code Cleanup and Documentation**:
+    - Cleaned up AnalyticsValuation component removing unnecessary style bloat
+    - Consolidated inline styles and removed redundant style object definitions
+    - Updated CLAUDE.md with Analytics Valuation page documentation and navigation flows
+    - Enhanced COMPONENTS.md with comprehensive theming system documentation
+    - Added theming system overview, usage patterns, and benefits to component docs
+
+## Previous Development Session (Contracts Explorer & Table Enhancements)
 
 ### Contracts Explorer Page
 158. **New Contracts Subpage Implementation**:

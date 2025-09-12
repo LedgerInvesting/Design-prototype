@@ -2,6 +2,37 @@
 
 This document contains detailed documentation for all components in the Ledger Design Library.
 
+## 🎨 Theming System
+
+### Overview
+The design library features a comprehensive theming system that allows components to automatically adapt colors based on product context (Reports, Analytics, Marketplace).
+
+### Core Concepts
+- **Semantic Colors**: Components use `colors.theme.main`, `colors.theme.primary400`, etc. instead of hardcoded product colors
+- **ThemeProvider**: React context that provides theme-aware colors to all child components
+- **Automatic Color Resolution**: Theme system automatically maps semantic tokens to product colors
+  - Reports context: `theme.main` → `reports.blue700`
+  - Analytics context: `theme.main` → `analytics.green700`
+  - Marketplace context: `theme.main` → `marketplace.purple700`
+
+### Usage
+```typescript
+// Wrap components with ThemeProvider
+<ThemeProvider initialTheme="analytics">
+  <YourComponent />
+</ThemeProvider>
+
+// Inside components, use semantic colors
+const colors = useSemanticColors();
+<div style={{ backgroundColor: colors.theme.main }} />
+```
+
+### Benefits
+- **Figma Workflow Compatible**: Components designed in Reports automatically use Analytics colors when moved to Analytics context
+- **Consistent Theming**: No need to manually update colors when switching product contexts
+- **Maintainable**: Single source of truth for theme colors
+- **Type Safe**: Full TypeScript support with theme-aware color tokens
+
 ## Components Built
 1. **Button**: Unified button component with 3 variants (primary, small, icon), multiple colors, icon support, disabled states
 2. **InfoTooltip**: Interactive "i" symbol with hover tooltips, supports simple text or complex multi-section content, 5 positioning options

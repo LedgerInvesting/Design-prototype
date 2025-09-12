@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import { colors, borderRadius, spacing } from '../tokens';
+import { borderRadius, spacing, useSemanticColors } from '../tokens';
 import { icons } from '../icons';
 import { InfoTooltip, InfoTooltipSection } from './InfoTooltip';
 import { commonStyles } from '../utils/styleInjection';
@@ -57,6 +57,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   disabled = false,
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
+  const colors = useSemanticColors();
   
   // Initialize number input styles
   useEffect(() => {
@@ -106,18 +107,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       case 'filled':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: colors.theme.primary400,
         };
       case 'disabled':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: colors.theme.primary400,
           opacity: 0.6,
         };
       default:
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: colors.theme.primary400,
         };
     }
   };

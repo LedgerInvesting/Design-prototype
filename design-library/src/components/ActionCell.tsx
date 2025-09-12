@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { colors, typography, borderRadius, shadows } from '../tokens';
+import { typography, borderRadius, shadows, useSemanticColors } from '../tokens';
 import { CheckSmall, UploadSmall, ConfigSmall, CalculatorSmall } from '../icons';
 
 export type ActionType = 'upload' | 'validate' | 'generate' | 'setup';
@@ -8,25 +8,6 @@ interface ActionConfig {
   icon: React.ReactNode;
   text: string;
 }
-
-const actionConfigs: Record<ActionType, ActionConfig> = {
-  upload: {
-    icon: <UploadSmall color={colors.success.textAndStrokes} />,
-    text: 'Upload'
-  },
-  validate: {
-    icon: <CheckSmall color={colors.reports.blue900} />,
-    text: 'Validate'
-  },
-  generate: {
-    icon: <CalculatorSmall color={colors.reports.blue900} />,
-    text: 'Generate'
-  },
-  setup: {
-    icon: <ConfigSmall color={colors.reports.blue900} />,
-    text: 'Setup'
-  }
-};
 
 export interface ActionCellProps {
   actionType: ActionType;
@@ -40,6 +21,26 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   className = '',
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const colors = useSemanticColors();
+  
+  const actionConfigs: Record<ActionType, ActionConfig> = {
+    upload: {
+      icon: <UploadSmall color={colors.success.textAndStrokes} />,
+      text: 'Upload'
+    },
+    validate: {
+      icon: <CheckSmall color={colors.theme.main} />,
+      text: 'Validate'
+    },
+    generate: {
+      icon: <CalculatorSmall color={colors.theme.main} />,
+      text: 'Generate'
+    },
+    setup: {
+      icon: <ConfigSmall color={colors.theme.main} />,
+      text: 'Setup'
+    }
+  };
   
   const actionConfig = actionConfigs[actionType];
   
@@ -55,8 +56,8 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     justifyContent: 'space-between', // Space between text (left) and icon container (right)
     padding: '6px 3px 6px 6px', // 6px top/bottom/left, 3px right
     borderRadius: borderRadius[4],
-    backgroundColor: isHovered ? 'rgba(244, 249, 255, 0.5)' : colors.blackAndWhite.white, // White background, blue200 with 50% alpha on hover
-    border: `1px solid ${colors.reports.dynamic.blue400}`, // Always use 400 stroke color
+    backgroundColor: isHovered ? colors.theme.primary300 : colors.blackAndWhite.white, // White background, theme primary300 on hover
+    border: `1px solid ${colors.theme.primary400}`, // Use theme primary400 stroke color
     boxShadow: shadows.small, // Small shadow
     cursor: 'pointer',
     transition: 'all 0.2s ease',
@@ -71,7 +72,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     justifyContent: 'center',
     width: '22px',
     height: '22px',
-    backgroundColor: actionType === 'upload' ? '#C6FFC1' : colors.reports.blue500, // Light green for upload, blue500 for others
+    backgroundColor: actionType === 'upload' ? '#C6FFC1' : colors.theme.primary500, // Light green for upload, theme primary500 for others
     borderRadius: borderRadius[4],
     flexShrink: 0, // Don't shrink the icon container
   };

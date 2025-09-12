@@ -60,7 +60,8 @@
       "mcp__figma-mcp__get_document_info",
       "Bash(curl:*)",
       "Read(//tmp/**)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "mcp__figma-dev-mode-mcp-server__get_screenshot"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

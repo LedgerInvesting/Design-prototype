@@ -11,7 +11,7 @@ const formTabs: FormTab[] = [
   { id: 'reporting-config', label: 'Reporting Parameters & Configuration' },
 ];
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'analytics-valuation' | 'contracts-explorer';
 
 export interface NewTransactionFormProps {
   onNavigateToPage?: (page: PageType) => void;
@@ -967,12 +967,27 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       }}
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
-        // Handle sidebar navigation
-        if (itemId === 'reports' && subitemId === 'explorer') {
-          onNavigateToPage?.('report-navigation');
-        } else if (itemId === 'reports' && subitemId === 'transactions') {
-          onNavigateToPage?.('transaction-management');
-        } else if (itemId === 'marketplace' && subitemId === 'settlement') {
+        
+        // Handle Reports navigation
+        if (itemId === 'reports') {
+          if (subitemId === 'insights-explorer') {
+            onNavigateToPage?.('report-navigation');
+          } else if (subitemId === 'transactions') {
+            onNavigateToPage?.('transaction-management');
+          }
+        }
+        // Handle Analytics navigation
+        else if (itemId === 'analytics') {
+          if (subitemId === 'valuation') {
+            onNavigateToPage?.('analytics-valuation');
+          }
+        }
+        // Handle Contracts navigation
+        else if (itemId === 'contracts') {
+          onNavigateToPage?.('contracts-explorer');
+        }
+        // Handle other navigation (legacy marketplace)
+        else if (itemId === 'marketplace' && subitemId === 'settlement') {
           onNavigateToPage?.('cash-settlement');
         }
       }}

@@ -10,7 +10,7 @@ import { Table } from '@design-library/components';
 import { colors, typography, spacing, borderRadius } from '@design-library/tokens';
 
 // Define page type for navigation
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer' | 'analytics-valuation';
 
 export interface ContractsExplorerProps {
   onNavigateToPage?: (page: PageType) => void;
@@ -278,12 +278,27 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
       breadcrumbs={breadcrumbs}
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
-        // Handle sidebar navigation
-        if (itemId === 'reports' && subitemId === 'explorer') {
-          onNavigateToPage?.('report-navigation');
-        } else if (itemId === 'reports' && subitemId === 'transactions') {
-          onNavigateToPage?.('transaction-management');
-        } else if (itemId === 'marketplace' && subitemId === 'settlement') {
+        // Handle Reports navigation
+        if (itemId === 'reports') {
+          if (subitemId === 'insights-explorer') {
+            onNavigateToPage?.('report-navigation');
+          } else if (subitemId === 'transactions') {
+            onNavigateToPage?.('transaction-management');
+          }
+        }
+        // Handle Analytics navigation
+        else if (itemId === 'analytics') {
+          if (subitemId === 'valuation') {
+            onNavigateToPage?.('analytics-valuation');
+          }
+        }
+        // Handle Contracts navigation
+        else if (itemId === 'contracts') {
+          // Already on contracts explorer page
+          console.log('Already on contracts explorer page');
+        }
+        // Handle other navigation (legacy marketplace)
+        else if (itemId === 'marketplace' && subitemId === 'settlement') {
           onNavigateToPage?.('cash-settlement');
         }
       }}

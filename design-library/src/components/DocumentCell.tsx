@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { colors, typography, borderRadius, shadows } from '../tokens';
+import { typography, borderRadius, shadows, useSemanticColors } from '../tokens';
 import { DocumentTable, DownloadSmall, ConfigSmall } from '../icons';
 
 export interface DocumentCellProps {
@@ -18,6 +18,7 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
   hoverIcon = 'download',
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const colors = useSemanticColors();
 
   const handleClick = () => {
     if (onDownload) {
@@ -31,7 +32,7 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     justifyContent: 'space-between',
     padding: '4px 8px',
     borderRadius: borderRadius[4],
-    backgroundColor: isHovered ? colors.reports.dynamic.blue300 : colors.reports.dynamic.blue200, // Blue200 default, Blue300 hover
+    backgroundColor: isHovered ? colors.theme.primary300 : colors.theme.primary200, // Theme-aware colors
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     minHeight: '24px',

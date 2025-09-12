@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { colors, typography, borderRadius, shadows } from '../tokens';
+import { typography, borderRadius, shadows, useSemanticColors } from '../tokens';
 import { SearchMedium, ChevronLeftSmall, ChevronRightSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
 import { ActionCell, ActionType } from './ActionCell';
@@ -69,6 +69,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   className = '',
 }) => {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const colors = useSemanticColors();
   const headerStyles = {
     display: 'flex',
     justifyContent: 'space-between',
@@ -77,7 +78,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     borderTopLeftRadius: borderRadius[8],
     borderTopRightRadius: borderRadius[8],
-    border: '1px solid #e3f0f4', // Light blue border from Figma
+    border: `1px solid ${colors.theme.primary300}`, // Theme-aware border
     borderBottom: 'none', // Will be handled by table border
   };
 
@@ -107,7 +108,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     position: 'relative' as const,
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#eef5fa', // Light blue background from Figma
+    backgroundColor: colors.theme.primary200, // Theme-aware background
     borderRadius: borderRadius.absolute, // Pill shape
     height: '30px',
     width: isSearchExpanded ? '200px' : '58px', // Expand when clicked
@@ -171,7 +172,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const activeTabStyles = {
     backgroundColor: colors.blackAndWhite.white,
     color: colors.blackAndWhite.black900,
-    border: `1px solid ${colors.reports.dynamic.blue400}`,
+    border: `1px solid ${colors.theme.primary400}`,
     borderRadius: borderRadius.absolute,
     fontWeight: 600,
   };
@@ -179,7 +180,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const separatorStyles = {
     width: '1px',
     height: '16px',
-    backgroundColor: colors.reports.dynamic.blue400,
+    backgroundColor: colors.theme.primary400,
   };
 
   const paginationStyles = {
@@ -188,7 +189,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     fontWeight: typography.styles.bodyS.fontWeight,
     lineHeight: typography.styles.bodyS.lineHeight,
     letterSpacing: typography.styles.bodyS.letterSpacing,
-    color: '#838985', // Grey-700 from Figma
+    color: colors.blackAndWhite.black500, // Use semantic color
     margin: 0,
   };
 
@@ -303,6 +304,7 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
   onSort,
   isLastColumn = false,
 }) => {
+  const colors = useSemanticColors();
   const isActive = sortState.column === column.key;
   const canSort = column.sortable;
   const isActionColumn = column.cellType === 'action';
@@ -313,9 +315,9 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     cursor: canSort ? 'pointer' : 'default',
     height: '32px', // Reduced height for compact design
     boxSizing: 'border-box' as const,
-    borderRight: '1px solid #daebf1', // Right border for column separation
-    borderTop: '1px solid #daebf1',
-    borderBottom: '1px solid #daebf1',
+    borderRight: `1px solid ${colors.theme.primary300}`, // Right border for column separation
+    borderTop: `1px solid ${colors.theme.primary300}`,
+    borderBottom: `1px solid ${colors.theme.primary300}`,
     borderLeft: 'none', // Explicitly set no left border for non-action columns
     position: 'relative' as const,
     textAlign: 'left' as const,
@@ -328,11 +330,11 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     position: 'sticky' as const,
     right: 0,
     zIndex: 10,
-    backgroundColor: '#ffffff', // Force white background
-    borderRight: '1px solid #daebf1', // Maintain right border
-    borderTop: '1px solid #daebf1', // Maintain top border
-    borderBottom: '1px solid #daebf1', // Maintain bottom border
-    boxShadow: `inset 1px 0 0 0 #D9E7EC, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
+    backgroundColor: colors.blackAndWhite.white, // Force white background
+    borderRight: `1px solid ${colors.theme.primary300}`, // Maintain right border
+    borderTop: `1px solid ${colors.theme.primary300}`, // Maintain top border
+    borderBottom: `1px solid ${colors.theme.primary300}`, // Maintain bottom border
+    boxShadow: `inset 1px 0 0 0 ${colors.theme.primary300}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
   } : baseHeaderStyles;
 
   const headerContentStyles = {
@@ -458,6 +460,8 @@ export const TableBody: React.FC<TableBodyProps> = ({
   data,
   emptyMessage = 'No data available',
 }) => {
+  const colors = useSemanticColors();
+  
   // Function to render cell content based on cell type
   const renderCellContent = (column: TableColumn, value: React.ReactNode) => {
     const cellType = column.cellType || 'simple';
@@ -541,8 +545,8 @@ export const TableBody: React.FC<TableBodyProps> = ({
     fontSize: typography.styles.bodyM.fontSize,
     color: colors.blackAndWhite.black700,
     verticalAlign: 'middle' as const,
-    borderBottom: `1px solid #e3f0f4`, // Match Figma border color
-    borderRight: '1px solid #daebf1', // Right border for column separation
+    borderBottom: `1px solid ${colors.theme.primary300}`, // Theme-aware border color
+    borderRight: `1px solid ${colors.theme.primary300}`, // Right border for column separation
     height: '33px', // Updated row height (45px target - 12px padding = 33px)
     boxSizing: 'border-box' as const,
   };
@@ -588,11 +592,11 @@ export const TableBody: React.FC<TableBodyProps> = ({
               position: 'sticky' as const,
               right: 0,
               zIndex: 10,
-              backgroundColor: '#ffffff', // Force white background
-              borderRight: '1px solid #daebf1', // Maintain right border
-              borderTop: rowIndex === 0 ? '1px solid #daebf1' : 'none', // Top border only for first row
-              borderBottom: rowIndex === data.length - 1 ? 'none' : '1px solid #e3f0f4', // Bottom border except last row
-              boxShadow: `inset 1px 0 0 0 #D9E7EC, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
+              backgroundColor: colors.blackAndWhite.white, // Force white background
+              borderRight: `1px solid ${colors.theme.primary300}`, // Maintain right border
+              borderTop: rowIndex === 0 ? `1px solid ${colors.theme.primary300}` : 'none', // Top border only for first row
+              borderBottom: rowIndex === data.length - 1 ? 'none' : `1px solid ${colors.theme.primary300}`, // Bottom border except last row
+              boxShadow: `inset 1px 0 0 0 ${colors.theme.primary300}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
             } : baseCellStyle;
 
             return (
@@ -621,6 +625,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   onPageChange,
   className = '',
 }) => {
+  const colors = useSemanticColors();
   const paginationStyles = {
     display: 'flex',
     justifyContent: 'center',
@@ -629,8 +634,8 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     borderBottomLeftRadius: borderRadius[8],
     borderBottomRightRadius: borderRadius[8],
-    border: '1px solid #d9e7ec',
-    borderTop: `1px solid ${colors.reports.blue400}`,
+    border: `1px solid ${colors.theme.primary300}`,
+    borderTop: `1px solid ${colors.theme.primary400}`,
     gap: '50px',
   };
 
@@ -822,6 +827,7 @@ export const Table: React.FC<TableProps> = ({
   emptyMessage = 'No data available',
   className = '',
 }) => {
+  const colors = useSemanticColors();
   const [internalSortState, setInternalSortState] = useState<SortState>(sortState);
 
   const handleSort = (columnKey: string) => {
@@ -843,9 +849,9 @@ export const Table: React.FC<TableProps> = ({
     overflowX: 'auto' as const, // Enable horizontal scroll
     overflowY: 'hidden' as const,
     borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : borderRadius[8],
-    border: '1px solid #daebf1',
-    borderTop: showHeader ? 'none' : '1px solid #daebf1',
-    borderBottom: showFooterPagination ? 'none' : '1px solid #daebf1',
+    border: `1px solid ${colors.theme.primary300}`,
+    borderTop: showHeader ? 'none' : `1px solid ${colors.theme.primary300}`,
+    borderBottom: showFooterPagination ? 'none' : `1px solid ${colors.theme.primary300}`,
     // Force container to be constrained and show scrollbar
     maxWidth: '100%',
     minWidth: 0, // Allow shrinking

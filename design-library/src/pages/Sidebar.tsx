@@ -53,8 +53,8 @@ const sidebarItems: SidebarItem[] = [
     label: 'Analytics',
     icon: AnalyticsLogo,
     subitems: [
-      { id: 'option-1', label: 'Option 1' },
-      { id: 'option-2', label: 'Option 2' }
+      { id: 'valuation', label: 'Valuation' },
+      { id: 'triangle', label: 'Triangle' }
     ]
   },
   {

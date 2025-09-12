@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useEffect, useRef } from 'react';
-import { colors, borderRadius, spacing, shadows, typography } from '../tokens';
+import { borderRadius, spacing, shadows, typography, useSemanticColors } from '../tokens';
 import { icons } from '../icons';
 import { InfoTooltip, InfoTooltipSection } from './InfoTooltip';
 import { commonStyles } from '../utils/styleInjection';
@@ -62,6 +62,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const colors = useSemanticColors();
   
   // Initialize scrollbar styles
   useEffect(() => {
@@ -124,19 +125,19 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
       case 'filled':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: colors.theme.primary400,
         };
       case 'disabled':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: colors.theme.primary400,
           opacity: 0.6,
           cursor: 'default',
         };
       default:
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: colors.theme.primary400,
         };
     }
   };
@@ -159,7 +160,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
       left: 0,
       right: 0,
       backgroundColor: colors.blackAndWhite.white,
-      border: `1px solid ${colors.reports.dynamic.blue400}`,
+      border: `1px solid ${colors.theme.primary400}`,
       borderRadius: borderRadius[8],
       marginTop: spacing[1],
       maxHeight: '200px',
@@ -182,7 +183,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
         ? colors.blackAndWhite.black500 
         : colors.blackAndWhite.black900,
       backgroundColor: isHovered && !option.disabled 
-        ? colors.reports.dynamic.blue200 
+        ? colors.theme.primary200 
         : 'transparent',
       cursor: option.disabled ? 'default' : 'pointer',
     };
@@ -297,7 +298,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
                 onClick={() => handleOptionClick(option.value)}
                 onMouseEnter={(e) => {
                   if (!option.disabled) {
-                    (e.target as HTMLElement).style.backgroundColor = colors.reports.dynamic.blue200;
+                    (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
                   }
                 }}
                 onMouseLeave={(e) => {
