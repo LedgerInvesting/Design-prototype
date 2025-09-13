@@ -61,7 +61,8 @@
       "Bash(curl:*)",
       "Read(//tmp/**)",
       "Bash(find:*)",
-      "mcp__figma-dev-mode-mcp-server__get_screenshot"
+      "mcp__figma-dev-mode-mcp-server__get_screenshot",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

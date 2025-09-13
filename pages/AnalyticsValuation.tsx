@@ -1,25 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Layout } from '@design-library/pages';
 import { Button, Table } from '@design-library/components';
 import { colors as baseColors, typography, borderRadius, shadows } from '@design-library/tokens';
-import { AddSmall, DocumentTable } from '@design-library/icons';
+import { AddSmall, DocumentTable, TextTable, AmmountTable, ArrangeTable } from '@design-library/icons';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
+import { NewValuationModal, ValuationFormData } from './NewValuationModal';
 
 interface AnalyticsValuationProps {
   onNavigateToPage: (page: string) => void;
 }
 
-const AnalyticsHeader: React.FC = () => {
+interface AnalyticsHeaderProps {
+  onNewValuationClick: () => void;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
+}
+
+const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, buttonRef }) => {
   const colors = useSemanticColors();
 
   const headerStyles: React.CSSProperties = {
     backgroundColor: colors.theme.main,
-    padding: '40px 60px',
+    padding: '0 40px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: borderRadius[12],
-    minHeight: '200px',
+    height: '250px',
     position: 'relative',
     overflow: 'hidden',
     width: '100%',
@@ -34,29 +40,31 @@ const AnalyticsHeader: React.FC = () => {
   const leftContentStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '5px',
+    gap: '40px',
+  };
+
+  const illustrationContainerStyles: React.CSSProperties = {
+    width: '150px',
+    height: '150px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   };
 
   const textContentStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
-    marginLeft: '20px',
   };
 
   return (
     <div style={headerStyles}>
       <div style={leftContentStyles}>
-        <div style={{ 
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginLeft: '-20px'
-        }}>
+        <div style={illustrationContainerStyles}>
           <img 
             src="/Valuation_illustration.png" 
             alt="analytics valuation" 
-            style={{ width: '50%', height: 'auto' }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </div>
         <div style={textContentStyles}>
@@ -84,10 +92,12 @@ const AnalyticsHeader: React.FC = () => {
         width: '260px',
       }}>
         <Button
+          ref={buttonRef}
           variant="primary"
           color="black"
           icon={<AddSmall color={colors.theme.main} />}
           className="custom-button-width"
+          onClick={onNewValuationClick}
         >
           New Valuation
         </Button>
@@ -97,6 +107,9 @@ const AnalyticsHeader: React.FC = () => {
 };
 
 export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNavigateToPage }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const newValuationButtonRef = useRef<HTMLButtonElement>(null);
+
   // Add CSS for button width override to match Transaction Management
   useEffect(() => {
     const style = document.createElement('style');
@@ -113,6 +126,20 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
       document.head.removeChild(style);
     };
   }, []);
+
+  const handleNewValuationClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCreateValuation = (formData: ValuationFormData) => {
+    console.log('Creating valuation with data:', formData);
+    // Handle valuation creation logic here
+    setIsModalOpen(false);
+  };
 
   return (
     <ThemeProvider initialTheme="analytics">
@@ -151,7 +178,10 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
       ]}
     >
       {/* Header Section */}
-      <AnalyticsHeader />
+      <AnalyticsHeader 
+        onNewValuationClick={handleNewValuationClick}
+        buttonRef={newValuationButtonRef}
+      />
       
       {/* Valuation Table */}
       <div style={{ marginTop: '40px' }}>
@@ -160,31 +190,45 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
             {
               key: 'programTag',
               title: 'Program Tag',
-              icon: <DocumentTable />,
+              icon: <DocumentTable color={baseColors.analytics.dynamic.green400} />,
+              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              sortable: true,
               width: 309,
               cellType: 'document'
             },
             {
               key: 'treatyYear', 
               title: 'Treaty Year',
+              icon: <TextTable color={baseColors.analytics.dynamic.green400} />,
+              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              sortable: true,
               align: 'right',
               cellType: 'simple'
             },
             {
               key: 'insuranceLossRatio',
-              title: 'Insurance Loss Ratio', 
+              title: 'Insurance Loss Ratio',
+              icon: <TextTable color={baseColors.analytics.dynamic.green400} />,
+              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />, 
+              sortable: true,
               align: 'right',
               cellType: 'simple'
             },
             {
               key: 'lineOfBusiness',
               title: 'Line of Business',
+              icon: <TextTable color={baseColors.analytics.dynamic.green400} />,
+              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              sortable: true,
               align: 'right', 
               cellType: 'simple'
             },
             {
               key: 'premium',
               title: 'Premium',
+              icon: <AmmountTable color={baseColors.analytics.dynamic.green400} />,
+              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              sortable: true,
               align: 'right',
               cellType: 'simple'
             }
@@ -263,6 +307,14 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
           onSort={(column, direction) => console.log('Sort:', column, direction)}
         />
       </div>
+      
+      {/* New Valuation Modal */}
+      <NewValuationModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onCreateValuation={handleCreateValuation}
+        buttonRef={newValuationButtonRef}
+      />
       </Layout>
     </ThemeProvider>
   );

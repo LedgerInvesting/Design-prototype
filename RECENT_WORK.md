@@ -2,7 +2,41 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Theme Integration & Navigation Fixes - December 2025)
+## Latest Development Session (Dynamic Colors & NewValuationModal - December 2025)
+
+### Dynamic Color Corrections
+171. **Theme System Color Updates**:
+    - Updated Reports dynamic colors to match Figma specifications: blue400 (#d9e7ec), blue300 (#e9f3f7), blue200 (#f2f8fb)
+    - Updated Marketplace dynamic colors to match Figma specifications: violet400 (#d1d1ec), violet300 (#efeffa), violet200 (#f6f6ff)  
+    - Updated Analytics dynamic colors to match Figma specifications: green400 (#e1eae5), green300 (#e9f1ec), green200 (#f2f7f4)
+    - Updated both tokens/index.ts and tokens/theme.ts to ensure consistency across theme system
+
+### Button Theme Integration
+172. **Button Light Color Variant**:
+    - Updated Button component to use theme-aware colors instead of hardcoded Reports colors
+    - Changed `colors.reports.dynamic.blue300` to `colors.theme.primary300` for light variant backgrounds
+    - Updated hover colors from `colors.reports.dynamic.blue200` to `colors.theme.primary200` for white buttons
+    - Updated border colors from `colors.reports.dynamic.blue400` to `colors.theme.primary400` for consistency
+    - All button variants (primary, small, icon) now properly adapt to current theme context
+
+### NewValuationModal Implementation
+173. **Analytics Valuation Modal**:
+    - Created NewValuationModal.tsx based on NewTransactionModal structure
+    - 730px width modal with 2-column form layout using design library Input and Dropdown components
+    - 6 form fields: Policy Group (dropdown), Risk Period (dropdown), Expected Loss Ratio, Loss Ratio Standard Deviation, Expected Premium, Premium Cap
+    - Theme-aware styling using analytics.dynamic.green200 background for form container
+    - Complete validation system with disabled submit until all fields are filled
+    - Integrated into AnalyticsValuation page with proper button positioning and state management
+
+### Banner Layout Updates
+174. **Header Banner Standardization**:
+    - Updated both AnalyticsValuation and TransactionManagement banners to 250px height
+    - Implemented 40px left/right padding with center-aligned content
+    - Created 150x150px illustration containers with proper object-fit
+    - Added 40px gap between illustration and text content
+    - Maintained right-aligned button positioning with consistent styling
+
+## Previous Development Session (Theme Integration & Navigation Fixes - December 2025)
 
 ### ActionCell Theme System Integration
 166. **ActionCell Theme Compatibility**:

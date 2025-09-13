@@ -201,11 +201,11 @@ export const colors = {
     blue600: '#bee4fb',
     blue500: '#e1f3ff',
     blue450: '#b4c2c5',
-    // Dynamic colors (lighter versions)
+    // Dynamic colors (correct from Figma)
     dynamic: {
-      blue400: '#D9E7EC', // updated stroke color
-      blue300: '#e8f4fe', // estimated from visual  
-      blue200: '#f4f9ff', // estimated from visual
+      blue400: '#d9e7ec', // D9E7EC
+      blue300: '#e9f3f7', // E9F3F7
+      blue200: '#f2f8fb', // F2F8FB
     },
   },
   marketplace: {
@@ -215,11 +215,11 @@ export const colors = {
     violet700: '#ceb5fb', // main color
     violet600: '#e0bffb',
     violet500: '#f0c9fc',
-    // Dynamic colors (lighter versions)
+    // Dynamic colors (correct from Figma)
     dynamic: {
-      violet400: '#e8d4fd', // estimated from visual
-      violet300: '#f0e6fe', // estimated from visual
-      violet200: '#f8f3ff', // estimated from visual
+      violet400: '#d1d1ec', // D1D1EC
+      violet300: '#efeffa', // EFEFFA
+      violet200: '#f6f6ff', // F6F6FF
     },
   },
   analytics: {
@@ -229,11 +229,11 @@ export const colors = {
     green700: '#74efa3', // main color
     green600: '#9df7b2',
     green500: '#c6ffc1',
-    // Dynamic colors (lighter versions)
+    // Dynamic colors (correct from Figma)
     dynamic: {
-      green400: '#e1eae5',
-      green300: '#e9f3f7',
-      green200: '#f2f8fb',
+      green400: '#e1eae5', // E1EAE5 (this one was already correct)
+      green300: '#e9f1ec', // E9F1EC
+      green200: '#f2f7f4', // F2F7F4
     },
   },
 } as const;

@@ -78,7 +78,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'green':
         return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity
       case 'white':
-        return colors.reports.dynamic.blue200; // Blue200 solid color
+        return colors.theme.primary200; // Primary200 solid color
       default:
         return 'rgba(255, 255, 255, 0.15)';
     }
@@ -146,7 +146,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'light':
         return {
           ...baseStyles,
-          ...getSimpleBackground(colors.reports.dynamic.blue300, 'light'),
+          ...getSimpleBackground(colors.theme.primary300, 'light'),
           color: colors.blackAndWhite.black900,
         };
       case 'green':
@@ -160,7 +160,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           ...baseStyles,
           ...getSimpleBackground(colors.blackAndWhite.white, 'white'),
           color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
-          border: `1px solid ${disabled ? '#dfdfdf' : colors.reports.dynamic.blue400}`,
+          border: `1px solid ${disabled ? '#dfdfdf' : colors.theme.primary400}`,
         };
       default:
         return baseStyles;
@@ -205,7 +205,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'light':
         return {
           ...baseStyles,
-          ...getSimpleBackground(colors.reports.dynamic.blue300, 'light'),
+          ...getSimpleBackground(colors.theme.primary300, 'light'),
           color: colors.blackAndWhite.black900,
         };
       case 'green':
@@ -219,7 +219,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           ...baseStyles,
           ...getSimpleBackground(colors.blackAndWhite.white, 'white'),
           color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
-          border: `1px solid ${disabled ? colors.blackAndWhite.black100 : colors.reports.dynamic.blue400}`,
+          border: `1px solid ${disabled ? colors.blackAndWhite.black100 : colors.theme.primary400}`,
         };
       default:
         return baseStyles;
@@ -263,7 +263,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         return {
           ...baseStyles,
           ...shapeStyles,
-          ...getSimpleBackground(colors.reports.dynamic.blue300, 'light'),
+          ...getSimpleBackground(colors.theme.primary300, 'light'),
         };
       case 'green':
         return {
@@ -276,7 +276,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           ...baseStyles,
           ...shapeStyles,
           ...getSimpleBackground(colors.blackAndWhite.white, 'white'),
-          border: `1px solid ${colors.reports.dynamic.blue400}`,
+          border: `1px solid ${colors.theme.primary400}`,
         };
       default:
         return {

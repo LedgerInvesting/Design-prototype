@@ -343,3 +343,37 @@ The Table component supports three distinct cell types through the `cellType` pr
 - **Layout**: `tableLayout: 'fixed'` enforces exact column specifications with sticky positioning support
 - **Action System**: Four distinct action types (upload, validate, generate, setup) with proper icon integration
 - **Professional Elevation**: Base shadow and border effects for clear visual hierarchy
+
+## NewValuationModal
+
+**Location**: `/pages/NewValuationModal.tsx`  
+**Purpose**: Analytics-specific modal for creating new valuation configurations
+
+### Features
+- **Theme Integration**: Uses ThemeProvider context to automatically adapt to Analytics green theme
+- **Form Layout**: 2-column grid layout with 6 form fields
+- **Positioning System**: Positioned relative to trigger button with proper backdrop
+- **Validation**: Form validation with disabled submit button until all fields are filled
+
+### Form Fields
+1. **Policy Group** (Dropdown): Aviation Treaty, Cyber Treaty, Health Insurance, Liability Treaty, Property Treaty, Marine Cargo Treaty
+2. **Risk Period** (Dropdown): 2023, 2024, 2025, TY23, TY24, TY25
+3. **Expected Loss Ratio** (Input): Text input for loss ratio percentage
+4. **Loss Ratio Standard Deviation** (Input): Text input for standard deviation value
+5. **Expected Premium** (Input): Text input for premium amount
+6. **Premium Cap** (Input): Text input for premium cap value
+
+### Usage
+```typescript
+<NewValuationModal
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  onCreateValuation={(formData) => console.log('Valuation created:', formData)}
+  buttonRef={buttonRef}
+/>
+```
+
+### Styling
+- **Container**: 730px width with rounded corners and shadow
+- **Background**: Theme-aware green200 background for form area
+- **Button**: Theme-aware close button using Button component with light variant

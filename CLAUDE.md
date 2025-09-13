@@ -38,11 +38,11 @@ This is a React design library built with TypeScript and Storybook, containing d
 
 ## Current State
 - **Design Tokens**: Complete design system from Figma Library 2.0 including:
-  - **Colors**: Updated color palette with semantic variants 
+  - **Colors**: Updated color palette with semantic variants and corrected dynamic theme colors from Figma specifications (Reports: D9E7EC/E9F3F7/F2F8FB, Marketplace: D1D1EC/EFEFFA/F6F6FF, Analytics: E1EAE5/E9F1EC/F2F7F4)
   - **Shadows**: Updated shadow system with new values (small, base, medium, large, extraLarge) using pure black with precise opacity levels
   - **Typography**: Complete 12 text styles with proper font stacks and letter spacing
   - **Spacing & Border Radius**: Consistent spacing scale and border radius system
-- **Components**: Button (with improved small variant centering), InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs
+- **Components**: Button (with improved small variant centering and theme-aware light color variant), InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, NewValuationModal
 - **Page Components**: 
   - **Layout**: Enhanced unified page component combining TopNav and Sidebar with optional tabs integration
   - **Sidebar** (220px width) with brand logos, expandable menu structure, custom inbox button with notification badge
@@ -270,12 +270,13 @@ The `/pages` folder contains a complete React development environment for testin
   - **Design System Integration**: Complete Layout component usage with proper navigation and responsive design
 - **AnalyticsValuation.tsx**: Analytics Valuation page demonstrating theme system integration, featuring:
   - **Analytics Theme Integration**: Uses ThemeProvider with "analytics" theme for automatic green color theming
-  - **Themed Header Banner**: Matches Transaction Management layout but with Analytics green700 background
+  - **Themed Header Banner**: Matches Transaction Management layout but with Analytics green700 background and updated 250px height with proper spacing
   - **Semantic Color Usage**: Uses `colors.theme.main` for proper theme-aware coloring (green in Analytics context)
   - **New Valuation Button**: Features AddSmall icon in Analytics green with 240px width matching other pages
+  - **NewValuationModal Integration**: Complete modal workflow with 6-field form (Policy Group dropdown, Risk Period dropdown, Expected Loss Ratio, Loss Ratio Standard Deviation, Expected Premium, Premium Cap inputs)
   - **Layout Component**: Uses Layout with proper Analytics sidebar navigation (selectedSidebarItem="analytics", selectedSidebarSubitem="valuation")
   - **Navigation Integration**: Connected to main app navigation with proper routing from sidebar clicks
-  - **Design System Compliance**: Clean, minimal implementation following established patterns
+  - **Design System Compliance**: Clean, minimal implementation following established patterns with theme-aware form styling
   - **Theme-Aware Styling**: Demonstrates proper use of semantic colors vs hardcoded colors
 
 **Usage:**

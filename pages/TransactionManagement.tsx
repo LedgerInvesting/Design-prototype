@@ -42,12 +42,12 @@ interface TransactionHeaderProps {
 const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionClick, buttonRef }) => {
   const headerStyles: React.CSSProperties = {
     backgroundColor: colors.reports.blue700, // Reports blue 700
-    padding: '40px 60px',
+    padding: '0 40px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: borderRadius[12],
-    minHeight: '200px', // Changed from fixed height to minHeight
+    height: '250px',
     position: 'relative',
     overflow: 'hidden',
     width: '100%',
@@ -68,18 +68,26 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
   const leftContentStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '5px',
+    gap: '40px',
     '@media (max-width: 768px)': {
       flexDirection: 'column',
       textAlign: 'center',
+      gap: '20px',
     },
+  };
+
+  const illustrationContainerStyles: React.CSSProperties = {
+    width: '150px',
+    height: '150px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   };
 
   const textContentStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
-    marginLeft: '40px',
   };
 
   const titleStyles: React.CSSProperties = {
@@ -97,21 +105,14 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
   return (
     <div style={headerStyles}>
       <div style={leftContentStyles}>
-        <div style={{ 
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 'fit-content',
-          height: 'fit-content',
-          marginLeft: '-20px'
-        }}>
+        <div style={illustrationContainerStyles}>
           <img 
             src="/transaction header icon.png" 
             alt="transaction management" 
             style={{ 
-              width: '100px', 
-              height: 'auto',
-              display: 'block'
+              width: '100%', 
+              height: '100%',
+              objectFit: 'contain'
             }}
           />
         </div>
