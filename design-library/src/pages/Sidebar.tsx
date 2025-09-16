@@ -25,6 +25,7 @@ interface SidebarProps {
   onInboxClick?: () => void;
   selectedItem?: string;
   selectedSubitem?: string;
+  onHoverChange?: (isHovered: boolean) => void; // New prop to communicate hover state
 }
 
 const sidebarItems: SidebarItem[] = [
@@ -68,11 +69,12 @@ const sidebarItems: SidebarItem[] = [
   }
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-  onNavigate, 
-  onInboxClick, 
-  selectedItem: propSelectedItem, 
-  selectedSubitem: propSelectedSubitem 
+export const Sidebar: React.FC<SidebarProps> = ({
+  onNavigate,
+  onInboxClick,
+  selectedItem: propSelectedItem,
+  selectedSubitem: propSelectedSubitem,
+  onHoverChange
 }) => {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['reports']));
   
@@ -110,6 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       clearTimeout(hoverTimeout);
     }
     setIsHovered(true);
+    onHoverChange?.(true); // Notify parent of hover state change
   };
 
   const handleMouseLeave = () => {
@@ -118,6 +121,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
     const timeout = setTimeout(() => {
       setIsHovered(false);
+      onHoverChange?.(false); // Notify parent of hover state change
     }, 100); // Small delay to prevent flickering
     setHoverTimeout(timeout);
   };

@@ -38,6 +38,7 @@ export const Layout: React.FC<LayoutProps> = ({
   tabs
 }) => {
   const [isCompact, setIsCompact] = useState<boolean>(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState<boolean>(false);
 
   // Check viewport width and update compact mode
   useEffect(() => {
@@ -50,8 +51,8 @@ export const Layout: React.FC<LayoutProps> = ({
     return () => window.removeEventListener('resize', checkViewportWidth);
   }, []);
 
-  // Calculate sidebar width based on compact mode
-  const sidebarWidth = isCompact ? '80px' : '220px';
+  // Calculate sidebar width based on compact mode and hover state
+  const sidebarWidth = isCompact && !isSidebarHovered ? '80px' : '220px';
 
   const pageStyles: React.CSSProperties = {
     display: 'flex',
@@ -95,6 +96,7 @@ export const Layout: React.FC<LayoutProps> = ({
           onInboxClick={onInboxClick || (() => {})}
           selectedItem={selectedSidebarItem}
           selectedSubitem={selectedSidebarSubitem}
+          onHoverChange={setIsSidebarHovered}
         />
       </div>
 
