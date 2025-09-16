@@ -45,9 +45,14 @@ This is a React design library built with TypeScript and Storybook, containing d
   - **Typography**: Complete 12 text styles with proper font stacks and letter spacing
   - **Spacing & Border Radius**: Consistent spacing scale and border radius system
 - **Components**: Button (with improved small variant centering and theme-aware light color variant), InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, NewValuationModal
-- **Page Components**: 
-  - **Layout**: Enhanced unified page component combining TopNav and Sidebar with optional tabs integration
-  - **Sidebar** (220px width) with brand logos, expandable menu structure, custom inbox button with notification badge
+- **Page Components**:
+  - **Layout**: Enhanced unified page component combining TopNav and Sidebar with optional tabs integration and responsive content positioning
+  - **Sidebar** with intelligent responsive behavior:
+    - **Full Mode** (>1650px): 220px width with expanded navigation
+    - **Compact Mode** (≤1650px): 80px width with icon-only display
+    - **Hover Expansion**: In compact mode, hover expands to 220px and **pushes content to the right** (no overlay)
+    - **Smooth Transitions**: 0.4s cubic-bezier animations for professional feel
+    - **Brand logos, expandable menu structure, custom inbox button with notification badge**
   - **TopNav** with breadcrumb navigation, share button, user profile dropdown (updated to match Figma design)
   - **FormTabs**: 30px height step-based tabs with blue color variants and 2px spacing
 - **Icons**: Complete 4-tier icon system with 106 total icons + 5 brand logos (includes DocumentTable, AddMedium, ReloadMedium, CloseMedium, CalculatorSmall, UploadSmall, ConfigSmall icons)
@@ -288,7 +293,7 @@ The `/pages` folder contains a complete React development environment for testin
   - **Themed Header Banner**: Matches Transaction Management layout but with Analytics green700 background and updated 250px height with proper spacing
   - **Semantic Color Usage**: Uses `colors.theme.main` for proper theme-aware coloring (green in Analytics context)
   - **New Valuation Button**: Features AddSmall icon in Analytics green with 240px width matching other pages
-  - **NewValuationModal Integration**: Complete modal workflow with 6-field form (Policy Group dropdown, Risk Period dropdown, Expected Loss Ratio, Loss Ratio Standard Deviation, Expected Premium, Premium Cap inputs)
+  - **NewValuationModal Integration**: Fully functional modal workflow with 6-field form (Policy Group dropdown, Risk Period dropdown, Expected Loss Ratio, Loss Ratio Standard Deviation, Expected Premium, Premium Cap inputs) with proper positioning and form validation
   - **Layout Component**: Uses Layout with proper Analytics sidebar navigation (selectedSidebarItem="analytics", selectedSidebarSubitem="valuation")
   - **Navigation Integration**: Connected to main app navigation with proper routing from sidebar clicks
   - **Design System Compliance**: Clean, minimal implementation following established patterns with theme-aware form styling
