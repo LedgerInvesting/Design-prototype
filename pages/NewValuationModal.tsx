@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Dropdown } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
+import { useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { CloseMedium } from '@design-library/icons';
 
 export interface NewValuationModalProps {
@@ -25,6 +26,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
   onCreateValuation,
   buttonRef,
 }) => {
+  const semanticColors = useSemanticColors();
   const [formData, setFormData] = useState<ValuationFormData>({
     policyGroup: '',
     riskPeriod: '',
@@ -136,7 +138,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
   };
 
   const formContainerStyles: React.CSSProperties = {
-    backgroundColor: colors.theme.primary200,
+    backgroundColor: semanticColors.theme.primary200,
     borderRadius: borderRadius[8],
     padding: '20px',
     display: 'grid',
