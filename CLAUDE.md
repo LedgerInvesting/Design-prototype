@@ -51,8 +51,9 @@ This is a React design library built with TypeScript and Storybook, containing d
   - **TopNav** with breadcrumb navigation, share button, user profile dropdown (updated to match Figma design)
   - **FormTabs**: 30px height step-based tabs with blue color variants and 2px spacing
 - **Icons**: Complete 4-tier icon system with 106 total icons + 5 brand logos (includes DocumentTable, AddMedium, ReloadMedium, CloseMedium, CalculatorSmall, UploadSmall, ConfigSmall icons)
-- **Enhanced Table System**: 
-  - **Action Buttons**: Upload actions now feature light green styling (#C6FFC1 background, success green icon) to highlight primary actions
+- **Enhanced Table System**:
+  - **Action Buttons**: Upload actions feature light green styling (#C6FFC1 background, success green icon), blue actions use reports.blue500 (#e1f3ff) background
+  - **Improved ActionCell Styling**: Updated hover effects to use primary200 variant for lighter, more subtle hover state
   - **Document Cells**: Enhanced with DocumentTable icons and configurable hover icons (download or config)
   - **Intelligent Column Sizing**: Automatic width optimization based on content length (< 11 chars = 150px)
   - **Comprehensive Storybook**: Action Buttons Showcase, Cell Types Showcase, and Intelligent Column Widths for easy testing
@@ -203,6 +204,7 @@ The `/pages` folder contains a complete React development environment for testin
 - **TypeScript Support**: Full type safety with design library component types
 - **Vite Configuration**: Optimized build system with design library path aliases
 - **Static Assets**: All images must be placed in `/pages/public/` folder and referenced with absolute paths (e.g., `/image.png`) for proper Vercel deployment
+- **Custom Favicon**: Professional K logo favicon with black900 background for both pages and Storybook environments
 
 **Current Pages:**
 - **TransactionManagement.tsx**: Complete transaction management interface featuring:
@@ -245,8 +247,15 @@ The `/pages` folder contains a complete React development environment for testin
     - Dynamic requirements system with expandable requirement boxes
   - **Design System Integration**: Complete form styling with blue200 containers, proper spacing, and responsive grid layouts
 - **ReportNavigation.tsx** (Default): Advanced report navigation interface featuring:
-  - Program selector card with dropdown functionality
-  - Program relationship pills showing hierarchical connections  
+  - **Advanced Tree Dropdown**: Complete hierarchical program selector with folder organization:
+    - **Business Hierarchy**: Reinsurers → MGA → Programs → Treaties structure
+    - **Folder Categories**: Clear folder titles ("Reinsurers", "MGA", "Programs", "Treaties") in Caption S typography with black500 color
+    - **4 Major Reinsurers**: Swiss Re, Munich Re, Berkshire Hathaway Re, Lloyd's of London
+    - **MGA Organization**: Specialty divisions (Global MGA Solutions, North America MGA, etc.)
+    - **Program Types**: Property, Casualty, Marine, Auto, Workers Comp, Aviation, Energy
+    - **Treaty Selection**: Only leaf nodes (actual treaties) are selectable
+    - **Interactive Features**: Expand/collapse functionality, click outside to close, hover effects using theme colors
+  - Program relationship pills showing hierarchical connections
   - Cession and Collateral metrics card with sophisticated charts and growth indicators
   - Data Validation metrics card with status indicators and validation charts
   - **Insights card**: Full-width loss ratio chart with:

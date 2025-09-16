@@ -2,7 +2,52 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Comprehensive Token Consolidation - September 2025)
+## Latest Development Session (Tree Dropdown & ActionCell Enhancements - September 2025)
+
+### Advanced Tree Dropdown Implementation
+184. **Hierarchical Business Structure Tree**:
+    - Implemented complete tree dropdown for ReportNavigation.tsx program selector
+    - **4-Level Hierarchy**: Reinsurers → MGA → Programs → Treaties following real business structure
+    - **4 Major Reinsurers**: Swiss Re, Munich Re, Berkshire Hathaway Re, Lloyd's of London with realistic business divisions
+    - **MGA Organization**: Specialty divisions (Global MGA Solutions, North America MGA, International MGA, Energy MGA)
+    - **Program Categories**: Property, Casualty, Marine, Auto, Workers Comp, Aviation, Energy with 2024 program variations
+    - **Treaty Selection**: Only leaf nodes (actual treaties) are selectable - proper business logic implementation
+
+185. **Professional Tree UI/UX Design**:
+    - **Folder Categories**: Clear visual distinction between folder titles and content items
+    - **Typography Hierarchy**: Folder titles ("Reinsurers", "MGA", "Programs", "Treaties") use Caption S with black500 color
+    - **Content Items**: Company names, programs, treaties use Body M with black900 for proper contrast
+    - **Interactive Features**: Expand/collapse with chevron rotation, click outside to close, theme-aware hover effects
+    - **Icon System Integration**: ChevronRightExtraSmall with rotation animations, dot indicators for leaf nodes
+
+186. **ActionCell Color System Fixes**:
+    - **Blue Background Restoration**: Fixed missing blue500 (#e1f3ff) background for validate/generate/setup actions
+    - **Static Color Integration**: Added `staticColors` import to use reports.blue500 instead of theme.primary500
+    - **Hover State Optimization**: Updated hover background from primary300 to primary200 for lighter, more subtle effect
+    - **Green/Blue Variant Consistency**: Upload actions maintain #C6FFC1 green, blue actions use proper reports.blue500
+
+## Previous Development Session (Favicon Implementation - September 2025)
+
+### Custom K Logo Favicon
+181. **Professional Favicon Implementation**:
+    - Created custom favicon.svg using existing K logo from design library's icon system
+    - Applied black900 (#17211B) background with white K logo for optimal contrast
+    - 100x100 viewBox with proper scaling and positioning for professional appearance
+    - Added 12px rounded corners for modern, polished design aesthetic
+
+182. **Comprehensive Favicon Integration**:
+    - Added favicon files to both `/pages/public/` and `/design-library/public/` directories
+    - Updated `pages/index.html` to reference custom favicon instead of Vite default
+    - Created Storybook `manager-head.html` configuration for favicon integration
+    - Updated page titles to "Ledger Design Library" for consistent branding
+
+183. **Cross-Platform Favicon Support**:
+    - Pages development server (localhost:5174) displays K logo favicon
+    - Storybook interface (localhost:6006) shows matching favicon
+    - Browser bookmarks and tab titles now feature professional K logo branding
+    - SVG format ensures crisp display across all screen densities and sizes
+
+## Previous Development Session (Comprehensive Token Consolidation - September 2025)
 
 ### Complete Token System Overhaul
 175. **Universal Theme System Integration**:

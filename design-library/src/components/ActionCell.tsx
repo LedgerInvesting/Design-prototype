@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { typography, borderRadius, shadows, useSemanticColors } from '../tokens';
+import { typography, borderRadius, shadows, useSemanticColors, colors as staticColors } from '../tokens';
 import { CheckSmall, UploadSmall, ConfigSmall, CalculatorSmall } from '../icons';
 
 export type ActionType = 'upload' | 'validate' | 'generate' | 'setup';
@@ -56,7 +56,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     justifyContent: 'space-between', // Space between text (left) and icon container (right)
     padding: '6px 3px 6px 6px', // 6px top/bottom/left, 3px right
     borderRadius: borderRadius[4],
-    backgroundColor: isHovered ? colors.theme.primary300 : colors.blackAndWhite.white, // White background, theme primary300 on hover
+    backgroundColor: isHovered ? colors.theme.primary200 : colors.blackAndWhite.white, // White background, theme primary200 on hover
     border: `1px solid ${colors.theme.primary400}`, // Use theme primary400 stroke color
     boxShadow: shadows.small, // Small shadow
     cursor: 'pointer',
@@ -72,7 +72,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     justifyContent: 'center',
     width: '22px',
     height: '22px',
-    backgroundColor: actionType === 'upload' ? '#C6FFC1' : colors.theme.primary500, // Light green for upload, theme primary500 for others
+    backgroundColor: actionType === 'upload' ? '#C6FFC1' : staticColors.reports.blue500, // Light green for upload, blue500 for others
     borderRadius: borderRadius[4],
     flexShrink: 0, // Don't shrink the icon container
   };

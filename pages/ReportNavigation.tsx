@@ -10,7 +10,7 @@ import { Card, Button, Stack, Grid, Container } from '@design-library/components
 import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 
 // Import icons
-import { ArrowUpSmall, ArrowDownSmall } from '@design-library/icons';
+import { ArrowUpSmall, ArrowDownSmall, ChevronRightExtraSmall } from '@design-library/icons';
 
 // Custom chevron down icon component
 const ChevronDownIcon: React.FC = () => (
@@ -195,13 +195,20 @@ const StatusMeter: React.FC<StatusMeterProps> = ({ level }) => {
   );
 };
 
-// Program selector card component
+// Tree node interface for the program selector
+interface TreeNode {
+  id: string;
+  label: string;
+  children?: TreeNode[];
+}
+
+// Program selector card component with tree dropdown
 interface ProgramSelectorCardProps {
   currentProgram: {
     name: string;
     account: string;
   };
-  onProgramChange?: () => void;
+  onProgramChange?: (program: { name: string; account: string }) => void;
 }
 
 const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
@@ -209,6 +216,358 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
   onProgramChange
 }) => {
   const colors = useSemanticColors();
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const [expandedNodes, setExpandedNodes] = React.useState<Set<string>>(new Set());
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  // Tree data structure with folder organization: Reinsurers > MGA > Programs > Treaties
+  const treeData: TreeNode[] = [
+    {
+      id: 'reinsurers-folder',
+      label: 'Reinsurers',
+      children: [
+        {
+          id: 'swiss-re',
+          label: 'Swiss Re',
+          children: [
+            {
+              id: 'mga-folder-swiss',
+              label: 'MGA',
+              children: [
+                {
+                  id: 'mga-global',
+                  label: 'Global MGA Solutions',
+                  children: [
+                    {
+                      id: 'programs-folder-global',
+                      label: 'Programs',
+                      children: [
+                        {
+                          id: 'property-program',
+                          label: 'Property Program 2024',
+                          children: [
+                            {
+                              id: 'treaties-folder-property',
+                              label: 'Treaties',
+                              children: [
+                                { id: 'property-cat-treaty', label: 'Property Cat Treaty' },
+                                { id: 'property-quota-treaty', label: 'Property Quota Share Treaty' }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          id: 'casualty-program',
+                          label: 'Casualty Program 2024',
+                          children: [
+                            {
+                              id: 'treaties-folder-casualty',
+                              label: 'Treaties',
+                              children: [
+                                { id: 'casualty-excess-treaty', label: 'Casualty Excess Treaty' },
+                                { id: 'casualty-stop-loss-treaty', label: 'Casualty Stop Loss Treaty' }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  id: 'mga-specialty',
+                  label: 'Specialty Lines MGA',
+                  children: [
+                    {
+                      id: 'programs-folder-specialty',
+                      label: 'Programs',
+                      children: [
+                        {
+                          id: 'marine-program',
+                          label: 'Marine Program 2024',
+                          children: [
+                            {
+                              id: 'treaties-folder-marine',
+                              label: 'Treaties',
+                              children: [
+                                { id: 'marine-hull-treaty', label: 'Marine Hull Treaty' },
+                                { id: 'marine-cargo-treaty', label: 'Marine Cargo Treaty' }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'munich-re',
+          label: 'Munich Re',
+          children: [
+            {
+              id: 'mga-folder-munich',
+              label: 'MGA',
+              children: [
+                {
+                  id: 'mga-north-america',
+                  label: 'North America MGA',
+                  children: [
+                    {
+                      id: 'programs-folder-na',
+                      label: 'Programs',
+                      children: [
+                        {
+                          id: 'auto-program',
+                          label: 'Auto Program 2024',
+                          children: [
+                            {
+                              id: 'treaties-folder-auto',
+                              label: 'Treaties',
+                              children: [
+                                { id: 'auto-liability-treaty', label: 'Auto Liability Treaty' },
+                                { id: 'auto-physical-damage-treaty', label: 'Auto Physical Damage Treaty' }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          id: 'workers-comp-program',
+                          label: 'Workers Comp Program 2024',
+                          children: [
+                            {
+                              id: 'treaties-folder-workers',
+                              label: 'Treaties',
+                              children: [
+                                { id: 'workers-comp-excess-treaty', label: 'Workers Comp Excess Treaty' },
+                                { id: 'workers-comp-quota-treaty', label: 'Workers Comp Quota Share Treaty' }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'berkshire-hathaway',
+          label: 'Berkshire Hathaway Re',
+          children: [
+            {
+              id: 'mga-folder-berkshire',
+              label: 'MGA',
+              children: [
+                {
+                  id: 'mga-international',
+                  label: 'International MGA',
+                  children: [
+                    {
+                      id: 'programs-folder-intl',
+                      label: 'Programs',
+                      children: [
+                        {
+                          id: 'aviation-program',
+                          label: 'Aviation Program 2024',
+                          children: [
+                            {
+                              id: 'treaties-folder-aviation',
+                              label: 'Treaties',
+                              children: [
+                                { id: 'aviation-hull-treaty', label: 'Aviation Hull Treaty' },
+                                { id: 'aviation-liability-treaty', label: 'Aviation Liability Treaty' }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'lloyds-london',
+          label: 'Lloyd\'s of London',
+          children: [
+            {
+              id: 'mga-folder-lloyds',
+              label: 'MGA',
+              children: [
+                {
+                  id: 'mga-energy',
+                  label: 'Energy MGA',
+                  children: [
+                    {
+                      id: 'programs-folder-energy',
+                      label: 'Programs',
+                      children: [
+                        {
+                          id: 'energy-program',
+                          label: 'Energy Program 2024',
+                          children: [
+                            {
+                              id: 'treaties-folder-energy',
+                              label: 'Treaties',
+                              children: [
+                                { id: 'energy-liability-treaty', label: 'Energy Liability Treaty' },
+                                { id: 'energy-property-treaty', label: 'Energy Property Treaty' }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ];
+
+  // Handle clicks outside dropdown
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const toggleNode = (nodeId: string) => {
+    const newExpanded = new Set(expandedNodes);
+    if (newExpanded.has(nodeId)) {
+      newExpanded.delete(nodeId);
+    } else {
+      newExpanded.add(nodeId);
+    }
+    setExpandedNodes(newExpanded);
+  };
+
+  const selectProgram = (node: TreeNode, parentPath: string[] = []) => {
+    if (!node.children) {
+      // Only select leaf nodes (Treaties)
+      // Build account string from parent hierarchy: Reinsurer - MGA
+      const reinsurer = parentPath[0] || '';
+      const mga = parentPath[1] || '';
+      const account = mga ? `${reinsurer} - ${mga}` : reinsurer;
+
+      onProgramChange?.({
+        name: node.label,
+        account: account
+      });
+      setIsDropdownOpen(false);
+    }
+  };
+
+  const renderTreeNode = (node: TreeNode, level: number = 0, parentPath: string[] = []): React.ReactNode => {
+    const hasChildren = node.children && node.children.length > 0;
+    const isExpanded = expandedNodes.has(node.id);
+    const isLeaf = !hasChildren;
+    const currentPath = [...parentPath, node.label];
+
+    // Check if this is a folder title (Reinsurers, MGA, Programs, Treaties)
+    const isFolderTitle = node.label === 'Reinsurers' ||
+                         node.label === 'MGA' ||
+                         node.label === 'Programs' ||
+                         node.label === 'Treaties';
+
+    const nodeStyles: React.CSSProperties = {
+      display: 'flex',
+      alignItems: 'center',
+      padding: '8px 12px',
+      paddingLeft: 12 + (level * 20),
+      cursor: 'pointer',
+      backgroundColor: 'transparent',
+      borderRadius: borderRadius[4],
+      transition: 'background-color 0.2s ease',
+    };
+
+    const nodeHoverStyles: React.CSSProperties = {
+      ...nodeStyles,
+      backgroundColor: colors.theme.primary200,
+    };
+
+    return (
+      <div key={node.id}>
+        <div
+          style={nodeStyles}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = colors.theme.primary200;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+          onClick={() => {
+            if (hasChildren) {
+              toggleNode(node.id);
+            } else {
+              selectProgram(node, parentPath);
+            }
+          }}
+        >
+          {/* Expand/Collapse Icon */}
+          <div style={{
+            width: '16px',
+            height: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '8px'
+          }}>
+            {hasChildren && (
+              <ChevronRightExtraSmall
+                color={colors.blackAndWhite.black700}
+                style={{
+                  transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s ease'
+                }}
+              />
+            )}
+            {isLeaf && (
+              <div style={{
+                width: '4px',
+                height: '4px',
+                borderRadius: '50%',
+                backgroundColor: colors.blackAndWhite.black500
+              }} />
+            )}
+          </div>
+
+          {/* Node Label */}
+          <span style={{
+            ...(isFolderTitle ? typography.styles.captionS : typography.styles.bodyM),
+            color: isFolderTitle ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
+            fontWeight: isLeaf ? 400 : 500
+          }}>
+            {node.label}
+          </span>
+        </div>
+
+        {/* Render children if expanded */}
+        {hasChildren && isExpanded && (
+          <div>
+            {node.children?.map(child => renderTreeNode(child, level + 1, currentPath))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const cardStyles: React.CSSProperties = {
     backgroundColor: colors.blackAndWhite.white,
     border: `1px solid ${colors.theme.primary400}`,
@@ -221,23 +580,53 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
     alignItems: 'center',
     justifyContent: 'space-between',
     cursor: 'pointer',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
+    boxShadow: shadows.small,
+    position: 'relative',
   };
 
   const textStyles: React.CSSProperties = {
-    fontFamily: 'Söhne, system-ui, sans-serif',
-    fontSize: '14px',
-    fontWeight: 500,
-    lineHeight: 1.3,
+    ...typography.styles.bodyL,
     color: colors.blackAndWhite.black900,
   };
 
+  const dropdownStyles: React.CSSProperties = {
+    position: 'absolute',
+    top: '60px',
+    left: '0',
+    right: '0',
+    backgroundColor: colors.blackAndWhite.white,
+    border: `1px solid ${colors.theme.primary400}`,
+    borderRadius: borderRadius[8],
+    boxShadow: shadows.large,
+    zIndex: 1000,
+    maxHeight: '400px',
+    overflowY: 'auto',
+    padding: '8px 0',
+  };
+
   return (
-    <div style={cardStyles} onClick={onProgramChange}>
-      <div style={textStyles}>
-        You're viewing: {currentProgram.account}, {currentProgram.name}
+    <div ref={dropdownRef} style={{ position: 'relative', width: '100%', maxWidth: '1101px' }}>
+      <div
+        style={cardStyles}
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+      >
+        <div style={textStyles}>
+          You're viewing: {currentProgram.account}, {currentProgram.name}
+        </div>
+        <ChevronDownIcon
+          style={{
+            transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease'
+          }}
+        />
       </div>
-      <ChevronDownIcon />
+
+      {/* Tree Dropdown */}
+      {isDropdownOpen && (
+        <div style={dropdownStyles}>
+          {treeData.map(node => renderTreeNode(node))}
+        </div>
+      )}
     </div>
   );
 };
@@ -299,17 +688,17 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
 
 // Main page component
 interface ReportNavigationProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer') => void;
+  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation') => void;
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
 
-  // Mock data for the current program
-  const currentProgram = {
-    name: "program",
-    account: "Horseshoe Re Limited separate account"
-  };
+  // State for the current program
+  const [currentProgram, setCurrentProgram] = React.useState({
+    name: "Property Cat Treaty",
+    account: "Swiss Re - Global MGA Solutions"
+  });
 
   // Mock data for related programs
   const relatedPrograms = {
@@ -324,14 +713,13 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
   return (
     <Layout
       breadcrumbs={[
-        { label: 'REPORTS', href: '/reports' },
         { label: 'INSIGHTS EXPLORER', isActive: true }
       ]}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="insights-explorer"
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
-        
+
         // Handle Reports navigation
         if (itemId === 'reports') {
           if (subitemId === 'transactions') {
@@ -340,6 +728,19 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             // Already on report navigation page
             console.log('Already on report navigation page');
           }
+        }
+        // Handle Analytics navigation
+        else if (itemId === 'analytics') {
+          if (subitemId === 'valuation') {
+            onNavigateToPage && onNavigateToPage('analytics-valuation');
+          }
+        }
+        // Handle Contracts navigation
+        else if (itemId === 'contracts') {
+          onNavigateToPage && onNavigateToPage('contracts-explorer');
+        }
+        else {
+          console.log('Unhandled navigation:', itemId, subitemId);
         }
       }}
       onInboxClick={() => {
@@ -350,9 +751,9 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
           {/* Program Selector Card */}
           <ProgramSelectorCard
             currentProgram={currentProgram}
-            onProgramChange={() => {
-              console.log('Program selector clicked');
-              alert('Program selector functionality would open here');
+            onProgramChange={(program) => {
+              console.log('Program selected:', program);
+              setCurrentProgram(program);
             }}
           />
 
