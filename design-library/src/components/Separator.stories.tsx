@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Separator } from './Separator';
 import { Card, CardHeader, CardContent } from './Card/Card';
-import { spacing, strokes } from '../tokens';
+import { spacing, useSemanticColors } from '../tokens';
 
 const meta: Meta<typeof Separator> = {
   title: 'Components/Separator',
@@ -27,7 +27,7 @@ const meta: Meta<typeof Separator> = {
     },
     color: {
       control: 'color',
-      description: 'Separator color (defaults to strokes.reports)',
+      description: 'Separator color (defaults to theme.primary400)',
     },
     thickness: {
       control: 'text',
@@ -139,27 +139,30 @@ export const CardIntegration: Story = {
 };
 
 export const ColorVariants: Story = {
-  render: () => (
-    <div style={{ width: '400px', padding: '16px', border: '1px solid #e5e7eb', borderRadius: '8px' }}>
-      <div style={{ marginBottom: '16px' }}>
-        <h4>Default (Reports Stroke)</h4>
-        <Separator variant="fullWidth" />
+  render: () => {
+    const colors = useSemanticColors();
+    return (
+      <div style={{ width: '400px', padding: '16px', border: '1px solid #e5e7eb', borderRadius: '8px' }}>
+        <div style={{ marginBottom: '16px' }}>
+          <h4>Default (Theme Primary400)</h4>
+          <Separator variant="fullWidth" />
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <h4>Black900 (High Contrast)</h4>
+          <Separator variant="fullWidth" color={colors.blackAndWhite.black900} />
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <h4>Custom Color</h4>
+          <Separator variant="fullWidth" color="#db2d31" />
+        </div>
+
+        <div>
+          <h4>Thick Separator</h4>
+          <Separator variant="fullWidth" thickness="2px" />
+        </div>
       </div>
-      
-      <div style={{ marginBottom: '16px' }}>
-        <h4>Black900 (Content Stroke)</h4>
-        <Separator variant="fullWidth" color={strokes.content} />
-      </div>
-      
-      <div style={{ marginBottom: '16px' }}>
-        <h4>Custom Color</h4>
-        <Separator variant="fullWidth" color="#db2d31" />
-      </div>
-      
-      <div>
-        <h4>Thick Separator</h4>
-        <Separator variant="fullWidth" thickness="2px" />
-      </div>
-    </div>
-  ),
+    );
+  },
 };

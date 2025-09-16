@@ -7,7 +7,7 @@ import type { BreadcrumbItem } from '@design-library/pages';
 import { Card, Button, Stack, Grid, Container, Table } from '@design-library/components';
 
 // Import design tokens
-import { colors, typography, spacing, borderRadius, shadows } from '@design-library/tokens';
+import { typography, spacing, borderRadius, shadows, useSemanticColors } from '@design-library/tokens';
 
 // Import table icons
 import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } from '@design-library/icons';
@@ -40,8 +40,9 @@ interface TransactionHeaderProps {
 }
 
 const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionClick, buttonRef }) => {
+  const colors = useSemanticColors();
   const headerStyles: React.CSSProperties = {
-    backgroundColor: colors.reports.blue700, // Reports blue 700
+    backgroundColor: colors.theme.primary700, // Reports blue 700
     padding: '0 40px',
     display: 'flex',
     alignItems: 'center',
@@ -132,7 +133,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
           ref={buttonRef}
           variant="primary"
           color="black"
-          icon={<span style={{ color: colors.reports.blue700 }}>+</span>}
+          icon={<span style={{ color: colors.theme.primary700 }}>+</span>}
           onClick={onNewTransactionClick}
           className="custom-button-width"
         >
@@ -178,9 +179,10 @@ const MetricCard: React.FC<MetricCardProps> = ({
   fullWidth = false,
   customContent
 }) => {
+  const colors = useSemanticColors();
   const cardStyles: React.CSSProperties = {
     backgroundColor: colors.blackAndWhite.white,
-    border: `1px solid ${colors.reports.dynamic.blue400}`,
+    border: `1px solid ${colors.theme.primary400}`,
     borderRadius: borderRadius[12],
     overflow: 'hidden',
     position: 'relative',
@@ -202,7 +204,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const separatorStyles: React.CSSProperties = {
     width: '100%',
     height: '1px',
-    backgroundColor: colors.reports.dynamic.blue400,
+    backgroundColor: colors.theme.primary400,
     flexShrink: 0,
   };
 
@@ -287,6 +289,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
 // Stats section component
 const TransactionStats: React.FC = () => {
+  const colors = useSemanticColors();
   const statsContainerStyles: React.CSSProperties = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -318,7 +321,7 @@ const TransactionStats: React.FC = () => {
           />
           <span style={{ 
             ...typography.styles.subheadingM,
-            color: colors.reports.blue800,
+            color: colors.theme.primary800,
             fontWeight: 600,
             margin: 0
           }}>25</span>
@@ -411,7 +414,12 @@ const getOptimizedColumnWidth = (data: any[], columnKey: string, baseWidth: stri
 };
 
 // Table section component
-const TransactionTable: React.FC = () => {
+interface TransactionTableProps {
+  onNavigateToPage?: (page: string) => void;
+}
+
+const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage }) => {
+  const colors = useSemanticColors();
   const [activeTab, setActiveTab] = React.useState('All Transactions');
 
   // Sample data (moved before columns to enable dynamic sizing)
@@ -543,61 +551,63 @@ const TransactionTable: React.FC = () => {
     {
       key: 'transactionName',
       title: 'Transaction Name',
-      icon: <DocumentTable color={colors.reports.blue450} />,
+      icon: <DocumentTable color={colors.blackAndWhite.black500} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'transactionName'),
       cellType: 'document' as const,
       hoverIcon: 'config' as const,
       onDownload: (filename: string) => {
         console.log('Configuring transaction document:', filename);
+        // Navigate to new transaction workflow when config is clicked
+        onNavigateToPage && onNavigateToPage('new-transaction-form');
       },
     },
     {
       key: 'cedingCompany',
       title: 'Ceding Company',
-      icon: <TextTable color={colors.reports.blue450} />,
+      icon: <TextTable color={colors.blackAndWhite.black500} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'cedingCompany'),
     },
     {
       key: 'reinsurerName',
       title: 'Reinsurer Name',
-      icon: <TextTable color={colors.reports.blue450} />,
+      icon: <TextTable color={colors.blackAndWhite.black500} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'reinsurerName'),
     },
     {
       key: 'effectiveDate',
       title: 'Effective Date',
-      icon: <CalendarTable color={colors.reports.blue450} />,
+      icon: <CalendarTable color={colors.blackAndWhite.black500} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'effectiveDate'),
     },
     {
       key: 'expiryDate',
       title: 'Expiry Date',
-      icon: <CalendarTable color={colors.reports.blue450} />,
+      icon: <CalendarTable color={colors.blackAndWhite.black500} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'expiryDate'),
     },
     {
       key: 'premium',
       title: 'Premium',
-      icon: <AmmountTable color={colors.reports.blue450} />,
+      icon: <AmmountTable color={colors.blackAndWhite.black500} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'premium'),
     },
     {
       key: 'status',
       title: 'Status',
-      icon: <StatusTable color={colors.reports.blue450} />,
+      icon: <StatusTable color={colors.blackAndWhite.black500} />,
       sortable: false,
       width: getOptimizedColumnWidth(sampleData, 'status'),
     },
     {
       key: 'actions',
       title: 'Actions',
-      icon: <StatusTable color={colors.reports.blue450} />,
+      icon: <StatusTable color={colors.blackAndWhite.black500} />,
       sortable: false,
       width: getOptimizedColumnWidth(sampleData, 'actions'),
       align: 'center' as const,
@@ -652,6 +662,7 @@ interface TransactionManagementProps {
 }
 
 export const TransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
+  const colors = useSemanticColors();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
   const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -718,7 +729,7 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       <TransactionStats />
       
       {/* Table Section */}
-      <TransactionTable />
+      <TransactionTable onNavigateToPage={onNavigateToPage} />
       
       {/* New Transaction Modal */}
       <NewTransactionModal

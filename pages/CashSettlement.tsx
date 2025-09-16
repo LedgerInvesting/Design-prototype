@@ -7,18 +7,18 @@ import type { BreadcrumbItem } from '@design-library/pages';
 import { Card, Button, Stack, Grid, Container } from '@design-library/components';
 
 // Import design tokens
-import { colors, typography, spacing, borderRadius, shadows } from '@design-library/tokens';
+import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 
 // Custom document icon component
 interface DocumentIconProps {
   fillColor?: string;
 }
 
-const DocumentIcon: React.FC<DocumentIconProps> = ({ fillColor = colors.marketplace.violet700 }) => (
+const DocumentIcon: React.FC<DocumentIconProps> = ({ fillColor = staticColors.marketplace.violet700 }) => (
   <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="14" height="18" rx="3" fill={fillColor}/>
-    <path d="M4 7H8" stroke={colors.blackAndWhite.black900} strokeWidth="1.4"/>
-    <path d="M4 10H10" stroke={colors.blackAndWhite.black900} strokeWidth="1.4"/>
+    <path d="M4 7H8" stroke={staticColors.blackAndWhite.black900} strokeWidth="1.4"/>
+    <path d="M4 10H10" stroke={staticColors.blackAndWhite.black900} strokeWidth="1.4"/>
   </svg>
 );
 
@@ -30,14 +30,14 @@ const metricsData = [
     value: '$45,678,901',
     subtitle: 'Reported as of 2025-01-31BDX',
     hasUnderline: true,
-    icon: <DocumentIcon fillColor={colors.marketplace.violet700} />
+    icon: <DocumentIcon fillColor={staticColors.marketplace.violet700} />
   },
   {
     id: 'ceded-basis-premium',
     title: 'Ceded Basis Premium',
     value: '$35,156,920',
     subtitle: 'Cession basis is earned premium',
-    icon: <DocumentIcon fillColor={colors.marketplace.violet700} />
+    icon: <DocumentIcon fillColor={staticColors.marketplace.violet700} />
   },
   {
     id: 'quota-share-ceded',
@@ -47,9 +47,9 @@ const metricsData = [
     tags: [
       { text: '10%', type: 'percentage' },
       { text: 'of', type: 'connector' },
-      { text: 'Quota Share Written Premium', type: 'reference', color: colors.reports.blue700 }
+      { text: 'Quota Share Written Premium', type: 'reference', color: staticColors.reports.blue700 }
     ],
-    icon: <DocumentIcon fillColor={colors.reports.blue700} />
+    icon: <DocumentIcon fillColor={staticColors.reports.blue700} />
   },
   {
     id: 'ceding-commission',
@@ -59,9 +59,9 @@ const metricsData = [
     tags: [
       { text: '28.5%', type: 'percentage' },
       { text: 'of', type: 'connector' },
-      { text: 'Quota Share Ceded Basis Premium', type: 'reference', color: colors.marketplace.violet700 }
+      { text: 'Quota Share Ceded Basis Premium', type: 'reference', color: staticColors.marketplace.violet700 }
     ],
-    icon: <DocumentIcon fillColor={colors.success.fill} />
+    icon: <DocumentIcon fillColor={staticColors.success.fill} />
   },
   {
     id: 'net-ceded-basic',
@@ -69,11 +69,11 @@ const metricsData = [
     value: '$1,511,342',
     subtitle: '',
     tags: [
-      { text: 'Quota Share Ceded Basis Premium', type: 'reference', color: colors.marketplace.violet700 },
+      { text: 'Quota Share Ceded Basis Premium', type: 'reference', color: staticColors.marketplace.violet700 },
       { text: '(-)', type: 'operator' },
-      { text: 'Ceding Commission', type: 'reference', color: colors.error.textAndStrokes }
+      { text: 'Ceding Commission', type: 'reference', color: staticColors.error.textAndStrokes }
     ],
-    icon: <DocumentIcon fillColor={colors.warning.fill} />
+    icon: <DocumentIcon fillColor={staticColors.warning.fill} />
   },
   {
     id: 'paid-loss',
@@ -81,14 +81,14 @@ const metricsData = [
     value: '$189,638',
     subtitle: 'Reported as of 2025-01-31BDX',
     hasUnderline: true,
-    icon: <DocumentIcon fillColor={colors.blackAndWhite.black300} />
+    icon: <DocumentIcon fillColor={staticColors.blackAndWhite.black300} />
   },
   {
     id: 'profit-commission',
     title: 'Profit Commission',
     value: '$0',
     subtitle: 'Current Loss ratio above Loss ratio corridor',
-    icon: <DocumentIcon fillColor={colors.error.fill} />
+    icon: <DocumentIcon fillColor={staticColors.error.fill} />
   },
   {
     id: 'brokerage-fee',
@@ -98,9 +98,9 @@ const metricsData = [
     tags: [
       { text: '1.29%', type: 'percentage' },
       { text: 'of', type: 'connector' },
-      { text: 'Net Ceded Basic Premium', type: 'reference', color: colors.success.textAndStrokes }
+      { text: 'Net Ceded Basic Premium', type: 'reference', color: staticColors.success.textAndStrokes }
     ],
-    icon: <DocumentIcon fillColor={colors.marketplace.violet600} />
+    icon: <DocumentIcon fillColor={staticColors.marketplace.violet600} />
   },
   {
     id: 'total-ceded',
@@ -109,11 +109,11 @@ const metricsData = [
     subtitle: '',
     tags: [
       { text: 'Sum of', type: 'connector' },
-      { text: 'Brokerage Fee', type: 'reference', color: colors.error.textAndStrokes },
+      { text: 'Brokerage Fee', type: 'reference', color: staticColors.error.textAndStrokes },
       { text: '&', type: 'operator' },
-      { text: 'Net Ceded Basic Premium', type: 'reference', color: colors.success.textAndStrokes }
+      { text: 'Net Ceded Basic Premium', type: 'reference', color: staticColors.success.textAndStrokes }
     ],
-    icon: <DocumentIcon fillColor={colors.success.fill} />,
+    icon: <DocumentIcon fillColor={staticColors.success.fill} />,
     fullWidth: true
   }
 ];
@@ -143,8 +143,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
   fullWidth = false
 }) => {
   const cardStyles: React.CSSProperties = {
-    backgroundColor: colors.blackAndWhite.white,
-    border: `1px solid ${colors.reports.dynamic.blue400}`,
+    backgroundColor: staticColors.blackAndWhite.white,
+    border: `1px solid ${staticColors.reports.dynamic.blue400}`,
     borderRadius: borderRadius[12],
     overflow: 'hidden',
     position: 'relative',
@@ -166,7 +166,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const separatorStyles: React.CSSProperties = {
     width: '100%',
     height: '1px',
-    backgroundColor: colors.reports.dynamic.blue400,
+    backgroundColor: staticColors.reports.dynamic.blue400,
     flexShrink: 0,
   };
 
@@ -183,7 +183,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const valueStyles: React.CSSProperties = {
     ...typography.styles.dataXXL,
     letterSpacing: '0.5px',
-    color: colors.blackAndWhite.black900,
+    color: staticColors.blackAndWhite.black900,
     margin: 0,
     height: '50px',
     display: 'flex',
@@ -193,30 +193,30 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const subtitleStyles: React.CSSProperties = {
     ...typography.styles.bodyM,
     lineHeight: 1.3,
-    color: colors.blackAndWhite.black500,
+    color: staticColors.blackAndWhite.black500,
     margin: 0,
   };
 
   const tagStyles = {
     percentage: {
-      backgroundColor: colors.reports.blue500,
-      color: colors.blackAndWhite.black900,
+      backgroundColor: staticColors.reports.blue500,
+      color: staticColors.blackAndWhite.black900,
       padding: '2px 8px',
       borderRadius: borderRadius.absolute,
       fontSize: '12px',
       fontWeight: 500,
     },
     connector: {
-      backgroundColor: colors.blackAndWhite.white,
-      color: colors.blackAndWhite.black900,
+      backgroundColor: staticColors.blackAndWhite.white,
+      color: staticColors.blackAndWhite.black900,
       padding: '4px 10px',
       borderRadius: borderRadius.absolute,
       fontSize: '12px',
       fontStyle: 'italic',
     },
     reference: {
-      backgroundColor: colors.reports.blue500,
-      color: colors.blackAndWhite.black900,
+      backgroundColor: staticColors.reports.blue500,
+      color: staticColors.blackAndWhite.black900,
       padding: '2px 6px 2px 8px',
       borderRadius: borderRadius.absolute,
       fontSize: '12px',
@@ -226,8 +226,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
       gap: '5px',
     },
     operator: {
-      backgroundColor: colors.blackAndWhite.white,
-      color: colors.blackAndWhite.black900,
+      backgroundColor: staticColors.blackAndWhite.white,
+      color: staticColors.blackAndWhite.black900,
       padding: '4px 10px',
       borderRadius: borderRadius.absolute,
       fontSize: '12px',
@@ -242,7 +242,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         <div style={{ width: '14px', height: '18px', flexShrink: 0 }}>{icon}</div>
         <div style={{ 
           ...typography.styles.bodyL,
-          color: colors.blackAndWhite.black900,
+          color: staticColors.blackAndWhite.black900,
           flexShrink: 0,
         }}>
           {title}
@@ -266,7 +266,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
                   textDecorationSkipInk: 'none',
                   textDecorationStyle: 'solid',
                   textUnderlinePosition: 'from-font',
-                  color: colors.blackAndWhite.black800 
+                  color: staticColors.blackAndWhite.black800 
                 }}>
                   2025-01-31BDX
                 </span>
@@ -286,7 +286,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
                     width: '6px',
                     height: '6px',
                     borderRadius: borderRadius.absolute,
-                    backgroundColor: tag.color || colors.blackAndWhite.black500,
+                    backgroundColor: tag.color || staticColors.blackAndWhite.black500,
                   }} />
                 )}
                 {tag.text}
@@ -305,6 +305,7 @@ interface CashSettlementProps {
 }
 
 export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage }) => {
+  const colors = useSemanticColors();
   const backButtonStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
@@ -365,11 +366,11 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
       {/* Back Button and Title */}
       <div style={backButtonStyles} onClick={() => onNavigateToPage?.('report-navigation')}>
         <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
-          <path d="M4.25 0.5L2.5 2.25L0.75 0.5" stroke={colors.reports.dynamic.blue400} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" transform="rotate(90)" />
+          <path d="M4.25 0.5L2.5 2.25L0.75 0.5" stroke={staticColors.reports.dynamic.blue400} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" transform="rotate(90)" />
         </svg>
         <span style={{ 
           ...typography.styles.bodyM, 
-          color: colors.blackAndWhite.black700,
+          color: staticColors.blackAndWhite.black700,
           textDecoration: 'underline',
           cursor: 'pointer'
         }}>
@@ -378,9 +379,9 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
       </div>
 
       <div style={titleStyles}>
-        <span style={{ color: colors.blackAndWhite.black500 }}>You're now reviewing Contracts from </span>
-        <span style={{ color: colors.blackAndWhite.black900 }}>Cucumber GL Seasonal.</span>
-        <span style={{ color: colors.blackAndWhite.black500 }}> Cession statement</span>
+        <span style={{ color: staticColors.blackAndWhite.black500 }}>You're now reviewing Contracts from </span>
+        <span style={{ color: staticColors.blackAndWhite.black900 }}>Cucumber GL Seasonal.</span>
+        <span style={{ color: staticColors.blackAndWhite.black500 }}> Cession statement</span>
       </div>
 
       {/* Metrics Grid */}

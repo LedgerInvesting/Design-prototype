@@ -16,7 +16,7 @@ export interface TableColumn {
   align?: 'left' | 'center' | 'right';
   cellType?: CellType;
   onDownload?: (filename: string) => void; // For document cells
-  hoverIcon?: 'download' | 'config'; // For document cells hover icon
+  hoverIcon?: 'download' | 'config' | 'open'; // For document cells hover icon
   actionType?: ActionType; // For action cells (edit, upload, validate, add, delete, plus)
   onAction?: (actionType: ActionType, text: string) => void; // For action cells
 }
@@ -78,7 +78,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     borderTopLeftRadius: borderRadius[8],
     borderTopRightRadius: borderRadius[8],
-    border: `1px solid ${colors.theme.primary300}`, // Theme-aware border
+    border: `1px solid ${colors.theme.primary400}`, // Theme-aware border
     borderBottom: 'none', // Will be handled by table border
   };
 
@@ -315,9 +315,9 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     cursor: canSort ? 'pointer' : 'default',
     height: '32px', // Reduced height for compact design
     boxSizing: 'border-box' as const,
-    borderRight: `1px solid ${colors.theme.primary300}`, // Right border for column separation
-    borderTop: `1px solid ${colors.theme.primary300}`,
-    borderBottom: `1px solid ${colors.theme.primary300}`,
+    borderRight: `1px solid ${colors.theme.primary400}`, // Right border for column separation
+    borderTop: `1px solid ${colors.theme.primary400}`,
+    borderBottom: `1px solid ${colors.theme.primary400}`,
     borderLeft: 'none', // Explicitly set no left border for non-action columns
     position: 'relative' as const,
     textAlign: 'left' as const,
@@ -331,10 +331,10 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     right: 0,
     zIndex: 10,
     backgroundColor: colors.blackAndWhite.white, // Force white background
-    borderRight: `1px solid ${colors.theme.primary300}`, // Maintain right border
-    borderTop: `1px solid ${colors.theme.primary300}`, // Maintain top border
-    borderBottom: `1px solid ${colors.theme.primary300}`, // Maintain bottom border
-    boxShadow: `inset 1px 0 0 0 ${colors.theme.primary300}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
+    borderRight: `1px solid ${colors.theme.primary400}`, // Maintain right border
+    borderTop: `1px solid ${colors.theme.primary400}`, // Maintain top border
+    borderBottom: `1px solid ${colors.theme.primary400}`, // Maintain bottom border
+    boxShadow: `inset 1px 0 0 0 ${colors.theme.primary400}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
   } : baseHeaderStyles;
 
   const headerContentStyles = {
@@ -428,14 +428,14 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
             >
               <path 
                 d="M7 9L12 4L17 9" 
-                stroke={colors.reports.blue450} 
+                stroke={colors.blackAndWhite.black500} 
                 strokeWidth="1.4" 
                 strokeLinecap="round" 
                 strokeLinejoin="round"
               />
               <path 
                 d="M17 15L12 20L7 15" 
-                stroke={colors.reports.blue450} 
+                stroke={colors.blackAndWhite.black500} 
                 strokeWidth="1.4" 
                 strokeLinecap="round" 
                 strokeLinejoin="round"
@@ -471,11 +471,13 @@ export const TableBody: React.FC<TableBodyProps> = ({
         // For document cells, expect the value to be a string filename
         if (typeof value === 'string') {
           return (
-            <DocumentCell 
-              filename={value} 
-              onDownload={column.onDownload || ((filename) => console.log('Download:', filename))}
-              hoverIcon={column.hoverIcon}
-            />
+            <div data-cell-type="document" style={{ cursor: 'pointer' }}>
+              <DocumentCell
+                filename={value}
+                onDownload={column.onDownload || ((filename) => console.log('Download:', filename))}
+                hoverIcon={column.hoverIcon}
+              />
+            </div>
           );
         }
         // Fallback to simple if value is not a string
@@ -487,10 +489,12 @@ export const TableBody: React.FC<TableBodyProps> = ({
           const validActionTypes = ['upload', 'validate', 'generate', 'setup'];
           const actionType = validActionTypes.includes(value) ? value as ActionType : (column.actionType || 'upload');
           return (
-            <ActionCell 
-              actionType={actionType}
-              onClick={column.onAction || ((actionType, text) => console.log('Action:', actionType, text))}
-            />
+            <div data-cell-type="action" style={{ cursor: 'pointer' }}>
+              <ActionCell
+                actionType={actionType}
+                onClick={column.onAction || ((actionType, text) => console.log('Action:', actionType, text))}
+              />
+            </div>
           );
         }
         // Fallback to simple if value is not a string
@@ -500,6 +504,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
         // For simple cells, wrap text content in a div with ellipsis styles and tooltip
         if (typeof value === 'string' || typeof value === 'number') {
           const textValue = String(value);
+          const alignment = column.align || 'right'; // Default to right alignment for simple text cells
           return (
             <div
               style={{
@@ -508,6 +513,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
                 textOverflow: 'ellipsis',
                 width: '100%',
                 position: 'relative',
+                textAlign: alignment,
               }}
               title={textValue} // Native HTML tooltip shows full text on hover
             >
@@ -517,7 +523,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
         }
         // For React components, wrap in alignment container based on column alignment
         if (React.isValidElement(value)) {
-          const alignment = column.align || 'left';
+          const alignment = column.align || 'right'; // Default to right alignment for simple cells
           const justifyContent = alignment === 'center' ? 'center' : alignment === 'right' ? 'flex-end' : 'flex-start';
           
           return (
@@ -545,8 +551,8 @@ export const TableBody: React.FC<TableBodyProps> = ({
     fontSize: typography.styles.bodyM.fontSize,
     color: colors.blackAndWhite.black700,
     verticalAlign: 'middle' as const,
-    borderBottom: `1px solid ${colors.theme.primary300}`, // Theme-aware border color
-    borderRight: `1px solid ${colors.theme.primary300}`, // Right border for column separation
+    borderBottom: `1px solid ${colors.theme.primary400}`, // Theme-aware border color
+    borderRight: `1px solid ${colors.theme.primary400}`, // Right border for column separation
     height: '33px', // Updated row height (45px target - 12px padding = 33px)
     boxSizing: 'border-box' as const,
   };
@@ -593,10 +599,10 @@ export const TableBody: React.FC<TableBodyProps> = ({
               right: 0,
               zIndex: 10,
               backgroundColor: colors.blackAndWhite.white, // Force white background
-              borderRight: `1px solid ${colors.theme.primary300}`, // Maintain right border
-              borderTop: rowIndex === 0 ? `1px solid ${colors.theme.primary300}` : 'none', // Top border only for first row
-              borderBottom: rowIndex === data.length - 1 ? 'none' : `1px solid ${colors.theme.primary300}`, // Bottom border except last row
-              boxShadow: `inset 1px 0 0 0 ${colors.theme.primary300}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
+              borderRight: `1px solid ${colors.theme.primary400}`, // Maintain right border
+              borderTop: rowIndex === 0 ? `1px solid ${colors.theme.primary400}` : 'none', // Top border only for first row
+              borderBottom: rowIndex === data.length - 1 ? 'none' : `1px solid ${colors.theme.primary400}`, // Bottom border except last row
+              boxShadow: `inset 1px 0 0 0 ${colors.theme.primary400}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
             } : baseCellStyle;
 
             return (
@@ -634,7 +640,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     borderBottomLeftRadius: borderRadius[8],
     borderBottomRightRadius: borderRadius[8],
-    border: `1px solid ${colors.theme.primary300}`,
+    border: `1px solid ${colors.theme.primary400}`,
     borderTop: `1px solid ${colors.theme.primary400}`,
     gap: '50px',
   };
@@ -830,6 +836,11 @@ export const Table: React.FC<TableProps> = ({
   const colors = useSemanticColors();
   const [internalSortState, setInternalSortState] = useState<SortState>(sortState);
 
+  // Drag state for horizontal scrolling
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, scrollLeft: 0 });
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
+
   const handleSort = (columnKey: string) => {
     if (onSort) {
       onSort(columnKey);
@@ -844,19 +855,83 @@ export const Table: React.FC<TableProps> = ({
 
   const currentSortState = onSort ? sortState : internalSortState;
 
+  // Add CSS for arrow cursors
+  React.useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .table-draggable {
+        cursor: ew-resize;
+      }
+      .table-dragging {
+        cursor: ew-resize;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
+      }
+    };
+  }, []);
+
+  // Drag handlers for horizontal scrolling
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!tableContainerRef.current) return;
+
+    // Don't start drag on clickable elements
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('[role="button"]') || target.closest('a')) {
+      return;
+    }
+
+    // Don't start drag on clickable cells (document and action)
+    const isClickableCell = target.closest('[data-cell-type="document"]') ||
+                           target.closest('[data-cell-type="action"]') ||
+                           target.closest('th')?.textContent?.includes('Actions');
+    if (isClickableCell) {
+      return;
+    }
+
+    setIsDragging(true);
+    setDragStart({
+      x: e.pageX,
+      scrollLeft: tableContainerRef.current.scrollLeft,
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !tableContainerRef.current) return;
+
+    e.preventDefault();
+    const x = e.pageX;
+    const walk = (x - dragStart.x) * 2; // Multiply by 2 for faster scrolling
+    tableContainerRef.current.scrollLeft = dragStart.scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
   const tableContainerStyles = {
     width: '100%',
     overflowX: 'auto' as const, // Enable horizontal scroll
     overflowY: 'hidden' as const,
     borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : borderRadius[8],
-    border: `1px solid ${colors.theme.primary300}`,
-    borderTop: showHeader ? 'none' : `1px solid ${colors.theme.primary300}`,
-    borderBottom: showFooterPagination ? 'none' : `1px solid ${colors.theme.primary300}`,
+    border: `1px solid ${colors.theme.primary400}`,
+    borderTop: showHeader ? 'none' : `1px solid ${colors.theme.primary400}`,
+    borderBottom: showFooterPagination ? 'none' : `1px solid ${colors.theme.primary400}`,
     // Force container to be constrained and show scrollbar
     maxWidth: '100%',
     minWidth: 0, // Allow shrinking
     boxSizing: 'border-box' as const,
     display: 'block' as const, // Ensure block layout
+    // Cursor handled by CSS classes for better browser support
+    userSelect: 'none' as const, // Prevent text selection during drag
   };
 
   const tableStyles = {
@@ -897,7 +972,15 @@ export const Table: React.FC<TableProps> = ({
         />
       )}
       
-      <div style={tableContainerStyles}>
+      <div
+        ref={tableContainerRef}
+        style={tableContainerStyles}
+        className={isDragging ? 'table-dragging' : 'table-draggable'}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+      >
         <table style={tableStyles}>
           <thead>
             <tr>
@@ -912,7 +995,7 @@ export const Table: React.FC<TableProps> = ({
               ))}
             </tr>
           </thead>
-          
+
           <TableBody
             columns={columns}
             data={data}

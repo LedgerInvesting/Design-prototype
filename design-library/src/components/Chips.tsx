@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { colors, typography, borderRadius, spacing, shadows } from '../tokens';
+import { typography, borderRadius, spacing, shadows, useSemanticColors } from '../tokens';
 import { ChevronDownExtraSmall, XExtraSmall } from '../icons';
 
 export interface StatusProps {
@@ -25,6 +25,7 @@ export const Status: React.FC<StatusProps> = ({
   disabled = false,
   className = '',
 }) => {
+  const colors = useSemanticColors();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(text);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -89,9 +90,9 @@ export const Status: React.FC<StatusProps> = ({
       chevron: colors.blackAndWhite.black900,
     },
     info: {
-      background: colors.reports.blue500, // #e1f3ff
+      background: colors.theme.primary500,
       text: colors.blackAndWhite.black900,
-      dot: colors.reports.blue800, // #83c9ed (estimated)
+      dot: colors.theme.primary800,
       chevron: colors.blackAndWhite.black900,
     },
     inactive: {
@@ -288,7 +289,7 @@ const StatusMenuItem: React.FC<StatusMenuItemProps> = ({
     justifyContent: 'flex-start',
     padding: '6px 10px',
     borderRadius: (isSelected || isHovered) ? borderRadius.absolute : '4px',
-    backgroundColor: isSelected ? colors.reports.dynamic.blue300 : (isHovered && !disabled ? `${colors.reports.dynamic.blue200}80` : 'transparent'),
+    backgroundColor: isSelected ? colors.theme.primary300 : (isHovered && !disabled ? `${colors.theme.primary200}80` : 'transparent'),
     cursor: disabled ? 'not-allowed' : 'pointer',
     transition: 'all 0.2s ease',
     marginBottom: '2px',

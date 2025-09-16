@@ -7,7 +7,7 @@ import type { BreadcrumbItem } from '@design-library/pages';
 import { Card, Button, Stack, Grid, Container } from '@design-library/components';
 
 // Import design tokens
-import { colors, typography, spacing, borderRadius, shadows } from '@design-library/tokens';
+import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 
 // Import icons
 import { ArrowUpSmall, ArrowDownSmall } from '@design-library/icons';
@@ -15,7 +15,7 @@ import { ArrowUpSmall, ArrowDownSmall } from '@design-library/icons';
 // Custom chevron down icon component
 const ChevronDownIcon: React.FC = () => (
   <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M2 3L4 5L6 3" stroke={colors.blackAndWhite.black900} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M2 3L4 5L6 3" stroke={staticColors.blackAndWhite.black900} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -65,6 +65,7 @@ interface GrowthIndicatorProps {
 }
 
 const GrowthIndicator: React.FC<GrowthIndicatorProps> = ({ direction, percentage, period }) => {
+  const colors = useSemanticColors();
   const isPositive = direction === 'up';
   const color = isPositive ? colors.success.textAndStrokes : colors.error.textAndStrokes;
   const ArrowIcon = isPositive ? ArrowUpSmall : ArrowDownSmall;
@@ -153,6 +154,7 @@ interface StatusMeterProps {
 }
 
 const StatusMeter: React.FC<StatusMeterProps> = ({ level }) => {
+  const colors = useSemanticColors();
   const levels = {
     excellent: { color: '#2fa915', position: 80 },
     marginal: { color: '#f59e0b', position: 50 },
@@ -206,9 +208,10 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
   currentProgram,
   onProgramChange
 }) => {
+  const colors = useSemanticColors();
   const cardStyles: React.CSSProperties = {
     backgroundColor: colors.blackAndWhite.white,
-    border: `1px solid ${colors.reports.dynamic.blue400}`,
+    border: `1px solid ${colors.theme.primary400}`,
     borderRadius: borderRadius[8],
     padding: '20px 30px',
     width: '100%',
@@ -249,6 +252,7 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
   primaryProgram,
   additionalPrograms
 }) => {
+  const colors = useSemanticColors();
   const containerStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
@@ -266,7 +270,7 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
   };
 
   const pillStyles: React.CSSProperties = {
-    backgroundColor: colors.reports.dynamic.blue200,
+    backgroundColor: colors.theme.primary200,
     borderRadius: borderRadius[4],
     padding: '6px 10px',
     fontFamily: 'Söhne, system-ui, sans-serif',
@@ -299,6 +303,7 @@ interface ReportNavigationProps {
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
+  const colors = useSemanticColors();
 
   // Mock data for the current program
   const currentProgram = {
@@ -368,7 +373,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             {/* Cession and Collateral Card */}
             <div style={{
               backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.reports.dynamic.blue400}`,
+              border: `1px solid ${colors.theme.primary400}`,
               borderRadius: borderRadius[12],
               overflow: 'hidden',
             }}>
@@ -389,7 +394,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 <button 
                   onClick={() => onNavigateToPage?.('cash-settlement')}
                   style={{
-                    backgroundColor: colors.reports.dynamic.blue200,
+                    backgroundColor: colors.theme.primary200,
                     border: 'none',
                     borderRadius: borderRadius.absolute,
                     padding: '6px 12px',
@@ -407,7 +412,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               <div style={{
                 width: '100%',
                 height: '1px',
-                backgroundColor: colors.reports.dynamic.blue400,
+                backgroundColor: colors.theme.primary400,
                 margin: '0',
               }} />
 
@@ -450,7 +455,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               <div style={{
                 width: '100%',
                 height: '1px',
-                backgroundColor: colors.reports.dynamic.blue400,
+                backgroundColor: colors.theme.primary400,
                 margin: '0 0 10px 0'
               }} />
 
@@ -490,7 +495,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               <div style={{
                 width: '100%',
                 height: '1px',
-                backgroundColor: colors.reports.dynamic.blue400,
+                backgroundColor: colors.theme.primary400,
                 margin: '0 0 10px 0'
               }} />
 
@@ -531,7 +536,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             {/* Data Validation Card */}
             <div style={{
               backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.reports.dynamic.blue400}`,
+              border: `1px solid ${colors.theme.primary400}`,
               borderRadius: borderRadius[12],
               overflow: 'hidden',
             }}>
@@ -550,7 +555,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   Data Validation
                 </h3>
                 <button style={{
-                  backgroundColor: colors.reports.dynamic.blue200,
+                  backgroundColor: colors.theme.primary200,
                   border: 'none',
                   borderRadius: borderRadius.absolute,
                   padding: '6px 12px',
@@ -568,7 +573,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               <div style={{
                 width: '100%',
                 height: '1px',
-                backgroundColor: colors.reports.dynamic.blue400,
+                backgroundColor: colors.theme.primary400,
                 margin: '0',
               }} />
 
@@ -618,7 +623,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 width: '100%',
                 height: '1px',
                 backgroundColor: 'transparent',
-                borderTop: `1px dashed ${colors.reports.dynamic.blue400}`,
+                borderTop: `1px dashed ${colors.theme.primary400}`,
                 margin: '0 0 10px 0'
               }} />
 
@@ -664,7 +669,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               <div style={{
                 width: '100%',
                 height: '1px',
-                backgroundColor: colors.reports.dynamic.blue400,
+                backgroundColor: colors.theme.primary400,
                 margin: '0 0 10px 0'
               }} />
 
@@ -711,7 +716,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 width: '100%',
                 height: '1px',
                 backgroundColor: 'transparent',
-                borderTop: `1px dashed ${colors.reports.dynamic.blue400}`,
+                borderTop: `1px dashed ${colors.theme.primary400}`,
                 margin: '0 0 10px 0'
               }} />
 
@@ -760,7 +765,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
           {/* Full-width Card */}
           <div style={{
             backgroundColor: colors.blackAndWhite.white,
-            border: `1px solid ${colors.reports.dynamic.blue400}`,
+            border: `1px solid ${colors.theme.primary400}`,
             borderRadius: borderRadius[12],
             overflow: 'hidden',
             marginTop: '24px',
@@ -781,7 +786,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 Insights
               </h3>
               <button style={{
-                backgroundColor: colors.reports.dynamic.blue200,
+                backgroundColor: colors.theme.primary200,
                 border: 'none',
                 borderRadius: borderRadius.absolute,
                 padding: '6px 12px',
@@ -799,7 +804,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             <div style={{
               width: '100%',
               height: '1px',
-              backgroundColor: colors.reports.dynamic.blue400,
+              backgroundColor: colors.theme.primary400,
               margin: '0',
             }} />
 
@@ -901,7 +906,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                     {/* Blue line (main trend) */}
                     <path 
                       d="M0,30 Q15,25 25,35 Q40,50 50,15 Q60,10 75,12 Q85,18 100,20"
-                      stroke={colors.reports.blue700}
+                      stroke={colors.theme.primary700}
                       strokeWidth="2"
                       fill="none"
                       strokeLinecap="round"
@@ -988,7 +993,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             {/* Data Ingestion Card */}
             <div style={{
               backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.reports.dynamic.blue400}`,
+              border: `1px solid ${colors.theme.primary400}`,
               borderRadius: borderRadius[12],
               overflow: 'hidden',
             }}>
@@ -1007,7 +1012,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   Data Ingestion
                 </h3>
                 <button style={{
-                  backgroundColor: colors.reports.dynamic.blue200,
+                  backgroundColor: colors.theme.primary200,
                   border: 'none',
                   borderRadius: borderRadius.absolute,
                   padding: '6px 12px',
@@ -1025,7 +1030,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               <div style={{
                 width: '100%',
                 height: '1px',
-                backgroundColor: colors.reports.dynamic.blue400,
+                backgroundColor: colors.theme.primary400,
                 margin: '0',
               }} />
 
@@ -1081,7 +1086,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   gap: '8px'
                 }}>
                   <div style={{
-                    border: `1px solid ${colors.reports.dynamic.blue400}`,
+                    border: `1px solid ${colors.theme.primary400}`,
                     borderRadius: borderRadius[4],
                     padding: '12px 16px',
                     ...typography.styles.bodyM,
@@ -1091,7 +1096,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                     3 months (Need review)
                   </div>
                   <div style={{
-                    border: `1px solid ${colors.reports.dynamic.blue400}`,
+                    border: `1px solid ${colors.theme.primary400}`,
                     borderRadius: borderRadius[4],
                     padding: '12px 16px',
                     ...typography.styles.bodyM,
@@ -1107,7 +1112,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             {/* Contracts Card */}
             <div style={{
               backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.reports.dynamic.blue400}`,
+              border: `1px solid ${colors.theme.primary400}`,
               borderRadius: borderRadius[12],
               overflow: 'hidden',
             }}>
@@ -1128,7 +1133,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 <button 
                   onClick={() => onNavigateToPage?.('contracts-explorer')}
                   style={{
-                    backgroundColor: colors.reports.dynamic.blue200,
+                    backgroundColor: colors.theme.primary200,
                     border: 'none',
                     borderRadius: borderRadius.absolute,
                     padding: '6px 12px',
@@ -1146,7 +1151,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               <div style={{
                 width: '100%',
                 height: '1px',
-                backgroundColor: colors.reports.dynamic.blue400,
+                backgroundColor: colors.theme.primary400,
                 margin: '0',
               }} />
 
@@ -1163,7 +1168,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               }}>
                 {/* Blue 700 Container */}
                 <div style={{
-                  backgroundColor: colors.reports.blue700,
+                  backgroundColor: colors.theme.primary700,
                   borderRadius: borderRadius[12],
                   padding: '40px',
                   display: 'flex',

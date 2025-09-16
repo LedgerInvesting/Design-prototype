@@ -1,12 +1,12 @@
 import React from 'react';
-import { strokes, spacing } from '../tokens';
+import { spacing, useSemanticColors } from '../tokens';
 
 export interface SeparatorProps {
   /** Separator variant - fullWidth spans entire container, content respects horizontal padding */
   variant?: 'fullWidth' | 'content';
   /** Horizontal margin for content variant (defaults to spacing[4] = 1rem) */
   margin?: keyof typeof spacing;
-  /** Custom color override (defaults to strokes.reports) */
+  /** Custom color override (defaults to theme.primary400) */
   color?: string;
   /** Custom thickness (defaults to 1px) */
   thickness?: string;
@@ -17,13 +17,15 @@ export interface SeparatorProps {
 export const Separator: React.FC<SeparatorProps> = ({
   variant = 'fullWidth',
   margin = '4',
-  color = strokes.reports,
+  color,
   thickness = '1px',
   className = '',
 }) => {
+  const colors = useSemanticColors();
+  const defaultColor = color || colors.theme.primary400;
   const baseStyles: React.CSSProperties = {
     height: thickness,
-    backgroundColor: color,
+    backgroundColor: defaultColor,
     border: 'none',
     margin: 0,
   };

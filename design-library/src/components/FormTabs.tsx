@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors, typography, spacing } from '../tokens';
+import { typography, spacing, useSemanticColors } from '../tokens';
 
 export interface FormTab {
   id: string;
@@ -24,6 +24,7 @@ export const FormTabs: React.FC<FormTabsProps> = ({
   onTabClick,
   className,
 }) => {
+  const colors = useSemanticColors();
   const containerStyles: React.CSSProperties = {
     display: 'flex',
     height: '30px',
@@ -38,9 +39,9 @@ export const FormTabs: React.FC<FormTabsProps> = ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '0 16px',
-    backgroundColor: isActive 
-      ? colors.reports.blue700 
-      : colors.reports.dynamic.blue200,
+    backgroundColor: isActive
+      ? colors.theme.primary700
+      : colors.theme.primary200,
     color: isActive 
       ? colors.blackAndWhite.black900 
       : colors.blackAndWhite.black500,

@@ -674,6 +674,18 @@ export const CellTypesShowcase: Story = {
         },
       },
       {
+        key: 'documentOpen',
+        title: 'Document Open',
+        icon: <DocumentTable color={colors.reports.blue450} />,
+        sortable: false,
+        width: '250px',
+        cellType: 'document', // Document cells with open icon
+        hoverIcon: 'open', // Use chevron right icon on hover to indicate opening
+        onDownload: (filename: string) => {
+          console.log('Opening document:', filename);
+        },
+      },
+      {
         key: 'action',
         title: 'Actions',
         sortable: false,
@@ -690,18 +702,21 @@ export const CellTypesShowcase: Story = {
         simple: 'Policy Alpha',
         document: 'policy_alpha_contract.pdf',
         documentConfig: 'policy_alpha_config.json',
+        documentOpen: 'policy_alpha_details.pdf',
         action: 'Edit Policy',
       },
       {
         simple: 'Policy Beta',
         document: 'policy_beta_terms.docx',
         documentConfig: 'policy_beta_config.json',
+        documentOpen: 'policy_beta_details.docx',
         action: 'Configure',
       },
       {
         simple: 'Policy Gamma',
         document: 'policy_gamma_summary.xlsx',
         documentConfig: 'policy_gamma_config.json',
+        documentOpen: 'policy_gamma_details.xlsx',
         action: 'Review',
       },
     ],
@@ -714,7 +729,7 @@ export const CellTypesShowcase: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates all three cell types in the Table component: simple text cells, document download cells (hover to see download icon), and action button cells (click to trigger actions).',
+        story: 'Demonstrates all cell types in the Table component: simple text cells, document cells with download icon, document cells with config icon, document cells with open icon (chevron right), and action button cells (click to trigger actions).',
       },
     },
   },

@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import { colors, borderRadius, typography, spacing } from '../tokens';
+import { colors, borderRadius, typography, spacing, useSemanticColors } from '../tokens';
 import { icons } from '../icons';
 import { InfoTooltip, InfoTooltipSection } from './InfoTooltip';
 import { DatePickerModal } from './DatePickerModal';
@@ -59,6 +59,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const semanticColors = useSemanticColors();
 
   // Modal handlers
   const handleOpenModal = () => {
@@ -146,7 +147,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
       height: '34px',
       padding: '8px 10px 10px 12px',
       borderRadius: borderRadius[4],
-      backgroundColor: colors.blackAndWhite.white,
+      backgroundColor: semanticColors.blackAndWhite.white,
       border: '1px solid',
       gap: spacing[2],
       position: 'relative' as const,
@@ -168,23 +169,23 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
       case 'active':
         return {
           ...baseStyles,
-          borderColor: colors.blackAndWhite.black700,
+          borderColor: semanticColors.blackAndWhite.black700,
         };
       case 'filled':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: semanticColors.theme.primary400,
         };
       case 'disabled':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: semanticColors.theme.primary400,
           opacity: 0.6,
         };
       default:
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
+          borderColor: semanticColors.theme.primary400,
         };
     }
   };
@@ -199,7 +200,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
       fontSize: typography.styles.bodyM.fontSize,
       fontWeight: typography.styles.bodyM.fontWeight,
       lineHeight: typography.styles.bodyM.lineHeight,
-      color: actualState === 'disabled' ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
+      color: actualState === 'disabled' ? semanticColors.blackAndWhite.black500 : semanticColors.blackAndWhite.black900,
     };
   };
 
@@ -210,7 +211,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
       fontWeight: typography.styles.bodyS.fontWeight,
       lineHeight: typography.styles.bodyS.lineHeight,
       marginTop: spacing[2],
-      color: isError ? colors.error.darkBorders : isWarning ? colors.warning.dark : colors.blackAndWhite.black500,
+      color: isError ? colors.error.darkBorders : isWarning ? colors.warning.dark : semanticColors.blackAndWhite.black500,
     };
   };
 
@@ -233,7 +234,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
           fontSize: typography.styles.bodyM.fontSize,
           fontWeight: typography.styles.bodyM.fontWeight,
           lineHeight: typography.styles.bodyM.lineHeight,
-          color: colors.blackAndWhite.black900,
+          color: semanticColors.blackAndWhite.black900,
         }}>
           {label}
         </label>
@@ -296,7 +297,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
           }}
         >
           <icons.medium.calendar 
-            color={colors.blackAndWhite.black900}
+            color={semanticColors.blackAndWhite.black900}
           />
         </button>
 

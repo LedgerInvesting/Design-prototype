@@ -15,12 +15,17 @@ export interface ThemeProviderProps {
   initialTheme?: ProductTheme;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
-  children, 
-  initialTheme = 'reports' 
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+  children,
+  initialTheme = 'reports'
 }) => {
   const [currentTheme, setCurrentTheme] = React.useState<ProductTheme>(initialTheme);
-  
+
+  // Update theme when initialTheme prop changes (for Storybook integration)
+  React.useEffect(() => {
+    setCurrentTheme(initialTheme);
+  }, [initialTheme]);
+
   const themeColors = getThemeColors(currentTheme);
   const colors = createSemanticColors(currentTheme);
   

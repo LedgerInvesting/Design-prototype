@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FormLayout } from '@design-library/pages';
 import { FormTabs, FormTab, Input, Dropdown, DatePicker, Button, ButtonSelector, Selector } from '@design-library/components';
-import { colors, typography, spacing, borderRadius } from '@design-library/tokens';
+import { typography, spacing, borderRadius, useSemanticColors } from '@design-library/tokens';
 import { PlusExtraSmall } from '@design-library/icons';
 
 const formTabs: FormTab[] = [
@@ -20,6 +20,7 @@ export interface NewTransactionFormProps {
 export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
   onNavigateToPage
 }) => {
+  const colors = useSemanticColors();
   const [activeTab, setActiveTab] = useState<string>('basic-info');
   const [formData, setFormData] = useState({
     transactionName: '',
@@ -84,7 +85,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
 
   const renderBasicInfoForm = () => {
     const formContainerStyles: React.CSSProperties = {
-      backgroundColor: colors.reports.dynamic.blue200,
+      backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[8],
       padding: '32px',
       marginTop: '24px',
@@ -232,7 +233,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
               width: '100%',
               minHeight: '80px',
               padding: '12px 16px',
-              border: `1px solid ${colors.reports.dynamic.blue400}`,
+              border: `1px solid ${colors.theme.primary400}`,
               borderRadius: borderRadius[4],
               fontFamily: typography.styles.bodyM.fontFamily.join(', '),
               fontSize: typography.styles.bodyM.fontSize,
@@ -286,7 +287,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
     };
 
     const formContainerStyles: React.CSSProperties = {
-      backgroundColor: colors.reports.dynamic.blue200,
+      backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[8],
       padding: '32px',
       marginTop: '24px',
@@ -315,7 +316,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
     const policyGroupIconStyles: React.CSSProperties = {
       width: '24px',
       height: '24px',
-      backgroundColor: colors.marketplace.violet700,
+      backgroundColor: colors.theme.primary700,
       borderRadius: '4px',
       display: 'flex',
       alignItems: 'center',
@@ -462,7 +463,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             </label>
             <div style={{
               backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.reports.dynamic.blue400}`,
+              border: `1px solid ${colors.theme.primary400}`,
               borderRadius: borderRadius[4],
               padding: '12px 16px',
               minHeight: '46px',
@@ -629,7 +630,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
   // Reporting Parameters form renderer
   const renderReportingParametersForm = () => {
     const formContainerStyles: React.CSSProperties = {
-      backgroundColor: colors.reports.dynamic.blue200,
+      backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[8],
       padding: '32px',
       marginTop: '24px',
@@ -731,7 +732,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
         <div style={{
           width: '100%',
           height: '1px',
-          backgroundColor: colors.reports.dynamic.blue400,
+          backgroundColor: colors.theme.primary400,
           margin: '32px 0',
         }}></div>
 
@@ -742,7 +743,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
         {requirements.map((requirement) => (
           <div key={requirement.id} style={{
             backgroundColor: colors.blackAndWhite.white,
-            border: `1px solid ${colors.reports.dynamic.blue400}`,
+            border: `1px solid ${colors.theme.primary400}`,
             borderRadius: borderRadius[8],
             padding: '24px',
             marginBottom: '24px',
@@ -919,7 +920,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
           <div>
             <h2 style={titleStyles}>Structure and Key Terms</h2>
             <div style={{ 
-              backgroundColor: colors.reports.dynamic.blue200,
+              backgroundColor: colors.theme.primary200,
               borderRadius: borderRadius[8],
               padding: '32px',
               marginTop: '24px',

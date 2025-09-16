@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { colors, borderRadius, typography } from '../tokens';
+import { colors, borderRadius, typography, useSemanticColors } from '../tokens';
 
 export type ButtonSelectorType = 'checkbox' | 'radio';
 
@@ -39,6 +39,7 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
   value,
 }) => {
   const [internalChecked, setInternalChecked] = useState(defaultChecked);
+  const semanticColors = useSemanticColors();
 
   // Use controlled value if provided, otherwise use internal state
   const isSelected = checked !== undefined ? checked : internalChecked;
@@ -86,25 +87,25 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
       case 'default':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
-          backgroundColor: colors.blackAndWhite.white,
-          color: colors.blackAndWhite.black900,
+          borderColor: semanticColors.theme.primary400,
+          backgroundColor: semanticColors.blackAndWhite.white,
+          color: semanticColors.blackAndWhite.black900,
           borderWidth: '1px',
         };
       case 'filled':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
-          backgroundColor: colors.blackAndWhite.white,
-          color: colors.blackAndWhite.black900,
+          borderColor: semanticColors.theme.primary400,
+          backgroundColor: semanticColors.blackAndWhite.white,
+          color: semanticColors.blackAndWhite.black900,
           borderWidth: '1px',
         };
       case 'disabled':
         return {
           ...baseStyles,
-          borderColor: colors.blackAndWhite.black100,
-          backgroundColor: colors.blackAndWhite.white,
-          color: colors.blackAndWhite.black500,
+          borderColor: semanticColors.blackAndWhite.black100,
+          backgroundColor: semanticColors.blackAndWhite.white,
+          color: semanticColors.blackAndWhite.black500,
           opacity: 0.6,
           borderWidth: '1px',
         };
@@ -131,22 +132,22 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
       case 'default':
         return {
           ...baseStyles,
-          borderColor: colors.reports.dynamic.blue400,
-          backgroundColor: selectorType === 'radio' ? 'transparent' : colors.blackAndWhite.white,
+          borderColor: semanticColors.theme.primary400,
+          backgroundColor: selectorType === 'radio' ? 'transparent' : semanticColors.blackAndWhite.white,
         };
       case 'filled':
         return {
           ...baseStyles,
           border: '1px solid transparent',
-          backgroundColor: colors.blackAndWhite.black900,
+          backgroundColor: semanticColors.blackAndWhite.black900,
         };
       case 'disabled':
         return {
           ...baseStyles,
-          borderColor: colors.blackAndWhite.black100,
-          backgroundColor: isSelected 
-            ? colors.blackAndWhite.black100 
-            : (selectorType === 'radio' ? 'transparent' : colors.blackAndWhite.white),
+          borderColor: semanticColors.blackAndWhite.black100,
+          backgroundColor: isSelected
+            ? semanticColors.blackAndWhite.black100
+            : (selectorType === 'radio' ? 'transparent' : semanticColors.blackAndWhite.white),
         };
       default:
         return baseStyles;
@@ -164,7 +165,7 @@ export const ButtonSelector: React.FC<ButtonSelectorProps> = ({
     >
       <path
         d="M2 6L4.5 8.5L10 3"
-        stroke={state === 'disabled' ? colors.blackAndWhite.black500 : colors.success.fill}
+        stroke={state === 'disabled' ? semanticColors.blackAndWhite.black500 : colors.success.fill}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

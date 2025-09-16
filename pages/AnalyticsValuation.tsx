@@ -194,7 +194,9 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
               sortable: true,
               width: 309,
-              cellType: 'document'
+              cellType: 'document',
+              hoverIcon: 'open',
+              onDownload: (filename: string) => console.log('Opening program:', filename)
             },
             {
               key: 'treatyYear', 

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { typography, borderRadius, shadows, useSemanticColors } from '../tokens';
-import { DocumentTable, DownloadSmall, ConfigSmall } from '../icons';
+import { DocumentTable, DownloadSmall, ConfigSmall, ChevronRightSmall } from '../icons';
 
 export interface DocumentCellProps {
   filename: string;
   onDownload?: (filename: string) => void;
   className?: string;
   align?: 'left' | 'center' | 'right';
-  hoverIcon?: 'download' | 'config';
+  hoverIcon?: 'download' | 'config' | 'open';
 }
 
 export const DocumentCell: React.FC<DocumentCellProps> = ({
@@ -18,11 +18,31 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
   hoverIcon = 'download',
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const colors = useSemanticColors();
 
   const handleClick = () => {
     if (onDownload) {
       onDownload(filename);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  // Get tooltip text based on hover icon type
+  const getTooltipText = () => {
+    switch (hoverIcon) {
+      case 'download':
+        return 'Download document';
+      case 'config':
+        return 'Config document';
+      case 'open':
+        return 'Go to dashboard';
+      default:
+        return 'Download document';
     }
   };
 
@@ -38,6 +58,27 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     minHeight: '24px',
     width: '100%',
     boxSizing: 'border-box' as const,
+    position: 'relative' as const,
+  };
+
+  const tooltipStyles = {
+    position: 'fixed' as const,
+    top: `${mousePosition.y + 10}px`, // 10px below mouse cursor
+    left: `${mousePosition.x + 10}px`, // 10px to the right of mouse cursor
+    backgroundColor: colors.blackAndWhite.black900,
+    color: colors.blackAndWhite.white,
+    padding: '6px 12px',
+    borderRadius: borderRadius[8],
+    fontSize: typography.styles.bodyS.fontSize,
+    fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+    fontWeight: typography.styles.bodyS.fontWeight,
+    whiteSpace: 'nowrap' as const,
+    opacity: showTooltip ? 1 : 0,
+    visibility: showTooltip ? 'visible' as const : 'hidden' as const,
+    transition: 'opacity 0.2s ease, visibility 0.2s ease',
+    zIndex: 1000,
+    boxShadow: shadows.base,
+    pointerEvents: 'none' as const,
   };
 
   const leftSectionStyles = {
@@ -50,10 +91,10 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
   };
 
   const textStyles = {
-    fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-    fontSize: typography.styles.bodyM.fontSize,
-    fontWeight: typography.styles.bodyM.fontWeight,
-    lineHeight: typography.styles.bodyM.lineHeight,
+    fontFamily: typography.styles.bodyL.fontFamily.join(', '),
+    fontSize: typography.styles.bodyL.fontSize,
+    fontWeight: typography.styles.bodyL.fontWeight,
+    lineHeight: typography.styles.bodyL.lineHeight,
     color: colors.blackAndWhite.black900,
     whiteSpace: 'nowrap' as const,
     overflow: 'hidden',
@@ -82,8 +123,15 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
       className={className}
       style={containerStyles}
       onClick={handleClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        setShowTooltip(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setShowTooltip(false);
+      }}
+      onMouseMove={handleMouseMove}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -93,14 +141,21 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
         }
       }}
     >
+      {/* Custom Tooltip */}
+      <div style={tooltipStyles}>
+        {getTooltipText()}
+      </div>
+
       <div style={leftSectionStyles}>
         <DocumentTable color={colors.blackAndWhite.black700} />
         <span style={textStyles}>{filename}</span>
       </div>
-      
+
       <div style={downloadIconStyles}>
         {hoverIcon === 'config' ? (
           <ConfigSmall color={colors.blackAndWhite.black700} />
+        ) : hoverIcon === 'open' ? (
+          <ChevronRightSmall color={colors.blackAndWhite.black700} />
         ) : (
           <DownloadSmall color={colors.blackAndWhite.black700} />
         )}

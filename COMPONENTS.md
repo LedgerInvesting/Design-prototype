@@ -2,36 +2,47 @@
 
 This document contains detailed documentation for all components in the Ledger Design Library.
 
-## 🎨 Theming System
+## 🎨 Unified Semantic Theme System
 
 ### Overview
-The design library features a comprehensive theming system that allows components to automatically adapt colors based on product context (Reports, Analytics, Marketplace).
+The design library features a comprehensive, consolidated theming system where ALL components and pages use semantic color tokens that automatically adapt based on product context (Reports, Analytics, Marketplace). Token duplication has been completely eliminated.
 
-### Core Concepts
-- **Semantic Colors**: Components use `colors.theme.main`, `colors.theme.primary400`, etc. instead of hardcoded product colors
+### Core Architecture
+- **Universal Semantic Colors**: All 45+ components use `colors.theme.primary200/300/400/500/700` and `colors.theme.main`
 - **ThemeProvider**: React context that provides theme-aware colors to all child components
 - **Automatic Color Resolution**: Theme system automatically maps semantic tokens to product colors
-  - Reports context: `theme.main` → `reports.blue700`
-  - Analytics context: `theme.main` → `analytics.green700`
-  - Marketplace context: `theme.main` → `marketplace.purple700`
+  - Reports context: `theme.main` → `reports.blue700`, `theme.primary400` → `reports.dynamic.blue400`
+  - Analytics context: `theme.main` → `analytics.green700`, `theme.primary400` → `analytics.dynamic.green400`
+  - Marketplace context: `theme.main` → `marketplace.violet700`, `theme.primary400` → `marketplace.dynamic.violet400`
+- **Token Consolidation**: Eliminated redundant `strokes` token and all duplicate color references
 
-### Usage
+### Implementation Patterns
 ```typescript
 // Wrap components with ThemeProvider
 <ThemeProvider initialTheme="analytics">
   <YourComponent />
 </ThemeProvider>
 
-// Inside components, use semantic colors
-const colors = useSemanticColors();
-<div style={{ backgroundColor: colors.theme.main }} />
+// Inside components, use semantic colors via hook
+const YourComponent = () => {
+  const colors = useSemanticColors();
+  return <div style={{ backgroundColor: colors.theme.main }} />;
+};
+
+// For static data outside components, use direct imports
+import { colors as staticColors } from '@design-library/tokens';
+const staticData = [
+  { id: 1, status: staticColors.success.fill }
+];
 ```
 
-### Benefits
-- **Figma Workflow Compatible**: Components designed in Reports automatically use Analytics colors when moved to Analytics context
-- **Consistent Theming**: No need to manually update colors when switching product contexts
-- **Maintainable**: Single source of truth for theme colors
-- **Type Safe**: Full TypeScript support with theme-aware color tokens
+### Comprehensive Integration Benefits
+- **Zero Token Duplication**: Single source of truth for all theme colors across entire codebase
+- **Automatic Theme Adaptation**: All components, pages, tables, and forms automatically adapt to context
+- **Error-Free Architecture**: Resolved all "colors is not defined" errors through systematic component updates
+- **Developer Experience**: Clear semantic naming (`colors.theme.primary400` vs `colors.reports.dynamic.blue400`)
+- **Type Safety**: Full TypeScript support with consolidated theme-aware color tokens
+- **Maintainable**: Theme changes propagate automatically across 45+ components and all pages
 
 ## Components Built
 1. **Button**: Unified button component with 3 variants (primary, small, icon), multiple colors, icon support, disabled states

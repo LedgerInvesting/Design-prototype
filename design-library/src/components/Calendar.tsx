@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { colors, borderRadius, typography, spacing } from '../tokens';
+import { borderRadius, typography, spacing, useSemanticColors } from '../tokens';
 import { icons } from '../icons';
 
 export interface CalendarProps {
@@ -34,6 +34,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   onMonthChange,
   position = 'left',
 }) => {
+  const colors = useSemanticColors();
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const [showMonthDropdown, setShowMonthDropdown] = useState(false);
   const [showYearDropdown, setShowYearDropdown] = useState(false);
@@ -205,10 +206,10 @@ export const Calendar: React.FC<CalendarProps> = ({
       backgroundColor: (isStart || isEnd || isSingle)
         ? colors.blackAndWhite.black900 
         : (isSelected || isInRange)
-          ? colors.reports.dynamic.blue300
+          ? colors.theme.primary300
           : 'transparent',
       color: (isStart || isEnd || isSingle)
-        ? colors.reports.blue700 
+        ? colors.theme.primary700 
         : colors.blackAndWhite.black900,
       border: isToday 
         ? `1px solid ${colors.blackAndWhite.black700}` 
@@ -292,7 +293,7 @@ export const Calendar: React.FC<CalendarProps> = ({
                 left: 0,
                 zIndex: 1000,
                 backgroundColor: colors.blackAndWhite.white,
-                border: `1px solid ${colors.reports.dynamic.blue400}`,
+                border: `1px solid ${colors.theme.primary400}`,
                 borderRadius: borderRadius[8],
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                 maxHeight: '200px',
@@ -310,14 +311,14 @@ export const Calendar: React.FC<CalendarProps> = ({
                       ...typography.styles.bodyM,
                       fontFamily: typography.styles.bodyM.fontFamily.join(', '),
                       color: colors.blackAndWhite.black900,
-                      backgroundColor: index === currentMonth.getMonth() ? colors.reports.dynamic.blue300 : 'transparent',
+                      backgroundColor: index === currentMonth.getMonth() ? colors.theme.primary300 : 'transparent',
                       ':hover': {
-                        backgroundColor: colors.reports.dynamic.blue100,
+                        backgroundColor: colors.theme.primary200,
                       },
                     }}
                     onMouseEnter={(e) => {
                       if (index !== currentMonth.getMonth()) {
-                        (e.target as HTMLElement).style.backgroundColor = colors.reports.dynamic.blue100;
+                        (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -373,7 +374,7 @@ export const Calendar: React.FC<CalendarProps> = ({
                 right: 0,
                 zIndex: 1000,
                 backgroundColor: colors.blackAndWhite.white,
-                border: `1px solid ${colors.reports.dynamic.blue400}`,
+                border: `1px solid ${colors.theme.primary400}`,
                 borderRadius: borderRadius[8],
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                 maxHeight: '200px',
@@ -393,11 +394,11 @@ export const Calendar: React.FC<CalendarProps> = ({
                         ...typography.styles.bodyM,
                         fontFamily: typography.styles.bodyM.fontFamily.join(', '),
                         color: colors.blackAndWhite.black900,
-                        backgroundColor: year === currentMonth.getFullYear() ? colors.reports.dynamic.blue300 : 'transparent',
+                        backgroundColor: year === currentMonth.getFullYear() ? colors.theme.primary300 : 'transparent',
                       }}
                       onMouseEnter={(e) => {
                         if (year !== currentMonth.getFullYear()) {
-                          (e.target as HTMLElement).style.backgroundColor = colors.reports.dynamic.blue100;
+                          (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
                         }
                       }}
                       onMouseLeave={(e) => {

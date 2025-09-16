@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Selector } from '@design-library/components';
-import { colors, typography, borderRadius, shadows, spacing } from '@design-library/tokens';
+import { typography, borderRadius, shadows, spacing, useSemanticColors } from '@design-library/tokens';
 import { AddMedium, ReloadMedium, CloseMedium } from '@design-library/icons';
 
 export interface NewTransactionModalProps {
@@ -16,6 +16,7 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
   onContinue,
   buttonRef,
 }) => {
+  const colors = useSemanticColors();
   const [selectedType, setSelectedType] = useState<'brand-new' | 'renewal' | null>(null);
   const [buttonPosition, setButtonPosition] = useState({ top: 0, right: 0 });
 
@@ -116,14 +117,14 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
   const optionCardStyles = (isSelected: boolean): React.CSSProperties => ({
     border: isSelected 
       ? `1px solid #9ad5f7` 
-      : `1px solid ${colors.reports.dynamic.blue400}`,
+      : `1px solid ${colors.theme.primary400}`,
     borderRadius: borderRadius[12],
     padding: '20px',
     cursor: 'pointer',
     textAlign: 'center',
     transition: 'all 0.2s ease',
     backgroundColor: isSelected 
-      ? colors.reports.dynamic.blue50 
+      ? colors.theme.primary200 
       : colors.blackAndWhite.white,
     position: 'relative',
   });
@@ -200,7 +201,7 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
               }}
               onMouseLeave={(e) => {
                 if (selectedType !== 'brand-new') {
-                  e.currentTarget.style.borderColor = colors.reports.dynamic.blue400;
+                  e.currentTarget.style.borderColor = colors.theme.primary400;
                 }
               }}
             >
@@ -242,7 +243,7 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
               }}
               onMouseLeave={(e) => {
                 if (selectedType !== 'renewal') {
-                  e.currentTarget.style.borderColor = colors.reports.dynamic.blue400;
+                  e.currentTarget.style.borderColor = colors.theme.primary400;
                 }
               }}
             >

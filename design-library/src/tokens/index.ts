@@ -264,11 +264,9 @@ export const borderRadius = {
   absolute: '9999px', // completely round
 } as const;
 
-export const strokes = {
-  // Default stroke colors for different contexts
-  reports: '#D9E7EC', // blue400 - used for borders, separators, and UI elements in reports
-  content: '#17211b', // black900 - used for icon content and high-contrast elements
-} as const;
+// Note: strokes token removed - use semantic theme colors instead:
+// - For borders/separators: colors.theme.primary400 (theme-aware)
+// - For icon content: colors.blackAndWhite.black900 (high contrast)
 
 export const shadows = {
   small: '0px 2px 4px rgba(0, 0, 0, 0.05)',

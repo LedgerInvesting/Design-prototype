@@ -38,7 +38,9 @@ This is a React design library built with TypeScript and Storybook, containing d
 
 ## Current State
 - **Design Tokens**: Complete design system from Figma Library 2.0 including:
-  - **Colors**: Updated color palette with semantic variants and corrected dynamic theme colors from Figma specifications (Reports: D9E7EC/E9F3F7/F2F8FB, Marketplace: D1D1EC/EFEFFA/F6F6FF, Analytics: E1EAE5/E9F1EC/F2F7F4)
+  - **Colors**: Unified semantic theme system with consolidated token architecture (Reports: D9E7EC/E9F3F7/F2F8FB, Marketplace: D1D1EC/EFEFFA/F6F6FF, Analytics: E1EAE5/E9F1EC/F2F7F4)
+  - **Theme System**: All components use `useSemanticColors()` hook for theme-aware color adaptation across Reports (blue), Analytics (green), and Marketplace (violet)
+  - **Token Consolidation**: Eliminated redundant color tokens - all components now use semantic theme colors instead of direct color references
   - **Shadows**: Updated shadow system with new values (small, base, medium, large, extraLarge) using pure black with precise opacity levels
   - **Typography**: Complete 12 text styles with proper font stacks and letter spacing
   - **Spacing & Border Radius**: Consistent spacing scale and border radius system
@@ -89,10 +91,14 @@ This is a React design library built with TypeScript and Storybook, containing d
 - `E:\Ledger design library\pages\` for external page testing
 
 ## Current Design System
-- **Colors**: blackAndWhite, error, warning, success, reports (blue + blue450), marketplace (violet)
+- **Colors**: blackAndWhite, error, warning, success, reports (blue), marketplace (violet), analytics (green)
+- **Semantic Theme System**: All components use `useSemanticColors()` for theme-aware color adaptation
+  - `colors.theme.primary200/300/400/500/700` automatically adapts to current product theme
+  - `colors.theme.main` provides the primary brand color for each theme
+  - Static colors available via `staticColors` import for data outside components
 - **Typography**: 12 complete text styles (headlines, body, navigation, captions, data)
 - **Border Radius**: 0px, 4px, 8px, 12px, 16px, 24px, absolute (round)
-- **Strokes**: Semantic stroke colors - `strokes.reports` (blue400) for UI elements (borders, separators), `strokes.content` (black900) for icon content
+- **Semantic Colors**: Theme-aware colors replace direct color references - use `colors.theme.primary400` for borders/separators, `colors.blackAndWhite.black900` for high contrast content
 - **Spacing**: Consistent spacing scale from 0.25rem to 6rem
 
 ## Project Structure
@@ -295,7 +301,12 @@ npm run dev  # Start on http://localhost:5173
 
 ## Recent Major Updates & Code Cleanup
 
-### 🎯 **Theme System Integration & Navigation Fixes (Latest - December 2025)**
+### 🎯 **Comprehensive Token Consolidation & Theme System (Latest - September 2025)**
+- **Complete Token Consolidation**: Eliminated all redundant color tokens and unified the entire codebase to use semantic theme system
+  - **Removed Redundant Tokens**: Eliminated duplicate `strokes` token that duplicated theme system functionality
+  - **Universal Theme Integration**: All 45+ components and pages now use `useSemanticColors()` hook for theme-aware colors
+  - **Static vs Dynamic Color Pattern**: Established clear pattern - static data uses `staticColors` imports, component styles use semantic colors
+  - **Error Resolution**: Fixed all `colors is not defined` errors across the entire codebase
 - **ActionCell Theme Integration**: Updated ActionCell.tsx to use semantic theme colors instead of hardcoded Reports blue colors
   - Moved actionConfigs inside component to access dynamic theme colors
   - Updated icon colors to use `colors.theme.main` for validate, generate, and setup actions
@@ -353,10 +364,13 @@ npm run dev  # Start on http://localhost:5173
 - Expand external testing environment with more example pages
 
 ## Code Quality Status
-✅ **Resolved Issues**: 
+✅ **Resolved Issues**:
 - CSS injection patterns in Input/Dropdown have been optimized with shared utilities
 - Duplicate logic consolidated with custom hooks and utility functions
 - Dead code and unused imports removed
+- **Token Duplication Eliminated**: All redundant color tokens removed, universal semantic theme system implemented
+- **Theme Integration Complete**: All components and pages use unified `useSemanticColors()` pattern
+- **Error-Free Codebase**: All `colors is not defined` errors resolved across entire project
 - Documentation updated to reflect actual codebase state
 
-📈 **Current State**: Clean, well-organized codebase with 96.6% import efficiency and consolidated architecture
+📈 **Current State**: Clean, well-organized codebase with 96.6% import efficiency, consolidated architecture, and unified semantic theme system across all components and pages

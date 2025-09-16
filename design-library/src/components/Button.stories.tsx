@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { Button } from './Button';
 import { icons } from '../icons';
+import { ThemeProvider } from '../tokens/ThemeProvider';
 
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
@@ -9,7 +11,7 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Unified button component with 3 variants: Primary (full-featured), Small (compact), and Icon (icon-only). Supports multiple colors, icons, disabled states, and uses design system tokens.',
+        component: 'Unified button component with 3 variants: Primary (full-featured), Small (compact), and Icon (icon-only). Supports multiple colors, icons, disabled states, and uses design system tokens. Use the theme selector in the toolbar to see theme adaptation.',
       },
     },
   },
@@ -161,6 +163,56 @@ export const IconShapes: Story = {
     docs: {
       description: {
         story: 'Icon variant supports both circle (default) and square shapes.',
+      },
+    },
+  },
+};
+
+// Theme comparison
+export const ThemeComparison: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center' }}>
+      <h3 style={{ margin: 0 }}>Theme Adaptation</h3>
+
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '8px', fontSize: '12px', color: '#666' }}>Reports</div>
+          <ThemeProvider initialTheme="reports">
+            <Button color="main" variant="primary">Reports Button</Button>
+          </ThemeProvider>
+        </div>
+
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '8px', fontSize: '12px', color: '#666' }}>Marketplace</div>
+          <ThemeProvider initialTheme="marketplace">
+            <Button color="main" variant="primary">Marketplace Button</Button>
+          </ThemeProvider>
+        </div>
+
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '8px', fontSize: '12px', color: '#666' }}>Analytics</div>
+          <ThemeProvider initialTheme="analytics">
+            <Button color="main" variant="primary">Analytics Button</Button>
+          </ThemeProvider>
+        </div>
+      </div>
+
+      <div style={{
+        fontSize: '12px',
+        color: '#666',
+        textAlign: 'center',
+        maxWidth: '400px',
+        lineHeight: 1.4
+      }}>
+        The same Button component with color="main" automatically adapts to each theme context.
+        Use ThemeProvider to wrap your components for automatic theme adaptation.
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Button component automatically adapts to different theme contexts (Reports=blue, Analytics=green, Marketplace=violet) when using color="main" and color="light" variants.',
       },
     },
   },

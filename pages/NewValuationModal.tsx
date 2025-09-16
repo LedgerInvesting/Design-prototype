@@ -136,7 +136,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
   };
 
   const formContainerStyles: React.CSSProperties = {
-    backgroundColor: colors.analytics.dynamic.green200,
+    backgroundColor: colors.theme.primary200,
     borderRadius: borderRadius[8],
     padding: '20px',
     display: 'grid',
