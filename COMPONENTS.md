@@ -55,12 +55,13 @@ const staticData = [
 8. **Utilities**: Shared utility functions for styling, typography, and common patterns
 9. **Custom Hooks**: Reusable hooks for common component behaviors (outside clicks, hover states)
 12. **Status**: Interactive status component with dropdown menu functionality (evolved from Chips), 5 semantic variants, 4 menu item states, design system integration
-13. **Table**: Advanced responsive data table with intelligent column sizing, enhanced action buttons, and comprehensive Storybook showcases
-14. **DocumentCell**: Enhanced interactive document cell with DocumentTable icons and configurable hover icons (download/config modes)
-15. **ActionCell**: Interactive action cell with enhanced primary action styling - upload buttons feature light green background (#C6FFC1) for prominence
+13. **Modal**: Unified modal component replacing inconsistent implementations across valuation and transaction sections
+14. **Table**: Advanced responsive data table with intelligent column sizing, enhanced action buttons, and comprehensive Storybook showcases
+15. **DocumentCell**: Enhanced interactive document cell with DocumentTable icons and configurable hover icons (download/config modes)
+16. **ActionCell**: Interactive action cell with enhanced primary action styling - upload buttons feature light green background (#C6FFC1) for prominence
 
 ## Page Components
-16. **TransactionManagement**: Complete transaction management interface with intelligent table system
+17. **TransactionManagement**: Complete transaction management interface with intelligent table system
     - **Animated Header**: Blue header with subtle SVG line animation (5.76s cycle, parallax entrance effect)
     - Header includes base shadow, document icon, and "New Transaction" button
     - Complete new transaction workflow with proper navigation flow
@@ -69,7 +70,7 @@ const staticData = [
     - 12 rows of sample transaction data demonstrating proper scrolling/masking behavior
     - Complete integration with Sidebar, TopNav, and enhanced Table component
     - Responsive layout with 1300px max-width and proper component composition
-17. **ReportNavigation**: Advanced report navigation interface with program selector, relationship indicators, and sophisticated metric cards
+18. **ReportNavigation**: Advanced report navigation interface with program selector, relationship indicators, and sophisticated metric cards
     - Program selector card with dropdown functionality
     - Program relationship pills showing hierarchical connections  
     - Cession and Collateral metrics with growth indicators and trend charts
@@ -219,6 +220,28 @@ const staticData = [
 - Comprehensive prop API with variant-specific features
 - Uses design tokens: `colors.*`, `borderRadius.*`, `typography.styles.*`
 
+### Modal
+- **Unified Modal Component**: Comprehensive modal system replacing inconsistent implementations across valuation and transaction sections
+- **Flexible Positioning System**:
+  - **Button-relative**: Positions modal below trigger button with smart viewport calculations
+  - **Centered**: Standard centered modal with backdrop
+  - **Custom**: Accept custom x/y coordinates for precise positioning
+- **Theme-Aware Styling**: Semantic color integration with proper close button theming using Button component
+- **Footer Integration**: Built-in footer system with intelligent alignment matching content area
+  - Automatic padding calculation and proper alignment
+  - Eliminates double padding issues through proper CSS structure
+- **20+ Customization Props**: width, height, positioning, backdrop control, custom styling support
+- **Enhanced Features**:
+  - Smart viewport boundary detection and positioning adjustment
+  - Keyboard support (ESC key to close)
+  - Optional backdrop with click-to-close functionality
+  - Unified close button using Button component with icon variant
+  - Title and subtitle support with proper typography
+- **Shadow System**: Uses proper design token `shadows.large` for consistent elevation
+- **Error-Free Implementation**: Resolved all positioning flash issues and shadow token mismatches
+- **Comprehensive Storybook**: 6 interactive examples demonstrating all modal variants and usage patterns
+- **Location**: "Components/Modal" in Storybook with complete documentation and examples
+
 ### ButtonSelector
 - Complete button-style selector component with 3 states (default, active, filled)
 - Combines button design with embedded checkbox or radio selector
@@ -357,18 +380,18 @@ The Table component supports three distinct cell types through the `cellType` pr
 - **Action System**: Four distinct action types (upload, validate, generate, setup) with proper icon integration
 - **Professional Elevation**: Base shadow and border effects for clear visual hierarchy
 
-## NewValuationModal
+## Modal Usage Examples
 
-**Location**: `/pages/NewValuationModal.tsx`  
-**Purpose**: Analytics-specific modal for creating new valuation configurations
+### NewValuationModal
+**Location**: `/pages/NewValuationModal.tsx` - Analytics-specific modal for creating new valuation configurations
 
-### Features
+**Features**:
+- **Unified Modal Integration**: Now uses the unified Modal component with footer prop
 - **Theme Integration**: Uses ThemeProvider context to automatically adapt to Analytics green theme
 - **Form Layout**: 2-column grid layout with 6 form fields
-- **Positioning System**: Positioned relative to trigger button with proper backdrop
 - **Validation**: Form validation with disabled submit button until all fields are filled
 
-### Form Fields
+**Form Fields**:
 1. **Policy Group** (Dropdown): Aviation Treaty, Cyber Treaty, Health Insurance, Liability Treaty, Property Treaty, Marine Cargo Treaty
 2. **Risk Period** (Dropdown): 2023, 2024, 2025, TY23, TY24, TY25
 3. **Expected Loss Ratio** (Input): Text input for loss ratio percentage
@@ -376,20 +399,55 @@ The Table component supports three distinct cell types through the `cellType` pr
 5. **Expected Premium** (Input): Text input for premium amount
 6. **Premium Cap** (Input): Text input for premium cap value
 
-### Usage
-```typescript
-<NewValuationModal
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  onCreateValuation={(formData) => console.log('Valuation created:', formData)}
-  buttonRef={buttonRef}
-/>
-```
+### NewTransactionModal
+**Location**: `/pages/NewTransactionModal.tsx` - Transaction type selection modal
 
-### Styling
-- **Container**: 730px width with rounded corners and shadow
-- **Background**: Theme-aware green200 background for form area
-- **Button**: Theme-aware close button using Button component with light variant
+**Features**:
+- **Unified Modal Integration**: Converted to use Modal component with button positioning
+- **Option Cards**: Two 50% width cards (Brand New vs Renewal transactions)
+- **Footer Integration**: Continue button in modal footer with proper alignment
+- **Theme Integration**: Uses semantic theme colors for consistent styling
+
+### BrandNewTransactionModal
+**Location**: `/pages/BrandNewTransactionModal.tsx` - Contract terms input method selection
+
+**Features**:
+- **Unified Modal Integration**: Refactored to use Modal component with footer
+- **Back/Continue Flow**: Back and Continue buttons in footer with proper navigation
+- **Option Cards**: Upload PDF vs Enter Manually options with 50% width each
+- **AI Integration**: Features korra ContractsAI badge for PDF upload option
+
+### UploadTrianglesModal
+**Location**: `/pages/UploadTrianglesModal.tsx` - Analytics valuation data upload modal
+
+**Features**:
+- **Unified Modal Integration**: Updated to use Modal component with footer
+- **Warning System**: StatusWarning icon with proper error messaging in footer
+- **Triangle Upload**: Development Fit Triangle and On Risk Triangle upload options
+- **Enhanced Typography**: bodyL labels with proper spacing and "add" prefix for UX
+
+### Usage Pattern
+```typescript
+// All modals now follow this unified pattern:
+<Modal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Modal Title"
+  subtitle="Optional subtitle"
+  buttonRef={buttonRef}
+  showBackdrop={false}
+  width="730px"
+  footer={
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Button variant="primary" color="black" onClick={handleAction}>
+        Action Button
+      </Button>
+    </div>
+  }
+>
+  {/* Modal content */}
+</Modal>
+```
 
 ## Icon System
 

@@ -9,6 +9,15 @@ This ensures you can view components and changes in real-time at http://localhos
 
 ## IMPORTANT: File Structure & Local Server Setup
 
+### 🗂️ TEMP FOLDER - VERY IMPORTANT
+**CRITICAL: The project has a temp folder for shared images and files:**
+```
+E:\Ledger design library\temp\
+```
+- **Always check this folder for images/screenshots** when the user mentions adding images
+- Contains project-related files like design mockups, alignment examples, and reference images
+- Use this path when the user says "I added an image in our temp folder"
+
 ### Working Directory Structure
 The project has this directory structure:
 ```
@@ -17,11 +26,13 @@ E:\Ledger design library\
 ├── COMPONENTS.md               # Detailed component documentation
 ├── RECENT_WORK.md             # Work history and changelog
 ├── STORYBOOK_STANDARDS.md     # Storybook guidelines and standards
+├── temp/                      # 🗂️ TEMP FOLDER - shared images and files
 ├── design-library/            # Main project folder
 │   ├── package.json           # Main package.json is HERE
 │   ├── src/                   # Source code
 │   ├── .storybook/            # Storybook config
 │   └── [all project files]
+├── pages/                     # External testing environment
 └── backup-20250728/           # Backup folder
 ```
 
@@ -44,7 +55,15 @@ This is a React design library built with TypeScript and Storybook, containing d
   - **Shadows**: Updated shadow system with new values (small, base, medium, large, extraLarge) using pure black with precise opacity levels
   - **Typography**: Complete 12 text styles with proper font stacks and letter spacing
   - **Spacing & Border Radius**: Consistent spacing scale and border radius system
-- **Components**: Button (with improved small variant centering and theme-aware light color variant), InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, NewValuationModal
+- **Components**: Button (with improved small variant centering and theme-aware light color variant), InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, Modal (unified modal system)
+- **Modal System**: Comprehensive unified modal component with:
+  - **Flexible Positioning**: Button-relative, centered, or custom positioning with smart viewport calculations
+  - **Theme-Aware Styling**: Semantic color integration with proper close button theming
+  - **Footer Integration**: Built-in footer system with intelligent alignment matching content area
+  - **Backdrop Control**: Configurable backdrop with opacity control (default: no backdrop)
+  - **Consistent Padding**: Smart padding system with proper content and footer alignment
+  - **Complete API**: 20+ props for maximum customization while maintaining consistency
+  - **Storybook Documentation**: 6 interactive examples demonstrating all modal variants
 - **Page Components**:
   - **Layout**: Enhanced unified page component combining TopNav and Sidebar with optional tabs integration and responsive content positioning
   - **Sidebar** with intelligent responsive behavior:

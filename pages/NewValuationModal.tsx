@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Dropdown, DropdownOption } from '@design-library/components';
-import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
+import { Button, Input, Dropdown, DropdownOption, Modal } from '@design-library/components';
+import { borderRadius } from '@design-library/tokens';
 import { useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { CloseMedium } from '@design-library/icons';
 
 export interface NewValuationModalProps {
   isOpen: boolean;
@@ -37,18 +36,6 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
     expectedPremium: '',
     premiumCap: '',
   });
-  const [buttonPosition, setButtonPosition] = useState({ top: 0, right: 0 });
-
-  // Calculate button position when modal opens
-  useEffect(() => {
-    if (isOpen && buttonRef?.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect();
-      setButtonPosition({
-        top: buttonRect.bottom + 20, // 20px gap below button (relative to viewport)
-        right: window.innerWidth - buttonRect.right, // Distance from right edge
-      });
-    }
-  }, [isOpen, buttonRef]);
 
   // Reset form when modal closes
   useEffect(() => {
@@ -91,63 +78,9 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
 
   const isFormValid = Object.values(formData).every(value => value && value.trim() !== '');
 
-  // Modal backdrop styles
-  const backdropStyles: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
-    zIndex: 1000,
-    pointerEvents: 'none', // Allow clicks to pass through backdrop
-  };
-
-  // Modal positioning styles
-  const modalPositionStyles: React.CSSProperties = {
-    position: 'absolute',
-    top: `${buttonPosition.top + window.scrollY}px`, // Add scroll offset
-    right: `${buttonPosition.right}px`,
-    zIndex: 1001,
-    pointerEvents: 'auto', // Re-enable clicks on modal
-  };
-
-  // Modal container styles
-  const modalStyles: React.CSSProperties = {
-    position: 'relative',
-    backgroundColor: colors.blackAndWhite.white,
-    borderRadius: borderRadius[12],
-    boxShadow: shadows.extraLarge,
-    width: '730px',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  // Header styles
-  const headerStyles: React.CSSProperties = {
-    padding: '30px 30px 20px 30px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  };
-
-  const titleStyles: React.CSSProperties = {
-    ...typography.styles.subheadingL,
-    color: colors.blackAndWhite.black900,
-    margin: 0,
-    textAlign: 'center',
-  };
-
-  const closeButtonContainerStyles: React.CSSProperties = {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-  };
-
   // Content styles
   const contentStyles: React.CSSProperties = {
-    padding: '0 30px',
+    padding: '0',
   };
 
   const formContainerStyles: React.CSSProperties = {
@@ -159,13 +92,6 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
     gap: '20px',
   };
 
-  // Footer styles
-  const footerStyles: React.CSSProperties = {
-    padding: '20px 50px 30px 50px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  };
 
   // Policy Group options
   const policyGroupOptions: DropdownOption[] = [
@@ -188,25 +114,27 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
   ];
 
   return (
-    <>
-      <div style={backdropStyles} onClick={onClose} />
-      <div style={modalPositionStyles}>
-        <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-          {/* Header */}
-          <div style={headerStyles}>
-            <h2 style={titleStyles}>Create New Valuation</h2>
-          </div>
-          
-          {/* Close Button */}
-          <div style={closeButtonContainerStyles}>
-            <Button
-              variant="icon"
-              color="light"
-              shape="square"
-              onClick={onClose}
-              icon={<CloseMedium color={colors.blackAndWhite.black900} />}
-            />
-          </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Create New Valuation"
+      buttonRef={buttonRef}
+      showBackdrop={false}
+      width="730px"
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            variant="primary"
+            color="black"
+            onClick={handleCreateValuation}
+            disabled={!isFormValid}
+            showIcon={false}
+          >
+            Create Valuation
+          </Button>
+        </div>
+      }
+    >
 
           {/* Content */}
           <div style={contentStyles}>
@@ -273,21 +201,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
             </div>
           </div>
 
-          {/* Footer */}
-          <div style={footerStyles}>
-            <Button
-              variant="primary"
-              color="black"
-              onClick={handleCreateValuation}
-              disabled={!isFormValid}
-              showIcon={false}
-            >
-              Create Valuation
-            </Button>
-          </div>
-        </div>
-      </div>
-    </>
+    </Modal>
   );
 };
 

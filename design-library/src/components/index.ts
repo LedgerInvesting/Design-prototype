@@ -5,6 +5,9 @@ export type { ButtonProps, ButtonVariant, ButtonColor, PrimaryColor, SmallColor,
 export { InfoTooltip } from './InfoTooltip';
 export type { InfoTooltipProps, InfoTooltipSection } from './InfoTooltip';
 
+export { Modal } from './Modal';
+export type { ModalProps } from './Modal';
+
 // Form Components
 export { Input } from './Input';
 export type { InputProps } from './Input';

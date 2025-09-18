@@ -11,6 +11,7 @@ import { ValuationStatus } from './ValuationStatus';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
+import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 
 type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status';
 
@@ -52,9 +53,11 @@ function App() {
   };
 
   return (
-    <div>
-      {renderPage()}
-    </div>
+    <ThemeProvider initialTheme="reports">
+      <div>
+        {renderPage()}
+      </div>
+    </ThemeProvider>
   );
 }
 

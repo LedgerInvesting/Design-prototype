@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Selector } from '@design-library/components';
-import { typography, borderRadius, shadows, spacing, useSemanticColors } from '@design-library/tokens';
-import { AddMedium, ReloadMedium, CloseMedium } from '@design-library/icons';
+import React, { useState } from 'react';
+import { Button, Selector, Modal } from '@design-library/components';
+import { useSemanticColors } from '@design-library/tokens';
+import { AddMedium, ReloadMedium } from '@design-library/icons';
 
 export interface NewTransactionModalProps {
   isOpen: boolean;
@@ -18,18 +18,6 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
 }) => {
   const colors = useSemanticColors();
   const [selectedType, setSelectedType] = useState<'brand-new' | 'renewal' | null>(null);
-  const [buttonPosition, setButtonPosition] = useState({ top: 0, right: 0 });
-
-  // Calculate button position when modal opens
-  useEffect(() => {
-    if (isOpen && buttonRef?.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect();
-      setButtonPosition({
-        top: buttonRect.bottom + 20, // 20px gap below button (relative to viewport)
-        right: window.innerWidth - buttonRect.right, // Distance from right edge
-      });
-    }
-  }, [isOpen, buttonRef]);
 
   if (!isOpen) return null;
 
@@ -40,91 +28,28 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
     }
   };
 
-  // Modal backdrop styles
-  const backdropStyles: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
-    zIndex: 1000,
-    pointerEvents: 'none', // Allow clicks to pass through backdrop
-  };
 
-  // Modal positioning styles
-  const modalPositionStyles: React.CSSProperties = {
-    position: 'absolute',
-    top: `${buttonPosition.top + window.scrollY}px`, // Add scroll offset
-    right: `${buttonPosition.right}px`,
-    zIndex: 1001,
-    pointerEvents: 'auto', // Re-enable clicks on modal
-  };
 
-  // Modal container styles
-  const modalStyles: React.CSSProperties = {
-    position: 'relative',
-    backgroundColor: colors.blackAndWhite.white,
-    borderRadius: borderRadius[12],
-    boxShadow: shadows.extraLarge,
-    width: '670px',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  // Header styles
-  const headerStyles: React.CSSProperties = {
-    padding: '30px 30px 0px 30px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  };
-
-  const titleStyles: React.CSSProperties = {
-    ...typography.styles.subheadingL,
-    color: colors.blackAndWhite.black900,
-    margin: 0,
-    textAlign: 'center',
-  };
-
-  const subtitleStyles: React.CSSProperties = {
-    ...typography.styles.bodyM,
-    color: colors.blackAndWhite.black700,
-    margin: '8px 0 0 0',
-    textAlign: 'center',
-  };
-
-  const closeButtonContainerStyles: React.CSSProperties = {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-  };
-
-  // Content styles
-  const contentStyles: React.CSSProperties = {
-    padding: '20px 30px 0px 30px',
-  };
-
+  // Shared styles for modal option cards
   const optionsContainerStyles: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: '275px 275px',
+    gridTemplateColumns: '1fr 1fr',
     gap: '20px',
     marginTop: '20px',
-    justifyContent: 'center',
+    width: '100%',
   };
 
   const optionCardStyles = (isSelected: boolean): React.CSSProperties => ({
-    border: isSelected 
-      ? `1px solid #9ad5f7` 
+    border: isSelected
+      ? `1px solid #9ad5f7`
       : `1px solid ${colors.theme.primary400}`,
-    borderRadius: borderRadius[12],
+    borderRadius: '12px',
     padding: '20px',
     cursor: 'pointer',
     textAlign: 'center',
     transition: 'all 0.2s ease',
-    backgroundColor: isSelected 
-      ? colors.theme.primary200 
+    backgroundColor: isSelected
+      ? colors.theme.primary200
       : colors.blackAndWhite.white,
     position: 'relative',
   });
@@ -135,75 +60,72 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
     left: '16px',
   };
 
-  const iconContainerStyles = (isSelected: boolean, color: string): React.CSSProperties => ({
-    width: '30px',
-    height: '30px',
-    borderRadius: borderRadius[8],
-    backgroundColor: color,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 16px',
-  });
-
   const optionTitleStyles: React.CSSProperties = {
-    ...typography.styles.bodyL,
+    fontSize: '16px',
+    fontFamily: 'Söhne, system-ui, sans-serif',
     fontWeight: 600,
     color: colors.blackAndWhite.black900,
     margin: '0 0 8px 0',
   };
 
   const optionDescriptionStyles: React.CSSProperties = {
-    ...typography.styles.bodyS,
+    fontSize: '14px',
+    fontFamily: 'Söhne, system-ui, sans-serif',
+    fontWeight: 400,
     color: colors.blackAndWhite.black700,
     lineHeight: '20px',
   };
 
-  const footerStyles: React.CSSProperties = {
-    padding: '20px 50px 30px 50px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+  const handleCardHover = (
+    e: React.MouseEvent<HTMLDivElement>,
+    isSelected: boolean,
+    isEntering: boolean
+  ) => {
+    if (!isSelected) {
+      e.currentTarget.style.borderColor = isEntering
+        ? colors.blackAndWhite.black500
+        : colors.theme.primary400;
+    }
+  };
+
+  // Content styles
+  const contentStyles: React.CSSProperties = {
+    padding: '0', // Remove extra padding since Modal component handles this
   };
 
   return (
-    <>
-      <div style={backdropStyles} onClick={onClose} />
-      <div style={modalPositionStyles}>
-        <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div style={headerStyles}>
-          <h2 style={titleStyles}>Create New Reinsurance Transaction</h2>
-          <p style={subtitleStyles}>What type of transaction would you like to create?</p>
-        </div>
-        {/* Close Button */}
-        <div style={closeButtonContainerStyles}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Create New Reinsurance Transaction"
+      subtitle="What type of transaction would you like to create?"
+      buttonRef={buttonRef}
+      showBackdrop={false}
+      width="670px"
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
-            variant="icon"
-            color="light"
-            shape="square"
-            onClick={onClose}
-            icon={<CloseMedium color={colors.blackAndWhite.black900} />}
-          />
+            variant="primary"
+            color="black"
+            onClick={handleContinue}
+            disabled={!selectedType}
+            showIcon={false}
+          >
+            Continue
+          </Button>
         </div>
+      }
+    >
 
         {/* Content */}
         <div style={contentStyles}>
           <div style={optionsContainerStyles}>
             {/* Brand New Transaction */}
-            <div 
+            <div
               style={optionCardStyles(selectedType === 'brand-new')}
               onClick={() => setSelectedType('brand-new')}
-              onMouseEnter={(e) => {
-                if (selectedType !== 'brand-new') {
-                  e.currentTarget.style.borderColor = colors.blackAndWhite.black500;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedType !== 'brand-new') {
-                  e.currentTarget.style.borderColor = colors.theme.primary400;
-                }
-              }}
+              onMouseEnter={(e) => handleCardHover(e, selectedType === 'brand-new', true)}
+              onMouseLeave={(e) => handleCardHover(e, selectedType === 'brand-new', false)}
             >
               {/* Radio Button */}
               <div style={selectorStyles}>
@@ -217,7 +139,7 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
               <div style={{
                 width: '30px',
                 height: '30px',
-                borderRadius: borderRadius[8],
+                borderRadius: '8px',
                 backgroundColor: '#e1f3ff',
                 display: 'flex',
                 alignItems: 'center',
@@ -233,19 +155,11 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
             </div>
 
             {/* Renewal Transaction */}
-            <div 
+            <div
               style={optionCardStyles(selectedType === 'renewal')}
               onClick={() => setSelectedType('renewal')}
-              onMouseEnter={(e) => {
-                if (selectedType !== 'renewal') {
-                  e.currentTarget.style.borderColor = colors.blackAndWhite.black500;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedType !== 'renewal') {
-                  e.currentTarget.style.borderColor = colors.theme.primary400;
-                }
-              }}
+              onMouseEnter={(e) => handleCardHover(e, selectedType === 'renewal', true)}
+              onMouseLeave={(e) => handleCardHover(e, selectedType === 'renewal', false)}
             >
               {/* Radio Button */}
               <div style={selectorStyles}>
@@ -259,7 +173,7 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
               <div style={{
                 width: '30px',
                 height: '30px',
-                borderRadius: borderRadius[8],
+                borderRadius: '8px',
                 backgroundColor: colors.success.fill,
                 display: 'flex',
                 alignItems: 'center',
@@ -275,22 +189,7 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <div style={footerStyles}>
-          <Button
-            variant="primary"
-            color="black"
-            onClick={handleContinue}
-            disabled={!selectedType}
-            showIcon={false}
-          >
-            Continue
-          </Button>
-        </div>
-        </div>
-      </div>
-    </>
+    </Modal>
   );
 };
 

@@ -58,23 +58,12 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
     backgroundPosition: 'top right',
     backgroundSize: '50%',
     boxShadow: shadows.base,
-    '@media (max-width: 768px)': {
-      flexDirection: 'column',
-      gap: '20px',
-      padding: '30px 20px',
-      textAlign: 'center',
-    },
   };
 
   const leftContentStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     gap: '40px',
-    '@media (max-width: 768px)': {
-      flexDirection: 'column',
-      textAlign: 'center',
-      gap: '20px',
-    },
   };
 
   const illustrationContainerStyles: React.CSSProperties = {

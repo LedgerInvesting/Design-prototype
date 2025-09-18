@@ -37,6 +37,12 @@ export interface InputProps {
   className?: string;
   /** Disabled state */
   disabled?: boolean;
+  /** Field is optional */
+  isOptional?: boolean;
+  /** Field is required */
+  required?: boolean;
+  /** Show calendar icon */
+  showCalendarIcon?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(({
@@ -55,6 +61,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   onBlur,
   className,
   disabled = false,
+  isOptional = false,
+  required = false,
+  showCalendarIcon = false,
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   const colors = useSemanticColors();
@@ -162,6 +171,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           color: colors.blackAndWhite.black900,
         }}>
           {label}
+          {required && <span style={{ color: colors.blackAndWhite.black900 }}>*</span>}
+          {isOptional && <span style={{ color: colors.blackAndWhite.black500, marginLeft: spacing[1] }}>(Optional)</span>}
         </label>
         {showTooltip && (
           <InfoTooltip
@@ -218,6 +229,21 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           }}
           className={type === 'number' ? 'hide-number-spinners' : undefined}
         />
+
+        {/* Calendar icon */}
+        {showCalendarIcon && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '22px',
+            height: '22px',
+            marginLeft: spacing[1],
+            cursor: 'pointer',
+          }}>
+            <icons.small.calendar color={colors.blackAndWhite.black900} />
+          </div>
+        )}
 
         {/* Custom number input controls */}
         {type === 'number' && (

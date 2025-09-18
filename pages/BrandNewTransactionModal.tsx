@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Selector } from '@design-library/components';
-import { typography, borderRadius, shadows, spacing, useSemanticColors } from '@design-library/tokens';
-import { AddMedium, ReloadMedium, CloseMedium, ContractsLogo, UploadSmall } from '@design-library/icons';
+import React, { useState } from 'react';
+import { Button, Selector, Modal } from '@design-library/components';
+import { useSemanticColors } from '@design-library/tokens';
+import { UploadSmall, ContractsLogo, ReloadMedium } from '@design-library/icons';
 
 export interface BrandNewTransactionModalProps {
   isOpen: boolean;
@@ -20,20 +20,6 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
 }) => {
   const colors = useSemanticColors();
   const [selectedMethod, setSelectedMethod] = useState<'upload-pdf' | 'enter-manually' | null>(null);
-  const [buttonPosition, setButtonPosition] = useState({ top: 0, right: 0 });
-
-  // Calculate button position when modal opens
-  useEffect(() => {
-    if (isOpen && buttonRef?.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect();
-      setButtonPosition({
-        top: buttonRect.bottom + 20, // 20px gap below button (relative to viewport)
-        right: window.innerWidth - buttonRect.right, // Distance from right edge
-      });
-    }
-  }, [isOpen, buttonRef]);
-
-  if (!isOpen) return null;
 
   const handleContinue = () => {
     if (selectedMethod) {
@@ -42,91 +28,26 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
     }
   };
 
-  // Modal backdrop styles
-  const backdropStyles: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
-    zIndex: 1000,
-    pointerEvents: 'none', // Allow clicks to pass through backdrop
-  };
-
-  // Modal positioning styles
-  const modalPositionStyles: React.CSSProperties = {
-    position: 'absolute',
-    top: `${buttonPosition.top + window.scrollY}px`, // Add scroll offset
-    right: `${buttonPosition.right}px`,
-    zIndex: 1001,
-    pointerEvents: 'auto', // Re-enable clicks on modal
-  };
-
-  // Modal container styles
-  const modalStyles: React.CSSProperties = {
-    position: 'relative',
-    backgroundColor: colors.blackAndWhite.white,
-    borderRadius: borderRadius[12],
-    boxShadow: shadows.extraLarge,
-    width: '670px',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  // Header styles
-  const headerStyles: React.CSSProperties = {
-    padding: '30px 30px 0px 30px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  };
-
-  const titleStyles: React.CSSProperties = {
-    ...typography.styles.subheadingL,
-    color: colors.blackAndWhite.black900,
-    margin: 0,
-    textAlign: 'center',
-  };
-
-  const subtitleStyles: React.CSSProperties = {
-    ...typography.styles.bodyM,
-    color: colors.blackAndWhite.black700,
-    margin: '8px 0 0 0',
-    textAlign: 'center',
-  };
-
-  const closeButtonContainerStyles: React.CSSProperties = {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-  };
-
-  // Content styles
-  const contentStyles: React.CSSProperties = {
-    padding: '20px 30px 0px 30px',
-  };
-
+  // Shared styles for modal option cards
   const optionsContainerStyles: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: '275px 275px',
+    gridTemplateColumns: '1fr 1fr',
     gap: '20px',
     marginTop: '20px',
-    justifyContent: 'center',
+    width: '100%',
   };
 
   const optionCardStyles = (isSelected: boolean): React.CSSProperties => ({
-    border: isSelected 
-      ? `1px solid #9ad5f7` 
+    border: isSelected
+      ? `1px solid #9ad5f7`
       : `1px solid ${colors.theme.primary400}`,
-    borderRadius: borderRadius[12],
+    borderRadius: '12px',
     padding: '20px',
     cursor: 'pointer',
     textAlign: 'center',
     transition: 'all 0.2s ease',
-    backgroundColor: isSelected 
-      ? colors.theme.primary200 
+    backgroundColor: isSelected
+      ? colors.theme.primary200
       : colors.blackAndWhite.white,
     position: 'relative',
   });
@@ -137,75 +58,72 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
     left: '16px',
   };
 
-  const iconContainerStyles = (isSelected: boolean, color: string): React.CSSProperties => ({
-    width: '30px',
-    height: '30px',
-    borderRadius: borderRadius[8],
-    backgroundColor: color,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 16px',
-  });
-
   const optionTitleStyles: React.CSSProperties = {
-    ...typography.styles.bodyL,
+    fontSize: '16px',
+    fontFamily: 'Söhne, system-ui, sans-serif',
     fontWeight: 600,
     color: colors.blackAndWhite.black900,
     margin: '0 0 8px 0',
   };
 
   const optionDescriptionStyles: React.CSSProperties = {
-    ...typography.styles.bodyS,
+    fontSize: '14px',
+    fontFamily: 'Söhne, system-ui, sans-serif',
+    fontWeight: 400,
     color: colors.blackAndWhite.black700,
     lineHeight: '20px',
   };
 
-  const footerStyles: React.CSSProperties = {
-    padding: '20px 50px 30px 50px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  const handleCardHover = (
+    e: React.MouseEvent<HTMLDivElement>,
+    isSelected: boolean,
+    isEntering: boolean
+  ) => {
+    if (!isSelected) {
+      e.currentTarget.style.borderColor = isEntering
+        ? colors.blackAndWhite.black500
+        : colors.theme.primary400;
+    }
   };
 
   return (
-    <>
-      <div style={backdropStyles} onClick={onClose} />
-      <div style={modalPositionStyles}>
-        <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div style={headerStyles}>
-          <h2 style={titleStyles}>Contract Terms Input Method</h2>
-          <p style={subtitleStyles}>how would you like to enter the contract terms for your new transaction?</p>
-        </div>
-        {/* Close Button */}
-        <div style={closeButtonContainerStyles}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Contract Terms Input Method"
+      subtitle="how would you like to enter the contract terms for your new transaction?"
+      buttonRef={buttonRef}
+      showBackdrop={false}
+      width="670px"
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
-            variant="icon"
-            color="light"
-            shape="square"
-            onClick={onClose}
-            icon={<CloseMedium color={colors.blackAndWhite.black900} />}
-          />
+            variant="primary"
+            color="white"
+            onClick={onBack || onClose}
+            showIcon={false}
+          >
+            Back
+          </Button>
+          <Button
+            variant="primary"
+            color="black"
+            onClick={handleContinue}
+            disabled={!selectedMethod}
+            showIcon={false}
+          >
+            Continue
+          </Button>
         </div>
-
-        {/* Content */}
-        <div style={contentStyles}>
-          <div style={optionsContainerStyles}>
+      }
+    >
+      <div style={optionsContainerStyles}>
             {/* Upload PDF Contracts */}
-            <div 
+            <div
               style={optionCardStyles(selectedMethod === 'upload-pdf')}
               onClick={() => setSelectedMethod('upload-pdf')}
-              onMouseEnter={(e) => {
-                if (selectedMethod !== 'upload-pdf') {
-                  e.currentTarget.style.borderColor = colors.blackAndWhite.black500;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedMethod !== 'upload-pdf') {
-                  e.currentTarget.style.borderColor = colors.theme.primary400;
-                }
-              }}
+              onMouseEnter={(e) => handleCardHover(e, selectedMethod === 'upload-pdf', true)}
+              onMouseLeave={(e) => handleCardHover(e, selectedMethod === 'upload-pdf', false)}
             >
               {/* Radio Button */}
               <div style={selectorStyles}>
@@ -219,7 +137,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
               <div style={{
                 width: '30px',
                 height: '30px',
-                borderRadius: borderRadius[8],
+                borderRadius: '8px',
                 backgroundColor: '#FFF493', // Yellow background
                 display: 'flex',
                 alignItems: 'center',
@@ -247,7 +165,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: '#FFF493',
-                borderRadius: borderRadius[4],
+                borderRadius: '4px',
                 padding: '4px 8px',
                 marginTop: '12px',
                 fontSize: '10px',
@@ -257,7 +175,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
                   width: '16px',
                   height: '16px',
                   backgroundColor: colors.blackAndWhite.black900,
-                  borderRadius: borderRadius[4],
+                  borderRadius: '4px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -278,19 +196,11 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
             </div>
 
             {/* Enter Terms Manually */}
-            <div 
+            <div
               style={optionCardStyles(selectedMethod === 'enter-manually')}
               onClick={() => setSelectedMethod('enter-manually')}
-              onMouseEnter={(e) => {
-                if (selectedMethod !== 'enter-manually') {
-                  e.currentTarget.style.borderColor = colors.blackAndWhite.black500;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedMethod !== 'enter-manually') {
-                  e.currentTarget.style.borderColor = colors.theme.primary400;
-                }
-              }}
+              onMouseEnter={(e) => handleCardHover(e, selectedMethod === 'enter-manually', true)}
+              onMouseLeave={(e) => handleCardHover(e, selectedMethod === 'enter-manually', false)}
             >
               {/* Radio Button */}
               <div style={selectorStyles}>
@@ -304,7 +214,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
               <div style={{
                 width: '30px',
                 height: '30px',
-                borderRadius: borderRadius[8],
+                borderRadius: '8px',
                 backgroundColor: '#C084FC', // Purple background
                 display: 'flex',
                 alignItems: 'center',
@@ -327,31 +237,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
               </p>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div style={footerStyles}>
-          <Button
-            variant="primary"
-            color="white"
-            onClick={onBack || onClose}
-            showIcon={false}
-          >
-            Back
-          </Button>
-          <Button
-            variant="primary"
-            color="black"
-            onClick={handleContinue}
-            disabled={!selectedMethod}
-            showIcon={false}
-          >
-            Continue
-          </Button>
-        </div>
-        </div>
-      </div>
-    </>
+    </Modal>
   );
 };
 

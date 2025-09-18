@@ -4,6 +4,7 @@ import { Button, Table } from '@design-library/components';
 import { colors, typography, borderRadius } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { AddMedium, DownloadSmall, AddSmall } from '@design-library/icons';
+import { UploadTrianglesModal } from './UploadTrianglesModal';
 
 interface ValuationStatusProps {
   onNavigateToPage: (page: string) => void;
@@ -91,6 +92,7 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
 }) => {
   const colors = useSemanticColors();
   const [activeTab, setActiveTab] = useState('All');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // Sample data for the table
   const tableData = [
@@ -302,7 +304,7 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
           variant="primary"
           color="black"
           icon={<AddMedium color={colors.theme.primary700} />}
-          onClick={() => console.log('Add new valuation data')}
+          onClick={() => setIsUploadModalOpen(true)}
           style={{
             minWidth: '240px',
           }}
@@ -386,6 +388,13 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
           </span>
         </div>
       </div>
+
+      {/* Upload Triangles Modal */}
+      <UploadTrianglesModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        programName={programName}
+      />
     </Layout>
   );
 };

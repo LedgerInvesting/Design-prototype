@@ -4,6 +4,7 @@ import { Button } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium } from '@design-library/icons';
+import { UploadTrianglesModal } from './UploadTrianglesModal';
 
 // Custom StatusCheck component with proper color support
 const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
@@ -43,12 +44,8 @@ const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) 
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    // Get the bounding rect of the container
-    const rect = e.currentTarget.getBoundingClientRect();
-    // Calculate position relative to the container
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setMousePosition({ x, y });
+    // Use viewport coordinates for fixed positioning
+    setMousePosition({ x: e.clientX, y: e.clientY });
   };
 
   return (
@@ -62,7 +59,7 @@ const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) 
       {isVisible && (
         <div
           style={{
-            position: 'absolute',
+            position: 'fixed',
             left: `${mousePosition.x + 10}px`, // Offset by 10px to the right of cursor
             top: `${mousePosition.y + 10}px`,  // Offset by 10px below cursor
             backgroundColor: colors.blackAndWhite.black900,
@@ -70,7 +67,7 @@ const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) 
             padding: '15px',
             borderRadius: borderRadius[12],
             boxShadow: shadows.lg,
-            zIndex: 1000,
+            zIndex: 9999,
             minWidth: '200px',
             whiteSpace: 'nowrap',
             pointerEvents: 'none', // Prevent tooltip from interfering with mouse events
@@ -496,6 +493,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
   }
 }) => {
   const colors = useSemanticColors();
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const statusData = [
     { date: 'Jan 30, 2025', triangleStatuses: ['reviewed', 'pending', 'none'], officialStatus: 'Reviewed' },
@@ -813,7 +811,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
                 textTransform: 'uppercase'
               }}
             >
-              EXPLORE
+              VIEW ALL
             </button>
           </div>
 
@@ -874,6 +872,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               variant="primary"
               color="white"
               icon={<AddMedium color={colors.blackAndWhite.black900} />}
+              onClick={() => setIsUploadModalOpen(true)}
               style={{
                 border: `1px solid ${colors.theme.primary400}`,
                 width: '100%',
@@ -895,6 +894,13 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
 
         {/* Chart Section */}
         <ChartComponent />
+
+        {/* Upload Triangles Modal */}
+        <UploadTrianglesModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          programName={valuationData.programName}
+        />
       </Layout>
   );
 };
