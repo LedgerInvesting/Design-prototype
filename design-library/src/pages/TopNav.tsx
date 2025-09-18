@@ -7,6 +7,7 @@ export interface BreadcrumbItem {
   label: string;
   href?: string;
   isActive?: boolean;
+  onClick?: () => void;
 }
 
 export interface TopNavProps {
@@ -14,6 +15,7 @@ export interface TopNavProps {
   userName: string;
   userInitials?: string;
   profileColor?: string;
+  showShare?: boolean;
   onShareClick?: () => void;
   onUserMenuClick?: () => void;
   className?: string;
@@ -25,6 +27,7 @@ export const TopNav: React.FC<TopNavProps> = ({
   userName,
   userInitials = 'DL',
   profileColor = colors.reports.blue700,
+  showShare = false,
   onShareClick,
   onUserMenuClick,
   className,
@@ -141,21 +144,23 @@ export const TopNav: React.FC<TopNavProps> = ({
         <div style={breadcrumbsStyles}>
           {breadcrumbs.map((item, index) => (
             <React.Fragment key={index}>
-              {item.href ? (
+              {(item.href || item.onClick) && !item.isActive ? (
                 <a
-                  href={item.href}
-                  style={item.isActive ? activeBreadcrumbStyles : breadcrumbItemStyles}
-                  onMouseEnter={(e) => {
-                    if (!item.isActive) {
-                      e.currentTarget.style.color = colors.blackAndWhite.black900;
-                      e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
+                  href={item.href || '#'}
+                  onClick={(e) => {
+                    if (item.onClick) {
+                      e.preventDefault();
+                      item.onClick();
                     }
                   }}
+                  style={breadcrumbItemStyles}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = colors.blackAndWhite.black900;
+                    e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
+                  }}
                   onMouseLeave={(e) => {
-                    if (!item.isActive) {
-                      e.currentTarget.style.color = colors.blackAndWhite.black600;
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }
+                    e.currentTarget.style.color = colors.blackAndWhite.black600;
+                    e.currentTarget.style.backgroundColor = 'transparent';
                   }}
                 >
                   {item.label}
@@ -176,16 +181,18 @@ export const TopNav: React.FC<TopNavProps> = ({
       {/* Right Section - Share Button + Profile */}
       <div style={rightSectionStyles}>
         {/* Share Button */}
-        <Button
-          variant="small"
-          color="black"
-          onClick={onShareClick}
-          showIcon={false}
-        >
-          share
-        </Button>
+        {showShare && (
+          <Button
+            variant="small"
+            color="black"
+            onClick={onShareClick}
+            showIcon={false}
+          >
+            share
+          </Button>
+        )}
 
-        {/* Separator */}
+        {/* Separator - Always visible to separate page content from account */}
         <div style={separatorStyles} />
 
         {/* Profile Section */}

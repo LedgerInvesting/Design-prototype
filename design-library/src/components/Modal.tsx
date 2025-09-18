@@ -9,6 +9,8 @@ export interface ModalProps {
   isOpen: boolean;
   /** Function to close the modal */
   onClose: () => void;
+  /** Animation duration in milliseconds */
+  animationDuration?: number;
   /** Modal title */
   title?: string;
   /** Modal subtitle */
@@ -55,6 +57,7 @@ export interface ModalProps {
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
+  animationDuration = 200,
   title,
   subtitle,
   children,
@@ -75,6 +78,8 @@ export const Modal: React.FC<ModalProps> = ({
   footer,
 }) => {
   const colors = useSemanticColors();
+  const [shouldRender, setShouldRender] = useState(isOpen);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [calculatedPosition, setCalculatedPosition] = useState<React.CSSProperties>(() => {
     // Initialize with proper position to avoid flash
     if (position) {
@@ -99,6 +104,23 @@ export const Modal: React.FC<ModalProps> = ({
       opacity: 0, // Hide initially until positioned
     };
   });
+
+  // Handle animation state when isOpen changes
+  useEffect(() => {
+    if (isOpen) {
+      // Opening modal
+      setShouldRender(true);
+      // Small delay to ensure element is rendered before animation
+      const timer = setTimeout(() => setIsAnimating(true), 10);
+      return () => clearTimeout(timer);
+    } else {
+      // Closing modal
+      setIsAnimating(false);
+      // Delay removal until animation completes
+      const timer = setTimeout(() => setShouldRender(false), animationDuration);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, animationDuration]);
 
   // Calculate position relative to button if buttonRef is provided
   useEffect(() => {
@@ -129,7 +151,7 @@ export const Modal: React.FC<ModalProps> = ({
     }
   }, [isOpen, buttonRef, position, centered, buttonGap]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget && !disableBackdropClose) {
@@ -143,11 +165,14 @@ export const Modal: React.FC<ModalProps> = ({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: showBackdrop ? `rgba(0, 0, 0, ${backdropOpacity})` : 'transparent',
+    backgroundColor: showBackdrop
+      ? `rgba(0, 0, 0, ${isAnimating ? backdropOpacity : 0})`
+      : 'transparent',
     display: 'flex',
     alignItems: centered && !buttonRef && !position ? 'center' : 'flex-start',
     justifyContent: centered && !buttonRef && !position ? 'center' : 'flex-start',
     zIndex: 10000,
+    transition: `background-color ${animationDuration}ms ease-out`,
   };
 
   // Parse padding to separate top/left/right from bottom
@@ -180,6 +205,10 @@ export const Modal: React.FC<ModalProps> = ({
     overflow: 'auto',
     position: 'relative',
     ...calculatedPosition,
+    // Animation styles
+    opacity: isAnimating ? 1 : 0,
+    transform: `${calculatedPosition.transform || ''} scale(${isAnimating ? 1 : 0.95})`.trim(),
+    transition: `opacity ${animationDuration}ms ease-out, transform ${animationDuration}ms ease-out`,
     ...modalStyle,
   };
 

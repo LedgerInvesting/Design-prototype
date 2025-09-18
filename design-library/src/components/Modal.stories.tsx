@@ -19,6 +19,10 @@ const meta: Meta<typeof Modal> = {
       control: 'boolean',
       description: 'Whether the modal is open',
     },
+    animationDuration: {
+      control: { type: 'number', min: 0, max: 1000, step: 50 },
+      description: 'Animation duration in milliseconds',
+    },
     title: {
       control: 'text',
       description: 'Modal title',

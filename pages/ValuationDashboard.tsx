@@ -523,8 +523,8 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
           }
         }}
         breadcrumbs={[
-          { label: 'Valuation', href: '#', isActive: false },
-          { label: valuationData.programName, href: '#', isActive: true }
+          { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
+          { label: valuationData.programName, isActive: true }
         ]}
       >
         {/* Header */}

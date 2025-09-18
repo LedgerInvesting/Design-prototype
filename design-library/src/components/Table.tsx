@@ -845,6 +845,7 @@ export const Table: React.FC<TableProps> = ({
   // Drag state for horizontal scrolling
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, scrollLeft: 0 });
+  const [needsScroll, setNeedsScroll] = useState(false);
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
   const handleSort = (columnKey: string) => {
@@ -861,12 +862,33 @@ export const Table: React.FC<TableProps> = ({
 
   const currentSortState = onSort ? sortState : internalSortState;
 
+  // Check if table needs horizontal scrolling
+  React.useEffect(() => {
+    const checkScrollNeeded = () => {
+      if (tableContainerRef.current) {
+        const container = tableContainerRef.current;
+        const needsHorizontalScroll = container.scrollWidth > container.clientWidth;
+        setNeedsScroll(needsHorizontalScroll);
+      }
+    };
+
+    // Check on mount and when data/columns change
+    checkScrollNeeded();
+
+    // Check on window resize
+    window.addEventListener('resize', checkScrollNeeded);
+
+    return () => {
+      window.removeEventListener('resize', checkScrollNeeded);
+    };
+  }, [data, columns]);
+
   // Add CSS for arrow cursors
   React.useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
       .table-draggable {
-        cursor: ew-resize;
+        cursor: ${needsScroll ? 'ew-resize' : 'default'};
       }
       .table-dragging {
         cursor: ew-resize;
@@ -879,11 +901,11 @@ export const Table: React.FC<TableProps> = ({
         document.head.removeChild(style);
       }
     };
-  }, []);
+  }, [needsScroll]);
 
   // Drag handlers for horizontal scrolling
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!tableContainerRef.current) return;
+    if (!tableContainerRef.current || !needsScroll) return;
 
     // Don't start drag on clickable elements
     const target = e.target as HTMLElement;
@@ -925,7 +947,7 @@ export const Table: React.FC<TableProps> = ({
 
   const tableContainerStyles = {
     width: '100%',
-    overflowX: 'auto' as const, // Enable horizontal scroll
+    overflowX: needsScroll ? 'auto' as const : 'hidden' as const, // Only enable horizontal scroll when needed
     overflowY: 'hidden' as const,
     borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : borderRadius[8],
     border: `1px solid ${colors.theme.primary400}`,
@@ -937,7 +959,7 @@ export const Table: React.FC<TableProps> = ({
     boxSizing: 'border-box' as const,
     display: 'block' as const, // Ensure block layout
     // Cursor handled by CSS classes for better browser support
-    userSelect: 'none' as const, // Prevent text selection during drag
+    userSelect: needsScroll ? 'none' as const : 'auto' as const, // Only prevent text selection when dragging is enabled
   };
 
   const tableStyles = {
@@ -981,11 +1003,11 @@ export const Table: React.FC<TableProps> = ({
       <div
         ref={tableContainerRef}
         style={tableContainerStyles}
-        className={isDragging ? 'table-dragging' : 'table-draggable'}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
+        className={isDragging ? 'table-dragging' : (needsScroll ? 'table-draggable' : '')}
+        onMouseDown={needsScroll ? handleMouseDown : undefined}
+        onMouseMove={needsScroll ? handleMouseMove : undefined}
+        onMouseUp={needsScroll ? handleMouseUp : undefined}
+        onMouseLeave={needsScroll ? handleMouseLeave : undefined}
       >
         <table style={tableStyles}>
           <thead>

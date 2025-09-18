@@ -66,9 +66,9 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
         }
       }}
       breadcrumbs={[
-        { label: 'Valuation', href: '#', isActive: false },
-        { label: displayProgramName, href: '#', isActive: false },
-        { label: 'Configuration', href: '#', isActive: true }
+        { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
+        { label: displayProgramName, onClick: () => onNavigateToPage?.('valuation-dashboard'), isActive: false },
+        { label: 'Configuration', isActive: true }
       ]}
     >
       {/* Header Section */}

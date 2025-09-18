@@ -2,20 +2,20 @@
   <defs>
     <!-- Define the fade animation -->
     <style>
-      .line-group-1 { 
-        animation: slideInThenFade 5.76s ease-in-out infinite; 
+      .line-group-1 {
+        animation: slideInThenFade 2.88s ease-in-out infinite;
         opacity: 0;
       }
-      .line-group-2 { 
-        animation: slideInThenFade 5.76s ease-in-out infinite 1.152s; 
+      .line-group-2 {
+        animation: slideInThenFade 2.88s ease-in-out infinite 0.576s;
         opacity: 0;
       }
-      .line-group-3 { 
-        animation: slideInThenFade 5.76s ease-in-out infinite 2.304s; 
+      .line-group-3 {
+        animation: slideInThenFade 2.88s ease-in-out infinite 1.152s;
         opacity: 0;
       }
-      .line-group-4 { 
-        animation: slideInThenFade 5.76s ease-in-out infinite 3.456s; 
+      .line-group-4 {
+        animation: slideInThenFade 2.88s ease-in-out infinite 1.728s;
         opacity: 0;
       }
       

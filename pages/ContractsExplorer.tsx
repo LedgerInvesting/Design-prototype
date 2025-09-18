@@ -21,8 +21,8 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
 }) => {
   // Define breadcrumbs
   const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Insights Explorer', href: '#', onClick: () => onNavigateToPage?.('report-navigation') },
-    { label: 'Contracts', href: '#', isActive: true }
+    { label: 'INSIGHTS EXPLORER', onClick: () => onNavigateToPage?.('report-navigation') },
+    { label: 'CONTRACTS', isActive: true }
   ];
 
   // Sample data for Reinsurance Trust table

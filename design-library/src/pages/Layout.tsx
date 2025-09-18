@@ -10,6 +10,7 @@ export interface LayoutProps {
   userName?: string;
   userInitials?: string;
   profileColor?: string;
+  showShare?: boolean;
   onShareClick?: () => void;
   onUserMenuClick?: () => void;
   onNavigate?: (itemId: string, subitemId?: string) => void;
@@ -27,6 +28,7 @@ export const Layout: React.FC<LayoutProps> = ({
   userName = "ALEC WHITTEN",
   userInitials = "AW",
   profileColor = colors.reports.blue700,
+  showShare = false,
   onShareClick,
   onUserMenuClick,
   onNavigate,
@@ -117,6 +119,7 @@ export const Layout: React.FC<LayoutProps> = ({
             userName={userName}
             userInitials={userInitials}
             profileColor={profileColor}
+            showShare={showShare}
             onShareClick={onShareClick || (() => alert('Share clicked'))}
             onUserMenuClick={onUserMenuClick || (() => alert('User menu clicked'))}
           />

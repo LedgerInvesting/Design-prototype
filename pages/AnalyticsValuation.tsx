@@ -173,7 +173,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
         }
       }}
       breadcrumbs={[
-        { label: 'Valuation', href: '#', isActive: true }
+        { label: 'Valuation', isActive: true }
       ]}
     >
       {/* Header Section */}
