@@ -19,6 +19,7 @@ export interface TableColumn {
   hoverIcon?: 'download' | 'config' | 'open'; // For document cells hover icon
   actionType?: ActionType; // For action cells (edit, upload, validate, add, delete, plus)
   onAction?: (actionType: ActionType, text: string) => void; // For action cells
+  render?: (value: any, row: any) => React.ReactNode; // Custom render function
 }
 
 export interface TableRow {
@@ -463,9 +464,14 @@ export const TableBody: React.FC<TableBodyProps> = ({
   const colors = useSemanticColors();
   
   // Function to render cell content based on cell type
-  const renderCellContent = (column: TableColumn, value: React.ReactNode) => {
+  const renderCellContent = (column: TableColumn, value: React.ReactNode, row: any) => {
+    // Check if column has a custom render function
+    if (column.render) {
+      return column.render(value, row);
+    }
+
     const cellType = column.cellType || 'simple';
-    
+
     switch (cellType) {
       case 'document':
         // For document cells, expect the value to be a string filename
@@ -607,7 +613,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
 
             return (
               <td key={column.key} style={actionCellStyle}>
-                {renderCellContent(column, row[column.key])}
+                {renderCellContent(column, row[column.key], row)}
               </td>
             );
           })}

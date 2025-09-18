@@ -195,7 +195,17 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               width: 309,
               cellType: 'document',
               hoverIcon: 'open',
-              onDownload: (filename: string) => console.log('Opening program:', filename)
+              onDownload: (filename: string) => {
+                console.log('Opening program:', filename);
+                // Navigate to valuation dashboard with program data
+                const selectedProgram = {
+                  programName: filename,
+                  evaluationDate: '2024-12-30',
+                  reportedLossRatio: '42.2%',
+                  currentWrittenPremium: '$20,107,359'
+                };
+                onNavigateToPage('valuation-dashboard', selectedProgram);
+              }
             },
             {
               key: 'treatyYear', 
@@ -314,6 +324,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onCreateValuation={handleCreateValuation}
+        onNavigateToPage={onNavigateToPage}
         buttonRef={newValuationButtonRef}
       />
       </Layout>

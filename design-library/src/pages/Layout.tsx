@@ -65,7 +65,7 @@ export const Layout: React.FC<LayoutProps> = ({
     marginLeft: sidebarWidth,
     backgroundColor: colors.blackAndWhite.white,
     transition: 'margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-    maxWidth: `calc(100vw - ${sidebarWidth})`, // Prevent expanding beyond viewport minus sidebar
+    width: `calc(100vw - ${sidebarWidth})`, // Fixed width calculation instead of maxWidth
     overflow: 'hidden', // Contain any overflow
   };
 

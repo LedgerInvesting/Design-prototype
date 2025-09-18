@@ -192,38 +192,31 @@ const DesignTokensShowcase: React.FC = () => {
         <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '32px' }}>
           <ColorSwatch color={colors.reports.blue900} name="Blue 900" />
           <ColorSwatch color={colors.reports.blue800} name="Blue 800" />
-          <ColorSwatch color={colors.reports.blue700} name="Blue 700" description="Main" />
           <ColorSwatch color={colors.reports.blue600} name="Blue 600" />
           <ColorSwatch color={colors.reports.blue500} name="Blue 500" />
           <ColorSwatch color={colors.reports.blue450} name="Blue 450" />
-          <ColorSwatch color={colors.reports.dynamic.blue400} name="Blue 400" description="Dynamic" />
-          <ColorSwatch color={colors.reports.dynamic.blue300} name="Blue 300" description="Dynamic" />
-          <ColorSwatch color={colors.reports.dynamic.blue200} name="Blue 200" description="Dynamic" />
         </div>
 
         <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Marketplace</h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '32px' }}>
           <ColorSwatch color={colors.marketplace.violet900} name="Violet 900" />
           <ColorSwatch color={colors.marketplace.violet800} name="Violet 800" />
-          <ColorSwatch color={colors.marketplace.violet700} name="Violet 700" description="Main" />
           <ColorSwatch color={colors.marketplace.violet600} name="Violet 600" />
           <ColorSwatch color={colors.marketplace.violet500} name="Violet 500" />
-          <ColorSwatch color={colors.marketplace.dynamic.violet400} name="Violet 400" description="Dynamic" />
-          <ColorSwatch color={colors.marketplace.dynamic.violet300} name="Violet 300" description="Dynamic" />
-          <ColorSwatch color={colors.marketplace.dynamic.violet200} name="Violet 200" description="Dynamic" />
         </div>
 
         <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Analytics</h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '32px' }}>
           <ColorSwatch color={colors.analytics.green900} name="Green 900" />
           <ColorSwatch color={colors.analytics.green800} name="Green 800" />
-          <ColorSwatch color={colors.analytics.green700} name="Green 700" description="Main" />
           <ColorSwatch color={colors.analytics.green600} name="Green 600" />
           <ColorSwatch color={colors.analytics.green500} name="Green 500" />
-          <ColorSwatch color={colors.analytics.dynamic.green400} name="Green 400" description="Dynamic" />
-          <ColorSwatch color={colors.analytics.dynamic.green300} name="Green 300" description="Dynamic" />
-          <ColorSwatch color={colors.analytics.dynamic.green200} name="Green 200" description="Dynamic" />
         </div>
+
+        <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Theme Colors</h3>
+        <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', fontStyle: 'italic' }}>
+          The main brand colors (700), strokes (400), hover (300), and background (200) are managed through the Theme System to adapt automatically across products.
+        </p>
       </section>
 
       {/* Typography Section */}
@@ -803,10 +796,15 @@ const DesignTokensShowcase: React.FC = () => {
             name="Trash" 
             size="22x22px" 
           />
-          <IconExample 
-            IconComponent={icons.medium.unlock} 
-            name="Unlock" 
-            size="22x22px" 
+          <IconExample
+            IconComponent={icons.medium.unlock}
+            name="Unlock"
+            size="22x22px"
+          />
+          <IconExample
+            IconComponent={icons.medium.settings}
+            name="Settings"
+            size="22x22px"
           />
         </div>
 
@@ -855,10 +853,35 @@ const DesignTokensShowcase: React.FC = () => {
             name="Warning" 
             size="24x24px" 
           />
-          <IconExample 
-            IconComponent={icons.table.tick} 
-            name="Tick" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.tick}
+            name="Tick"
+            size="24x24px"
+          />
+          <IconExample
+            IconComponent={icons.table.statusCheck}
+            name="Status Check"
+            size="17x17px"
+          />
+          <IconExample
+            IconComponent={icons.table.statusAlert}
+            name="Status Alert"
+            size="17x17px"
+          />
+          <IconExample
+            IconComponent={icons.table.statusError}
+            name="Status Error"
+            size="17x17px"
+          />
+          <IconExample
+            IconComponent={icons.table.statusProgress}
+            name="Status Progress"
+            size="17x17px"
+          />
+          <IconExample
+            IconComponent={icons.table.statusAdd}
+            name="Status Add"
+            size="17x17px"
           />
         </div>
       </section>
@@ -895,30 +918,60 @@ const DesignTokensShowcase: React.FC = () => {
           Brand and navigation logos with pre-defined colors
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          <IconExample 
-            IconComponent={icons.logos.korra} 
-            name="Korra" 
-            size="60x20px" 
+          <IconExample
+            IconComponent={icons.logos.korra}
+            name="Korra"
+            size="60x20px"
           />
-          <IconExample 
-            IconComponent={icons.logos.marketplace} 
-            name="Marketplace" 
-            size="14x14px" 
+          <IconExample
+            IconComponent={icons.logos.k}
+            name="K (Compact)"
+            size="20x20px"
           />
-          <IconExample 
-            IconComponent={icons.logos.reports} 
-            name="Reports" 
-            size="14x14px" 
+          <IconExample
+            IconComponent={icons.logos.marketplace}
+            name="Marketplace"
+            size="14x14px"
           />
-          <IconExample 
-            IconComponent={icons.logos.analytics} 
-            name="Analytics" 
-            size="14x14px" 
+          <IconExample
+            IconComponent={icons.logos.reports}
+            name="Reports"
+            size="14x14px"
           />
-          <IconExample 
-            IconComponent={icons.logos.contracts} 
-            name="Contracts" 
-            size="14x14px" 
+          <IconExample
+            IconComponent={icons.logos.analytics}
+            name="Analytics"
+            size="14x14px"
+          />
+          <IconExample
+            IconComponent={icons.logos.contracts}
+            name="Contracts"
+            size="14x14px"
+          />
+        </div>
+      </section>
+
+      {/* Card Icons */}
+      <section style={{ marginBottom: '48px' }}>
+        <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Card Icons (15x18px)</h3>
+        <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', fontStyle: 'italic' }}>
+          Icons designed to be used beside card titles with pre-defined colors
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          <IconExample
+            IconComponent={icons.cards.check}
+            name="Cards Check"
+            size="15x18px"
+          />
+          <IconExample
+            IconComponent={icons.cards.graph}
+            name="Cards Graph"
+            size="15x19px"
+          />
+          <IconExample
+            IconComponent={icons.cards.text}
+            name="Cards Text"
+            size="15x18px"
           />
         </div>
       </section>

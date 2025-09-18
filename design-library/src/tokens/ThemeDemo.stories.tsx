@@ -38,10 +38,10 @@ const ThemedComponentDemo: React.FC = () => {
         <h3 style={{ marginBottom: '16px' }}>Theme Colors</h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
           {[
-            { key: 'primary700', label: 'Main', color: colors.theme.primary700 },
-            { key: 'primary400', label: 'Stroke', color: colors.theme.primary400 },
-            { key: 'primary300', label: 'Hover', color: colors.theme.primary300 },
-            { key: 'primary200', label: 'Background', color: colors.theme.primary200 },
+            { key: 'primary700', label: '700 (Main)', color: colors.theme.primary700 },
+            { key: 'primary400', label: '400 (Strokes)', color: colors.theme.primary400 },
+            { key: 'primary300', label: '300 (Hover)', color: colors.theme.primary300 },
+            { key: 'primary200', label: '200 (Background)', color: colors.theme.primary200 },
           ].map(({ key, label, color }) => (
             <div key={key} style={{ textAlign: 'center' }}>
               <div
@@ -138,10 +138,10 @@ const ThemedComponentDemo: React.FC = () => {
             <strong>Common patterns:</strong>
           </p>
           <ul style={{ marginLeft: '20px', marginBottom: '8px' }}>
-            <li><code>colors.theme.stroke</code> - for borders and separators</li>
-            <li><code>colors.theme.background</code> - for light backgrounds</li>
-            <li><code>colors.theme.hover</code> - for hover states</li>
-            <li><code>colors.theme.main</code> - for primary brand elements</li>
+            <li><code>colors.theme['primary400 (strokes)']</code> or <code>colors.theme.stroke</code> - for borders and separators</li>
+            <li><code>colors.theme['primary200 (background)']</code> or <code>colors.theme.background</code> - for light backgrounds</li>
+            <li><code>colors.theme['primary300 (hover)']</code> or <code>colors.theme.hover</code> - for hover states</li>
+            <li><code>colors.theme['primary700 (main)']</code> or <code>colors.theme.main</code> - for primary brand elements</li>
           </ul>
           <p>
             <strong>Result:</strong> Components automatically adapt to the current product theme!

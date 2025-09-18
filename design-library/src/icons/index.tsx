@@ -27,6 +27,10 @@ export interface LogoIconProps extends BaseIconProps {
   // Logo icons for branding and navigation, variable sizes
 }
 
+export interface CardIconProps extends BaseIconProps {
+  // Card icons are used beside card titles, 15x18px
+}
+
 // Icon size constants
 export const ICON_SIZES = {
   extraSmall: 8,
@@ -34,6 +38,7 @@ export const ICON_SIZES = {
   medium: 22,
   table: 24,
   logo: 14, // Standard size for navigation logos
+  card: 15, // Card icons are 15x18px
 } as const;
 
 // Extra Small Icons (8x8px)
@@ -1160,15 +1165,29 @@ export const TrashMedium: React.FC<MediumIconProps> = ({
     </svg>
 );
 
-export const UnlockMedium: React.FC<MediumIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const UnlockMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M14.1422 11.1387H5.21777V18.6488H10.4795L17.166 18.6495V10.1928" stroke={color} strokeWidth="2"/>
     <path d="M15.1311 7.2276V7.2276C15.1311 5.08632 13.3953 3.35046 11.254 3.35046L11.0236 3.35046C8.75503 3.35046 6.91602 5.18947 6.91602 7.45801V10.1971" stroke={color} strokeWidth="2"/>
     <circle cx="10.9996" cy="14.7523" r="1.53285" fill={color}/>
     </svg>
+);
+
+export const SettingsMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <circle cx="13.7244" cy="15.1384" r="2.5" transform="rotate(-180 13.7244 15.1384)" stroke={color} strokeWidth="1.5"/>
+    <path d="M9.31055 15.1384H3.30963" stroke={color} strokeWidth="2"/>
+    <path d="M19.1899 15.1384H16.1713" stroke={color} strokeWidth="2"/>
+    <circle cx="8.76709" cy="7.86157" r="2.5" stroke={color} strokeWidth="1.5"/>
+    <path d="M13.3665 7.86157L19.2898 7.86157" stroke={color} strokeWidth="2"/>
+    <path d="M3.40283 7.86157L6.20791 7.86157" stroke={color} strokeWidth="2"/>
+  </svg>
 );
 
 // Status Icons (18x18px) - Visual indicators for states
@@ -1288,13 +1307,66 @@ export const TickTable: React.FC<TableIconProps> = ({
     </svg>
 );
 
-export const ArrangeTable: React.FC<TableIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const ArrangeTable: React.FC<TableIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M7 9L12 4L17 9" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M17 15L12 20L7 15" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export const StatusCheckTable: React.FC<TableIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M6.2998 8.77778L8.44266 11L12.2998 7" stroke="#3DA3CB" strokeWidth="2"/>
+    <circle cx="9.2998" cy="9" r="7.5" stroke="#3DA3CB" strokeWidth="2"/>
+  </svg>
+);
+
+export const StatusAlertTable: React.FC<TableIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <circle cx="9" cy="9" r="7.5" stroke="#AB8703" strokeWidth="2"/>
+    <path d="M9 5.5V8.5" stroke="#AB8703" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M9 11.5V12" stroke="#AB8703" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+export const StatusErrorTable: React.FC<TableIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M6.5 11.5L9 9L11.5 6.5M11.5 11.5L6.5 6.5" stroke="#FF8588" strokeWidth="2.4"/>
+    <circle cx="9" cy="9" r="7.5" stroke="#FF8588" strokeWidth="2"/>
+  </svg>
+);
+
+export const StatusProgressTable: React.FC<TableIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <circle cx="9" cy="9" r="7.5" stroke="#B3E5FF" strokeWidth="2" strokeDasharray="3 3"/>
+    <path d="M17.5 9C17.5 9.5676 17.442 10.1218 17.3359 10.6582L15.376 10.2705C15.4569 9.86118 15.5 9.4366 15.5 9C15.5 8.5634 15.4569 8.13882 15.376 7.72949L17.3359 7.34082C17.4422 7.87757 17.5 8.43207 17.5 9ZM13.7217 1.93262C14.6485 2.55303 15.4458 3.35066 16.0664 4.27734L15.2373 4.83398L15.2363 4.83301L14.4062 5.38965C13.9312 4.68013 13.3199 4.06881 12.6104 3.59375L13.7217 1.93262ZM9 0.5C9.56753 0.5 10.1218 0.556997 10.6582 0.663086L10.2705 2.62402C9.86118 2.54306 9.4366 2.5 9 2.5C8.5634 2.5 8.13882 2.54306 7.72949 2.62402L7.34082 0.663086C7.87751 0.556876 8.43213 0.5 9 0.5Z" fill="#3DA3CB"/>
+    <circle cx="9" cy="9" r="2.5" stroke="#3DA3CB" strokeWidth="2"/>
+  </svg>
+);
+
+export const StatusAddTable: React.FC<TableIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <circle cx="9" cy="9" r="7.5" stroke="#B4C2C5" strokeWidth="2"/>
+    <path d="M9 12.5V5.5" stroke="#B4C2C5" strokeWidth="2"/>
+    <path d="M5.5 9L12.5 9" stroke="#B4C2C5" strokeWidth="2"/>
   </svg>
 );
 
@@ -1383,13 +1455,46 @@ export const ContractsLogo: React.FC<LogoIconProps> = ({
   </svg>
 );
 
-export const KLogo: React.FC<LogoIconProps> = ({ 
-  color = 'white', 
-  className 
+export const KLogo: React.FC<LogoIconProps> = ({
+  color = 'white',
+  className
 }) => (
   <svg width="20" height="20" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M4.24689 1.45764H2.41797V14.4264H4.24689V1.45764Z" fill={color}/>
     <path d="M11.2945 5.17413V7.01663H7.29534V7.64329C7.29534 9.91231 9.27133 11.9227 11.447 12.5314L11.5832 12.5696V14.4593L11.3584 14.4114C8.2088 13.7352 5.46642 10.889 5.46642 7.64404V6.09688C5.46642 5.5879 5.8764 5.17488 6.38162 5.17488H11.2945V5.17413Z" fill={color}/>
+  </svg>
+);
+
+// Card Icons (15x18px) - Used beside card titles
+export const CardsCheck: React.FC<CardIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.card} height="18" viewBox="0 0 15 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <rect x="0.799805" width="14" height="18" rx="3" fill="#E0BFFB"/>
+    <path d="M10.0633 7.45874L6.97863 10.5436L5.27828 8.89672" stroke="#17211B" strokeWidth="1.4"/>
+  </svg>
+);
+
+export const CardsGraph: React.FC<CardIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.card} height="19" viewBox="0 0 15 19" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <rect x="0.799805" y="0.0952148" width="14" height="18" rx="3" fill="#BEE4FB"/>
+    <path d="M4.56885 9.33726L6.59985 7.427L8.53885 8.9782L11.1031 6.55626" stroke="#17211B" strokeWidth="1.4"/>
+    <line x1="4.43335" y1="11.7089" x2="11.5102" y2="11.7089" stroke="#17211B" strokeWidth="1.4"/>
+  </svg>
+);
+
+export const CardsText: React.FC<CardIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.card} height="18" viewBox="0 0 15 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <rect x="0.799805" width="14" height="18" rx="3" fill="#FFDD61"/>
+    <path d="M4.7998 7H8.7998" stroke="#17211B" strokeWidth="1.4"/>
+    <path d="M4.7998 10H10.7998" stroke="#17211B" strokeWidth="1.4"/>
   </svg>
 );
 
@@ -1492,6 +1597,7 @@ export const icons = {
     statusWarning: StatusWarning,
     trash: TrashMedium,
     unlock: UnlockMedium,
+    settings: SettingsMedium,
   },
   table: {
     // These icons are specifically designed for use in table headers (24x24px)
@@ -1504,6 +1610,11 @@ export const icons = {
     text: TextTable,
     warning: WarningTable,
     tick: TickTable,
+    statusCheck: StatusCheckTable,
+    statusAlert: StatusAlertTable,
+    statusError: StatusErrorTable,
+    statusProgress: StatusProgressTable,
+    statusAdd: StatusAddTable,
   },
   logos: {
     // Brand and navigation logos
@@ -1513,6 +1624,12 @@ export const icons = {
     reports: ReportsLogo,
     analytics: AnalyticsLogo,
     contracts: ContractsLogo,
+  },
+  cards: {
+    // Card icons used beside card titles (15x18px)
+    check: CardsCheck,
+    graph: CardsGraph,
+    text: CardsText,
   },
 } as const;
 
@@ -1533,6 +1650,8 @@ export const getIconSize = (category: IconCategory): number => {
       return ICON_SIZES.table;
     case 'logos':
       return ICON_SIZES.logo;
+    case 'cards':
+      return ICON_SIZES.card;
     default:
       return ICON_SIZES.small;
   }

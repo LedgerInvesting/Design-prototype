@@ -68,48 +68,29 @@ const colors = {
 export type ProductTheme = 'reports' | 'marketplace' | 'analytics';
 
 export interface ThemeColors {
-  // Main product colors
-  primary900: string;
-  primary800: string;
+  // Essential theme colors only (the ones that need to adapt per product)
   primary700: string; // main color
-  primary600: string;
-  primary500: string;
-  primary450?: string; // only available for reports
-  // Dynamic colors (used for UI elements)
-  primary400: string;
-  primary300: string;
-  primary200: string;
+  primary400: string; // strokes (borders, separators)
+  primary300: string; // hover states
+  primary200: string; // background (light backgrounds)
 }
 
-// Theme color mappings for each product
+// Theme color mappings for each product (only essential colors)
 const themeColorMappings: Record<ProductTheme, ThemeColors> = {
   reports: {
-    primary900: colors.reports.blue900,
-    primary800: colors.reports.blue800,
     primary700: colors.reports.blue700,
-    primary600: colors.reports.blue600,
-    primary500: colors.reports.blue500,
-    primary450: colors.reports.blue450,
     primary400: colors.reports.dynamic.blue400,
     primary300: colors.reports.dynamic.blue300,
     primary200: colors.reports.dynamic.blue200,
   },
   marketplace: {
-    primary900: colors.marketplace.violet900,
-    primary800: colors.marketplace.violet800,
     primary700: colors.marketplace.violet700,
-    primary600: colors.marketplace.violet600,
-    primary500: colors.marketplace.violet500,
     primary400: colors.marketplace.dynamic.violet400,
     primary300: colors.marketplace.dynamic.violet300,
     primary200: colors.marketplace.dynamic.violet200,
   },
   analytics: {
-    primary900: colors.analytics.green900,
-    primary800: colors.analytics.green800,
     primary700: colors.analytics.green700,
-    primary600: colors.analytics.green600,
-    primary500: colors.analytics.green500,
     primary400: colors.analytics.dynamic.green400,
     primary300: colors.analytics.dynamic.green300,
     primary200: colors.analytics.dynamic.green200,
@@ -138,11 +119,16 @@ export function createSemanticColors(theme: ProductTheme) {
     // Semantic tokens that map to current product theme
     theme: {
       ...themeColors,
-      // Common semantic uses
-      stroke: themeColors.primary400,     // Used for borders, separators, outlines
-      background: themeColors.primary200, // Used for light backgrounds  
-      hover: themeColors.primary300,      // Used for hover states
-      main: themeColors.primary700,       // Main brand color for the product
+      // Common semantic uses (renamed to match Figma)
+      'primary700 (main)': themeColors.primary700,       // Main brand color for the product
+      'primary400 (strokes)': themeColors.primary400,    // Used for borders, separators, outlines
+      'primary300 (hover)': themeColors.primary300,      // Used for hover states
+      'primary200 (background)': themeColors.primary200, // Used for light backgrounds
+      // Backward compatibility aliases
+      stroke: themeColors.primary400,
+      background: themeColors.primary200,
+      hover: themeColors.primary300,
+      main: themeColors.primary700,
     },
     // Original color structure remains intact
     ...colors,

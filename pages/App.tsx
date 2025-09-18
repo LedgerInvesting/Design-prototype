@@ -5,18 +5,26 @@ import { TransactionManagement } from './TransactionManagement';
 import { NewTransactionForm } from './NewTransactionForm';
 import { ContractsExplorer } from './ContractsExplorer';
 import { AnalyticsValuation } from './AnalyticsValuation';
+import { ValuationDashboard } from './ValuationDashboard';
+import { ValuationConfiguration } from './ValuationConfiguration';
+import { ValuationStatus } from './ValuationStatus';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer' | 'analytics-valuation';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status';
 
 function App() {
-  // Function to handle page navigation
-  const setPage = (page: PageType) => {
-    setCurrentPage(page);
-  };
   const [currentPage, setCurrentPage] = useState<PageType>('transaction-management');
+  const [valuationData, setValuationData] = useState<any>(null);
+
+  // Function to handle page navigation with optional data
+  const setPage = (page: PageType, data?: any) => {
+    setCurrentPage(page);
+    if (data) {
+      setValuationData(data);
+    }
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -32,6 +40,12 @@ function App() {
         return <ContractsExplorer onNavigateToPage={setPage} />;
       case 'analytics-valuation':
         return <AnalyticsValuation onNavigateToPage={setPage} />;
+      case 'valuation-dashboard':
+        return <ValuationDashboard onNavigateToPage={setPage} valuationData={valuationData} />;
+      case 'valuation-configuration':
+        return <ValuationConfiguration onNavigateToPage={setPage} valuationData={valuationData} />;
+      case 'valuation-status':
+        return <ValuationStatus onNavigateToPage={setPage} />;
       default:
         return <TransactionManagement onNavigateToPage={setPage} />;
     }

@@ -106,23 +106,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return () => window.removeEventListener('resize', checkViewportWidth);
   }, []);
 
-  // Handle hover with debouncing
+  // Handle hover with proper delays for smooth UX
   const handleMouseEnter = () => {
     if (hoverTimeout) {
       clearTimeout(hoverTimeout);
     }
-    setIsHovered(true);
-    onHoverChange?.(true); // Notify parent of hover state change
+
+    // Only expand in compact mode, and add a small delay to prevent accidental expansion
+    if (isCompact) {
+      const timeout = setTimeout(() => {
+        setIsHovered(true);
+        onHoverChange?.(true); // Notify parent of hover state change
+      }, 200); // 200ms delay before expanding
+      setHoverTimeout(timeout);
+    }
   };
 
   const handleMouseLeave = () => {
     if (hoverTimeout) {
       clearTimeout(hoverTimeout);
     }
+
+    // Add a longer delay before collapsing to give users time to navigate
     const timeout = setTimeout(() => {
       setIsHovered(false);
       onHoverChange?.(false); // Notify parent of hover state change
-    }, 100); // Small delay to prevent flickering
+    }, 500); // 500ms delay before collapsing
     setHoverTimeout(timeout);
   };
 

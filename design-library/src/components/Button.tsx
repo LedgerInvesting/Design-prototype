@@ -19,6 +19,8 @@ interface BaseButtonProps {
   onClick?: () => void;
   /** Additional CSS class */
   className?: string;
+  /** Additional inline styles */
+  style?: React.CSSProperties;
 }
 
 // All possible color values
@@ -46,6 +48,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     disabled = false,
     onClick,
     className,
+    style,
   } = props;
 
   const [isHovered, setIsHovered] = useState(false);
@@ -451,10 +454,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 
   const buttonStyles = getButtonStyles();
 
+  // Merge external styles with button styles, giving priority to external styles
+  const finalStyles = { ...buttonStyles, ...style };
+
   return (
     <button
       ref={ref}
-      style={buttonStyles}
+      style={finalStyles}
       onClick={disabled ? undefined : onClick}
       onMouseEnter={() => !disabled && setIsHovered(true)}
       onMouseLeave={() => !disabled && setIsHovered(false)}

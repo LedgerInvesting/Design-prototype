@@ -77,11 +77,13 @@ const staticData = [
     - Custom chart components (SmallChart, DataValidationChart) with SVG-based visualizations
     - Full design system integration with proper spacing and typography
 
-## Icon System (106 total icons)
+## Icon System (106 total icons + Favicon)
 1. **Extra Small (8x8px)**: 9 icons - minimal UI elements (added chevronUp)
 2. **Small (12x12px)**: 32 icons - used in IconButton and small components (includes new CalculatorSmall, UploadSmall, ConfigSmall for action types)
 3. **Medium (22x22px)**: 56 icons - larger UI elements, headers, includes status icons (StatusWarning, StatusError, StatusSuccess)
 4. **Table (24x24px)**: 9 icons - specifically for table headers (includes new ArrangeTable icon)
+5. **Logo Icons**: 6 brand logos including KLogo (K icon) used for compact navigation and favicon
+6. **Favicon**: Professional K logo favicon with black900 background implemented across pages and Storybook environments
 
 ## Component Features Summary
 
@@ -388,3 +390,93 @@ The Table component supports three distinct cell types through the `cellType` pr
 - **Container**: 730px width with rounded corners and shadow
 - **Background**: Theme-aware green200 background for form area
 - **Button**: Theme-aware close button using Button component with light variant
+
+## Icon System
+
+### Complete 6-Tier Icon Architecture
+The design library features a comprehensive icon system with 115+ icons organized into 6 distinct categories, each optimized for specific use cases and consistent sizing.
+
+### Icon Categories
+
+#### 1. Extra Small Icons (8x8px)
+- **Usage**: Minimal UI elements, chevrons, small indicators
+- **Examples**: ChevronDownExtraSmall, PlusExtraSmall, XExtraSmall
+- **Import**: `import { ChevronDownExtraSmall } from '@design-library/icons'`
+
+#### 2. Small Icons (12x12px)
+- **Usage**: General UI elements, form controls, navigation
+- **Examples**: AddSmall, CheckSmall, DocumentSmall, DownloadSmall
+- **Import**: `import { AddSmall } from '@design-library/icons'`
+
+#### 3. Medium Icons (22x22px)
+- **Usage**: Standard interface icons, buttons, navigation
+- **Examples**: AddMedium, CalendarMedium, CloseMedium, **SettingsMedium** (new)
+- **Import**: `import { SettingsMedium } from '@design-library/icons'`
+
+#### 4. Table Icons (24x24px)
+- **Usage**: Table headers, data visualization, sorting controls
+- **Examples**: DocumentTable, ArrangeTable, AmmountTable, TextTable
+- **Special Status Icons (17x17px)**: StatusCheckTable, StatusAlertTable, StatusErrorTable, StatusProgressTable, StatusAddTable
+- **Import**: `import { StatusCheckTable } from '@design-library/icons'`
+
+#### 5. Card Icons (15x18px) - NEW
+- **Usage**: Card title indicators with colored backgrounds
+- **CardsCheck**: Purple background (#E0BFFB) with checkmark for status cards
+- **CardsGraph**: Blue background (#BEE4FB) with trend line for analytics cards
+- **CardsText**: Yellow background (#FFDD61) with text lines for content cards
+- **Import**: `import { CardsCheck } from '@design-library/icons'`
+
+#### 6. Logo Icons (14x14px + Variable)
+- **Usage**: Brand logos, navigation identity, product themes
+- **Examples**: KLogo, MarketplaceLogo, ReportsLogo, AnalyticsLogo, ContractsLogo
+- **Import**: `import { KLogo } from '@design-library/icons'`
+
+### Table Status Icon System
+A specialized collection of 5 status icons designed for data tables, all standardized to 17x17px for visual consistency:
+
+- **StatusCheckTable**: Blue check circle (#3DA3CB) for completed status
+- **StatusAlertTable**: Yellow warning circle (#AB8703) with exclamation mark
+- **StatusErrorTable**: Red error circle (#FF8588) with X mark
+- **StatusProgressTable**: Blue progress circle (#3DA3CB/#B3E5FF) with loading indicator
+- **StatusAddTable**: Gray add circle (#B4C2C5) with plus sign
+
+### Icon Usage Patterns
+
+#### Structured Import (Recommended)
+```typescript
+import { icons } from '@design-library/icons'
+
+// Usage
+<IconComponent
+  icon={icons.small.add}
+  color="currentColor"
+/>
+<IconComponent
+  icon={icons.cards.check}
+  color="currentColor"
+/>
+<IconComponent
+  icon={icons.table.statusCheck}
+  color="currentColor"
+/>
+```
+
+#### Direct Import
+```typescript
+import {
+  AddSmall,
+  CardsCheck,
+  StatusCheckTable,
+  SettingsMedium
+} from '@design-library/icons'
+```
+
+### Design Principles
+- **Consistent Sizing**: Each tier has standardized dimensions for visual harmony
+- **Transparent Backgrounds**: All icons work on any background color
+- **Predefined Colors**: Status and card icons include color schemes aligned with design system
+- **TypeScript Support**: Full type safety with dedicated interfaces for each tier
+- **Scalable Architecture**: Easy to extend with new categories and icons
+
+### Storybook Documentation
+All icons are documented in the **Design Tokens** story with interactive examples, organized by category with size specifications and color information.

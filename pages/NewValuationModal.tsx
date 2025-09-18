@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Dropdown } from '@design-library/components';
+import { Button, Input, Dropdown, DropdownOption } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
 import { useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { CloseMedium } from '@design-library/icons';
@@ -8,6 +8,7 @@ export interface NewValuationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateValuation: (formData: ValuationFormData) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
   buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
@@ -24,6 +25,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
   isOpen,
   onClose,
   onCreateValuation,
+  onNavigateToPage,
   buttonRef,
 }) => {
   const semanticColors = useSemanticColors();
@@ -74,9 +76,20 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
   const handleCreateValuation = () => {
     onCreateValuation(formData);
     onClose();
+
+    // Navigate to the new valuation dashboard with the created data
+    if (onNavigateToPage) {
+      const valuationData = {
+        programName: formData.policyGroup,
+        evaluationDate: new Date().toISOString().split('T')[0],
+        reportedLossRatio: formData.expectedLossRatio || '42.2%',
+        currentWrittenPremium: formData.expectedPremium || '$20,107,359'
+      };
+      onNavigateToPage('valuation-dashboard', valuationData);
+    }
   };
 
-  const isFormValid = Object.values(formData).every(value => value.trim() !== '');
+  const isFormValid = Object.values(formData).every(value => value && value.trim() !== '');
 
   // Modal backdrop styles
   const backdropStyles: React.CSSProperties = {
@@ -155,23 +168,23 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
   };
 
   // Policy Group options
-  const policyGroupOptions = [
-    'Aviation Treaty 2023',
-    'Cyber Treaty 2024',
-    'Health Insurance Stop Loss Cover',
-    'Liability Excess of Loss Treaty',
-    'Property Catastrophe Treaty',
-    'Marine Cargo Treaty',
+  const policyGroupOptions: DropdownOption[] = [
+    { value: 'Aviation Treaty 2023', label: 'Aviation Treaty 2023' },
+    { value: 'Cyber Treaty 2024', label: 'Cyber Treaty 2024' },
+    { value: 'Health Insurance Stop Loss Cover', label: 'Health Insurance Stop Loss Cover' },
+    { value: 'Liability Excess of Loss Treaty', label: 'Liability Excess of Loss Treaty' },
+    { value: 'Property Catastrophe Treaty', label: 'Property Catastrophe Treaty' },
+    { value: 'Marine Cargo Treaty', label: 'Marine Cargo Treaty' },
   ];
 
   // Risk Period options
-  const riskPeriodOptions = [
-    '2023',
-    '2024',
-    '2025',
-    'TY23',
-    'TY24',
-    'TY25',
+  const riskPeriodOptions: DropdownOption[] = [
+    { value: '2023', label: '2023' },
+    { value: '2024', label: '2024' },
+    { value: '2025', label: '2025' },
+    { value: 'TY23', label: 'TY23' },
+    { value: 'TY24', label: 'TY24' },
+    { value: 'TY25', label: 'TY25' },
   ];
 
   return (

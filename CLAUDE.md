@@ -55,7 +55,13 @@ This is a React design library built with TypeScript and Storybook, containing d
     - **Brand logos, expandable menu structure, custom inbox button with notification badge**
   - **TopNav** with breadcrumb navigation, share button, user profile dropdown (updated to match Figma design)
   - **FormTabs**: 30px height step-based tabs with blue color variants and 2px spacing
-- **Icons**: Complete 4-tier icon system with 106 total icons + 5 brand logos (includes DocumentTable, AddMedium, ReloadMedium, CloseMedium, CalculatorSmall, UploadSmall, ConfigSmall icons)
+- **Icons**: Complete 6-tier icon system with 115+ total icons + 5 brand logos:
+  - **Extra Small**: 8x8px icons for UI elements
+  - **Small**: 12x12px icons for general UI
+  - **Medium**: 22x22px icons including new SettingsMedium
+  - **Table**: 24x24px icons with 5 new status icons (StatusCheck, StatusAlert, StatusError, StatusProgress, StatusAdd - all 17x17px)
+  - **Card**: 15x18px specialized icons for card titles (CardsCheck, CardsGraph, CardsText)
+  - **Logo**: Brand and navigation logos (14x14px standard)
 - **Enhanced Table System**:
   - **Action Buttons**: Upload actions feature light green styling (#C6FFC1 background, success green icon), blue actions use reports.blue500 (#e1f3ff) background
   - **Improved ActionCell Styling**: Updated hover effects to use primary200 variant for lighter, more subtle hover state
@@ -69,13 +75,19 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Static Assets**: Images stored in `/pages/public/` folder for proper Vercel deployment and serving
 - **Enhanced Form System**: Complete NewTransactionForm with comprehensive dropdown options from real reinsurance data
 - **Updated Table Filters**: Transaction management table now uses filtering by Ceding Insurer, Transaction Name, and Year
+- **Advanced Analytics Pages**:
+  - **ValuationDashboard**: Complete dashboard with triangle tooltips, mouse-following tooltips, and enhanced button functionality
+  - **ValuationConfiguration**: Professional form page with 8 input fields across 2 sections for editing valuation parameters
+  - **ValuationStatus**: Triangle upload management page with StatusCheck icons, action buttons, and comprehensive table functionality
+- **Enhanced Button Component**: Added style prop support for external styling, improved width handling and custom styling integration
+- **Advanced Table Features**: Added custom render function support to Table component for complex cell content like triangle status indicators
 
 ## Technical Details
 - Framework: React 18 + TypeScript
 - Build: Vite  
 - Documentation: Storybook v7 (running on localhost:6006)
 - Design Integration: Figma MCP server for extracting designs
-- Icons: SVG-based React components with 4 size tiers
+- Icons: SVG-based React components with 6 size tiers (extraSmall, small, medium, table, cards, logos)
 - Tokens: Complete design system from Figma Library 2.0
 - Styling: CSS-in-JS with design token integration
 
@@ -146,7 +158,7 @@ E:\Ledger design library/
 │   │   │   └── index.ts
 │   │   ├── styles/                    # Global styles
 │   │   │   └── base.css               # Base styles with custom selection colors
-│   │   ├── icons/index.tsx            # Complete icon system (106 icons)
+│   │   ├── icons/index.tsx            # Complete icon system (115+ icons with 6 size tiers + card/status icons)
 │   │   ├── tokens/
 │   │   │   ├── index.ts               # Design tokens from Figma
 │   │   │   └── DesignTokens.stories.tsx
@@ -161,6 +173,7 @@ E:\Ledger design library/
 │   ├── CashSettlement.tsx             # Cession and Collateral subpage under Insights Explorer - uses Layout
 │   ├── ContractsExplorer.tsx          # Contracts subpage with dual table interface - uses Layout
 │   ├── AnalyticsValuation.tsx         # Analytics Valuation page with themed banner - uses Layout + ThemeProvider
+│   ├── ValuationDashboard.tsx         # Complete valuation dashboard with charts and status management - uses Layout + ThemeProvider
 │   ├── App.tsx                        # Main React app with navigation
 │   ├── index.tsx                      # React entry point
 │   ├── vite.config.ts                 # Vite configuration
@@ -298,6 +311,32 @@ The `/pages` folder contains a complete React development environment for testin
   - **Navigation Integration**: Connected to main app navigation with proper routing from sidebar clicks
   - **Design System Compliance**: Clean, minimal implementation following established patterns with theme-aware form styling
   - **Theme-Aware Styling**: Demonstrates proper use of semantic colors vs hardcoded colors
+- **ValuationDashboard.tsx**: Complete valuation management dashboard featuring:
+  - **Enhanced UI Integration**: Updated "edit configuration" button using design library Button component with white variant and SettingsMedium icon
+  - **Card Icon System**: Integrated CardsGraph and CardsText icons beside card titles for visual hierarchy
+  - **Theme-Aware EXPLORE Button**: Uses semantic theme colors (Analytics green) instead of hardcoded Reports blue for proper theme integration
+  - **Professional Layout**: Consistent padding and spacing across Valuation Summary and Latest Valuation Status cards (20px 30px 26px)
+  - **Status Icon Integration**: StatusCheck icons with custom color support replacing dots in triangles column (left: #BD8B11, center: #744DEB, right: #3DA3CB)
+  - **Enhanced Table Features**: 50px row height for optimal readability, proper column spacing and alignment, dashed separators with card padding
+  - **Interactive Elements**: Full-width "Add New Valuation Data" button with white variant, AddMedium icon, and proper 100% width spanning within card constraints
+  - **Chart Visualization**: Sophisticated valuation runs chart with multi-line trends, uncertainty bands, and comprehensive legend system
+  - **Triangle Tooltips**: Mouse-following tooltips on triangles column explaining each triangle type with proper colors and descriptions
+  - **Responsive Design**: Complete responsive behavior with theme-aware colors and professional spacing throughout
+- **ValuationConfiguration.tsx**: Professional configuration form page featuring:
+  - **Two-Section Layout**: Financial Parameters sections with 8 input fields across 2 columns
+  - **Form Fields**: Loss Ratio Mean/Std Dev, Estimated Premium/Premium Cap, Paid Weight/CL Cutoffs, BF parameters
+  - **Input Integration**: Uses Input component with left symbols (%, $) and InfoTooltips for field explanations
+  - **Action Buttons**: Cancel (white) and Save (disabled grey) buttons without icons matching Figma design
+  - **Program Name Consistency**: Uses same program name as dashboard for seamless navigation experience
+  - **Analytics Theme**: Full theme integration with proper green color scheme and semantic tokens
+- **ValuationStatus.tsx**: Triangle upload management page featuring:
+  - **Advanced Table**: 4 columns with Evaluation Date, Triangles (3 StatusCheck icons), Official valuation, Actions
+  - **Triangle Status Icons**: Uses same StatusCheck SVG icons as dashboard with exact colors (#BD8B11, #744DEB, #3DA3CB)
+  - **Mixed Triangle States**: Shows completed triangles (colored circles with checkmarks) and "Add" buttons for missing triangles
+  - **ActionCell Integration**: Uses proper action cell types (upload=green, validate/generate=blue) instead of custom rendering
+  - **Visual Legend**: Footer legend explaining all three triangle types with colored dots and descriptions
+  - **Black Button Variant**: "Add New Valuation Data" button uses black variant with blue icon for professional appearance
+  - **Enhanced Table Features**: Custom render function support for complex triangle display, footer pagination, proper action handling
 
 **Usage:**
 ```bash

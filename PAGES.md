@@ -104,6 +104,74 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 ---
 
+### 4. ContractsExplorer.tsx
+**Purpose:** Contracts subpage under Insights Explorer, featuring dual table interface with advanced table functionality.
+
+**Key Features:**
+- **Dual Table Interface:** "Reinsurance Trust" (4 items) and "Reinsurance Schedule" (11 items)
+- **Advanced Table Features:** Document cells with download functionality, intelligent column sizing (280px contract names)
+- **Footer Pagination:** Second table demonstrates footer pagination with blue400 separator line
+- **Optimized Layout:** Compact column sizing for no-scroll viewing within 1200px container
+- **Enhanced Table Styling:** Simple text cells use black700 color, proper breadcrumb active states
+
+**Layout Configuration:**
+- MaxWidth: 1200px
+- Breadcrumb: "REPORTS > INSIGHTS EXPLORER > CONTRACTS"
+- Navigation: Subpage under Insights Explorer
+
+**Components Used:**
+- Layout, Table components with dual pagination demonstration
+- Complete Layout component usage with proper navigation and responsive design
+
+---
+
+### 5. AnalyticsValuation.tsx
+**Purpose:** Analytics Valuation page demonstrating theme system integration with professional banner and modal workflow.
+
+**Key Features:**
+- **Analytics Theme Integration:** Uses ThemeProvider with "analytics" theme for automatic green color theming
+- **Themed Header Banner:** Matches Transaction Management layout but with Analytics green700 background and 250px height
+- **Semantic Color Usage:** Uses `colors.theme.main` for proper theme-aware coloring (green in Analytics context)
+- **New Valuation Button:** Features AddSmall icon in Analytics green with 240px width matching other pages
+- **NewValuationModal Integration:** Fully functional modal workflow with 6-field form
+
+**Layout Configuration:**
+- MaxWidth: 1200px
+- Breadcrumb: "ANALYTICS > VALUATION"
+- Navigation: Analytics sidebar section
+
+**Components Used:**
+- Layout, ThemeProvider, Button, Modal components
+- Complete theme-aware styling demonstration
+- Design system compliance with semantic colors vs hardcoded colors
+
+---
+
+### 6. ValuationDashboard.tsx
+**Purpose:** Complete valuation management dashboard with sophisticated charts, status management, and comprehensive UI integration.
+
+**Key Features:**
+- **Enhanced UI Integration:** Design library Button component with white variant and SettingsMedium icon for "edit configuration"
+- **Card Icon System:** CardsGraph and CardsText icons beside card titles for visual hierarchy
+- **Theme-Aware EXPLORE Button:** Uses semantic theme colors (Analytics green) for proper theme integration
+- **Professional Layout:** Consistent padding and spacing across Valuation Summary and Latest Valuation Status cards (20px 30px 26px)
+- **Status Icon Integration:** StatusCheck icons with custom color support in triangles column (left: #BD8B11, center: #744DEB, right: #3DA3CB)
+- **Enhanced Table Features:** 50px row height, proper column spacing and alignment, dashed separators with card padding
+- **Interactive Elements:** Full-width "Add New Valuation Data" button with white variant and AddMedium icon
+- **Chart Visualization:** Sophisticated valuation runs chart with multi-line trends, uncertainty bands, and comprehensive legend system
+
+**Layout Configuration:**
+- MaxWidth: 1200px
+- Breadcrumb: "VALUATION > [Program Name]"
+- Navigation: Connected to Analytics Valuation page
+
+**Components Used:**
+- Layout, ThemeProvider, Button, StatusCheck custom component
+- Advanced chart components with SVG visualizations
+- Complete responsive design with theme-aware colors throughout
+
+---
+
 ## Development Workflow
 
 ### Adding New Pages
@@ -198,6 +266,9 @@ pages/
 ├── TransactionManagement.tsx  # Transaction management page
 ├── ReportNavigation.tsx       # Insights explorer (default)
 ├── CashSettlement.tsx         # Financial dashboard
+├── ContractsExplorer.tsx      # Contracts subpage with dual tables
+├── AnalyticsValuation.tsx     # Analytics valuation page with theme integration
+├── ValuationDashboard.tsx     # Complete valuation dashboard with charts
 ├── NewTransactionModal.tsx    # Transaction selection modal
 ├── BrandNewTransactionModal.tsx # Input method modal
 ├── index.tsx                  # React entry point

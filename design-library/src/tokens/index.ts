@@ -193,6 +193,8 @@ export const colors = {
     fill: '#7fffb0',
   },
   // Product color schemes
+  // @deprecated Use the Theme System instead: useSemanticColors() hook
+  // These are maintained for internal theme system use and backward compatibility
   reports: {
     // Main colors
     blue900: '#1c6297',
@@ -208,6 +210,7 @@ export const colors = {
       blue200: '#f2f8fb', // F2F8FB
     },
   },
+  // @deprecated Use the Theme System instead: useSemanticColors() hook
   marketplace: {
     // Main colors
     violet900: '#643ed8',
@@ -222,6 +225,7 @@ export const colors = {
       violet200: '#f6f6ff', // F6F6FF
     },
   },
+  // @deprecated Use the Theme System instead: useSemanticColors() hook
   analytics: {
     // Main colors
     green900: '#0f9342',

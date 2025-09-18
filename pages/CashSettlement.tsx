@@ -331,7 +331,6 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
   return (
     <Layout
       breadcrumbs={[
-        { label: 'REPORTS', href: '/reports' },
         { label: 'INSIGHTS EXPLORER', href: '/reports/insights-explorer' },
         { label: 'CESSION AND COLLATERAL', isActive: true }
       ]}
