@@ -3,19 +3,19 @@
     <!-- Define the fade animation -->
     <style>
       .line-group-1 {
-        animation: slideInThenFade 2.88s ease-in-out infinite;
+        animation: slideInThenFade 1.44s ease-in-out infinite;
         opacity: 0;
       }
       .line-group-2 {
-        animation: slideInThenFade 2.88s ease-in-out infinite 0.576s;
+        animation: slideInThenFade 1.44s ease-in-out infinite 0.288s;
         opacity: 0;
       }
       .line-group-3 {
-        animation: slideInThenFade 2.88s ease-in-out infinite 1.152s;
+        animation: slideInThenFade 1.44s ease-in-out infinite 0.576s;
         opacity: 0;
       }
       .line-group-4 {
-        animation: slideInThenFade 2.88s ease-in-out infinite 1.728s;
+        animation: slideInThenFade 1.44s ease-in-out infinite 0.864s;
         opacity: 0;
       }
       

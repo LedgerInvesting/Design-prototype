@@ -14,99 +14,85 @@ const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
   </svg>
 );
 
-// Triangle tooltip component
+/**
+ * Triangle Tooltip Component
+ *
+ * Custom tooltip wrapper that displays triangle type legend when hovering over StatusCheck icons.
+ * This replaces the InfoTooltip component to avoid unwanted "i" icon display.
+ *
+ * Features:
+ * - Mouse-following tooltip positioning
+ * - No additional visual elements (triggers directly on children)
+ * - Triangle legend with color-coded explanations
+ * - Clean hover/leave state management
+ */
 const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const colors = useSemanticColors();
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const tooltipItems = [
-    {
-      color: '#BD8B11',
-      text: 'On risk triangle (Accident-quarter)'
-    },
-    {
-      color: '#744DEB',
-      text: 'Loss Development triangle\n(Accident-quarter)'
-    },
-    {
-      color: '#3DA3CB',
-      text: 'Policy-Year triangle'
-    }
-  ];
-
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (e: React.MouseEvent) => {
     setIsVisible(true);
+    setPosition({ x: e.clientX + 10, y: e.clientY + 10 });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setPosition({ x: e.clientX + 10, y: e.clientY + 10 });
   };
 
   const handleMouseLeave = () => {
     setIsVisible(false);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    // Use viewport coordinates for fixed positioning
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
-
   return (
-    <div
-      style={{ position: 'relative', display: 'inline-block' }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
-    >
-      {children}
+    <>
+      <div
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ cursor: 'pointer' }}
+      >
+        {children}
+      </div>
+
       {isVisible && (
         <div
           style={{
             position: 'fixed',
-            left: `${mousePosition.x + 10}px`, // Offset by 10px to the right of cursor
-            top: `${mousePosition.y + 10}px`,  // Offset by 10px below cursor
-            backgroundColor: colors.blackAndWhite.black900,
-            color: colors.blackAndWhite.white,
-            padding: '15px',
-            borderRadius: borderRadius[12],
-            boxShadow: shadows.lg,
-            zIndex: 9999,
-            minWidth: '200px',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none', // Prevent tooltip from interfering with mouse events
+            left: position.x,
+            top: position.y,
+            backgroundColor: '#17211B',
+            color: 'white',
+            padding: '16px',
+            borderRadius: '8px',
+            fontSize: '10px',
+            fontWeight: 500,
+            lineHeight: 1.3,
+            maxWidth: '280px',
+            zIndex: 1000,
+            pointerEvents: 'none',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {tooltipItems.map((item, index) => (
-              <div key={index} style={{ display: 'flex', gap: '6px', alignItems: item.text.includes('\n') ? 'flex-start' : 'center' }}>
-                <div
-                  style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    border: `2px solid ${item.color}`,
-                    backgroundColor: 'transparent',
-                    flexShrink: 0,
-                    marginTop: item.text.includes('\n') ? '2px' : '0',
-                  }}
-                />
-                <div
-                  style={{
-                    fontFamily: 'Söhne, system-ui, sans-serif',
-                    fontSize: '10px',
-                    fontWeight: 500,
-                    lineHeight: 1.3,
-                    color: colors.blackAndWhite.white,
-                    whiteSpace: 'pre-line',
-                  }}
-                >
-                  {item.text}
-                </div>
-              </div>
-            ))}
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #BD8B11', backgroundColor: 'transparent', flexShrink: 0 }} />
+              <span>On risk triangle (Accident-quarter)</span>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #744DEB', backgroundColor: 'transparent', flexShrink: 0, marginTop: '2px' }} />
+              <span style={{ whiteSpace: 'pre-line' }}>Loss Development triangle{'\n'}(Accident-quarter)</span>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #3DA3CB', backgroundColor: 'transparent', flexShrink: 0 }} />
+              <span>Policy-Year triangle</span>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
+
 
 // Growth indicator component
 interface GrowthIndicatorProps {
@@ -250,18 +236,18 @@ const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialS
 
         {/* Triangles Column */}
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '8px', marginLeft: '-10px' }}>
-          <TriangleTooltip>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              {triangleStatuses.map((status, index) => {
-                const position = index === 0 ? 'left' : index === 1 ? 'center' : 'right';
-                return (
-                  <div key={index} style={{ width: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {triangleStatuses.map((status, index) => {
+              const position = index === 0 ? 'left' : index === 1 ? 'center' : 'right';
+              return (
+                <div key={index} style={{ width: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <TriangleTooltip>
                     <StatusDot status={status} position={position} />
-                  </div>
-                );
-              })}
-            </div>
-          </TriangleTooltip>
+                  </TriangleTooltip>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Official Valuation Column */}

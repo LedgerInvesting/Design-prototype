@@ -3,6 +3,7 @@ import { CashSettlement } from './CashSettlement';
 import { ReportNavigation } from './ReportNavigation';
 import { TransactionManagement } from './TransactionManagement';
 import { NewTransactionForm } from './NewTransactionForm';
+import { RenewalTransaction } from './RenewalTransaction';
 import { ContractsExplorer } from './ContractsExplorer';
 import { AnalyticsValuation } from './AnalyticsValuation';
 import { ValuationDashboard } from './ValuationDashboard';
@@ -13,17 +14,22 @@ import { ValuationStatus } from './ValuationStatus';
 import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'renewal-transaction' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('transaction-management');
   const [valuationData, setValuationData] = useState<any>(null);
+  const [renewalData, setRenewalData] = useState<any>(null);
 
   // Function to handle page navigation with optional data
   const setPage = (page: PageType, data?: any) => {
     setCurrentPage(page);
     if (data) {
-      setValuationData(data);
+      if (page === 'new-transaction-form') {
+        setRenewalData(data);
+      } else {
+        setValuationData(data);
+      }
     }
   };
 
@@ -36,7 +42,9 @@ function App() {
       case 'transaction-management':
         return <TransactionManagement onNavigateToPage={setPage} />;
       case 'new-transaction-form':
-        return <NewTransactionForm onNavigateToPage={setPage} />;
+        return <NewTransactionForm onNavigateToPage={setPage} renewalData={renewalData} />;
+      case 'renewal-transaction':
+        return <RenewalTransaction onNavigateToPage={setPage} />;
       case 'contracts-explorer':
         return <ContractsExplorer onNavigateToPage={setPage} />;
       case 'analytics-valuation':

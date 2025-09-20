@@ -64,7 +64,9 @@
       "mcp__figma-dev-mode-mcp-server__get_screenshot",
       "Bash(cat:*)",
       "Bash(rg:*)",
-      "Bash(Y)"
+      "Bash(Y)",
+      "Bash(npx tsc:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

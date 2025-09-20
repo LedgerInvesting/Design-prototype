@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { typography, borderRadius, useSemanticColors } from '../tokens';
 import { icons } from '../icons';
 
-export type ButtonVariant = 'primary' | 'small' | 'icon';
+export type ButtonVariant = 'primary' | 'small' | 'icon' | 'tertiary';
 export type PrimaryColor = 'black' | 'white' | 'main' | 'light' | 'green';
 export type SmallColor = 'black' | 'white' | 'main' | 'light' | 'green';
 export type IconColor = 'black' | 'main' | 'light' | 'green' | 'white';
+export type TertiaryColor = 'white';
 export type ButtonShape = 'circle' | 'square';
 export type IconPosition = 'left' | 'right';
 
@@ -24,7 +25,7 @@ interface BaseButtonProps {
 }
 
 // All possible color values
-export type ButtonColor = PrimaryColor | SmallColor | IconColor;
+export type ButtonColor = PrimaryColor | SmallColor | IconColor | TertiaryColor;
 
 // Unified Button interface
 export interface ButtonProps extends BaseButtonProps {
@@ -56,7 +57,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 
   // Extract variant-specific props with defaults
   const variant = props.variant || 'primary';
-  const color = props.color || (variant === 'primary' ? 'black' : variant === 'small' ? 'main' : 'main');
+  const color = props.color || (variant === 'primary' ? 'black' : variant === 'small' ? 'main' : variant === 'tertiary' ? 'white' : 'main');
   
   // Reset hover state when key props change (fixes Storybook control issues)
   useEffect(() => {
@@ -229,6 +230,32 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     }
   };
 
+  // Tertiary button styles
+  const getTertiaryStyles = () => {
+    const baseStyles = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '10px',
+      padding: '10px 20px',
+      borderRadius: borderRadius[8],
+      border: `1px solid ${colors.theme.primary400}`,
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      transition: 'all 0.2s ease',
+      fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+      fontSize: typography.styles.bodyM.fontSize,
+      fontWeight: typography.styles.bodyM.fontWeight,
+      lineHeight: typography.styles.bodyM.lineHeight,
+      letterSpacing: typography.styles.bodyM.letterSpacing,
+    };
+
+    return {
+      ...baseStyles,
+      ...getSimpleBackground(colors.blackAndWhite.white, 'white'),
+      color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black800,
+    };
+  };
+
   // Icon button styles
   const getIconStyles = () => {
     const baseStyles = {
@@ -381,6 +408,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         return getSmallStyles();
       case 'icon':
         return getIconStyles();
+      case 'tertiary':
+        return getTertiaryStyles();
       default:
         return getPrimaryStyles();
     }
@@ -406,7 +435,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   // Render icon for small buttons
   const renderSmallIcon = () => {
     if (!showIcon || variant !== 'small') return null;
-    
+
     if (icon) {
       // Clone the icon and pass the color prop
       const iconColor = getSmallIconColor();
@@ -416,9 +445,35 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         </span>
       );
     }
-    
+
     // No default icon - only show icon when explicitly provided
     return null;
+  };
+
+  // Render icon for tertiary buttons
+  const renderTertiaryIcon = () => {
+    if (variant !== 'tertiary') return null;
+
+    const defaultIcon = <icons.medium.add color={colors.blackAndWhite.black900} />;
+    const iconToRender = icon || defaultIcon;
+
+    return (
+      <div style={{
+        width: '24px',
+        height: '24px',
+        borderRadius: borderRadius[8],
+        backgroundColor: colors.theme.primary700,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        {React.cloneElement(iconToRender as React.ReactElement, {
+          color: colors.blackAndWhite.black900,
+          style: { width: '12px', height: '12px' }
+        })}
+      </div>
+    );
   };
 
   // Render content based on variant
@@ -444,6 +499,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           {iconPosition === 'left' && renderSmallIcon()}
           <span>{children}</span>
           {iconPosition === 'right' && renderSmallIcon()}
+        </>
+      );
+    }
+
+    if (variant === 'tertiary') {
+      return (
+        <>
+          {renderTertiaryIcon()}
+          <span>{children}</span>
         </>
       );
     }

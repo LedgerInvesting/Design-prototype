@@ -2,7 +2,47 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Modal Unification & Comprehensive Cleanup - September 2025)
+## Latest Development Session (Form Enhancement & Layout Optimization - September 2025)
+
+### 🎯 NewTransactionForm Improvements & Grid Layout Optimization
+
+215. **Button Component Tertiary Variant Implementation**:
+    - Added new `tertiary` variant to Button component with white background and border
+    - Features circular icon container with theme-aware blue700 background
+    - Uses design system radius (8px) and proper spacing (24px width/height container, 12px icon)
+    - Integrated default AddMedium icon with custom icon override support
+    - Added comprehensive Storybook story showcasing tertiary variant features
+    - Updated Button type definitions to include `'tertiary'` in ButtonVariant union
+
+216. **Typography System Standardization**:
+    - Updated Input component label typography from `bodyL` to `bodyM` for consistency
+    - Modified `typography.ts` utility file to use `bodyM` for all form labels
+    - Ensures consistent text sizing across all input fields and form components
+    - Maintains design system typography hierarchy and visual consistency
+
+217. **Form Layout Grid Consolidation & Spacing Fix**:
+    - **Major CSS Grid Optimization**: Consolidated 30+ separate grid containers into single grids per section
+    - **Row Gap Implementation**: Successfully enabled 15px row spacing by removing grid container fragmentation
+    - **11 Form Sections Optimized**: Basic Info, Policy Groups, Reinsurance Structure, Premium Terms, Reporting Config, Requirements, Third Limits, Claims Fund, Operational Terms, Broker Info, Total Amount Terms
+    - **Consistent Spacing**: Applied `gap: '15px 24px'` (15px rows, 24px columns) across entire form
+    - **Grid Structure Improvement**: Maintained logical field grouping while enabling proper CSS Grid gap functionality
+
+218. **NewTransactionForm Structure & Dynamic Features**:
+    - **Reinsurance Structure**: Updated four dropdown fields (Type, Form, Coverage Type, Layer Basis) as requested
+    - **Dynamic Coverage Layers**: Enhanced add/remove functionality with tertiary button integration
+    - **Numbered Layer Labels**: Dynamic "Coverage Layer 1, 2, 3..." labeling for added sections
+    - **Close Button Integration**: Added icon buttons with square shape and proper positioning (5px from borders)
+    - **Premium Terms Consolidation**: Unified 10 form fields into single responsive grid layout
+    - **Form Field Organization**: Improved field logical grouping and visual hierarchy
+
+219. **Coverage Layer Dynamic System**:
+    - **White Box Design**: Coverage layer containers with proper borders and padding (24px)
+    - **Three-Column Layout**: Attachment Point, Exhaustion Point, Placement % in responsive grid
+    - **Add Layer Button**: Full-width tertiary button for seamless layer addition
+    - **Remove Functionality**: Close buttons positioned in top-right corners with proper styling
+    - **State Management**: Clean React state handling for dynamic field set addition/removal
+
+## Previous Development Session (Modal Unification & Comprehensive Cleanup - September 2025)
 
 ### 🎯 Modal Component Unification & Design System Enhancement
 

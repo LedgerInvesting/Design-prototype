@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { colors, borderRadius, typography, shadows } from '../tokens';
 
 export interface InfoTooltipSection {
@@ -13,38 +13,114 @@ export interface InfoTooltipProps {
   text?: string;
   /** Tooltip sections for complex content */
   sections?: InfoTooltipSection[];
+  /** Custom content for the tooltip */
+  children?: React.ReactNode;
   /** Tooltip position relative to the trigger */
-  position?: 'top' | 'bottom' | 'left' | 'right' | 'bottom-right';
+  position?: 'top' | 'bottom' | 'left' | 'right' | 'bottom-right' | 'follow-mouse';
   /** Additional CSS class for the container */
   className?: string;
+  /** Custom easing factor for follow-mouse mode (0.01-0.5, default: 0.15) */
+  easingFactor?: number;
 }
 
 export const InfoTooltip: React.FC<InfoTooltipProps> = ({
   text,
   sections,
+  children,
   position = 'bottom-right',
   className,
+  easingFactor = 0.15,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 });
 
+  // Get position-specific transform
+  const getPositionTransform = (pos: string) => {
+    switch (pos) {
+      case 'top':
+      case 'bottom':
+        return 'translateX(-50%)';
+      case 'left':
+      case 'right':
+        return 'translateY(-50%)';
+      case 'follow-mouse':
+        return '';
+      case 'bottom-right':
+      default:
+        return '';
+    }
+  };
 
+  // Mouse-following animation effect
+  useEffect(() => {
+    if (!isVisible || position !== 'follow-mouse') return;
+
+    const animatePosition = () => {
+      setMousePosition(current => {
+        const dx = targetPosition.x - current.x;
+        const dy = targetPosition.y - current.y;
+
+        return {
+          x: current.x + (dx * easingFactor),
+          y: current.y + (dy * easingFactor)
+        };
+      });
+    };
+
+    const animationFrame = requestAnimationFrame(animatePosition);
+    const interval = setInterval(animatePosition, 16); // ~60fps
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      clearInterval(interval);
+    };
+  }, [targetPosition, isVisible, position, easingFactor]);
 
   // Tooltip styles
   const getTooltipStyles = () => {
+    // Determine padding based on content type
+    const getPadding = () => {
+      if (children) return '15px'; // Custom content gets medium padding
+      if (sections) return '18px 20px'; // Complex content gets large padding
+      return '8px 12px'; // Simple text gets small padding
+    };
+
+    // Determine size constraints based on content type
+    const getSizeConstraints = () => {
+      if (children) {
+        return {
+          minWidth: '200px',
+          maxWidth: '400px',
+        };
+      }
+      if (sections) {
+        return {
+          minWidth: '250px',
+          maxWidth: '250px',
+        };
+      }
+      return {
+        minWidth: '150px',
+        maxWidth: '150px',
+      };
+    };
+
     const baseStyles = {
-      position: 'absolute' as const,
+      position: position === 'follow-mouse' ? 'fixed' as const : 'absolute' as const,
       backgroundColor: colors.blackAndWhite.black900,
       color: colors.blackAndWhite.white,
-      padding: sections ? '18px 20px' : '8px 12px',
+      padding: getPadding(),
       borderRadius: borderRadius[12],
-      boxShadow: shadows.lg,
+      boxShadow: shadows.large,
       zIndex: 1000,
       opacity: isVisible ? 1 : 0,
       visibility: isVisible ? 'visible' as const : 'hidden' as const,
-      transition: 'opacity 0.2s ease, visibility 0.2s ease',
-      minWidth: sections ? '250px' : '150px',
-      maxWidth: sections ? '250px' : '150px',
-      whiteSpace: sections ? 'normal' as const : 'normal' as const,
+      transform: `${getPositionTransform(position)} ${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
+      transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      whiteSpace: 'normal' as const,
+      pointerEvents: 'none' as const, // Prevent tooltip from interfering with mouse events
+      ...getSizeConstraints(),
     };
 
     // Position-specific styles
@@ -54,7 +130,6 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
           ...baseStyles,
           bottom: '100%',
           left: '50%',
-          transform: 'translateX(-50%)',
           marginBottom: '8px',
         };
       case 'bottom':
@@ -62,7 +137,6 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
           ...baseStyles,
           top: '100%',
           left: '50%',
-          transform: 'translateX(-50%)',
           marginTop: '8px',
         };
       case 'left':
@@ -70,7 +144,6 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
           ...baseStyles,
           right: '100%',
           top: '50%',
-          transform: 'translateY(-50%)',
           marginRight: '8px',
         };
       case 'right':
@@ -78,8 +151,13 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
           ...baseStyles,
           left: '100%',
           top: '50%',
-          transform: 'translateY(-50%)',
           marginLeft: '8px',
+        };
+      case 'follow-mouse':
+        return {
+          ...baseStyles,
+          left: `${mousePosition.x + 10}px`,
+          top: `${mousePosition.y + 10}px`,
         };
       case 'bottom-right':
         return {
@@ -97,6 +175,11 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
 
   // Render tooltip content
   const renderTooltipContent = () => {
+    // Priority: children > sections > text
+    if (children) {
+      return children;
+    }
+
     if (sections) {
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -164,17 +247,38 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
     </svg>
   );
 
+  // Event handlers
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    setIsVisible(true);
+    if (position === 'follow-mouse') {
+      const pos = { x: e.clientX, y: e.clientY };
+      setMousePosition(pos);
+      setTargetPosition(pos);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (position === 'follow-mouse') {
+      setTargetPosition({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsVisible(false);
+  };
+
   return (
     <div
       className={className}
       style={{ position: 'relative', display: 'inline-block', verticalAlign: 'middle', marginLeft: '4px' }}
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
       onFocus={() => setIsVisible(true)}
       onBlur={() => setIsVisible(false)}
       tabIndex={0}
       role="button"
-      aria-label={`Info: ${text || sections?.map(s => s.title).join(', ')}`}
+      aria-label={`Info: ${text || sections?.map(s => s.title).join(', ') || 'Custom tooltip'}`}
     >
       <InfoIcon />
       <div style={tooltipStyles}>

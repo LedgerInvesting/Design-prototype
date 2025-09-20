@@ -7,8 +7,10 @@ import { colors } from '../tokens';
 export interface FormLayoutProps {
   children: React.ReactNode;
   formTitle?: string;
+  entryType?: string;
   statusText?: string;
   statusVariant?: 'warning' | 'success' | 'error' | 'info' | 'inactive';
+  showStatus?: boolean;
   progress?: number; // 0-100
   onBackClick?: () => void;
   onNavigate?: (itemId: string, subitemId?: string) => void;
@@ -23,8 +25,10 @@ export interface FormLayoutProps {
 export const FormLayout: React.FC<FormLayoutProps> = ({
   children,
   formTitle,
+  entryType,
   statusText,
   statusVariant,
+  showStatus = true,
   progress,
   onBackClick,
   onNavigate,
@@ -108,8 +112,10 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
         }}>
           <FormTopNav
             title={formTitle}
+            entryType={entryType}
             statusText={statusText}
             statusVariant={statusVariant}
+            showStatus={showStatus}
             progress={progress}
             onBackClick={onBackClick}
           />

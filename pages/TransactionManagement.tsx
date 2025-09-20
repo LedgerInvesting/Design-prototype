@@ -730,9 +730,9 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
           if (transactionType === 'brand-new') {
             setIsModalOpen(false);
             setIsBrandNewModalOpen(true);
-          } else {
-            // Handle renewal transaction
-            console.log('Handling renewal transaction');
+          } else if (transactionType === 'renewal') {
+            setIsModalOpen(false);
+            onNavigateToPage && onNavigateToPage('renewal-transaction');
           }
         }}
       />

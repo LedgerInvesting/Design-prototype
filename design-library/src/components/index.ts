@@ -12,6 +12,9 @@ export type { ModalProps } from './Modal';
 export { Input } from './Input';
 export type { InputProps } from './Input';
 
+export { SearchBar } from './SearchBar';
+export type { SearchBarProps } from './SearchBar';
+
 export { Dropdown } from './Dropdown';
 export type { DropdownProps, DropdownOption } from './Dropdown';
 

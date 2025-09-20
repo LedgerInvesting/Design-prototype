@@ -883,7 +883,7 @@ export const Table: React.FC<TableProps> = ({
     };
   }, [data, columns]);
 
-  // Add CSS for arrow cursors
+  // Add CSS for arrow cursors and custom scrollbar
   React.useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -893,6 +893,41 @@ export const Table: React.FC<TableProps> = ({
       .table-dragging {
         cursor: ew-resize;
       }
+
+      /* Custom scrollbar styling */
+      .table-container-scrollable {
+        /* Firefox */
+        scrollbar-width: thin;
+        scrollbar-color: ${colors.theme.primary400} ${colors.theme.primary200};
+      }
+
+      .table-container-scrollable::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      .table-container-scrollable::-webkit-scrollbar-track {
+        background: ${colors.theme.primary200};
+        border-radius: 0;
+      }
+
+      .table-container-scrollable::-webkit-scrollbar-thumb {
+        background: ${colors.theme.primary400};
+        border-radius: 0;
+        transition: background 0.2s ease;
+      }
+
+      .table-container-scrollable::-webkit-scrollbar-thumb:hover {
+        background: ${colors.theme.primary500};
+      }
+
+      .table-container-scrollable::-webkit-scrollbar-thumb:active {
+        background: ${colors.theme.primary500};
+      }
+
+      /* Remove scrollbar arrows/buttons */
+      .table-container-scrollable::-webkit-scrollbar-button {
+        display: none;
+      }
     `;
     document.head.appendChild(style);
 
@@ -901,7 +936,7 @@ export const Table: React.FC<TableProps> = ({
         document.head.removeChild(style);
       }
     };
-  }, [needsScroll]);
+  }, [needsScroll, colors.theme.primary200, colors.theme.primary400, colors.theme.primary500]);
 
   // Drag handlers for horizontal scrolling
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -1003,7 +1038,7 @@ export const Table: React.FC<TableProps> = ({
       <div
         ref={tableContainerRef}
         style={tableContainerStyles}
-        className={isDragging ? 'table-dragging' : (needsScroll ? 'table-draggable' : '')}
+        className={`${isDragging ? 'table-dragging' : (needsScroll ? 'table-draggable' : '')} ${needsScroll ? 'table-container-scrollable' : ''}`.trim()}
         onMouseDown={needsScroll ? handleMouseDown : undefined}
         onMouseMove={needsScroll ? handleMouseMove : undefined}
         onMouseUp={needsScroll ? handleMouseUp : undefined}

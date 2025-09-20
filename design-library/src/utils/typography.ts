@@ -20,7 +20,7 @@ export const applyTypographyStyle = (styleKey: keyof typeof typography.styles) =
  */
 export const commonTypographyStyles = {
   // Input/form labels
-  label: () => applyTypographyStyle('bodyL'),
+  label: () => applyTypographyStyle('bodyM'),
   
   // Input/form field text
   field: () => applyTypographyStyle('bodyM'),

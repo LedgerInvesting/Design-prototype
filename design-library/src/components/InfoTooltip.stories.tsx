@@ -8,7 +8,7 @@ const meta: Meta<typeof InfoTooltip> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Interactive "i" symbol with hover tooltips. Supports simple text or complex multi-section content with 5 positioning options. Features proper vertical alignment and spacing for integration with form labels.',
+        component: 'Interactive "i" symbol with hover tooltips. Supports simple text, complex multi-section content, or custom React content. Features 6 positioning modes including mouse-following with smooth delay animation.',
       },
     },
   },
@@ -29,15 +29,25 @@ const meta: Meta<typeof InfoTooltip> = {
         }
       }
     },
+    children: {
+      description: 'Custom React content for the tooltip (only shown when tooltipType is "custom")',
+      control: 'text',
+      if: { arg: 'tooltipType', eq: 'custom' },
+    },
     position: {
-      description: 'Tooltip position relative to the trigger',
+      description: 'Tooltip position - relative to trigger or follow mouse cursor with smooth delay',
       control: 'radio',
-      options: ['top', 'bottom', 'left', 'right', 'bottom-right'],
+      options: ['top', 'bottom', 'left', 'right', 'bottom-right', 'follow-mouse'],
+    },
+    easingFactor: {
+      description: 'Animation smoothness for follow-mouse mode (0.01=very smooth, 0.5=fast)',
+      control: { type: 'range', min: 0.01, max: 0.5, step: 0.01 },
+      if: { arg: 'position', eq: 'follow-mouse' },
     },
     tooltipType: {
-      description: 'Choose tooltip type - Simple (150px, plain text) or Complex (250px, titled sections)',
+      description: 'Choose tooltip type - Simple, Complex, or Custom content',
       control: 'radio',
-      options: ['simple', 'complex'],
+      options: ['simple', 'complex', 'custom'],
     },
     // Hide props that aren't directly settable
     size: {
@@ -62,14 +72,32 @@ export const Default: Story = {
         description: 'This shows when you select "complex" type with titled sections and separators.'
       }
     ],
+    children: 'Custom content with flexible styling and layout',
     position: 'bottom-right',
+    easingFactor: 0.15,
   },
   render: (args) => {
     // Determine which props to pass based on tooltipType
-    const tooltipProps = args.tooltipType === 'simple' 
-      ? { text: args.text, position: args.position }
-      : { sections: args.sections, position: args.position };
-    
+    let tooltipProps: any = { position: args.position };
+
+    if (args.position === 'follow-mouse') {
+      tooltipProps.easingFactor = args.easingFactor;
+    }
+
+    if (args.tooltipType === 'simple') {
+      tooltipProps.text = args.text;
+    } else if (args.tooltipType === 'complex') {
+      tooltipProps.sections = args.sections;
+    } else if (args.tooltipType === 'custom') {
+      tooltipProps.children = (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ fontWeight: 'bold', color: '#7FFFB0' }}>Custom Content</div>
+          <div>{args.children}</div>
+          <div style={{ fontSize: '10px', opacity: 0.8 }}>✨ You can put any React content here!</div>
+        </div>
+      );
+    }
+
     return <InfoTooltip {...tooltipProps} />;
   },
 };
@@ -96,10 +124,10 @@ export const Complex: Story = {
 // All positions showcase
 export const AllPositions: Story = {
   render: () => (
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: 'repeat(3, 1fr)', 
-      gap: '40px', 
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: '40px',
       padding: '60px',
       alignItems: 'center',
       justifyItems: 'center'
@@ -108,32 +136,37 @@ export const AllPositions: Story = {
         <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Top</div>
         <InfoTooltip text="Tooltip on top" position="top" />
       </div>
-      
+
       <div style={{ textAlign: 'center' }}>
         <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Bottom</div>
         <InfoTooltip text="Tooltip on bottom" position="bottom" />
       </div>
-      
+
       <div style={{ textAlign: 'center' }}>
         <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Left</div>
         <InfoTooltip text="Tooltip on left" position="left" />
       </div>
-      
+
       <div style={{ textAlign: 'center' }}>
         <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Right</div>
         <InfoTooltip text="Tooltip on right" position="right" />
       </div>
-      
+
       <div style={{ textAlign: 'center' }}>
         <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Bottom-Right</div>
         <InfoTooltip text="Tooltip bottom-right (default)" position="bottom-right" />
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Follow Mouse</div>
+        <InfoTooltip text="Smoothly follows your mouse cursor with delay" position="follow-mouse" />
       </div>
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'All five positioning options: top, bottom, left, right, and bottom-right (default). Hover over each icon to see the tooltip appear in the specified position.',
+        story: 'All six positioning modes: top, bottom, left, right, bottom-right (default), and follow-mouse. The follow-mouse mode uses smooth animation with configurable delay.',
       },
     },
   },
@@ -263,6 +296,115 @@ export const FormIntegration: Story = {
     docs: {
       description: {
         story: 'Real-world integration example showing InfoTooltips used with form labels and data metrics, demonstrating proper alignment and spacing.',
+      },
+    },
+  },
+};
+
+// Custom content showcase
+export const CustomContent: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Custom JSX Content</div>
+        <InfoTooltip position="bottom-right">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ fontWeight: 'bold', color: '#7FFFB0' }}>Triangle Types:</div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #BD8B11' }} />
+              <div style={{ fontSize: '10px' }}>On risk triangle</div>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #744DEB' }} />
+              <div style={{ fontSize: '10px' }}>Loss Development triangle</div>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #3DA3CB' }} />
+              <div style={{ fontSize: '10px' }}>Policy-Year triangle</div>
+            </div>
+          </div>
+        </InfoTooltip>
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Rich Content</div>
+        <InfoTooltip position="bottom-right">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 'bold' }}>📊 Performance Metrics</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
+              <span style={{ fontSize: '10px' }}>ROI:</span>
+              <span style={{ fontSize: '10px', color: '#7FFFB0' }}>+12.5%</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
+              <span style={{ fontSize: '10px' }}>Risk Score:</span>
+              <span style={{ fontSize: '10px', color: '#FFDD61' }}>Medium</span>
+            </div>
+            <div style={{ borderTop: '1px solid #5d6460', paddingTop: '6px', fontSize: '9px', opacity: 0.8 }}>
+              Updated 2 mins ago
+            </div>
+          </div>
+        </InfoTooltip>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Custom React content examples showing complex layouts, colored elements, and rich information displays. The children prop accepts any React content with flexible sizing (200px-400px width).',
+      },
+    },
+  },
+};
+
+// Mouse following showcase
+export const MouseFollowing: Story = {
+  render: () => (
+    <div style={{
+      padding: '60px',
+      backgroundColor: '#f8f9fa',
+      borderRadius: '8px',
+      textAlign: 'center'
+    }}>
+      <div style={{ marginBottom: '24px', fontSize: '14px', color: '#666' }}>
+        Move your mouse around these icons to see the smooth following effect
+      </div>
+      <div style={{ display: 'flex', gap: '80px', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Fast (0.3)</div>
+          <InfoTooltip
+            text="Fast following with minimal delay"
+            position="follow-mouse"
+            easingFactor={0.3}
+          />
+        </div>
+
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Balanced (0.15)</div>
+          <InfoTooltip
+            text="Balanced following speed - default setting"
+            position="follow-mouse"
+            easingFactor={0.15}
+          />
+        </div>
+
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '12px', fontSize: '12px', color: '#666' }}>Smooth (0.05)</div>
+          <InfoTooltip
+            text="Very smooth with noticeable delay"
+            position="follow-mouse"
+            easingFactor={0.05}
+          />
+        </div>
+      </div>
+      <div style={{ marginTop: '24px', fontSize: '12px', color: '#666', fontStyle: 'italic' }}>
+        easingFactor controls the animation speed: lower = smoother/slower, higher = faster
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Mouse-following tooltips with different easing factors. The easingFactor prop controls animation smoothness: 0.01-0.1 (very smooth), 0.15 (balanced), 0.3-0.5 (fast response).',
       },
     },
   },

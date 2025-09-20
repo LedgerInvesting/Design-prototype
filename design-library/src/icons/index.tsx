@@ -293,7 +293,7 @@ export const CircledCheckSmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_424_396)">
+    <g clipPath="url(#clip0_424_396)">
     <circle cx="5.99975" cy="6.5" r="5.09253" stroke={color} strokeWidth="1.4"/>
     <path d="M8.31641 4.80679L5.22267 7.90023L3.68355 6.36111" stroke={color} strokeWidth="1.4"/>
     </g>
@@ -310,7 +310,7 @@ export const CircledXSmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_424_405)">
+    <g clipPath="url(#clip0_424_405)">
     <circle cx="5.99975" cy="6.5" r="5.09253" stroke={color} strokeWidth="1.4"/>
     <path d="M4.23535 4.7337L7.77089 8.26924" stroke={color} strokeWidth="1.4"/>
     <path d="M7.77148 4.74069L4.23595 8.27623" stroke={color} strokeWidth="1.4"/>
@@ -358,7 +358,7 @@ export const EditSmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_41_330)">
+    <g clipPath="url(#clip0_41_330)">
     <path d="M7.5 2.25002L1 8.75002V10.75H3L9.5 4.25002" stroke={color} strokeWidth="1.4"/>
     <rect width="1.41426" height="1.41426" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 10 2.75002)" fill={color}/>
     <path d="M1 10.75L12 10.75" stroke={color} strokeWidth="1.4"/>
@@ -430,7 +430,7 @@ export const LessSmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_422_11)">
+    <g clipPath="url(#clip0_422_11)">
     <circle cx="6.49975" cy="6.5" r="5.09253" stroke={color} strokeWidth="1.4"/>
     <path d="M4 6.5H9" stroke={color} strokeWidth="1.4"/>
     </g>
@@ -447,7 +447,7 @@ export const LockSmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_41_328)">
+    <g clipPath="url(#clip0_41_328)">
     <path d="M7.77209 5.85333H2.83984V10.7546H6.17041L10.1595 10.7549V5.04582" stroke={color} strokeWidth="1.6"/>
     <path d="M8.51988 5.02055V3.92106C8.51988 2.71931 7.54567 1.7451 6.34392 1.7451V1.7451C5.14218 1.7451 4.16797 2.71931 4.16797 3.92106V5.16747" stroke={color} strokeWidth="1.6"/>
     <circle cx="6.46049" cy="8.33627" r="0.970259" fill={color}/>
@@ -475,7 +475,7 @@ export const PlaySmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M10.3457 6.25L3.63351 10.1253L3.63351 2.37472L10.3457 6.25Z" stroke={color} strokeWidth="1.4" stroke-linejoin="bevel"/>
+    <path d="M10.3457 6.25L3.63351 10.1253L3.63351 2.37472L10.3457 6.25Z" stroke={color} strokeWidth="1.4" strokeLinejoin="bevel"/>
     </svg>
 );
 
@@ -484,7 +484,7 @@ export const PlusSmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_422_12)">
+    <g clipPath="url(#clip0_422_12)">
     <circle cx="6.49975" cy="6.5" r="5.09253" stroke={color} strokeWidth="1.4"/>
     <path d="M4 6.5H9" stroke={color} strokeWidth="1.4"/>
     <path d="M6.50488 4.005L6.50488 9.00501" stroke={color} strokeWidth="1.4"/>
@@ -542,7 +542,7 @@ export const TrashSmall: React.FC<SmallIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_41_339)">
+    <g clipPath="url(#clip0_41_339)">
     <path d="M9.77649 4.99992L9.7765 10.0532L3.77658 10.0532L3.7766 4.99992M4.77663 1.49992L8.7765 1.49991M8.7765 3.49991L11.7765 3.49991M1.77667 3.49991L4.77663 3.49991M6.77658 5.49992L6.77658 7.49992" stroke={color} strokeWidth="1.4"/>
     </g>
     <defs>
@@ -915,9 +915,9 @@ export const LimitsMedium: React.FC<MediumIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M13.5349 4.4751C12.0377 3.89346 10.3861 3.84438 8.85703 4.3361C7.32796 4.82781 6.01451 5.83041 5.13701 7.1757C4.25951 8.52099 3.87134 10.1271 4.03762 11.7247C4.20391 13.3222 4.91452 14.814 6.05026 15.9497C7.186 17.0855 8.67777 17.7961 10.2753 17.9624C11.8729 18.1287 13.479 17.7405 14.8243 16.863C16.1696 15.9855 17.1722 14.672 17.6639 13.143C18.1556 11.6139 18.1065 9.96226 17.5249 8.4651" stroke={color} strokeWidth="2" stroke-linecap="square" stroke-linejoin="round"/>
-    <path d="M11 13C12.1046 13 13 12.1046 13 11C13 9.89543 12.1046 9 11 9C9.89543 9 9 9.89543 9 11C9 12.1046 9.89543 13 11 13Z" stroke={color} strokeWidth="2" stroke-linecap="square" stroke-linejoin="round"/>
-    <path d="M13 9L16 6" stroke={color} strokeWidth="2" stroke-linecap="square" stroke-linejoin="round"/>
+    <path d="M13.5349 4.4751C12.0377 3.89346 10.3861 3.84438 8.85703 4.3361C7.32796 4.82781 6.01451 5.83041 5.13701 7.1757C4.25951 8.52099 3.87134 10.1271 4.03762 11.7247C4.20391 13.3222 4.91452 14.814 6.05026 15.9497C7.186 17.0855 8.67777 17.7961 10.2753 17.9624C11.8729 18.1287 13.479 17.7405 14.8243 16.863C16.1696 15.9855 17.1722 14.672 17.6639 13.143C18.1556 11.6139 18.1065 9.96226 17.5249 8.4651" stroke={color} strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"/>
+    <path d="M11 13C12.1046 13 13 12.1046 13 11C13 9.89543 12.1046 9 11 9C9.89543 9 9 9.89543 9 11C9 12.1046 9.89543 13 11 13Z" stroke={color} strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"/>
+    <path d="M13 9L16 6" stroke={color} strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"/>
     </svg>
 );
 
@@ -1008,7 +1008,7 @@ export const ReloadMedium: React.FC<MediumIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clip-path="url(#clip0_41_554)">
+    <g clipPath="url(#clip0_41_554)">
     <path d="M16.458 6.61671L15.6783 7.24289C15.944 7.57374 16.3896 7.70086 16.7899 7.56002C17.1902 7.41918 17.458 7.04105 17.458 6.61671L16.458 6.61671ZM18.9067 12.2196L19.0592 11.2313L17.0826 10.9264L16.9301 11.9147L18.9067 12.2196ZM16.458 6.99999L16.458 7.99999C17.0103 7.99999 17.458 7.55227 17.458 6.99999L16.458 6.99999ZM13.5002 5.99999L12.5002 5.99999L12.5002 7.99999L13.5002 7.99999L13.5002 5.99999ZM16.458 6.61671L17.2377 5.99053C16.0882 4.55933 14.4816 3.56695 12.6872 3.17988L12.4763 4.15739L12.2655 5.1349C13.6112 5.42521 14.8162 6.16949 15.6783 7.24289L16.458 6.61671ZM12.4763 4.15739L12.6872 3.17988C10.8928 2.7928 9.01994 3.03457 7.3827 3.86463L7.8349 4.75655L8.28709 5.64847C9.51502 5.02593 10.9197 4.8446 12.2655 5.1349L12.4763 4.15739ZM7.8349 4.75655L7.3827 3.86463C5.74546 4.6947 4.44348 6.06255 3.69517 7.73873L4.60831 8.14639L5.52144 8.55405C6.08268 7.29691 7.05916 6.27102 8.28709 5.64847L7.8349 4.75655ZM4.60831 8.14639L3.69517 7.73873C2.94687 9.41491 2.79775 11.2975 3.27285 13.0705L4.23877 12.8117L5.2047 12.5529C4.84838 11.2231 4.96021 9.81118 5.52144 8.55405L4.60831 8.14639ZM4.23877 12.8117L3.27285 13.0705C3.74795 14.8436 4.81835 16.3994 6.3045 17.4769L6.89147 16.6672L7.47844 15.8576C6.36383 15.0495 5.56102 13.8827 5.2047 12.5529L4.23877 12.8117ZM6.89147 16.6672L6.3045 17.4769C7.79064 18.5543 9.60212 19.0879 11.435 18.9882L11.3807 17.9896L11.3263 16.9911C9.95165 17.0659 8.59304 16.6657 7.47844 15.8576L6.89147 16.6672ZM11.3807 17.9896L11.435 18.9882C13.268 18.8884 15.0108 18.1613 16.3712 16.9289L15.6999 16.1878L15.0285 15.4467C14.0082 16.371 12.701 16.9163 11.3263 16.9911L11.3807 17.9896ZM15.6999 16.1878L16.3712 16.9289C17.7317 15.6965 18.6269 14.0338 18.9067 12.2196L17.9184 12.0671L16.9301 11.9147C16.7202 13.2753 16.0488 14.5224 15.0285 15.4467L15.6999 16.1878ZM16.458 6.61671L17.458 6.61671L17.458 2.99999L16.458 2.99999L15.458 2.99999L15.458 6.61671L16.458 6.61671ZM16.458 2.99999L15.458 2.99999L15.458 6.99999L16.458 6.99999L17.458 6.99999L17.458 2.99999L16.458 2.99999ZM16.458 6.99999L16.458 5.99999L13.5002 5.99999L13.5002 6.99999L13.5002 7.99999L16.458 7.99999L16.458 6.99999Z" fill={color}/>
     </g>
     <defs>
@@ -1231,10 +1231,10 @@ export const AmmountTable: React.FC<TableIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M14.9752 9.67105C14.9752 9.211 14.8007 8.76127 14.4738 8.37875C14.147 7.99623 13.6823 7.69809 13.1387 7.52203C12.5952 7.34598 11.997 7.29991 11.4199 7.38967C10.8428 7.47942 10.3128 7.70096 9.89672 8.02626C9.48067 8.35157 9.19734 8.76604 9.08255 9.21726C8.96777 9.66847 9.02668 10.1362 9.25184 10.5612C9.47701 10.9862 9.85831 11.3495 10.3475 11.6051C10.8367 11.8607 11.4119 11.9971 12.0003 11.9971" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M9.0287 14.3205C9.0287 14.781 9.20318 15.2311 9.53006 15.614C9.85695 15.9969 10.3216 16.2953 10.8652 16.4716C11.4088 16.6478 12.0069 16.6939 12.584 16.6041C13.1611 16.5142 13.6911 16.2925 14.1072 15.9669C14.5232 15.6412 14.8066 15.2264 14.9214 14.7747C15.0361 14.3231 14.9772 13.8549 14.7521 13.4295C14.5269 13.004 14.1456 12.6404 13.6564 12.3846C13.1672 12.1287 12.723 12.0043 12.1346 12.0043" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M11.9834 17.9399L11.9834 16.6599" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M12.0166 7.34496L12.0166 6.06262" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M14.9752 9.67105C14.9752 9.211 14.8007 8.76127 14.4738 8.37875C14.147 7.99623 13.6823 7.69809 13.1387 7.52203C12.5952 7.34598 11.997 7.29991 11.4199 7.38967C10.8428 7.47942 10.3128 7.70096 9.89672 8.02626C9.48067 8.35157 9.19734 8.76604 9.08255 9.21726C8.96777 9.66847 9.02668 10.1362 9.25184 10.5612C9.47701 10.9862 9.85831 11.3495 10.3475 11.6051C10.8367 11.8607 11.4119 11.9971 12.0003 11.9971" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M9.0287 14.3205C9.0287 14.781 9.20318 15.2311 9.53006 15.614C9.85695 15.9969 10.3216 16.2953 10.8652 16.4716C11.4088 16.6478 12.0069 16.6939 12.584 16.6041C13.1611 16.5142 13.6911 16.2925 14.1072 15.9669C14.5232 15.6412 14.8066 15.2264 14.9214 14.7747C15.0361 14.3231 14.9772 13.8549 14.7521 13.4295C14.5269 13.004 14.1456 12.6404 13.6564 12.3846C13.1672 12.1287 12.723 12.0043 12.1346 12.0043" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M11.9834 17.9399L11.9834 16.6599" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12.0166 7.34496L12.0166 6.06262" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
 
@@ -1243,7 +1243,7 @@ export const CalendarTable: React.FC<TableIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M18 10.6H6M14.6667 5V7.8M9.33333 5V7.8M9.2 18H14.8C15.9201 18 16.4802 18 16.908 17.7711C17.2843 17.5698 17.5903 17.2485 17.782 16.8534C18 16.4042 18 15.8161 18 14.64V9.76C18 8.58389 18 7.99583 17.782 7.54662C17.5903 7.15148 17.2843 6.83022 16.908 6.62889C16.4802 6.4 15.9201 6.4 14.8 6.4H9.2C8.0799 6.4 7.51984 6.4 7.09202 6.62889C6.71569 6.83022 6.40973 7.15148 6.21799 7.54662C6 7.99583 6 8.58389 6 9.76V14.64C6 15.8161 6 16.4042 6.21799 16.8534C6.40973 17.2485 6.71569 17.5698 7.09202 17.7711C7.51984 18 8.07989 18 9.2 18Z" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M18 10.6H6M14.6667 5V7.8M9.33333 5V7.8M9.2 18H14.8C15.9201 18 16.4802 18 16.908 17.7711C17.2843 17.5698 17.5903 17.2485 17.782 16.8534C18 16.4042 18 15.8161 18 14.64V9.76C18 8.58389 18 7.99583 17.782 7.54662C17.5903 7.15148 17.2843 6.83022 16.908 6.62889C16.4802 6.4 15.9201 6.4 14.8 6.4H9.2C8.0799 6.4 7.51984 6.4 7.09202 6.62889C6.71569 6.83022 6.40973 7.15148 6.21799 7.54662C6 7.99583 6 8.58389 6 9.76V14.64C6 15.8161 6 16.4042 6.21799 16.8534C6.40973 17.2485 6.71569 17.5698 7.09202 17.7711C7.51984 18 8.07989 18 9.2 18Z" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
 
@@ -1261,7 +1261,7 @@ export const FileTable: React.FC<TableIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M12.7 8.98889L11.9191 7.60066C11.6944 7.20112 11.582 7.00134 11.4144 6.85539C11.2661 6.72632 11.0874 6.62816 10.8913 6.56801C10.6694 6.5 10.4181 6.5 9.9156 6.5H7.24C6.45593 6.5 6.06389 6.5 5.76441 6.63564C5.50099 6.75495 5.28681 6.94532 5.15259 7.17948C5 7.44568 5 7.79416 5 8.49111V8.98889M5 8.98889H15.64C16.8161 8.98889 17.4042 8.98889 17.8534 9.19234C18.2485 9.37131 18.5698 9.65687 18.7711 10.0081C19 10.4074 19 10.9301 19 11.9756V14.7133C19 15.7588 19 16.2815 18.7711 16.6808C18.5698 17.032 18.2485 17.3176 17.8534 17.4965C17.4042 17.7 16.8161 17.7 15.64 17.7H8.36C7.18389 17.7 6.59583 17.7 6.14662 17.4965C5.75148 17.3176 5.43022 17.032 5.22889 16.6808C5 16.2815 5 15.7588 5 14.7133V8.98889Z" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12.7 8.98889L11.9191 7.60066C11.6944 7.20112 11.582 7.00134 11.4144 6.85539C11.2661 6.72632 11.0874 6.62816 10.8913 6.56801C10.6694 6.5 10.4181 6.5 9.9156 6.5H7.24C6.45593 6.5 6.06389 6.5 5.76441 6.63564C5.50099 6.75495 5.28681 6.94532 5.15259 7.17948C5 7.44568 5 7.79416 5 8.49111V8.98889M5 8.98889H15.64C16.8161 8.98889 17.4042 8.98889 17.8534 9.19234C18.2485 9.37131 18.5698 9.65687 18.7711 10.0081C19 10.4074 19 10.9301 19 11.9756V14.7133C19 15.7588 19 16.2815 18.7711 16.6808C18.5698 17.032 18.2485 17.3176 17.8534 17.4965C17.4042 17.7 16.8161 17.7 15.64 17.7H8.36C7.18389 17.7 6.59583 17.7 6.14662 17.4965C5.75148 17.3176 5.43022 17.032 5.22889 16.6808C5 16.2815 5 15.7588 5 14.7133V8.98889Z" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
 
@@ -1271,7 +1271,7 @@ export const StatusTable: React.FC<TableIconProps> = ({
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <circle cx="12" cy="12" r="7.3" stroke={color} strokeWidth="1.4"/>
-    <path d="M8.68652 12.4808L10.7801 14.5736L15.5274 9.82629" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M8.68652 12.4808L10.7801 14.5736L15.5274 9.82629" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
 
@@ -1280,9 +1280,9 @@ export const TextTable: React.FC<TableIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M5.5 7.80371H18.5" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M5.5 11.8037H18.5" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M5.5 15.8037H12" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M5.5 7.80371H18.5" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M5.5 11.8037H18.5" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M5.5 15.8037H12" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
 
@@ -1291,8 +1291,8 @@ export const WarningTable: React.FC<TableIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M4.91602 9.3192C4.91602 7.93061 4.91602 7.23632 5.17339 6.70595C5.39977 6.23942 5.76101 5.86012 6.20532 5.62241C6.71044 5.35217 7.37167 5.35217 8.69414 5.35217H15.3059C16.6283 5.35217 17.2896 5.35217 17.7947 5.62241C18.239 5.86012 18.6002 6.23942 18.8266 6.70595C19.084 7.23632 19.084 7.93061 19.084 9.3192V15.0808C19.084 16.4694 19.084 17.1637 18.8266 17.6941C18.6002 18.1606 18.239 18.5399 17.7947 18.7776C17.2896 19.0479 16.6283 19.0479 15.3059 19.0479H8.69414C7.37167 19.0479 6.71044 19.0479 6.20532 18.7776C5.76101 18.5399 5.39977 18.1606 5.17339 17.6941C4.91602 17.1637 4.91602 16.4694 4.91602 15.0808V9.3192Z" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M12 8.63196V12.7434" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M4.91602 9.3192C4.91602 7.93061 4.91602 7.23632 5.17339 6.70595C5.39977 6.23942 5.76101 5.86012 6.20532 5.62241C6.71044 5.35217 7.37167 5.35217 8.69414 5.35217H15.3059C16.6283 5.35217 17.2896 5.35217 17.7947 5.62241C18.239 5.86012 18.6002 6.23942 18.8266 6.70595C19.084 7.23632 19.084 7.93061 19.084 9.3192V15.0808C19.084 16.4694 19.084 17.1637 18.8266 17.6941C18.6002 18.1606 18.239 18.5399 17.7947 18.7776C17.2896 19.0479 16.6283 19.0479 15.3059 19.0479H8.69414C7.37167 19.0479 6.71044 19.0479 6.20532 18.7776C5.76101 18.5399 5.39977 18.1606 5.17339 17.6941C4.91602 17.1637 4.91602 16.4694 4.91602 15.0808V9.3192Z" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 8.63196V12.7434" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     <circle cx="12.0005" cy="15.5514" r="0.838379" fill={color}/>
     </svg>
 );
@@ -1302,8 +1302,8 @@ export const TickTable: React.FC<TableIconProps> = ({
   className 
 }) => (
   <svg width={ICON_SIZES.table} height={ICON_SIZES.table} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M4.91602 9.3192C4.91602 7.93061 4.91602 7.23632 5.17339 6.70595C5.39977 6.23942 5.76101 5.86012 6.20532 5.62241C6.71044 5.35217 7.37167 5.35217 8.69414 5.35217H15.3059C16.6283 5.35217 17.2896 5.35217 17.7947 5.62241C18.239 5.86012 18.6002 6.23942 18.8266 6.70595C19.084 7.23632 19.084 7.93061 19.084 9.3192V15.0808C19.084 16.4694 19.084 17.1637 18.8266 17.6941C18.6002 18.1606 18.239 18.5399 17.7947 18.7776C17.2896 19.0479 16.6283 19.0479 15.3059 19.0479H8.69414C7.37167 19.0479 6.71044 19.0479 6.20532 18.7776C5.76101 18.5399 5.39977 18.1606 5.17339 17.6941C4.91602 17.1637 4.91602 16.4694 4.91602 15.0808V9.3192Z" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M8.68652 12.4808L10.7801 14.5736L15.5274 9.82629" stroke={color} strokeWidth="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M4.91602 9.3192C4.91602 7.93061 4.91602 7.23632 5.17339 6.70595C5.39977 6.23942 5.76101 5.86012 6.20532 5.62241C6.71044 5.35217 7.37167 5.35217 8.69414 5.35217H15.3059C16.6283 5.35217 17.2896 5.35217 17.7947 5.62241C18.239 5.86012 18.6002 6.23942 18.8266 6.70595C19.084 7.23632 19.084 7.93061 19.084 9.3192V15.0808C19.084 16.4694 19.084 17.1637 18.8266 17.6941C18.6002 18.1606 18.239 18.5399 17.7947 18.7776C17.2896 19.0479 16.6283 19.0479 15.3059 19.0479H8.69414C7.37167 19.0479 6.71044 19.0479 6.20532 18.7776C5.76101 18.5399 5.39977 18.1606 5.17339 17.6941C4.91602 17.1637 4.91602 16.4694 4.91602 15.0808V9.3192Z" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M8.68652 12.4808L10.7801 14.5736L15.5274 9.82629" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
 

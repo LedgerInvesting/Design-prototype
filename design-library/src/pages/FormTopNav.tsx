@@ -4,8 +4,10 @@ import { colors, typography, spacing, borderRadius, shadows } from '../tokens';
 
 export interface FormTopNavProps {
   title?: string;
+  entryType?: string;
   statusText?: string;
   statusVariant?: 'warning' | 'success' | 'error' | 'info' | 'inactive';
+  showStatus?: boolean;
   progress?: number; // 0-100
   onBackClick?: () => void;
   className?: string;
@@ -14,8 +16,10 @@ export interface FormTopNavProps {
 
 export const FormTopNav: React.FC<FormTopNavProps> = ({
   title = "NEW TRANSACTION WORKFLOW",
+  entryType = "Manual Entry",
   statusText = "draft",
   statusVariant = "warning",
+  showStatus = true,
   progress = 0,
   onBackClick,
   className,
@@ -96,10 +100,10 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
 
   return (
     <nav className={className} style={containerStyles}>
-      {/* Left Section: Title + Manual Entry + Status */}
+      {/* Left Section: Title + Entry Type + Status */}
       <div style={leftSectionStyles}>
         <span style={titleStyles}>{title}</span>
-        {/* Manual Entry Pill */}
+        {/* Entry Type Pill */}
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -117,14 +121,16 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
           color: colors.blackAndWhite.black700,
           whiteSpace: 'nowrap',
         }}>
-          Manual Entry
+          {entryType}
         </div>
-        <Status 
-          variant={statusVariant}
-          size="small"
-        >
-          {statusText}
-        </Status>
+        {showStatus && (
+          <Status
+            variant={statusVariant}
+            size="small"
+          >
+            {statusText}
+          </Status>
+        )}
       </div>
 
       {/* Right Section: Progress + Button */}

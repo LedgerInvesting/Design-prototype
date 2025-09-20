@@ -244,10 +244,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
         height: '20px'
       }}>
         <label style={{
-          fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-          fontSize: typography.styles.bodyM.fontSize,
-          fontWeight: typography.styles.bodyM.fontWeight,
-          lineHeight: typography.styles.bodyM.lineHeight,
+          ...commonTypographyStyles.label(),
           color: colors.blackAndWhite.black900,
         }}>
           {label}

@@ -55,7 +55,7 @@ This is a React design library built with TypeScript and Storybook, containing d
   - **Shadows**: Updated shadow system with new values (small, base, medium, large, extraLarge) using pure black with precise opacity levels
   - **Typography**: Complete 12 text styles with proper font stacks and letter spacing
   - **Spacing & Border Radius**: Consistent spacing scale and border radius system
-- **Components**: Button (with improved small variant centering and theme-aware light color variant), InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, Modal (unified modal system)
+- **Components**: Button (with all 4 variants including new tertiary variant), InfoTooltip, Input (with bodyM typography), DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, Modal (unified modal system)
 - **Modal System**: Comprehensive unified modal component with:
   - **Flexible Positioning**: Button-relative, centered, or custom positioning with smart viewport calculations
   - **Theme-Aware Styling**: Semantic color integration with proper close button theming
@@ -206,7 +206,7 @@ E:\Ledger design library/
 ```
 
 ## Component Quick Reference
-- **Button**: 3 variants (primary, small, icon), 5 colors, hover effects, icon support
+- **Button**: 4 variants (primary, small, icon, tertiary), 5 colors, hover effects, icon support, white variant with blue circular icon container
 - **Status**: Interactive dropdown menu (evolved from Chips), 5 semantic variants
 - **Input**: 6 states, InfoTooltip integration, left symbols, automatic state transitions
 - **DatePicker**: Advanced modal interface, multiple period modes, dual calendar system
@@ -271,6 +271,18 @@ The `/pages` folder contains a complete React development environment for testin
     - Transaction Name and Policy Group ID input fields
     - **Comprehensive Reinsurer Dropdowns**: 33 real-world reinsurance companies including Lloyd's of London, Swiss Re, Munich Re, Berkshire Hathaway Re, etc.
     - Subject Business full-width textarea for detailed descriptions
+  - **Structure & Key Terms Tab**: Complete advanced reinsurance configuration with 9 sections each wrapped in blue containers
+    - **Reinsurance Structure**: Four dropdown fields (Type, Form, Coverage Type, Layer Basis) with Coverage Layers functionality
+    - **Dynamic Coverage Layers**: Add/remove white boxes with numbered labels, tertiary button integration, and close buttons
+    - **Premium & Commission Terms**: Four input fields for commission structure
+    - **Profit Commission Tiers**: Dynamic tier system with Loss Ratio Threshold and Commission Rate fields
+    - **Policy Limits & Claims Fund Terms**: Three-field configuration for policy parameters
+    - **Pricing Limits**: Rate configuration with Min/Max rates and adjustment factors
+    - **Claims Fund**: Fund management with initial amounts, triggers, and liability limits
+    - **Operational & Brokerage Terms**: Contract dates and operational parameters
+    - **Broker Information**: Dynamic broker configuration with contact and commission details
+    - **Trust Account Terms**: Type and amount configuration for trust accounts
+    - **Tertiary Button Variant**: Implemented white background button with blue circular icon container for all "Add" functionality
   - **Policy Groups Tab**: Advanced policy configuration with industry-standard options
     - Policy Group Name and Description input fields with proper placeholders
     - **20 Statutory Product Lines**: Aviation, Commercial Auto, Workers Compensation, General Liability, Commercial Property, Professional Liability, Directors & Officers, Cyber Liability, Marine, Energy, Environmental, Product Liability, Employment Practices, Crime & Fidelity, Surety, Health & Medical, Life & Annuities, Casualty, Specialty Lines, Other
@@ -282,7 +294,7 @@ The `/pages` folder contains a complete React development environment for testin
     - Data Format: Incremental, Cumulative, Transactional
     - Data Level: Aggregated level, Detailed level (by policies), Detailed level (by claims)
     - Dynamic requirements system with expandable requirement boxes
-  - **Design System Integration**: Complete form styling with blue200 containers, proper spacing, and responsive grid layouts
+  - **Design System Integration**: Complete form styling with blue200 containers, bodyM typography, and optimized responsive grid layouts
 - **ReportNavigation.tsx** (Default): Advanced report navigation interface featuring:
   - **Advanced Tree Dropdown**: Complete hierarchical program selector with folder organization:
     - **Business Hierarchy**: Reinsurers → MGA → Programs → Treaties structure
@@ -373,7 +385,25 @@ npm run dev  # Start on http://localhost:5173
 
 ## Recent Major Updates & Code Cleanup
 
-### 🎯 **Comprehensive Token Consolidation & Theme System (Latest - September 2025)**
+### 🏗️ **Complete Structure & Key Terms Implementation (September 19, 2025)**
+- **NewTransactionForm Enhancement**: Successfully implemented comprehensive Structure & Key Terms tab with complete form functionality
+  - **9 Section Implementation**: All sections wrapped in individual blue container boxes for visual organization
+  - **Dynamic Field Management**: Full add/remove functionality across all section types with proper state management
+  - **Tertiary Button Integration**: Successfully implemented and integrated new tertiary button variant for all "Add" functionality
+  - **Close Button Implementation**: White icon buttons with square shape and proper positioning (5px from borders)
+  - **Form Field Typography**: Verified all form components (Input, Dropdown, DatePicker) use consistent Body M typography for labels
+  - **Error Recovery**: Successfully restored from syntax errors using git restore and recreated all lost functionality
+  - **Individual Blue Containers**: Each major section wrapped in its own blue container for better visual hierarchy
+  - **Professional Implementation**: Complete 9-section form matching Figma design specifications exactly
+
+- **ValuationDashboard Tooltip Fix**: Resolved issue with unwanted "i" icon appearing beside StatusCheck icons
+  - **Problem**: InfoTooltip component was displaying default info icon alongside triangle status icons
+  - **Solution**: Created custom TriangleTooltip component that wraps StatusCheck icons directly
+  - **Features**: Mouse-following tooltip with triangle legend (On risk, Loss Development, Policy-Year triangles)
+  - **Clean Implementation**: Removed InfoTooltip dependency, simplified hover logic, maintained all functionality
+  - **Result**: StatusCheck icons now serve as direct tooltip triggers without extra visual elements
+
+### 🎯 **Comprehensive Token Consolidation & Theme System (September 2025)**
 - **Complete Token Consolidation**: Eliminated all redundant color tokens and unified the entire codebase to use semantic theme system
   - **Removed Redundant Tokens**: Eliminated duplicate `strokes` token that duplicated theme system functionality
   - **Universal Theme Integration**: All 45+ components and pages now use `useSemanticColors()` hook for theme-aware colors

@@ -11,7 +11,7 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Unified button component with 3 variants: Primary (full-featured), Small (compact), and Icon (icon-only). Supports multiple colors, icons, disabled states, and uses design system tokens. Use the theme selector in the toolbar to see theme adaptation.',
+        component: 'Unified button component with 4 variants: Primary (full-featured), Small (compact), Icon (icon-only), and Tertiary (white with circular icon). Supports multiple colors, icons, disabled states, and uses design system tokens. Use the theme selector in the toolbar to see theme adaptation.',
       },
     },
   },
@@ -19,7 +19,7 @@ const meta: Meta<typeof Button> = {
     variant: {
       description: 'Button variant type',
       control: 'radio',
-      options: ['primary', 'small', 'icon'],
+      options: ['primary', 'small', 'icon', 'tertiary'],
     },
     children: {
       description: 'Button text content (not used for icon variant)',
@@ -213,6 +213,30 @@ export const ThemeComparison: Story = {
     docs: {
       description: {
         story: 'Button component automatically adapts to different theme contexts (Reports=blue, Analytics=green, Marketplace=violet) when using color="main" and color="light" variants.',
+      },
+    },
+  },
+};
+
+// Tertiary variant showcase
+export const TertiaryVariant: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
+      <Button variant="tertiary" color="white">
+        Add Layer
+      </Button>
+      <Button variant="tertiary" color="white" icon={<icons.medium.add />}>
+        Add Item
+      </Button>
+      <Button variant="tertiary" color="white" disabled>
+        Disabled
+      </Button>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tertiary variant features a white background with border and a blue circular icon container. Perfect for secondary actions with visual emphasis.',
       },
     },
   },
