@@ -325,7 +325,6 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
     gap: '30px',
-    maxWidth: '1100px',
   };
 
   return (

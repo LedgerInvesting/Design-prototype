@@ -15,21 +15,23 @@ type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-managemen
 
 export interface NewTransactionFormProps {
   onNavigateToPage?: (page: PageType) => void;
+  renewalData?: any;
 }
 
 export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
-  onNavigateToPage
+  onNavigateToPage,
+  renewalData
 }) => {
   const colors = useSemanticColors();
   const [activeTab, setActiveTab] = useState<string>('basic-info');
   const [formData, setFormData] = useState({
-    transactionName: '',
-    reinsurerName: '',
-    cedingReinsurer: '',
-    subjectBusiness: '',
-    riskPeriodStart: '',
-    riskPeriodEnd: '',
-    rampUpPeriodEnd: '',
+    transactionName: renewalData?.transactionName || '',
+    reinsurerName: renewalData?.reinsurerName || '',
+    cedingReinsurer: renewalData?.cedingReinsurer || '',
+    subjectBusiness: renewalData?.subjectBusiness || '',
+    riskPeriodStart: renewalData?.riskPeriodStart || '',
+    riskPeriodEnd: renewalData?.riskPeriodEnd || '',
+    rampUpPeriodEnd: renewalData?.rampUpPeriodEnd || '',
   });
 
   const [requirements, setRequirements] = useState([{ id: 1 }]);
@@ -37,10 +39,23 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
   const [additionalFieldSets, setAdditionalFieldSets] = useState<Array<{ id: number }>>([]);
   const [profitCommissionTiers, setProfitCommissionTiers] = useState<Array<{ id: number }>>([]);
   const [policyLimitsTerms, setPolicyLimitsTerms] = useState<Array<{ id: number }>>([]);
-  const [pricingLimits, setPricingLimits] = useState<Array<{ id: number }>>([]);
-  const [claimsFunds, setClaimsFunds] = useState<Array<{ id: number }>>([]);
   const [brokerInfo, setBrokerInfo] = useState<Array<{ id: number }>>([]);
-  const [trustAccountTerms, setTrustAccountTerms] = useState<Array<{ id: number }>>([]);
+
+  // Accordion state for Structure & Key Terms sections
+  const [sectionExpanded, setSectionExpanded] = useState({
+    reinsuranceStructure: true,
+    premiumCommission: true,
+    policyLimitsClaims: true,
+    operationalBrokerage: true,
+    trustAccount: true,
+  });
+
+  const toggleSection = (sectionKey: keyof typeof sectionExpanded) => {
+    setSectionExpanded(prev => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey]
+    }));
+  };
 
   const addRequirement = () => {
     const newId = requirements.length + 1;
@@ -66,25 +81,12 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
     setPolicyLimitsTerms([...policyLimitsTerms, { id: newId }]);
   };
 
-  const addPricingLimit = () => {
-    const newId = pricingLimits.length + 1;
-    setPricingLimits([...pricingLimits, { id: newId }]);
-  };
-
-  const addClaimsFund = () => {
-    const newId = claimsFunds.length + 1;
-    setClaimsFunds([...claimsFunds, { id: newId }]);
-  };
 
   const addBrokerInfo = () => {
     const newId = brokerInfo.length + 1;
     setBrokerInfo([...brokerInfo, { id: newId }]);
   };
 
-  const addTrustAccountTerm = () => {
-    const newId = trustAccountTerms.length + 1;
-    setTrustAccountTerms([...trustAccountTerms, { id: newId }]);
-  };
 
   // Add CSS for full-width ButtonSelector
   useEffect(() => {
@@ -134,7 +136,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[8],
       padding: '32px',
-      marginTop: '24px',
+      marginTop: '10px',
     };
 
     const formGridStyles: React.CSSProperties = {
@@ -336,7 +338,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[8],
       padding: '32px',
-      marginTop: '24px',
+      marginTop: '10px',
     };
 
     const titleContainerStyles: React.CSSProperties = {
@@ -679,14 +681,17 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[8],
       padding: '32px',
-      marginTop: '24px',
+      marginTop: '10px',
     };
 
     const sectionTitleStyles: React.CSSProperties = {
-      ...typography.styles.bodyL,
+      ...typography.styles.subheadingM,
       color: colors.blackAndWhite.black900,
       marginBottom: '24px',
       marginTop: '0',
+      display: 'flex',
+      alignItems: 'center',
+      gap: spacing[2],
     };
 
     const formGridStyles: React.CSSProperties = {
@@ -912,14 +917,17 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[8],
       padding: '32px',
-      marginTop: '24px',
+      marginTop: '10px',
     };
 
     const sectionTitleStyles: React.CSSProperties = {
-      ...typography.styles.bodyL,
+      ...typography.styles.subheadingM,
       color: colors.blackAndWhite.black900,
       marginBottom: '24px',
       marginTop: '0',
+      display: 'flex',
+      alignItems: 'center',
+      gap: spacing[2],
     };
 
     const formGridStyles: React.CSSProperties = {
@@ -929,11 +937,18 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       marginBottom: '32px',
     };
 
+    const coverageLayerGridStyles: React.CSSProperties = {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr 1fr',
+      gap: '24px',
+      marginBottom: '0',
+    };
+
     const coverageLayerContainerStyles: React.CSSProperties = {
       backgroundColor: colors.blackAndWhite.white,
       borderRadius: borderRadius[8],
-      padding: '24px',
-      marginBottom: '16px',
+      padding: '20px',
+      marginBottom: '24px',
       position: 'relative',
     };
 
@@ -959,572 +974,486 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       <>
         {/* Reinsurance Structure Section */}
         <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Reinsurance Structure</h3>
-          <div style={formGridStyles}>
-            <Dropdown
-              label="Reinsurance Type"
-              placeholder="Select reinsurance type"
-              value=""
-              options={[
-                { value: 'quota-share', label: 'Quota Share' },
-                { value: 'surplus-share', label: 'Surplus Share' },
-                { value: 'excess-of-loss', label: 'Excess of Loss' },
-                { value: 'stop-loss', label: 'Stop Loss' },
-              ]}
-              onChange={(value) => console.log('Reinsurance Type:', value)}
-            />
-            <Dropdown
-              label="Reinsurance Form"
-              placeholder="Select reinsurance form"
-              value=""
-              options={[
-                { value: 'proportional', label: 'Proportional' },
-                { value: 'non-proportional', label: 'Non-Proportional' },
-                { value: 'hybrid', label: 'Hybrid' },
-              ]}
-              onChange={(value) => console.log('Reinsurance Form:', value)}
-            />
-            <Dropdown
-              label="Policy Coverage Type"
-              placeholder="Select coverage type"
-              value=""
-              options={[
-                { value: 'occurrence', label: 'Occurrence' },
-                { value: 'claims-made', label: 'Claims Made' },
-                { value: 'aggregate', label: 'Aggregate' },
-              ]}
-              onChange={(value) => console.log('Policy Coverage Type:', value)}
-            />
-            <Dropdown
-              label="Coverage Layer Basis"
-              placeholder="Select layer basis"
-              value=""
-              options={[
-                { value: 'ground-up', label: 'Ground Up' },
-                { value: 'working', label: 'Working Layer' },
-                { value: 'excess', label: 'Excess Layer' },
-                { value: 'clash', label: 'Clash Cover' },
-              ]}
-              onChange={(value) => console.log('Coverage Layer Basis:', value)}
-            />
-          </div>
-
-          {/* Coverage Layers Label */}
-          <label style={{
-            ...typography.styles.bodyM,
-            color: colors.blackAndWhite.black900,
-            display: 'block',
-            marginBottom: spacing[1],
-          }}>
-            Coverage Layers
-          </label>
-
-          {/* First Coverage Layer */}
-          <div style={coverageLayerContainerStyles}>
-            <h4 style={coverageLayerTitleStyles}>Coverage Layers 1</h4>
-            <div style={formGridStyles}>
-              <Input
-                label="Attachment Point"
-                placeholder="Enter attachment point"
-                value=""
-                onChange={(e) => console.log('Attachment Point 1:', e.target.value)}
-              />
-              <Input
-                label="Exhaustion Point"
-                placeholder="Enter exhaustion point"
-                value=""
-                onChange={(e) => console.log('Exhaustion Point 1:', e.target.value)}
-              />
-              <Input
-                label="Placement %"
-                placeholder="Enter placement percentage"
-                value=""
-                onChange={(e) => console.log('Placement % 1:', e.target.value)}
-              />
+          <h3
+            style={{
+              ...sectionTitleStyles,
+              marginBottom: sectionExpanded.reinsuranceStructure ? '24px' : '0',
+              cursor: 'pointer',
+              userSelect: 'none',
+            }}
+            onClick={() => toggleSection('reinsuranceStructure')}
+          >
+            Reinsurance Structure
+            <div style={{
+              transform: sectionExpanded.reinsuranceStructure ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s ease',
+            }}>
+              <icons.small.chevronBottom color={colors.blackAndWhite.black900} />
             </div>
-          </div>
-
-          {/* Additional Coverage Layers */}
-          {additionalFieldSets.map((fieldSet) => (
-            <div key={fieldSet.id} style={coverageLayerContainerStyles}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={closeButtonStyles}
-                onClick={() => removeAdditionalFieldSet(fieldSet.id)}
-                icon={<icons.small.close color={colors.theme.primary700} />}
-              />
-              <h4 style={coverageLayerTitleStyles}>Coverage Layers {fieldSet.id + 1}</h4>
+          </h3>
+          {sectionExpanded.reinsuranceStructure && (
+            <>
               <div style={formGridStyles}>
-                <Input
-                  label="Attachment Point"
-                  placeholder="Enter attachment point"
+                <Dropdown
+                  label="Reinsurance Type"
+                  placeholder="Select reinsurance type"
                   value=""
-                  onChange={(e) => console.log(`Attachment Point ${fieldSet.id + 1}:`, e.target.value)}
+                  options={[
+                    { value: 'quota-share', label: 'Quota Share' },
+                    { value: 'surplus-share', label: 'Surplus Share' },
+                    { value: 'excess-of-loss', label: 'Excess of Loss' },
+                    { value: 'stop-loss', label: 'Stop Loss' },
+                  ]}
+                  onChange={(value) => console.log('Reinsurance Type:', value)}
                 />
-                <Input
-                  label="Exhaustion Point"
-                  placeholder="Enter exhaustion point"
+                <Dropdown
+                  label="Reinsurance Form"
+                  placeholder="Select reinsurance form"
                   value=""
-                  onChange={(e) => console.log(`Exhaustion Point ${fieldSet.id + 1}:`, e.target.value)}
+                  options={[
+                    { value: 'proportional', label: 'Proportional' },
+                    { value: 'non-proportional', label: 'Non-Proportional' },
+                    { value: 'hybrid', label: 'Hybrid' },
+                  ]}
+                  onChange={(value) => console.log('Reinsurance Form:', value)}
                 />
-                <Input
-                  label="Placement %"
-                  placeholder="Enter placement percentage"
+                <Dropdown
+                  label="Policy Coverage Type"
+                  placeholder="Select coverage type"
                   value=""
-                  onChange={(e) => console.log(`Placement % ${fieldSet.id + 1}:`, e.target.value)}
+                  options={[
+                    { value: 'occurrence', label: 'Occurrence' },
+                    { value: 'claims-made', label: 'Claims Made' },
+                    { value: 'aggregate', label: 'Aggregate' },
+                  ]}
+                  onChange={(value) => console.log('Policy Coverage Type:', value)}
+                />
+                <Dropdown
+                  label="Coverage Layer Basis"
+                  placeholder="Select layer basis"
+                  value=""
+                  options={[
+                    { value: 'ground-up', label: 'Ground Up' },
+                    { value: 'working', label: 'Working Layer' },
+                    { value: 'excess', label: 'Excess Layer' },
+                    { value: 'clash', label: 'Clash Cover' },
+                  ]}
+                  onChange={(value) => console.log('Coverage Layer Basis:', value)}
                 />
               </div>
-            </div>
-          ))}
 
-          {/* Add Coverage Layer Button */}
-          <Button
-            variant="tertiary"
-            style={addButtonStyles}
-            onClick={addAdditionalFieldSet}
-          >
-            Add Coverage Layer
-          </Button>
+              {/* Separator */}
+              <div style={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: colors.theme.primary400,
+                margin: '32px 0',
+              }} />
+
+              {/* Coverage Layers Section Title */}
+              <h3 style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                marginBottom: spacing[4],
+                marginTop: '0',
+              }}>Coverage Layers</h3>
+
+              {/* Coverage Layer 1 Title */}
+              <h4 style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black900,
+                marginBottom: spacing[1],
+                marginTop: '0',
+              }}>Coverage Layer 1</h4>
+
+              {/* First Coverage Layer */}
+              <div style={coverageLayerContainerStyles}>
+                <div style={coverageLayerGridStyles}>
+                  <Input
+                    label="Attachment Point"
+                    placeholder="Enter attachment point"
+                    value=""
+                    onChange={(e) => console.log('Attachment Point 1:', e.target.value)}
+                  />
+                  <Input
+                    label="Exhaustion Point"
+                    placeholder="Enter exhaustion point"
+                    value=""
+                    onChange={(e) => console.log('Exhaustion Point 1:', e.target.value)}
+                  />
+                  <Input
+                    label="Placement %"
+                    placeholder="Enter placement percentage"
+                    value=""
+                    onChange={(e) => console.log('Placement % 1:', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Additional Coverage Layers */}
+              {additionalFieldSets.map((fieldSet) => (
+                <div key={fieldSet.id}>
+                  <h4 style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    marginBottom: spacing[1],
+                    marginTop: '0',
+                  }}>Coverage Layer {fieldSet.id + 1}</h4>
+                  <div style={coverageLayerContainerStyles}>
+                    <Button
+                      variant="icon"
+                      color="white"
+                      shape="square"
+                      style={closeButtonStyles}
+                      onClick={() => removeAdditionalFieldSet(fieldSet.id)}
+                      icon={<icons.small.close color={colors.theme.primary700} />}
+                    />
+                    <div style={coverageLayerGridStyles}>
+                      <Input
+                        label="Attachment Point"
+                        placeholder="Enter attachment point"
+                        value=""
+                        onChange={(e) => console.log(`Attachment Point ${fieldSet.id + 1}:`, e.target.value)}
+                      />
+                      <Input
+                        label="Exhaustion Point"
+                        placeholder="Enter exhaustion point"
+                        value=""
+                        onChange={(e) => console.log(`Exhaustion Point ${fieldSet.id + 1}:`, e.target.value)}
+                      />
+                      <Input
+                        label="Placement %"
+                        placeholder="Enter placement percentage"
+                        value=""
+                        onChange={(e) => console.log(`Placement % ${fieldSet.id + 1}:`, e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Add Coverage Layer Button */}
+              <Button
+                variant="tertiary"
+                style={addButtonStyles}
+                onClick={addAdditionalFieldSet}
+              >
+                Add Coverage Layer
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Premium & Commission Terms Section */}
         <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Premium & Commission Terms</h3>
-          <div style={formGridStyles}>
-            <Input
-              label="Ceding Commission"
-              placeholder="Enter ceding commission"
-              value=""
-              onChange={(e) => console.log('Ceding Commission:', e.target.value)}
-            />
-            <Input
-              label="Profit Commission"
-              placeholder="Enter profit commission"
-              value=""
-              onChange={(e) => console.log('Profit Commission:', e.target.value)}
-            />
-            <Input
-              label="Brokerage"
-              placeholder="Enter brokerage"
-              value=""
-              onChange={(e) => console.log('Brokerage:', e.target.value)}
-            />
-            <Input
-              label="Override Commission"
-              placeholder="Enter override commission"
-              value=""
-              onChange={(e) => console.log('Override Commission:', e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* Profit Commission Tiers Section */}
-        <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Profit Commission Tiers</h3>
-
-          {/* First Tier */}
-          <div style={coverageLayerContainerStyles}>
-            <h4 style={coverageLayerTitleStyles}>Profit Commission Tiers 1</h4>
-            <div style={formGridStyles}>
-              <Input
-                label="Loss Ratio Threshold"
-                placeholder="Enter loss ratio threshold"
-                value=""
-                onChange={(e) => console.log('Loss Ratio Threshold 1:', e.target.value)}
-              />
-              <Input
-                label="Commission Rate"
-                placeholder="Enter commission rate"
-                value=""
-                onChange={(e) => console.log('Commission Rate 1:', e.target.value)}
-              />
+          <h3
+            style={{
+              ...sectionTitleStyles,
+              marginBottom: sectionExpanded.premiumCommission ? '24px' : '0',
+              cursor: 'pointer',
+              userSelect: 'none',
+            }}
+            onClick={() => toggleSection('premiumCommission')}
+          >
+            Premium & Commission Terms
+            <div style={{
+              transform: sectionExpanded.premiumCommission ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s ease',
+            }}>
+              <icons.small.chevronBottom color={colors.blackAndWhite.black900} />
             </div>
-          </div>
-
-          {/* Additional Profit Commission Tiers */}
-          {profitCommissionTiers.map((tier) => (
-            <div key={tier.id} style={coverageLayerContainerStyles}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={closeButtonStyles}
-                onClick={() => setProfitCommissionTiers(profitCommissionTiers.filter(t => t.id !== tier.id))}
-                icon={<icons.small.close color={colors.theme.primary700} />}
-              />
-              <h4 style={coverageLayerTitleStyles}>Profit Commission Tiers {tier.id + 1}</h4>
+          </h3>
+          {sectionExpanded.premiumCommission && (
+            <>
               <div style={formGridStyles}>
-                <Input
-                  label="Loss Ratio Threshold"
-                  placeholder="Enter loss ratio threshold"
+                <Dropdown
+                  label="Reinsurance Premium Basis"
+                  placeholder="Select Basis"
                   value=""
-                  onChange={(e) => console.log(`Loss Ratio Threshold ${tier.id + 1}:`, e.target.value)}
+                  options={[
+                    { value: 'written-premium', label: 'Written Premium' },
+                    { value: 'earned-premium', label: 'Earned Premium' },
+                    { value: 'net-premium', label: 'Net Premium' },
+                    { value: 'gross-premium', label: 'Gross Premium' },
+                  ]}
+                  onChange={(value) => console.log('Reinsurance Premium Basis:', value)}
                 />
                 <Input
-                  label="Commission Rate"
-                  placeholder="Enter commission rate"
+                  label="Reinsurance Premium"
+                  placeholder="e.g., $1,00,000"
                   value=""
-                  onChange={(e) => console.log(`Commission Rate ${tier.id + 1}:`, e.target.value)}
+                  onChange={(e) => console.log('Reinsurance Premium:', e.target.value)}
+                />
+                <Input
+                  label="Expected Premium"
+                  placeholder="Enter expected premium"
+                  value=""
+                  onChange={(e) => console.log('Expected Premium:', e.target.value)}
+                />
+                <Input
+                  label="Maximum Premium"
+                  placeholder="Enter maximum premium"
+                  value=""
+                  onChange={(e) => console.log('Maximum Premium:', e.target.value)}
+                />
+                <Dropdown
+                  label="Premium Commission Basis"
+                  placeholder="Select Basis"
+                  value=""
+                  options={[
+                    { value: 'percentage', label: 'Percentage' },
+                    { value: 'fixed-amount', label: 'Fixed Amount' },
+                    { value: 'sliding-scale', label: 'Sliding Scale' },
+                  ]}
+                  onChange={(value) => console.log('Premium Commission Basis:', value)}
+                />
+                <Dropdown
+                  label="FET Rate"
+                  placeholder="Enter FET rate"
+                  value=""
+                  options={[
+                    { value: '0.25', label: '0.25%' },
+                    { value: '0.5', label: '0.5%' },
+                    { value: '0.75', label: '0.75%' },
+                    { value: '1.0', label: '1.0%' },
+                  ]}
+                  onChange={(value) => console.log('FET Rate:', value)}
+                />
+                <Dropdown
+                  label="Ceding Commission Basis"
+                  placeholder="Select Basis"
+                  value=""
+                  options={[
+                    { value: 'percentage', label: 'Percentage' },
+                    { value: 'fixed-amount', label: 'Fixed Amount' },
+                    { value: 'performance-based', label: 'Performance Based' },
+                  ]}
+                  onChange={(value) => console.log('Ceding Commission Basis:', value)}
+                />
+                <Input
+                  label="Minimum Ceding Commission"
+                  placeholder="Enter minimum commission"
+                  value=""
+                  onChange={(e) => console.log('Minimum Ceding Commission:', e.target.value)}
+                />
+                <Dropdown
+                  label="Profit Commission Basis"
+                  placeholder="Select Basis"
+                  value=""
+                  options={[
+                    { value: 'loss-ratio', label: 'Loss Ratio Based' },
+                    { value: 'profit-margin', label: 'Profit Margin Based' },
+                    { value: 'combined-ratio', label: 'Combined Ratio Based' },
+                  ]}
+                  onChange={(value) => console.log('Profit Commission Basis:', value)}
+                />
+                <Input
+                  label="Provisional Profit Commission"
+                  placeholder="Enter provisional Commission"
+                  value=""
+                  onChange={(e) => console.log('Provisional Profit Commission:', e.target.value)}
                 />
               </div>
-            </div>
-          ))}
 
-          {/* Add Profit Commission Tier Button */}
-          <Button
-            variant="tertiary"
-            style={addButtonStyles}
-            onClick={addProfitCommissionTier}
-          >
-            Add Profit Commission Tier
-          </Button>
+              {/* Division/Separator */}
+              <div style={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: colors.theme.primary400,
+                margin: '32px 0',
+              }} />
+
+              {/* Profit Commission Tiers Section Title */}
+              <h3 style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                marginBottom: spacing[4],
+                marginTop: '0',
+              }}>Profit Commission Tiers</h3>
+
+              {/* Profit Commission Tier 1 Title */}
+              <h4 style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black900,
+                marginBottom: spacing[1],
+                marginTop: '0',
+              }}>Profit Commission Tier 1</h4>
+
+              {/* First Profit Commission Tier */}
+              <div style={coverageLayerContainerStyles}>
+                <div style={coverageLayerGridStyles}>
+                  <Input
+                    label="Attachment"
+                    placeholder="Enter attachment"
+                    value=""
+                    onChange={(e) => console.log('Attachment 1:', e.target.value)}
+                  />
+                  <Input
+                    label="Exhaustion"
+                    placeholder="Enter exhaustion"
+                    value=""
+                    onChange={(e) => console.log('Exhaustion 1:', e.target.value)}
+                  />
+                  <Input
+                    label="Profit %"
+                    placeholder="Enter profit %"
+                    value=""
+                    onChange={(e) => console.log('Profit % 1:', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Additional Profit Commission Tiers */}
+              {additionalFieldSets.map((fieldSet) => (
+                <div key={fieldSet.id}>
+                  <h4 style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    marginBottom: spacing[1],
+                    marginTop: '0',
+                  }}>Profit Commission Tier {fieldSet.id + 1}</h4>
+                  <div style={coverageLayerContainerStyles}>
+                    <Button
+                      variant="icon"
+                      color="white"
+                      shape="square"
+                      style={closeButtonStyles}
+                      onClick={() => removeAdditionalFieldSet(fieldSet.id)}
+                      icon={<icons.small.close color={colors.theme.primary700} />}
+                    />
+                    <div style={coverageLayerGridStyles}>
+                      <Input
+                        label="Attachment"
+                        placeholder="Enter attachment"
+                        value=""
+                        onChange={(e) => console.log(`Attachment ${fieldSet.id + 1}:`, e.target.value)}
+                      />
+                      <Input
+                        label="Exhaustion"
+                        placeholder="Enter exhaustion"
+                        value=""
+                        onChange={(e) => console.log(`Exhaustion ${fieldSet.id + 1}:`, e.target.value)}
+                      />
+                      <Input
+                        label="Profit %"
+                        placeholder="Enter profit %"
+                        value=""
+                        onChange={(e) => console.log(`Profit % ${fieldSet.id + 1}:`, e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Add Profit Commission Tier Button */}
+              <Button
+                variant="tertiary"
+                style={addButtonStyles}
+                onClick={addAdditionalFieldSet}
+              >
+                Add Profit Commission Tier
+              </Button>
+            </>
+          )}
         </div>
+
 
         {/* Policy Limits & Claims Fund Terms Section */}
         <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Policy Limits & Claims Fund Terms</h3>
-
-          {/* First Policy Limits Term */}
-          <div style={coverageLayerContainerStyles}>
-            <h4 style={coverageLayerTitleStyles}>Policy Limits & Claims Fund Terms 1</h4>
-            <div style={formGridStyles}>
-              <Input
-                label="Policy Limit"
-                placeholder="Enter policy limit"
-                value=""
-                onChange={(e) => console.log('Policy Limit 1:', e.target.value)}
-              />
-              <Input
-                label="Per Occurrence Limit"
-                placeholder="Enter per occurrence limit"
-                value=""
-                onChange={(e) => console.log('Per Occurrence Limit 1:', e.target.value)}
-              />
-              <Input
-                label="Aggregate Limit"
-                placeholder="Enter aggregate limit"
-                value=""
-                onChange={(e) => console.log('Aggregate Limit 1:', e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Additional Policy Limits Terms */}
-          {policyLimitsTerms.map((term) => (
-            <div key={term.id} style={coverageLayerContainerStyles}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={closeButtonStyles}
-                onClick={() => setPolicyLimitsTerms(policyLimitsTerms.filter(t => t.id !== term.id))}
-                icon={<icons.small.close color={colors.theme.primary700} />}
-              />
-              <h4 style={coverageLayerTitleStyles}>Policy Limits & Claims Fund Terms {term.id + 1}</h4>
-              <div style={formGridStyles}>
-                <Input
-                  label="Policy Limit"
-                  placeholder="Enter policy limit"
-                  value=""
-                  onChange={(e) => console.log(`Policy Limit ${term.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Per Occurrence Limit"
-                  placeholder="Enter per occurrence limit"
-                  value=""
-                  onChange={(e) => console.log(`Per Occurrence Limit ${term.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Aggregate Limit"
-                  placeholder="Enter aggregate limit"
-                  value=""
-                  onChange={(e) => console.log(`Aggregate Limit ${term.id + 1}:`, e.target.value)}
-                />
-              </div>
-            </div>
-          ))}
-
-          {/* Add Policy Limits Term Button */}
-          <Button
-            variant="tertiary"
-            style={addButtonStyles}
-            onClick={addPolicyLimitsTerm}
+          <h3
+            style={{
+              ...sectionTitleStyles,
+              marginBottom: sectionExpanded.policyLimitsClaims ? '24px' : '0',
+              cursor: 'pointer',
+              userSelect: 'none',
+            }}
+            onClick={() => toggleSection('policyLimitsClaims')}
           >
-            Add Policy Limits & Claims Fund Terms
-          </Button>
-        </div>
-
-        {/* Pricing Limits Section */}
-        <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Pricing Limits</h3>
-
-          {/* First Pricing Limit */}
-          <div style={coverageLayerContainerStyles}>
-            <h4 style={coverageLayerTitleStyles}>Pricing Limits 1</h4>
+            Policy Limits & Claims Fund Terms
+            <div style={{
+              transform: sectionExpanded.policyLimitsClaims ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s ease',
+            }}>
+              <icons.small.chevronBottom color={colors.blackAndWhite.black900} />
+            </div>
+          </h3>
+          {sectionExpanded.policyLimitsClaims && (
+            <>
             <div style={formGridStyles}>
-              <Input
-                label="Minimum Rate"
-                placeholder="Enter minimum rate"
-                value=""
-                onChange={(e) => console.log('Minimum Rate 1:', e.target.value)}
-              />
-              <Input
-                label="Maximum Rate"
-                placeholder="Enter maximum rate"
-                value=""
-                onChange={(e) => console.log('Maximum Rate 1:', e.target.value)}
-              />
-              <Input
-                label="Rate Adjustment Factor"
-                placeholder="Enter rate adjustment factor"
-                value=""
-                onChange={(e) => console.log('Rate Adjustment Factor 1:', e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Additional Pricing Limits */}
-          {pricingLimits.map((limit) => (
-            <div key={limit.id} style={coverageLayerContainerStyles}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={closeButtonStyles}
-                onClick={() => setPricingLimits(pricingLimits.filter(l => l.id !== limit.id))}
-                icon={<icons.small.close color={colors.theme.primary700} />}
-              />
-              <h4 style={coverageLayerTitleStyles}>Pricing Limits {limit.id + 1}</h4>
-              <div style={formGridStyles}>
-                <Input
-                  label="Minimum Rate"
-                  placeholder="Enter minimum rate"
-                  value=""
-                  onChange={(e) => console.log(`Minimum Rate ${limit.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Maximum Rate"
-                  placeholder="Enter maximum rate"
-                  value=""
-                  onChange={(e) => console.log(`Maximum Rate ${limit.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Rate Adjustment Factor"
-                  placeholder="Enter rate adjustment factor"
-                  value=""
-                  onChange={(e) => console.log(`Rate Adjustment Factor ${limit.id + 1}:`, e.target.value)}
-                />
-              </div>
-            </div>
-          ))}
-
-          {/* Add Pricing Limit Button */}
-          <Button
-            variant="tertiary"
-            style={addButtonStyles}
-            onClick={addPricingLimit}
-          >
-            Add Pricing Limits
-          </Button>
-        </div>
-
-        {/* Claims Fund Section */}
-        <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Claims Fund</h3>
-
-          {/* First Claims Fund */}
-          <div style={coverageLayerContainerStyles}>
-            <h4 style={coverageLayerTitleStyles}>Claims Fund 1</h4>
-            <div style={formGridStyles}>
-              <Input
-                label="Initial Fund Amount"
-                placeholder="Enter initial fund amount"
-                value=""
-                onChange={(e) => console.log('Initial Fund Amount 1:', e.target.value)}
-              />
-              <Input
-                label="Fund Replenishment Trigger"
-                placeholder="Enter fund replenishment trigger"
-                value=""
-                onChange={(e) => console.log('Fund Replenishment Trigger 1:', e.target.value)}
-              />
-              <Input
-                label="Maximum Fund Liability"
-                placeholder="Enter maximum fund liability"
-                value=""
-                onChange={(e) => console.log('Maximum Fund Liability 1:', e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Additional Claims Funds */}
-          {claimsFunds.map((fund) => (
-            <div key={fund.id} style={coverageLayerContainerStyles}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={closeButtonStyles}
-                onClick={() => setClaimsFunds(claimsFunds.filter(f => f.id !== fund.id))}
-                icon={<icons.small.close color={colors.theme.primary700} />}
-              />
-              <h4 style={coverageLayerTitleStyles}>Claims Fund {fund.id + 1}</h4>
-              <div style={formGridStyles}>
-                <Input
-                  label="Initial Fund Amount"
-                  placeholder="Enter initial fund amount"
-                  value=""
-                  onChange={(e) => console.log(`Initial Fund Amount ${fund.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Fund Replenishment Trigger"
-                  placeholder="Enter fund replenishment trigger"
-                  value=""
-                  onChange={(e) => console.log(`Fund Replenishment Trigger ${fund.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Maximum Fund Liability"
-                  placeholder="Enter maximum fund liability"
-                  value=""
-                  onChange={(e) => console.log(`Maximum Fund Liability ${fund.id + 1}:`, e.target.value)}
-                />
-              </div>
-            </div>
-          ))}
-
-          {/* Add Claims Fund Button */}
-          <Button
-            variant="tertiary"
-            style={addButtonStyles}
-            onClick={addClaimsFund}
-          >
-            Add Claims Fund
-          </Button>
-        </div>
-
-        {/* Operational & Brokerage Terms Section */}
-        <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Operational & Brokerage Terms</h3>
-          <div style={formGridStyles}>
-            <DatePicker
-              label="Contract Effective Date"
-              placeholder="Select effective date"
+            <Dropdown
+              label="Aggregate Limit Basis"
+              placeholder="Select Basis"
               value=""
-              onChange={(e) => console.log('Contract Effective Date:', e.target.value)}
-            />
-            <DatePicker
-              label="Contract Expiration Date"
-              placeholder="Select expiration date"
-              value=""
-              onChange={(e) => console.log('Contract Expiration Date:', e.target.value)}
+              options={[
+                { value: 'per-policy', label: 'Per Policy' },
+                { value: 'per-location', label: 'Per Location' },
+                { value: 'per-occurrence', label: 'Per Occurrence' },
+                { value: 'annual', label: 'Annual' },
+              ]}
+              onChange={(value) => console.log('Aggregate Limit Basis:', value)}
             />
             <Input
-              label="Payment Terms"
-              placeholder="Enter payment terms"
+              label="Aggregate Limit"
+              placeholder="Enter aggregate limit"
               value=""
-              onChange={(e) => console.log('Payment Terms:', e.target.value)}
+              onChange={(e) => console.log('Aggregate Limit:', e.target.value)}
+            />
+            <Dropdown
+              label="Occurrence Limit Basis"
+              placeholder="Select Basis"
+              value=""
+              options={[
+                { value: 'per-occurrence', label: 'Per Occurrence' },
+                { value: 'per-claim', label: 'Per Claim' },
+                { value: 'per-event', label: 'Per Event' },
+                { value: 'combined', label: 'Combined' },
+              ]}
+              onChange={(value) => console.log('Occurrence Limit Basis:', value)}
             />
             <Input
-              label="Reporting Frequency"
-              placeholder="Enter reporting frequency"
+              label="Occurrence Limit"
+              placeholder="Enter occurrence limit"
               value=""
-              onChange={(e) => console.log('Reporting Frequency:', e.target.value)}
+              onChange={(e) => console.log('Occurrence Limit:', e.target.value)}
             />
           </div>
-        </div>
 
-        {/* Broker Information Section */}
-        <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Broker Information</h3>
+          {/* Separator */}
+          <div style={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: colors.theme.primary400,
+            margin: '32px 0',
+          }} />
 
-          {/* First Broker Info */}
+          {/* Policy Limits Section Title */}
+          <h3 style={{
+            ...typography.styles.bodyL,
+            color: colors.blackAndWhite.black900,
+            marginBottom: spacing[4],
+            marginTop: '0',
+          }}>Policy Limits</h3>
+
+          {/* Policy Limit 1 Title */}
+          <h4 style={{
+            ...typography.styles.bodyM,
+            color: colors.blackAndWhite.black900,
+            marginBottom: spacing[1],
+            marginTop: '0',
+          }}>Policy Limit 1</h4>
+
+          {/* First Policy Limit */}
           <div style={coverageLayerContainerStyles}>
-            <h4 style={coverageLayerTitleStyles}>Broker Information 1</h4>
-            <div style={formGridStyles}>
-              <Input
-                label="Broker Name"
-                placeholder="Enter broker name"
-                value=""
-                onChange={(e) => console.log('Broker Name 1:', e.target.value)}
-              />
-              <Input
-                label="Broker Contact"
-                placeholder="Enter broker contact"
-                value=""
-                onChange={(e) => console.log('Broker Contact 1:', e.target.value)}
-              />
-              <Input
-                label="Commission Rate"
-                placeholder="Enter commission rate"
-                value=""
-                onChange={(e) => console.log('Commission Rate 1:', e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Additional Broker Information */}
-          {brokerInfo.map((info) => (
-            <div key={info.id} style={coverageLayerContainerStyles}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={closeButtonStyles}
-                onClick={() => setBrokerInfo(brokerInfo.filter(b => b.id !== info.id))}
-                icon={<icons.small.close color={colors.theme.primary700} />}
-              />
-              <h4 style={coverageLayerTitleStyles}>Broker Information {info.id + 1}</h4>
-              <div style={formGridStyles}>
-                <Input
-                  label="Broker Name"
-                  placeholder="Enter broker name"
-                  value=""
-                  onChange={(e) => console.log(`Broker Name ${info.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Broker Contact"
-                  placeholder="Enter broker contact"
-                  value=""
-                  onChange={(e) => console.log(`Broker Contact ${info.id + 1}:`, e.target.value)}
-                />
-                <Input
-                  label="Commission Rate"
-                  placeholder="Enter commission rate"
-                  value=""
-                  onChange={(e) => console.log(`Commission Rate ${info.id + 1}:`, e.target.value)}
-                />
-              </div>
-            </div>
-          ))}
-
-          {/* Add Broker Information Button */}
-          <Button
-            variant="tertiary"
-            style={addButtonStyles}
-            onClick={addBrokerInfo}
-          >
-            Add Broker Information
-          </Button>
-        </div>
-
-        {/* Trust Account Terms Section */}
-        <div style={formContainerStyles}>
-          <h3 style={sectionTitleStyles}>Trust Account Terms</h3>
-
-          {/* First Trust Account Term */}
-          <div style={coverageLayerContainerStyles}>
-            <h4 style={coverageLayerTitleStyles}>Trust Account Terms 1</h4>
             <div style={formGridStyles}>
               <Dropdown
                 label="Type"
                 placeholder="Select type"
                 value=""
                 options={[
-                  { value: 'rate', label: 'Rate' },
-                  { value: 'amount', label: 'Amount' },
-                  { value: 'percentage', label: 'Percentage' },
+                  { value: 'aggregate', label: 'Aggregate Limit' },
+                  { value: 'occurrence', label: 'Occurrence Limit' },
+                  { value: 'per-claim', label: 'Per Claim Limit' },
+                  { value: 'annual', label: 'Annual Limit' },
                 ]}
                 onChange={(value) => console.log('Type 1:', value)}
               />
@@ -1537,48 +1466,445 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             </div>
           </div>
 
-          {/* Additional Trust Account Terms */}
-          {trustAccountTerms.map((term) => (
-            <div key={term.id} style={coverageLayerContainerStyles}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={closeButtonStyles}
-                onClick={() => setTrustAccountTerms(trustAccountTerms.filter(t => t.id !== term.id))}
-                icon={<icons.small.close color={colors.theme.primary700} />}
-              />
-              <h4 style={coverageLayerTitleStyles}>Trust Account Terms {term.id + 1}</h4>
-              <div style={formGridStyles}>
-                <Dropdown
-                  label="Type"
-                  placeholder="Select type"
-                  value=""
-                  options={[
-                    { value: 'rate', label: 'Rate' },
-                    { value: 'amount', label: 'Amount' },
-                    { value: 'percentage', label: 'Percentage' },
-                  ]}
-                  onChange={(value) => console.log(`Type ${term.id + 1}:`, value)}
+          {/* Additional Policy Limits */}
+          {additionalFieldSets.map((fieldSet) => (
+            <div key={fieldSet.id}>
+              <h4 style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black900,
+                marginBottom: spacing[1],
+                marginTop: '0',
+              }}>Policy Limit {fieldSet.id + 1}</h4>
+              <div style={coverageLayerContainerStyles}>
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  style={closeButtonStyles}
+                  onClick={() => removeAdditionalFieldSet(fieldSet.id)}
+                  icon={<icons.small.close color={colors.theme.primary700} />}
                 />
-                <Input
-                  label="Amount"
-                  placeholder="Enter amount"
-                  value=""
-                  onChange={(e) => console.log(`Amount ${term.id + 1}:`, e.target.value)}
-                />
+                <div style={formGridStyles}>
+                  <Dropdown
+                    label="Type"
+                    placeholder="Select type"
+                    value=""
+                    options={[
+                      { value: 'aggregate', label: 'Aggregate Limit' },
+                      { value: 'occurrence', label: 'Occurrence Limit' },
+                      { value: 'per-claim', label: 'Per Claim Limit' },
+                      { value: 'annual', label: 'Annual Limit' },
+                    ]}
+                    onChange={(value) => console.log(`Type ${fieldSet.id + 1}:`, value)}
+                  />
+                  <Input
+                    label="Amount"
+                    placeholder="Enter amount"
+                    value=""
+                    onChange={(e) => console.log(`Amount ${fieldSet.id + 1}:`, e.target.value)}
+                  />
+                </div>
               </div>
             </div>
           ))}
 
-          {/* Add Trust Account Term Button */}
+          {/* Add Policy Limit Button */}
           <Button
             variant="tertiary"
             style={addButtonStyles}
-            onClick={addTrustAccountTerm}
+            onClick={addAdditionalFieldSet}
           >
-            Add Trust Account Terms
+            Add Policy Limit
           </Button>
+
+          {/* Separator */}
+          <div style={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: colors.theme.primary400,
+            margin: '32px 0',
+          }} />
+
+          {/* Claims Fund Section Title */}
+          <h3 style={{
+            ...typography.styles.bodyL,
+            color: colors.blackAndWhite.black900,
+            marginBottom: spacing[4],
+            marginTop: '0',
+          }}>Claims Fund</h3>
+
+          {/* Claims Fund Title */}
+          <h4 style={{
+            ...typography.styles.bodyM,
+            color: colors.blackAndWhite.black900,
+            marginBottom: spacing[1],
+            marginTop: '0',
+          }}>Claims Fund</h4>
+
+          {/* Claims Fund */}
+          <div style={coverageLayerContainerStyles}>
+            <div style={coverageLayerGridStyles}>
+              <Input
+                label="Initial Claims Fund"
+                placeholder="Enter initial claims fund"
+                value=""
+                onChange={(e) => console.log('Initial Claims Fund:', e.target.value)}
+              />
+              <Input
+                label="Minimum Claims Fund"
+                placeholder="Enter minimum claims fund"
+                value=""
+                onChange={(e) => console.log('Minimum Claims Fund:', e.target.value)}
+              />
+              <Input
+                label="Maximum Claims Fund"
+                placeholder="Enter maximum claims fund"
+                value=""
+                onChange={(e) => console.log('Maximum Claims Fund:', e.target.value)}
+              />
+            </div>
+          </div>
+            </>
+          )}
+        </div>
+
+        {/* Operational & Brokerage Terms Section */}
+        <div style={formContainerStyles}>
+          <h3
+            style={{
+              ...sectionTitleStyles,
+              marginBottom: sectionExpanded.operationalBrokerage ? '24px' : '0',
+              cursor: 'pointer',
+              userSelect: 'none',
+            }}
+            onClick={() => toggleSection('operationalBrokerage')}
+          >
+            Operational & Brokerage Terms
+            <div style={{
+              transform: sectionExpanded.operationalBrokerage ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s ease',
+            }}>
+              <icons.small.chevronBottom color={colors.blackAndWhite.black900} />
+            </div>
+          </h3>
+          {sectionExpanded.operationalBrokerage && (
+            <>
+            <div style={formGridStyles}>
+            <Dropdown
+              label="Currency"
+              placeholder="USD - US Dollar"
+              value=""
+              options={[
+                { value: 'usd', label: 'USD - US Dollar' },
+                { value: 'eur', label: 'EUR - Euro' },
+                { value: 'gbp', label: 'GBP - British Pound' },
+                { value: 'cad', label: 'CAD - Canadian Dollar' },
+              ]}
+              onChange={(value) => console.log('Currency:', value)}
+            />
+            <DatePicker
+              label="BDX Reporting Period"
+              placeholder="Select Period"
+              value=""
+              onChange={(e) => console.log('BDX Reporting Period:', e.target.value)}
+            />
+            <Dropdown
+              label="Borderaux Reporting Lag (days)"
+              placeholder="Enter lag in days"
+              value=""
+              options={[
+                { value: '30', label: '30 days' },
+                { value: '45', label: '45 days' },
+                { value: '60', label: '60 days' },
+                { value: '90', label: '90 days' },
+              ]}
+              onChange={(value) => console.log('Borderaux Reporting Lag:', value)}
+            />
+            <Input
+              label="Remittance Lag (Days)"
+              placeholder="Enter lag in days"
+              value=""
+              onChange={(e) => console.log('Remittance Lag:', e.target.value)}
+            />
+            <DatePicker
+              label="Collateral Reporting Period"
+              placeholder="Select Period"
+              value=""
+              onChange={(e) => console.log('Collateral Reporting Period:', e.target.value)}
+            />
+            <Input
+              label="Collateral Reporting Lag (Days)"
+              placeholder="Enter lag in days"
+              value=""
+              onChange={(e) => console.log('Collateral Reporting Lag:', e.target.value)}
+            />
+            <Dropdown
+              label="Collateral Deposit Lag (Days)"
+              placeholder="Enter lag in days"
+              value=""
+              options={[
+                { value: '15', label: '15 days' },
+                { value: '30', label: '30 days' },
+                { value: '45', label: '45 days' },
+                { value: '60', label: '60 days' },
+              ]}
+              onChange={(value) => console.log('Collateral Deposit Lag:', value)}
+            />
+            <Input
+              label="Exchange Rates"
+              placeholder="Enter exchange rate terms"
+              value=""
+              onChange={(e) => console.log('Exchange Rates:', e.target.value)}
+            />
+            <DatePicker
+              label="Communication Date"
+              placeholder="Select Date"
+              value=""
+              onChange={(e) => console.log('Communication Date:', e.target.value)}
+            />
+          </div>
+
+          {/* Separator */}
+          <div style={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: colors.theme.primary400,
+            margin: '32px 0',
+          }} />
+
+          {/* Broker Information Section Title */}
+          <h3 style={{
+            ...typography.styles.bodyL,
+            color: colors.blackAndWhite.black900,
+            marginBottom: spacing[4],
+            marginTop: '0',
+          }}>Broker Information</h3>
+
+          <div style={formGridStyles}>
+            <Input
+              label="Broker Name"
+              placeholder="Enter broker name"
+              value=""
+              onChange={(e) => console.log('Broker Name:', e.target.value)}
+            />
+            <Input
+              label="Brokerage Fee"
+              placeholder="Enter brokerage fee"
+              value=""
+              onChange={(e) => console.log('Brokerage Fee:', e.target.value)}
+            />
+            <Dropdown
+              label="Brokerage Fee Basis"
+              placeholder="Select basis"
+              value=""
+              options={[
+                { value: 'percentage', label: 'Percentage' },
+                { value: 'fixed-amount', label: 'Fixed Amount' },
+                { value: 'sliding-scale', label: 'Sliding Scale' },
+              ]}
+              onChange={(value) => console.log('Brokerage Fee Basis:', value)}
+            />
+            <Input
+              label="% Brokerage Fee Paid at Closing"
+              placeholder="Enter percentage"
+              value=""
+              onChange={(e) => console.log('% Brokerage Fee Paid at Closing:', e.target.value)}
+            />
+            <Dropdown
+              label="Brokerage Payment Timing Scheme"
+              placeholder="Select timing scheme"
+              value=""
+              options={[
+                { value: 'upfront', label: 'Upfront Payment' },
+                { value: 'installments', label: 'Installment Payments' },
+                { value: 'annual', label: 'Annual Payment' },
+                { value: 'quarterly', label: 'Quarterly Payment' },
+              ]}
+              onChange={(value) => console.log('Brokerage Payment Timing Scheme:', value)}
+            />
+          </div>
+            </>
+          )}
+        </div>
+
+        {/* Trust Account Terms Section */}
+        <div style={formContainerStyles}>
+          <h3
+            style={{
+              ...sectionTitleStyles,
+              marginBottom: sectionExpanded.trustAccount ? '24px' : '0',
+              cursor: 'pointer',
+              userSelect: 'none',
+            }}
+            onClick={() => toggleSection('trustAccount')}
+          >
+            Trust Account Terms
+            <div style={{
+              transform: sectionExpanded.trustAccount ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s ease',
+            }}>
+              <icons.small.chevronBottom color={colors.blackAndWhite.black900} />
+            </div>
+          </h3>
+
+          {sectionExpanded.trustAccount && (
+            <>
+            {/* Bank API Integration Content */}
+          <div style={{
+            ...coverageLayerContainerStyles,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '20px',
+          }}>
+            {/* Left side - Title, description, and chips */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              flex: '1',
+            }}>
+              {/* Title */}
+              <h4 style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black800,
+                margin: '0',
+                lineHeight: '1.3',
+              }}>
+                Bank API Integration
+              </h4>
+
+              {/* Description */}
+              <p style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black500,
+                margin: '0',
+                lineHeight: '1.3',
+              }}>
+                Connect your bank's API for automated Trust Account information processing and real-time reporting.
+              </p>
+
+              {/* Chips */}
+              <div style={{
+                display: 'flex',
+                gap: '6px',
+                alignItems: 'center',
+              }}>
+                {/* Secure Connection Chip */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 8px',
+                  backgroundColor: colors.reports.primary200,
+                  borderRadius: '40px',
+                }}>
+                  <icons.small.check color={colors.blackAndWhite.black900} />
+                  <span style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                  }}>
+                    Secure Connection
+                  </span>
+                </div>
+
+                {/* Real-time Sync Chip */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 8px',
+                  backgroundColor: colors.reports.primary200,
+                  borderRadius: '40px',
+                }}>
+                  <icons.small.check color={colors.blackAndWhite.black900} />
+                  <span style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                  }}>
+                    Real-time Sync
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Button */}
+            <Button
+              variant="primary"
+              color="white"
+              showIcon={false}
+            >
+              Connect Bank API
+            </Button>
+          </div>
+
+          {/* Additional Trust Account Fields */}
+          <div style={{ marginTop: '24px' }}>
+            {/* Trust Account Provider */}
+            <div style={{ marginBottom: '20px' }}>
+              <Dropdown
+                label="Trust Account Provider"
+                placeholder="Select provider"
+                value=""
+                options={[
+                  { value: 'bank-of-america', label: 'Bank of America' },
+                  { value: 'jp-morgan-chase', label: 'JPMorgan Chase' },
+                  { value: 'wells-fargo', label: 'Wells Fargo' },
+                  { value: 'citibank', label: 'Citibank' },
+                  { value: 'us-bank', label: 'U.S. Bank' },
+                  { value: 'pnc-bank', label: 'PNC Bank' },
+                  { value: 'truist-bank', label: 'Truist Bank' },
+                  { value: 'goldman-sachs', label: 'Goldman Sachs Bank' },
+                  { value: 'other', label: 'Other' },
+                ]}
+                onChange={(value) => console.log('Trust Account Provider:', value)}
+              />
+            </div>
+
+            {/* Trust/Principal Account Number */}
+            <div style={{ marginBottom: '20px' }}>
+              <Input
+                label="Trust/Principal Account Number"
+                placeholder="Enter main trust account number"
+                value=""
+                onChange={(e) => console.log('Trust/Principal Account Number:', e.target.value)}
+              />
+            </div>
+
+            {/* Reserve and Capital Accounts Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '20px',
+              marginBottom: '20px'
+            }}>
+              <Input
+                label="Reserve Account"
+                placeholder="Enter reserve account number"
+                value=""
+                onChange={(e) => console.log('Reserve Account:', e.target.value)}
+              />
+              <Input
+                label="Capital Account"
+                placeholder="Enter capital account number"
+                value=""
+                onChange={(e) => console.log('Capital Account:', e.target.value)}
+              />
+            </div>
+
+            {/* Income Account */}
+            <div style={{ marginBottom: '20px' }}>
+              <Input
+                label="Income Account"
+                placeholder="Enter income account number"
+                value=""
+                onChange={(e) => console.log('Income Account:', e.target.value)}
+              />
+            </div>
+          </div>
+          </>
+          )}
+
         </div>
       </>
     );
@@ -1698,7 +2024,8 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
 
   return (
     <FormLayout
-      formTitle="NEW TRANSACTION WORKFLOW"
+      formTitle={renewalData ? "RENEWAL TRANSACTION WORKFLOW" : "NEW TRANSACTION WORKFLOW"}
+      entryType={renewalData ? "Renewal Transaction" : "Manual Entry"}
       statusText="draft"
       statusVariant="warning"
       progress={getProgress()}

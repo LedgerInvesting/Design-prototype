@@ -271,17 +271,17 @@ The `/pages` folder contains a complete React development environment for testin
     - Transaction Name and Policy Group ID input fields
     - **Comprehensive Reinsurer Dropdowns**: 33 real-world reinsurance companies including Lloyd's of London, Swiss Re, Munich Re, Berkshire Hathaway Re, etc.
     - Subject Business full-width textarea for detailed descriptions
-  - **Structure & Key Terms Tab**: Complete advanced reinsurance configuration with 9 sections each wrapped in blue containers
-    - **Reinsurance Structure**: Four dropdown fields (Type, Form, Coverage Type, Layer Basis) with Coverage Layers functionality
-    - **Dynamic Coverage Layers**: Add/remove white boxes with numbered labels, tertiary button integration, and close buttons
-    - **Premium & Commission Terms**: Four input fields for commission structure
-    - **Profit Commission Tiers**: Dynamic tier system with Loss Ratio Threshold and Commission Rate fields
-    - **Policy Limits & Claims Fund Terms**: Three-field configuration for policy parameters
-    - **Pricing Limits**: Rate configuration with Min/Max rates and adjustment factors
-    - **Claims Fund**: Fund management with initial amounts, triggers, and liability limits
-    - **Operational & Brokerage Terms**: Contract dates and operational parameters
-    - **Broker Information**: Dynamic broker configuration with contact and commission details
-    - **Trust Account Terms**: Type and amount configuration for trust accounts
+  - **Structure & Key Terms Tab**: Complete advanced reinsurance configuration with 5 accordion sections using collapsible UI pattern
+    - **Full Accordion Functionality**: All 5 sections feature expand/collapse behavior with 180-degree chevron rotation and smooth transitions
+    - **Enhanced Section Titles**: All section titles use "Subheading M" typography with chevron down icons positioned next to titles
+    - **Intelligent Spacing**: 10px spacing between collapsed sections with conditional margin logic to prevent visual imbalance
+    - **Accordion Sections**:
+      - **Reinsurance Structure**: Four dropdown fields (Type, Form, Coverage Type, Layer Basis) with Dynamic Coverage Layers (add/remove white boxes with numbered labels)
+      - **Premium & Commission Terms**: Four input fields for commission structure with dynamic functionality
+      - **Policy Limits & Claims Fund Terms**: Three-field configuration for policy parameters
+      - **Operational & Brokerage Terms**: Contract dates and operational parameters
+      - **Trust Account Terms**: Bank API Integration layout with "Secure Connection" and "Real-time Sync" feature chips and "Connect Bank API" button
+    - **State Management**: React useState for section expansion tracking with individual toggle functions for each accordion section
     - **Tertiary Button Variant**: Implemented white background button with blue circular icon container for all "Add" functionality
   - **Policy Groups Tab**: Advanced policy configuration with industry-standard options
     - Policy Group Name and Description input fields with proper placeholders
@@ -385,30 +385,58 @@ npm run dev  # Start on http://localhost:5173
 
 ## Recent Major Updates & Code Cleanup
 
-### 🏗️ **Complete Structure & Key Terms Implementation (September 19, 2025)**
-- **NewTransactionForm Enhancement**: Successfully implemented comprehensive Structure & Key Terms tab with complete form functionality
-  - **9 Section Implementation**: All sections wrapped in individual blue container boxes for visual organization
+### 🚀 **Responsive Layout System & Enhanced Modal Framework (September 22, 2025)**
+- **Full Responsive Layout Implementation**: Completely redesigned layout system for true responsive behavior
+  - **Layout Component Updates**: Changed from fixed 1200px max-width to full-width responsive design with 50px margins
+  - **FormLayout Component**: Updated to match responsive behavior for form-based pages
+  - **Page Content Expansion**: All pages now expand to fill browser width while maintaining consistent 50px side margins
+  - **Removed Width Constraints**: Eliminated maxWidth constraints from:
+    - CashSettlement.tsx (removed 1100px grid constraint)
+    - ReportNavigation.tsx (removed 4 different maxWidth constraints)
+    - ContractsExplorer.tsx (removed 1200px container constraint)
+    - TransactionManagement.tsx (cleaned unused maxWidth prop)
+- **Advanced Modal System Enhancements**: Comprehensive modal framework improvements
+  - **White Backdrop Support**: Added `backdropColor` prop with 'black' | 'white' options
+  - **Backdrop Blur Effects**: Implemented `backdropBlur` prop with CSS backdrop-filter support (4px blur)
+  - **Configurable Opacity**: Enhanced `backdropOpacity` control for subtle or prominent backdrop effects
+  - **Smart Positioning**: Redesigned modal positioning algorithm for responsive layouts
+    - Button-relative positioning with right-edge alignment
+    - Dynamic width calculation and viewport boundary checking
+    - 10px offset adjustment for perfect button alignment
+  - **Applied to All Modals**: Updated NewTransactionModal, BrandNewTransactionModal, and NewValuationModal with consistent white backdrop (60% opacity)
+- **Trust Account Form Completion**: Added missing fields per Figma specifications
+  - **Trust Account Provider**: Dropdown with major bank options (Bank of America, JPMorgan Chase, Wells Fargo, etc.)
+  - **Trust/Principal Account Number**: Full-width input field
+  - **Reserve & Capital Accounts**: 2-column grid layout for efficient space usage
+  - **Income Account**: Additional account field for complete trust configuration
+  - **Proper Integration**: All fields seamlessly integrated into existing accordion structure
+- **Enhanced Renewal Transaction Workflow**: Complete renewal flow with pre-populated data and dynamic UI
+  - **Form Pre-population**: Renewal data automatically populates transaction form fields
+  - **Dynamic TopNav Titles**: Context-aware navigation headers
+    - Renewal flow: "Renewal Transaction" in TopNav
+    - Manual entry flow: "Manual Entry" in TopNav
+  - **Smart Data Flow**: App.tsx → NewTransactionForm with proper data passing and state management
+  - **Complete Integration**: Seamless transition from renewal selection to pre-filled form
+
+### 🏗️ **Complete Accordion Implementation & Trust Account Redesign (September 22, 2025)**
+- **NewTransactionForm Accordion System**: Successfully implemented comprehensive accordion functionality for Structure & Key Terms tab
+  - **5 Accordion Sections**: All major sections converted to collapsible accordion pattern for improved UX with large forms
     - Reinsurance Structure (Type, Form, Coverage Type, Layer Basis + Dynamic Coverage Layers)
-    - Premium & Commission Terms (four commission structure input fields)
-    - Profit Commission Tiers (Loss Ratio Threshold + Commission Rate with dynamic add/remove)
+    - Premium & Commission Terms (four commission structure input fields with dynamic functionality)
     - Policy Limits & Claims Fund Terms (three-field policy parameter configuration)
-    - Pricing Limits (Rate configuration with Min/Max rates and adjustment factors)
-    - Claims Fund (Fund management with initial amounts, triggers, and liability limits)
     - Operational & Brokerage Terms (Contract dates and operational parameters)
-    - Broker Information (Dynamic broker configuration with contact and commission details)
-    - Trust Account Terms (Type and amount configuration for trust accounts)
-  - **Dynamic Field Management**: Full add/remove functionality across all section types with proper state management
-    - 7 different dynamic field sets with individual useState arrays
-    - Proper ID generation for tracking field additions/removals
-    - Tertiary button integration for all "Add" functionality with PlusExtraSmall icons
-    - White close buttons (X icons) with proper positioning and hover effects
-  - **Tertiary Button Integration**: Successfully implemented and integrated new tertiary button variant for all "Add" functionality
-    - White background button with blue circular icon container
-    - Consistent styling across all dynamic sections
-    - Proper integration with existing Button component variant system
-  - **Form Field Typography**: Verified all form components (Input, Dropdown, DatePicker) use consistent Body M typography for labels
-  - **Error Recovery**: Successfully restored from syntax errors using git restore and recreated all lost functionality
-  - **Professional Implementation**: Complete 9-section form matching Figma design specifications exactly
+    - Trust Account Terms (redesigned with Bank API Integration layout)
+  - **Enhanced Typography & Icons**: All section titles upgraded to "Subheading M" typography with chevron down icons positioned next to titles
+  - **Smooth Animations**: Complete accordion functionality with 180-degree chevron rotation and smooth CSS transitions for expand/collapse
+  - **State Management**: React useState hook managing section expansion state with individual toggle functions for each accordion section
+  - **Visual Balance Optimization**: Implemented conditional margin system (10px spacing between sections) with smart bottom margin logic to prevent visual imbalance in collapsed states
+  - **Trust Account Redesign**: Complete section redesign following Figma specifications
+    - **Bank API Integration Layout**: Modern integration-focused design replacing traditional form fields
+    - **Feature Chips**: "Secure Connection" and "Real-time Sync" chips with checkmark icons for trust indicators
+    - **Action Button**: White "Connect Bank API" button for seamless integration workflow
+    - **Professional Layout**: Left-side content description with right-side action button alignment
+  - **Error Resolution**: Successfully resolved multiple JSX syntax errors through proper React fragment usage and conditional rendering patterns
+  - **Design System Integration**: All components use proper design tokens, typography styles, and semantic color system
 
 - **ValuationDashboard Tooltip Fix**: Resolved issue with unwanted "i" icon appearing beside StatusCheck icons
   - **Problem**: InfoTooltip component was displaying default info icon alongside triangle status icons, interfering with tooltip functionality

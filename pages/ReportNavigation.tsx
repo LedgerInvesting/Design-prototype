@@ -574,7 +574,6 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
     borderRadius: borderRadius[8],
     padding: '20px 30px',
     width: '100%',
-    maxWidth: '1101px',
     height: '50px',
     display: 'flex',
     alignItems: 'center',
@@ -605,7 +604,7 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
   };
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative', width: '100%', maxWidth: '1101px' }}>
+    <div ref={dropdownRef} style={{ position: 'relative', width: '100%' }}>
       <div
         style={cardStyles}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -768,8 +767,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '24px',
-            marginTop: '40px',
-            maxWidth: '1120px'
+            marginTop: '40px'
           }}>
             {/* Cession and Collateral Card */}
             <div style={{
@@ -1169,8 +1167,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             border: `1px solid ${colors.theme.primary400}`,
             borderRadius: borderRadius[12],
             overflow: 'hidden',
-            marginTop: '24px',
-            maxWidth: '1120px'
+            marginTop: '24px'
           }}>
             {/* Card Header */}
             <div style={{
@@ -1388,8 +1385,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '24px',
-            marginTop: '24px',
-            maxWidth: '1120px'
+            marginTop: '24px'
           }}>
             {/* Data Ingestion Card */}
             <div style={{

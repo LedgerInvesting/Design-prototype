@@ -74,9 +74,9 @@ export const Layout: React.FC<LayoutProps> = ({
   const contentAreaStyles: React.CSSProperties = {
     backgroundColor: colors.blackAndWhite.white,
     minHeight: 'calc(100vh - 60px)',
-    maxWidth: `calc(${maxWidth} + 120px)`, // Add padding to ensure content area is exactly maxWidth
-    margin: '60px auto 0 auto', // Center horizontally, 60px top offset for TopNav
-    padding: '40px 60px 60px 60px', // 40px top, 60px left/right, 60px bottom
+    width: '100%', // Fill available width
+    margin: '60px 0 0 0', // 60px top offset for TopNav, no horizontal centering
+    padding: '40px 50px 60px 50px', // 40px top, 50px left/right margins, 60px bottom
     overflow: 'hidden', // Prevent any content from overflowing
     boxSizing: 'border-box', // Include padding in width calculation
   };

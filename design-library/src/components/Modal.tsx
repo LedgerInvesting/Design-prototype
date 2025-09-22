@@ -29,6 +29,10 @@ export interface ModalProps {
   showBackdrop?: boolean;
   /** Backdrop opacity */
   backdropOpacity?: number;
+  /** Backdrop color - 'black' or 'white' */
+  backdropColor?: 'black' | 'white';
+  /** Whether to blur content behind backdrop */
+  backdropBlur?: boolean;
   /** Whether to center the modal */
   centered?: boolean;
   /** Custom positioning (overrides centered) */
@@ -67,6 +71,8 @@ export const Modal: React.FC<ModalProps> = ({
   maxHeight = '90vh',
   showBackdrop = false,
   backdropOpacity = 0.5,
+  backdropColor = 'black',
+  backdropBlur = false,
   centered = true,
   position,
   buttonRef,
@@ -126,10 +132,21 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     if (isOpen && buttonRef?.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect();
+
+      // Align modal's right edge with button's right edge, offset 10px to the right
+      const modalWidth = typeof width === 'string' ?
+        parseInt(width) || 670 : width || 670;
+      const modalLeft = buttonRect.right - modalWidth + 10;
+
+      // Ensure modal doesn't go off screen
+      const minLeft = 20; // 20px margin from screen edge
+      const maxLeft = window.innerWidth - modalWidth - 20;
+      const finalLeft = Math.max(minLeft, Math.min(modalLeft, maxLeft));
+
       setCalculatedPosition({
         position: 'fixed',
         top: buttonRect.bottom + buttonGap,
-        right: window.innerWidth - buttonRect.right,
+        left: finalLeft,
         transform: 'none',
         opacity: 1, // Make visible once positioned
       });
@@ -166,13 +183,16 @@ export const Modal: React.FC<ModalProps> = ({
     right: 0,
     bottom: 0,
     backgroundColor: showBackdrop
-      ? `rgba(0, 0, 0, ${isAnimating ? backdropOpacity : 0})`
+      ? backdropColor === 'white'
+        ? `rgba(255, 255, 255, ${isAnimating ? backdropOpacity : 0})`
+        : `rgba(0, 0, 0, ${isAnimating ? backdropOpacity : 0})`
       : 'transparent',
+    backdropFilter: showBackdrop && backdropBlur && isAnimating ? 'blur(4px)' : 'none',
     display: 'flex',
     alignItems: centered && !buttonRef && !position ? 'center' : 'flex-start',
     justifyContent: centered && !buttonRef && !position ? 'center' : 'flex-start',
     zIndex: 10000,
-    transition: `background-color ${animationDuration}ms ease-out`,
+    transition: `background-color ${animationDuration}ms ease-out, backdrop-filter ${animationDuration}ms ease-out`,
   };
 
   // Parse padding to separate top/left/right from bottom
