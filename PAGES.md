@@ -172,6 +172,53 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 ---
 
+### 9. NewTransactionForm.tsx
+**Purpose:** Comprehensive multi-tab transaction creation form with complete Structure & Key Terms implementation.
+
+**Key Features:**
+- **FormTabs Integration:** 4-tab progressive workflow (Basic Info, Policy Groups, Structure & Key Terms, Reporting Parameters)
+- **Complete Navigation Flow:** "Create Transaction" button navigates back to Transaction Management page
+- **Basic Information Tab:** Enhanced field structure with real industry data
+  - Transaction Name and Policy Group ID input fields
+  - **Comprehensive Reinsurer Dropdowns:** 33 real-world reinsurance companies including Lloyd's of London, Swiss Re, Munich Re, Berkshire Hathaway Re, etc.
+  - Subject Business full-width textarea for detailed descriptions
+- **Structure & Key Terms Tab:** Complete advanced reinsurance configuration with 9 sections each wrapped in blue containers
+  - **Reinsurance Structure:** Four dropdown fields (Type, Form, Coverage Type, Layer Basis) with Coverage Layers functionality
+  - **Dynamic Coverage Layers:** Add/remove white boxes with numbered labels, tertiary button integration, and close buttons
+  - **Premium & Commission Terms:** Four input fields for commission structure
+  - **Profit Commission Tiers:** Dynamic tier system with Loss Ratio Threshold and Commission Rate fields
+  - **Policy Limits & Claims Fund Terms:** Three-field configuration for policy parameters
+  - **Pricing Limits:** Rate configuration with Min/Max rates and adjustment factors
+  - **Claims Fund:** Fund management with initial amounts, triggers, and liability limits
+  - **Operational & Brokerage Terms:** Contract dates and operational parameters
+  - **Broker Information:** Dynamic broker configuration with contact and commission details
+  - **Trust Account Terms:** Type and amount configuration for trust accounts
+  - **Tertiary Button Variant:** Implemented white background button with blue circular icon container for all "Add" functionality
+- **Policy Groups Tab:** Advanced policy configuration with industry-standard options
+  - Policy Group Name and Description input fields with proper placeholders
+  - **20 Statutory Product Lines:** Aviation, Commercial Auto, Workers Compensation, General Liability, Commercial Property, Professional Liability, Directors & Officers, Cyber Liability, Marine, Energy, Environmental, Product Liability, Employment Practices, Crime & Fidelity, Surety, Health & Medical, Life & Annuities, Casualty, Specialty Lines, Other
+  - Custom frequency selector with 1-5 scale visualization
+  - Admitted Status dropdown (Admitted/Non-Admitted)
+- **Reporting Parameters Tab:** Professional reporting configuration
+  - Reporting Frequency: Monthly, Quarterly
+  - Business Scope: Entire subject business, By policy groups (market segments)
+  - Data Format: Incremental, Cumulative, Transactional
+  - Data Level: Aggregated level, Detailed level (by policies), Detailed level (by claims)
+  - Dynamic requirements system with expandable requirement boxes
+- **Design System Integration:** Complete form styling with blue200 containers, bodyM typography, and optimized responsive grid layouts
+
+**Layout Configuration:**
+- Uses FormLayout component (specialized form variant of Layout)
+- Progress tracking with FormTabs component
+- Complete navigation between Reports, Analytics, and Contracts sections
+
+**Components Used:**
+- FormLayout, FormTabs, Input, Dropdown, DatePicker, Selector, ButtonSelector components
+- Button component with tertiary variant for "Add" functionality
+- Complete design token integration for consistent styling
+
+---
+
 ## Development Workflow
 
 ### Adding New Pages

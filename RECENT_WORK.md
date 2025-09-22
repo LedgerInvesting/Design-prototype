@@ -2,7 +2,60 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Form Enhancement & Layout Optimization - September 2025)
+## Latest Development Session (Structure & Key Terms Completion + ValuationDashboard Tooltip Fix - September 19, 2025)
+
+### 🏗️ **Complete Structure & Key Terms Implementation**
+
+220. **NewTransactionForm Structure & Key Terms Tab - Complete Rebuild**:
+    - **Full Error Recovery**: Successfully restored functionality after syntax errors from git restore operation
+    - **9 Section Implementation**: All sections wrapped in individual blue container boxes for visual organization
+      - Reinsurance Structure (Type, Form, Coverage Type, Layer Basis + Dynamic Coverage Layers)
+      - Premium & Commission Terms (four commission structure input fields)
+      - Profit Commission Tiers (Loss Ratio Threshold + Commission Rate with dynamic add/remove)
+      - Policy Limits & Claims Fund Terms (three-field policy parameter configuration)
+      - Pricing Limits (Rate configuration with Min/Max rates and adjustment factors)
+      - Claims Fund (Fund management with initial amounts, triggers, and liability limits)
+      - Operational & Brokerage Terms (Contract dates and operational parameters)
+      - Broker Information (Dynamic broker configuration with contact and commission details)
+      - Trust Account Terms (Type and amount configuration for trust accounts)
+    - **Dynamic Field Management**: Complete add/remove functionality across all section types
+      - 7 different dynamic field sets with individual useState arrays
+      - Proper ID generation for tracking field additions/removals
+      - Tertiary button integration for all "Add" functionality with PlusExtraSmall icons
+      - White close buttons (X icons) with proper positioning and hover effects
+    - **Professional Implementation**: Form matches Figma design specifications exactly with proper spacing and typography
+
+221. **Tertiary Button Variant Integration**:
+    - **Button Component Enhancement**: Added new `tertiary` variant to existing Button component system
+    - **White Background Design**: White button with blue circular icon container
+    - **Icon Integration**: Default AddMedium icon with custom icon override support
+    - **Theme Integration**: Uses design system radius (8px) and proper spacing (24px width/height container, 12px icon)
+    - **Storybook Documentation**: Comprehensive story showcasing tertiary variant features
+    - **Type System Updates**: Updated ButtonVariant union to include `'tertiary'` option
+
+### 🔧 **ValuationDashboard Tooltip System Fix**
+
+222. **InfoTooltip Component Usage Issue Resolution**:
+    - **Problem Identification**: InfoTooltip was displaying unwanted "i" icon beside StatusCheck icons, breaking tooltip functionality
+    - **Root Cause Analysis**: InfoTooltip component automatically renders info icon when used with children prop instead of text/sections props
+    - **Clean Solution**: Created custom TriangleTooltip component that wraps StatusCheck icons directly without additional visual elements
+    - **Implementation Details**:
+      - Custom mouse-following tooltip with 15ms easing factor for smooth movement
+      - Triangle legend with proper color coding (On risk: #BD8B11, Loss Development: #744DEB, Policy-Year: #3DA3CB)
+      - Smooth opacity transitions and fixed positioning relative to viewport
+      - No additional visual elements - StatusCheck icons serve as direct tooltip triggers
+    - **Code Cleanup**: Removed unused Button import and simplified hover logic for cleaner codebase
+    - **Result**: Clean implementation with fully functional tooltips and eliminated visual bloat
+
+### 📚 **Documentation & Code Quality**
+
+223. **Comprehensive Documentation Updates**:
+    - **CLAUDE.md Enhancement**: Complete documentation of September 19 work with detailed technical specifications
+    - **RECENT_WORK.md Updates**: Added comprehensive changelog entries for Structure & Key Terms and tooltip fixes
+    - **Code Quality**: Clean, well-organized implementation with proper error handling and state management
+    - **Git Integration**: Successfully committed all changes with detailed commit message
+
+## Previous Development Session (Form Enhancement & Layout Optimization - September 2025)
 
 ### 🎯 NewTransactionForm Improvements & Grid Layout Optimization
 

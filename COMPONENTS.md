@@ -89,12 +89,17 @@ const staticData = [
 ## Component Features Summary
 
 ### Button
-- Unified component with 3 variants: primary, small, icon
+- Unified component with 4 variants: primary, small, icon, tertiary
 - **Primary variant**: Full-featured buttons with text, icons, 5 colors (black, white, main, light, green)
 - **Small variant**: Compact buttons for secondary actions, 5 colors (black, white, main, light, green)
   - **Enhanced centering**: Perfect text alignment when `showIcon={false}` - no extra spacing for hidden icons
   - **Dynamic gap**: Automatically adjusts spacing based on icon presence (10px with icon, 0px without)
 - **Icon variant**: Icon-only buttons, 5 colors (black, main, light, green, white), 2 shapes (circle, square)
+- **Tertiary variant**: White background button with blue circular icon container and text
+  - **Design**: White button with primary400 border, blue circular icon container (24px) with white variant for "Add" functionality
+  - **Usage**: Ideal for "Add" actions in forms and dynamic content sections
+  - **Icon container**: Blue700 background with white AddMedium icon, border radius 8px
+  - **Full-width support**: Designed to span full width of containers for prominent actions
 - **Interactive hover effects**: Subtle 15% white overlay for colored buttons, blue200 solid for white buttons
 - **Smart icon colors**: White icons on dark backgrounds, black icons on light backgrounds
 - Icon positioning (left, right) for primary variant
@@ -117,11 +122,19 @@ const staticData = [
 - Located in "Components/Status" Storybook category with comprehensive interactive examples
 
 ### InfoTooltip
-- Circular "i" icon with hover/focus triggers
-- Simple text or complex multi-section content
-- 5 positioning options (top, bottom, left, right, bottom-right)
-- Uses `typography.styles.captionS` (titles), `typography.styles.bodyS` (descriptions)
-- Integrates with Figma design (black background, white text, separators)
+- **Circular "i" icon**: 18x18px SVG icon with hover/focus triggers and interactive states
+- **Content Support**: Three content modes with priority handling
+  - **Simple text**: Use `text` prop for basic tooltip content
+  - **Complex sections**: Use `sections` prop for multi-section content with titles and descriptions
+  - **Custom content**: Use `children` prop for completely custom React content
+- **5 positioning options**: top, bottom, left, right, bottom-right, follow-mouse
+- **Dynamic sizing**: Automatic sizing based on content type
+  - Simple text: 150px width with 8px 12px padding
+  - Complex sections: 250px width with 18px 20px padding
+  - Custom content: 200-400px width with 15px padding
+- **Typography integration**: Uses `typography.styles.captionS` (titles), `typography.styles.bodyS` (descriptions)
+- **Theme-aware design**: Black900 background, white text, proper separators between sections
+- **Usage Pattern Note**: For custom tooltip content without showing the "i" icon, create a custom tooltip component instead of using InfoTooltip with children prop
 
 ### Input
 - Complete form input with label and helper text

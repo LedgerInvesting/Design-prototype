@@ -3,6 +3,7 @@ import { colors, borderRadius, typography, spacing, useSemanticColors } from '..
 import { icons } from '../icons';
 import { InfoTooltip, InfoTooltipSection } from './InfoTooltip';
 import { DatePickerModal } from './DatePickerModal';
+import { commonTypographyStyles } from '../utils/typography';
 
 export interface DatePickerProps {
   /** DatePicker label */

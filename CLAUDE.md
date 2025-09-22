@@ -388,20 +388,39 @@ npm run dev  # Start on http://localhost:5173
 ### 🏗️ **Complete Structure & Key Terms Implementation (September 19, 2025)**
 - **NewTransactionForm Enhancement**: Successfully implemented comprehensive Structure & Key Terms tab with complete form functionality
   - **9 Section Implementation**: All sections wrapped in individual blue container boxes for visual organization
+    - Reinsurance Structure (Type, Form, Coverage Type, Layer Basis + Dynamic Coverage Layers)
+    - Premium & Commission Terms (four commission structure input fields)
+    - Profit Commission Tiers (Loss Ratio Threshold + Commission Rate with dynamic add/remove)
+    - Policy Limits & Claims Fund Terms (three-field policy parameter configuration)
+    - Pricing Limits (Rate configuration with Min/Max rates and adjustment factors)
+    - Claims Fund (Fund management with initial amounts, triggers, and liability limits)
+    - Operational & Brokerage Terms (Contract dates and operational parameters)
+    - Broker Information (Dynamic broker configuration with contact and commission details)
+    - Trust Account Terms (Type and amount configuration for trust accounts)
   - **Dynamic Field Management**: Full add/remove functionality across all section types with proper state management
+    - 7 different dynamic field sets with individual useState arrays
+    - Proper ID generation for tracking field additions/removals
+    - Tertiary button integration for all "Add" functionality with PlusExtraSmall icons
+    - White close buttons (X icons) with proper positioning and hover effects
   - **Tertiary Button Integration**: Successfully implemented and integrated new tertiary button variant for all "Add" functionality
-  - **Close Button Implementation**: White icon buttons with square shape and proper positioning (5px from borders)
+    - White background button with blue circular icon container
+    - Consistent styling across all dynamic sections
+    - Proper integration with existing Button component variant system
   - **Form Field Typography**: Verified all form components (Input, Dropdown, DatePicker) use consistent Body M typography for labels
   - **Error Recovery**: Successfully restored from syntax errors using git restore and recreated all lost functionality
-  - **Individual Blue Containers**: Each major section wrapped in its own blue container for better visual hierarchy
   - **Professional Implementation**: Complete 9-section form matching Figma design specifications exactly
 
 - **ValuationDashboard Tooltip Fix**: Resolved issue with unwanted "i" icon appearing beside StatusCheck icons
-  - **Problem**: InfoTooltip component was displaying default info icon alongside triangle status icons
-  - **Solution**: Created custom TriangleTooltip component that wraps StatusCheck icons directly
-  - **Features**: Mouse-following tooltip with triangle legend (On risk, Loss Development, Policy-Year triangles)
-  - **Clean Implementation**: Removed InfoTooltip dependency, simplified hover logic, maintained all functionality
-  - **Result**: StatusCheck icons now serve as direct tooltip triggers without extra visual elements
+  - **Problem**: InfoTooltip component was displaying default info icon alongside triangle status icons, interfering with tooltip functionality
+  - **Root Cause**: InfoTooltip component automatically renders info icon when used with children prop instead of text/sections props
+  - **Solution**: Created custom TriangleTooltip component that wraps StatusCheck icons directly without additional visual elements
+  - **Implementation Details**:
+    - Custom mouse-following tooltip with 15ms easing factor
+    - Triangle legend with proper color coding (On risk: #BD8B11, Loss Development: #744DEB, Policy-Year: #3DA3CB)
+    - Smooth opacity transitions and fixed positioning
+    - No additional visual elements - StatusCheck icons serve as direct tooltip triggers
+  - **Code Cleanup**: Removed unused Button import and simplified hover logic
+  - **Result**: Clean implementation with fully functional tooltips and no visual bloat
 
 ### 🎯 **Comprehensive Token Consolidation & Theme System (September 2025)**
 - **Complete Token Consolidation**: Eliminated all redundant color tokens and unified the entire codebase to use semantic theme system
