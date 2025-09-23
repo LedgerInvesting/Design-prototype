@@ -2,7 +2,52 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Code Cleanup & Component Optimization - September 23, 2025)
+## Latest Development Session (BDX Upload Modal System & File Display Enhancement - September 23, 2025)
+
+### 🎯 **File Upload Modal System - Complete Implementation**
+
+**Key Features Implemented:**
+1. **Comprehensive Upload Modal System**:
+   - **Modal Integration**: Added full Modal component integration for file uploads
+   - **Two-Line Title**: Context-aware title showing document type and month (e.g., "Policy Bordereau (Jan 2023)")
+   - **Document Name Input**: Text input field for custom document naming
+   - **Drag & Drop Upload**: Full drag-and-drop functionality with file browser fallback
+   - **File Requirements Section**: Warning-styled requirements box with format and size specifications
+
+2. **Custom File Display Design (Figma-Matched)**:
+   - **Custom Document Illustration**: Replaced DocumentMedium icon with custom SVG from temp folder
+   - **Professional Layout**: Document icon (50x70px) on left, filename center, close button right
+   - **Design System Integration**: Uses semantic colors, typography tokens, and small shadow from design tokens
+   - **Interactive Elements**: Functional close button to remove selected files
+   - **Container Styling**: White background with dashed border using theme primary400 color
+
+3. **Upload State Management**:
+   - **File Tracking**: State tracking system using Set to track uploaded files per month/type combination
+   - **Dynamic UI Updates**: "Add" buttons change to progress icons after successful upload
+   - **Fake Upload Simulation**: Complete file upload simulation without backend dependency
+   - **Status Integration**: Progress status shows after upload, matching table status system
+
+4. **Enhanced Modal Tooltips**:
+   - **Success Modal**: Green-themed tooltip for successful uploads with validation confirmation
+   - **Attention Modal**: Warning-themed tooltip for minor validation issues
+   - **Hover System**: Extended hover tooltip system to support success and attention status icons
+   - **Contextual Messages**: Specific messages for each status type with appropriate styling
+
+**Technical Implementation:**
+- **State Management**: Added uploadedFiles Set, selectedFile File state, and addModalContext
+- **Event Handlers**: Complete drag/drop, file browser, and upload simulation handlers
+- **Icon Integration**: Added CloseMedium import, custom SVG implementation with shadow
+- **Modal Props**: Proper Modal component usage with correct props (width, backdrop, etc.)
+- **File Type Validation**: Accept attribute for .xlsx, .csv, .xls files
+
+**Design System Compliance:**
+- **Semantic Colors**: Used theme-aware colors throughout modal system
+- **Typography Tokens**: Applied bodyM, subheadingL styles consistently
+- **Shadow System**: Applied shadows.small to document illustration
+- **Border Radius**: Used borderRadius tokens for consistent styling
+- **Icon System**: Proper use of design library icons (DownloadMedium, CloseMedium)
+
+## Previous Development Session (Code Cleanup & Component Optimization - September 23, 2025)
 
 ### 🧹 **Major Code Cleanup & Optimization**
 

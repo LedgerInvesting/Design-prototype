@@ -22,7 +22,9 @@ import {
   StatusError,
   StatusCheckTable,
   StatusProhibitedTable,
-  DocumentMedium
+  DocumentMedium,
+  DownloadMedium,
+  CloseMedium
 } from '@design-library/icons';
 
 interface BDXUploadProps {
@@ -37,13 +39,17 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
   const semanticColors = useSemanticColors();
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
-    type: 'error' | 'progress' | null;
+    type: 'error' | 'progress' | 'success' | 'attention' | null;
     position: { x: number; y: number };
   }>({
     isOpen: false,
     type: null,
     position: { x: 0, y: 0 }
   });
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addModalContext, setAddModalContext] = useState<{ month: string; type: string } | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<Set<string>>(new Set());
   const modalRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -115,8 +121,41 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
     },
   };
 
+  // Handle Add button clicks
+  const handleAddClick = (month: string, type: string) => {
+    setAddModalContext({ month, type });
+    setSelectedFile(null); // Reset file when opening modal
+    setIsAddModalOpen(true);
+  };
+
+  // File handling functions
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+  };
+
+  const handleBrowseClick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.csv,.xls';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) handleFileSelect(file);
+    };
+    input.click();
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileSelect(file);
+  };
+
   // Modal hover handlers
-  const handleIconEnter = (event: React.MouseEvent, type: 'error' | 'progress') => {
+  const handleIconEnter = (event: React.MouseEvent, type: 'error' | 'progress' | 'success' | 'attention') => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
@@ -172,7 +211,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
   };
 
   // Function to create status icon cell
-  const createStatusCell = (status: string): CustomCellElement[] => {
+  const createStatusCell = (status: string, month?: string, type?: string): CustomCellElement[] => {
     switch (status) {
       case 'progress':
         return [{
@@ -188,7 +227,18 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
           )
         }];
       case 'attention':
-        return [{ type: 'icon', icon: <StatusAlertTable color="#AB8703" /> }];
+        return [{
+          type: 'icon',
+          icon: (
+            <div
+              onMouseEnter={(e) => handleIconEnter(e, 'attention')}
+              onMouseLeave={handleIconLeave}
+              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <StatusAlertTable color="#AB8703" />
+            </div>
+          )
+        }];
       case 'error':
         return [{
           type: 'icon',
@@ -203,7 +253,18 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
           )
         }];
       case 'success':
-        return [{ type: 'icon', icon: <StatusCheckTable color="#13B64F" /> }];
+        return [{
+          type: 'icon',
+          icon: (
+            <div
+              onMouseEnter={(e) => handleIconEnter(e, 'success')}
+              onMouseLeave={handleIconLeave}
+              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <StatusCheckTable color="#13B64F" />
+            </div>
+          )
+        }];
       case 'prohibited':
         return [{ type: 'icon', icon: <StatusProhibitedTable /> }];
       case 'empty':
@@ -218,12 +279,31 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
         }];
       case 'add':
       default:
+        // Check if file has been uploaded for this month/type combination
+        const fileKey = `${type}-${month}`;
+        const isUploaded = uploadedFiles.has(fileKey);
+
+        if (isUploaded) {
+          return [{
+            type: 'icon',
+            icon: (
+              <div
+                onMouseEnter={(e) => handleIconEnter(e, 'progress')}
+                onMouseLeave={handleIconLeave}
+                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <StatusProgressTable color="#3DA3CB" />
+              </div>
+            )
+          }];
+        }
+
         return [{
           type: 'button',
           text: 'Add',
           variant: 'small',
           color: 'white',
-          onClick: () => console.log('Add clicked for month'),
+          onClick: () => handleAddClick(month || 'Unknown', type || 'Unknown'),
           style: { boxShadow: shadows.small },
         }];
     }
@@ -325,7 +405,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
             {months.map((month) => (
               <td key={`policy-${month}`} style={cellStyles}>
                 <CustomCell
-                  elements={createStatusCell(uploadData.policy[month.toLowerCase() as keyof typeof uploadData.policy])}
+                  elements={createStatusCell(uploadData.policy[month.toLowerCase() as keyof typeof uploadData.policy], month, 'Policy')}
                   alignment="center"
                 />
               </td>
@@ -346,7 +426,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
                 borderBottom: month === 'Dec' ? 'none' : cellStyles.borderBottom
               }}>
                 <CustomCell
-                  elements={createStatusCell(uploadData.claims[month.toLowerCase() as keyof typeof uploadData.claims])}
+                  elements={createStatusCell(uploadData.claims[month.toLowerCase() as keyof typeof uploadData.claims], month, 'Claims')}
                   alignment="center"
                 />
               </td>
@@ -607,6 +687,368 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
               </div>
             </div>
           </div>
+        )}
+
+        {/* Success Modal */}
+        {modalState.isOpen && modalState.type === 'success' && (
+          <div
+            ref={modalRef}
+            onMouseEnter={handleModalEnter}
+            onMouseLeave={handleModalLeave}
+            style={{
+              position: 'fixed',
+              left: `${modalState.position.x - 140}px`, // Center the 280px modal
+              top: `${modalState.position.y}px`,
+              zIndex: 1000,
+              backgroundColor: semanticColors.blackAndWhite.white,
+              borderRadius: borderRadius[8],
+              boxShadow: shadows.medium,
+              width: '280px',
+            }}
+          >
+            <div style={{ padding: '16px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                backgroundColor: '#e8f5e8', // success light background
+                padding: '12px',
+                borderRadius: borderRadius[8]
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <StatusCheckTable color="#13B64F" />
+                </div>
+                <div>
+                  <div style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black900,
+                    fontWeight: typography.fontWeight.medium,
+                    lineHeight: 1.4
+                  }}>
+                    Bordereau successfully uploaded and processed. All data validated successfully.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Attention Modal */}
+        {modalState.isOpen && modalState.type === 'attention' && (
+          <div
+            ref={modalRef}
+            onMouseEnter={handleModalEnter}
+            onMouseLeave={handleModalLeave}
+            style={{
+              position: 'fixed',
+              left: `${modalState.position.x - 140}px`, // Center the 280px modal
+              top: `${modalState.position.y}px`,
+              zIndex: 1000,
+              backgroundColor: semanticColors.blackAndWhite.white,
+              borderRadius: borderRadius[8],
+              boxShadow: shadows.medium,
+              width: '280px',
+            }}
+          >
+            <div style={{ padding: '16px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                backgroundColor: '#fffbee', // warning light background
+                padding: '12px',
+                borderRadius: borderRadius[8]
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <StatusAlertTable color="#AB8703" />
+                </div>
+                <div>
+                  <div style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black900,
+                    fontWeight: typography.fontWeight.medium,
+                    lineHeight: 1.4
+                  }}>
+                    Minor validation issues detected. Please review and confirm data accuracy before proceeding.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Bordereau Modal */}
+        {isAddModalOpen && (
+          <Modal
+            isOpen={isAddModalOpen}
+            onClose={() => {
+              setIsAddModalOpen(false);
+              setSelectedFile(null);
+            }}
+            title={
+              <div>
+                <div style={{
+                  ...typography.styles.subheadingL,
+                  color: semanticColors.blackAndWhite.black500,
+                  marginBottom: '4px'
+                }}>
+                  Uploading document for:
+                </div>
+                <div style={{
+                  ...typography.styles.subheadingL
+                }}>
+                  {addModalContext?.type} Bordereau ({addModalContext?.month} 2023)
+                </div>
+              </div>
+            }
+            width="560px"
+            maxWidth="90vw"
+            showBackdrop={true}
+            backdropOpacity={0.5}
+            backdropColor="white"
+            centered={true}
+            footer={
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                justifyContent: 'space-between'
+              }}>
+                <Button
+                  variant="primary"
+                  color="white"
+                  showIcon={false}
+                  onClick={() => {
+                    setIsAddModalOpen(false);
+                    setSelectedFile(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  color="black"
+                  showIcon={false}
+                  disabled={!selectedFile}
+                  onClick={() => {
+                    // Handle fake upload
+                    if (selectedFile && addModalContext) {
+                      const fileKey = `${addModalContext.type}-${addModalContext.month}`;
+                      setUploadedFiles(prev => new Set([...prev, fileKey]));
+                      console.log('File added:', selectedFile.name, 'for', addModalContext);
+                    }
+                    setIsAddModalOpen(false);
+                    setSelectedFile(null);
+                  }}
+                >
+                  Add File
+                </Button>
+              </div>
+            }
+          >
+            <div>
+              {/* Upload Container */}
+              <div style={{
+                backgroundColor: semanticColors.theme.primary200,
+                padding: '20px',
+                borderRadius: borderRadius[8],
+                marginBottom: '24px'
+              }}>
+                {/* Document Name Input */}
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{
+                    display: 'block',
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black900,
+                    fontWeight: typography.fontWeight.medium,
+                    marginBottom: '8px'
+                  }}>
+                    Name of the document
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter document name"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: `1px solid ${semanticColors.theme.primary400}`,
+                      borderRadius: borderRadius[8],
+                      backgroundColor: semanticColors.blackAndWhite.white,
+                      ...typography.styles.bodyM,
+                      color: semanticColors.blackAndWhite.black900,
+                      boxSizing: 'border-box',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+
+                {/* Upload Area */}
+                {selectedFile ? (
+                  // Show selected file with Figma design
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    border: `2px dashed ${semanticColors.theme.primary400}`,
+                    borderRadius: borderRadius[8],
+                    backgroundColor: semanticColors.blackAndWhite.white,
+                    padding: '12px',
+                    gap: '12px',
+                    width: '100%'
+                  }}>
+                    {/* Document illustration on the left */}
+                    <div style={{
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: shadows.small
+                    }}>
+                      <svg width="50" height="70" viewBox="0 0 54 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="54" height="71" rx="6" fill="white" />
+                        <rect x="5.05542" y="9.94844" width="23.6641" height="2" fill="#DFDFDF"/>
+                        <rect x="5.39526" y="20.1315" width="28.4272" height="2" fill="#DFDFDF"/>
+                        <rect x="5.39526" y="32.3512" width="28.4272" height="2" fill="#DFDFDF"/>
+                        <rect x="5.39526" y="40.328" width="28.4272" height="2" fill="#DFDFDF"/>
+                        <rect x="5.39526" y="55.1482" width="15.377" height="2" fill="#DFDFDF"/>
+                        <rect x="5.39526" y="59.0518" width="5.02344" height="2" fill="#DFDFDF"/>
+                        <rect x="12.0144" y="59.0518" width="5.02344" height="2" fill="#DFDFDF"/>
+                        <rect x="48.9441" y="26.2047" width="28.4272" height="2" transform="rotate(-180 48.9441 26.2047)" fill="#DFDFDF"/>
+                        <rect x="48.9441" y="38.4244" width="28.4272" height="2" transform="rotate(-180 48.9441 38.4244)" fill="#DFDFDF"/>
+                        <rect x="48.9441" y="30.6174" width="12.4375" height="2" transform="rotate(-180 48.9441 30.6174)" fill="#DFDFDF"/>
+                        <rect x="36.3875" y="20.1315" width="12.5572" height="2" fill="#DFDFDF"/>
+                        <rect x="36.3875" y="32.3512" width="12.5572" height="2" fill="#DFDFDF"/>
+                        <rect x="17.9519" y="26.2047" width="12.5572" height="2" transform="rotate(-180 17.9519 26.2047)" fill="#DFDFDF"/>
+                        <rect x="17.9519" y="38.4244" width="12.5572" height="2" transform="rotate(-180 17.9519 38.4244)" fill="#DFDFDF"/>
+                        <rect x="17.9519" y="30.6174" width="12.5572" height="2" transform="rotate(-180 17.9519 30.6174)" fill="#DFDFDF"/>
+                        <rect x="33.2429" y="30.6174" width="12.5572" height="2" transform="rotate(-180 33.2429 30.6174)" fill="#DFDFDF"/>
+                      </svg>
+                    </div>
+
+                    {/* Filename in the center */}
+                    <div style={{
+                      flex: 1,
+                      ...typography.styles.bodyM,
+                      color: semanticColors.blackAndWhite.black900,
+                      fontWeight: typography.fontWeight.medium,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {selectedFile.name}
+                    </div>
+
+                    {/* Close button on the right */}
+                    <div style={{
+                      flexShrink: 0,
+                      width: '26px',
+                      height: '26px',
+                      backgroundColor: semanticColors.theme.primary200,
+                      borderRadius: borderRadius[4],
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedFile(null);
+                    }}
+                    >
+                      <CloseMedium color={semanticColors.blackAndWhite.black700} />
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      border: `2px dashed ${semanticColors.theme.primary400}`,
+                      borderRadius: borderRadius[8],
+                      padding: '40px 24px',
+                      textAlign: 'center',
+                      backgroundColor: semanticColors.blackAndWhite.white,
+                      cursor: 'pointer'
+                    }}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    onClick={handleBrowseClick}
+                  >
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      backgroundColor: semanticColors.success.fill,
+                      borderRadius: borderRadius[8],
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 16px auto'
+                    }}>
+                      <DownloadMedium color={semanticColors.blackAndWhite.black900} />
+                    </div>
+                    <div style={{
+                      ...typography.styles.bodyL,
+                      color: semanticColors.blackAndWhite.black900
+                    }}>
+                      Drag and drop your file here or click to{' '}
+                      <span
+                        style={{
+                          color: semanticColors.blackAndWhite.black900,
+                          cursor: 'pointer',
+                          textDecoration: 'underline'
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent double click
+                          if (!selectedFile) {
+                            handleBrowseClick();
+                          }
+                        }}
+                      >
+                        browse files
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* File Requirements */}
+              <div style={{
+                backgroundColor: semanticColors.warning.fillLight,
+                padding: '16px',
+                borderRadius: borderRadius[8],
+                marginBottom: '24px'
+              }}>
+                <div style={{
+                  ...typography.styles.bodyM,
+                  color: semanticColors.blackAndWhite.black900,
+                  fontWeight: typography.fontWeight.medium,
+                  marginBottom: '8px'
+                }}>
+                  File Requirements
+                </div>
+                <ul style={{
+                  ...typography.styles.bodyS,
+                  color: semanticColors.blackAndWhite.black700,
+                  margin: 0,
+                  paddingLeft: '16px'
+                }}>
+                  <li>Supported formats: .xlsx, .csv, .xls</li>
+                  <li>Maximum file size: 50MB</li>
+                  <li>Must contain required columns: Policy Number, Premium, Claims, etc.</li>
+                </ul>
+              </div>
+            </div>
+          </Modal>
         )}
     </Layout>
   );

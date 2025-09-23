@@ -10,6 +10,33 @@ This ensures you can view components and changes in real-time at http://localhos
 ## ⚠️ CRITICAL: Design Token Usage Rules
 **SUPER IMPORTANT - ALWAYS FOLLOW THESE RULES:**
 
+### **🚨 NEVER CREATE EXTERNAL ICONS OR TOKENS**
+**CRITICAL RULE: ONLY USE DESIGN LIBRARY COMPONENTS, ICONS, AND TOKENS**
+
+- **NEVER create custom SVG icons** - Always use icons from `@design-library/icons`
+- **NEVER use external libraries** for icons, colors, typography, or spacing
+- **NEVER hardcode colors, fonts, or spacing** - Always use design tokens
+- **ALWAYS import from the design library**: components, icons, colors, typography, spacing, etc.
+- **TEAM DEPENDENCY**: Other team members rely on consistent library usage and may not notice external additions
+
+**Examples of FORBIDDEN practices:**
+```tsx
+// ❌ NEVER DO THIS - Custom SVG
+<svg width="24" height="24">...</svg>
+
+// ❌ NEVER DO THIS - External icon library
+import { Download } from 'react-icons'
+
+// ❌ NEVER DO THIS - Hardcoded colors
+backgroundColor: '#ff0000'
+
+// ✅ ALWAYS DO THIS - Use design library
+import { DownloadMedium } from '@design-library/icons'
+<DownloadMedium color={colors.theme.main} />
+```
+
+**WHY THIS IS CRITICAL**: The library is designed for team use. When team members who don't know the library deeply use Claude, they depend on Claude only using approved design system elements. External additions break consistency and create maintenance issues.
+
 ### **Typography Tokens - NEVER Override**
 - **ALWAYS use our typography tokens first**: `typography.styles.headlineH1`, `typography.styles.headlineH2`, `typography.styles.bodyM`, etc.
 - **NEVER add custom font properties** like `fontWeight`, `fontSize`, `fontFamily` when using typography tokens
