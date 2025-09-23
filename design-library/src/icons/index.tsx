@@ -1353,9 +1353,66 @@ export const StatusProgressTable: React.FC<TableIconProps> = ({
   className
 }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <circle cx="9" cy="9" r="7.5" stroke={color} strokeWidth="2" strokeDasharray="3 3"/>
-    <path d="M17.5 9C17.5 9.5676 17.442 10.1218 17.3359 10.6582L15.376 10.2705C15.4569 9.86118 15.5 9.4366 15.5 9C15.5 8.5634 15.4569 8.13882 15.376 7.72949L17.3359 7.34082C17.4422 7.87757 17.5 8.43207 17.5 9ZM13.7217 1.93262C14.6485 2.55303 15.4458 3.35066 16.0664 4.27734L15.2373 4.83398L15.2363 4.83301L14.4062 5.38965C13.9312 4.68013 13.3199 4.06881 12.6104 3.59375L13.7217 1.93262ZM9 0.5C9.56753 0.5 10.1218 0.556997 10.6582 0.663086L10.2705 2.62402C9.86118 2.54306 9.4366 2.5 9 2.5C8.5634 2.5 8.13882 2.54306 7.72949 2.62402L7.34082 0.663086C7.87751 0.556876 8.43213 0.5 9 0.5Z" fill={color}/>
-    <circle cx="9" cy="9" r="2.5" stroke={color} strokeWidth="2"/>
+    <style>
+      {`
+        @keyframes colorChange1 { 0%, 12.5%, 100% { fill: #B3E5FF; } 6.25% { fill: ${color}; } }
+        @keyframes colorChange2 { 0%, 12.5%, 87.5%, 100% { fill: #B3E5FF; } 18.75% { fill: ${color}; } }
+        @keyframes colorChange3 { 0%, 25%, 75%, 100% { fill: #B3E5FF; } 31.25% { fill: ${color}; } }
+        @keyframes colorChange4 { 0%, 37.5%, 62.5%, 100% { fill: #B3E5FF; } 43.75% { fill: ${color}; } }
+        @keyframes colorChange5 { 0%, 50%, 100% { fill: #B3E5FF; } 56.25% { fill: ${color}; } }
+        @keyframes colorChange6 { 0%, 37.5%, 62.5%, 100% { fill: #B3E5FF; } 68.75% { fill: ${color}; } }
+        @keyframes colorChange7 { 0%, 25%, 75%, 100% { fill: #B3E5FF; } 81.25% { fill: ${color}; } }
+        @keyframes colorChange8 { 0%, 12.5%, 87.5%, 100% { fill: #B3E5FF; } 93.75% { fill: ${color}; } }
+        .segment1 { animation: colorChange1 2s infinite; }
+        .segment2 { animation: colorChange2 2s infinite; }
+        .segment3 { animation: colorChange3 2s infinite; }
+        .segment4 { animation: colorChange4 2s infinite; }
+        .segment5 { animation: colorChange5 2s infinite; }
+        .segment6 { animation: colorChange6 2s infinite; }
+        .segment7 { animation: colorChange7 2s infinite; }
+        .segment8 { animation: colorChange8 2s infinite; }
+      `}
+    </style>
+
+    {/* Using the exact separated paths from the updated loading.svg - scaled to fit 18x18 viewBox */}
+    <g transform="scale(0.947) translate(-0.5, -0.5)">
+
+      {/* Segment 1: Top (12 o'clock) */}
+      <path d="M9.5 1C10.0675 1 10.6218 1.057 11.1582 1.16309L10.7705 3.12402C10.3612 3.04306 9.9366 3 9.5 3C9.0634 3 8.63882 3.04306 8.22949 3.12402L7.84082 1.16309C8.37751 1.05688 8.93213 1 9.5 1Z"
+            fill="#B3E5FF" className="segment1"/>
+
+      {/* Segment 2: Top-right (1:30) */}
+      <path d="M14.2217 2.43262C15.1485 3.05303 15.9458 3.85066 16.5664 4.77734L15.7373 5.33398L15.7363 5.33301L14.9062 5.88965C14.4312 5.18013 13.8199 4.56881 13.1104 4.09375L14.2217 2.43262Z"
+            fill="#B3E5FF" className="segment2"/>
+
+      {/* Segment 3: Right (3 o'clock) */}
+      <path d="M18 9.5C18 10.0676 17.9421 10.6217 17.8359 11.1582L15.876 10.7705C15.9569 10.3612 16 9.9366 16 9.5C16 9.0634 15.9569 8.63882 15.876 8.22949L17.8359 7.84082C17.9422 8.37757 18 8.93207 18 9.5Z"
+            fill="#B3E5FF" className="segment3"/>
+
+      {/* Segment 4: Bottom-right (4:30) */}
+      <path d="M15.7363 13.666L16.5664 14.2217C15.9459 15.1485 15.1485 15.9459 14.2217 16.5664L13.666 15.7373L13.1104 14.9062C13.8199 14.4312 14.4312 13.8199 14.9062 13.1104L15.7363 13.666Z"
+            fill="#B3E5FF" className="segment4"/>
+
+      {/* Segment 5: Bottom (6 o'clock) */}
+      <path d="M9.5 17.9961C8.93247 17.9961 8.3782 17.9391 7.8418 17.833L8.22949 15.8721C8.63882 15.953 9.0634 15.9961 9.5 15.9961C9.9366 15.9961 10.3612 15.953 10.7705 15.8721L11.1592 17.833C10.6225 17.9392 10.0679 17.9961 9.5 17.9961Z"
+            fill="#B3E5FF" className="segment5"/>
+
+      {/* Segment 6: Bottom-left (7:30) */}
+      <path d="M4.09375 13.1104C4.56881 13.8199 5.18013 14.4312 5.88965 14.9062L5.33301 15.7363L5.33398 15.7373L5.04883 16.1631L4.77734 16.5664C3.85066 15.9458 3.05303 15.1485 2.43262 14.2217L4.09375 13.1104Z"
+            fill="#B3E5FF" className="segment6"/>
+
+      {/* Segment 7: Left (9 o'clock) */}
+      <path d="M1 9.5C1 8.93213 1.05688 8.37751 1.16309 7.84082L3.12402 8.22949C3.04306 8.63882 3 9.0634 3 9.5C3 9.9366 3.04306 10.3612 3.12402 10.7705L1.16309 11.1582C1.057 10.6218 1 10.0675 1 9.5Z"
+            fill="#B3E5FF" className="segment7"/>
+
+      {/* Segment 8: Top-left (10:30) */}
+      <path d="M5.33398 3.2627L5.88965 4.09375C5.18013 4.56881 4.56881 5.18013 4.09375 5.88965L3.2627 5.33301L2.43262 4.77734C3.05307 3.85069 3.85069 3.05307 4.77734 2.43262L5.33398 3.2627Z"
+            fill="#B3E5FF" className="segment8"/>
+
+      {/* Inner circle - using color prop with 100% opacity and centered with outer segments */}
+      <circle cx="9.5" cy="9.5" r="2.5" stroke={color} strokeWidth="2" opacity="1"/>
+
+    </g>
   </svg>
 );
 
