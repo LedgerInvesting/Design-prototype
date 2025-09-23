@@ -338,6 +338,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
       backgroundColor: semanticColors.blackAndWhite.white,
       writingMode: 'vertical-rl' as const,
       textOrientation: 'mixed' as const,
+      transform: 'rotate(180deg)',
       width: '80px',
       fontSize: typography.styles.captionM.fontSize,
       fontFamily: typography.styles.captionM.fontFamily.join(', '),
@@ -364,7 +365,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
       backgroundColor: semanticColors.blackAndWhite.white,
       textAlign: 'left' as const,
       paddingLeft: '16px',
-      width: '150px',
+      width: '180px',
       fontSize: typography.styles.bodyM.fontSize,
       fontFamily: typography.styles.bodyM.fontFamily.join(', '),
       fontWeight: typography.fontWeight.medium,
@@ -381,9 +382,9 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
         <thead>
           <tr>
             <th style={{ ...headerStyles, width: '80px', borderLeft: `1px solid ${semanticColors.theme.primary400}` }}></th>
-            <th style={{ ...headerStyles, width: '150px' }}></th>
+            <th style={{ ...headerStyles, width: '180px' }}></th>
             {months.map((month) => (
-              <th key={month} style={{ ...headerStyles, width: '90px' }}>
+              <th key={month} style={{ ...headerStyles, width: '75px' }}>
                 {month}
               </th>
             ))}
