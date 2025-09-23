@@ -255,6 +255,7 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
           variant="primary"
           color="black"
           icon={<PencilMedium />}
+          disabled={!selectedTransaction}
           onClick={() => {
             if (selectedTransaction) {
               onNavigateToPage('new-transaction-form', {
