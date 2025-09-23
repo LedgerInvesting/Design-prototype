@@ -12,7 +12,6 @@ import { typography, spacing, borderRadius, shadows, useSemanticColors, colors a
 // Import icons
 import { ArrowUpSmall, ArrowDownSmall, ChevronRightExtraSmall } from '@design-library/icons';
 
-// Custom chevron down icon component
 const ChevronDownIcon: React.FC = () => (
   <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M2 3L4 5L6 3" stroke={staticColors.blackAndWhite.black900} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
@@ -220,8 +219,8 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
   const [expandedNodes, setExpandedNodes] = React.useState<Set<string>>(new Set());
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
-  // Tree data structure with folder organization: Reinsurers > MGA > Programs > Treaties
-  const treeData: TreeNode[] = [
+  // Simplified tree data structure
+  const treeData: TreeNode[] = React.useMemo(() => [
     {
       id: 'reinsurers-folder',
       label: 'Reinsurers',
@@ -231,75 +230,13 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
           label: 'Swiss Re',
           children: [
             {
-              id: 'mga-folder-swiss',
-              label: 'MGA',
+              id: 'mga-global',
+              label: 'Global MGA Solutions',
               children: [
-                {
-                  id: 'mga-global',
-                  label: 'Global MGA Solutions',
-                  children: [
-                    {
-                      id: 'programs-folder-global',
-                      label: 'Programs',
-                      children: [
-                        {
-                          id: 'property-program',
-                          label: 'Property Program 2024',
-                          children: [
-                            {
-                              id: 'treaties-folder-property',
-                              label: 'Treaties',
-                              children: [
-                                { id: 'property-cat-treaty', label: 'Property Cat Treaty' },
-                                { id: 'property-quota-treaty', label: 'Property Quota Share Treaty' }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          id: 'casualty-program',
-                          label: 'Casualty Program 2024',
-                          children: [
-                            {
-                              id: 'treaties-folder-casualty',
-                              label: 'Treaties',
-                              children: [
-                                { id: 'casualty-excess-treaty', label: 'Casualty Excess Treaty' },
-                                { id: 'casualty-stop-loss-treaty', label: 'Casualty Stop Loss Treaty' }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  id: 'mga-specialty',
-                  label: 'Specialty Lines MGA',
-                  children: [
-                    {
-                      id: 'programs-folder-specialty',
-                      label: 'Programs',
-                      children: [
-                        {
-                          id: 'marine-program',
-                          label: 'Marine Program 2024',
-                          children: [
-                            {
-                              id: 'treaties-folder-marine',
-                              label: 'Treaties',
-                              children: [
-                                { id: 'marine-hull-treaty', label: 'Marine Hull Treaty' },
-                                { id: 'marine-cargo-treaty', label: 'Marine Cargo Treaty' }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
+                { id: 'property-cat-treaty', label: 'Property Cat Treaty' },
+                { id: 'property-quota-treaty', label: 'Property Quota Share Treaty' },
+                { id: 'casualty-excess-treaty', label: 'Casualty Excess Treaty' },
+                { id: 'marine-hull-treaty', label: 'Marine Hull Treaty' }
               ]
             }
           ]
@@ -309,49 +246,11 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
           label: 'Munich Re',
           children: [
             {
-              id: 'mga-folder-munich',
-              label: 'MGA',
+              id: 'mga-north-america',
+              label: 'North America MGA',
               children: [
-                {
-                  id: 'mga-north-america',
-                  label: 'North America MGA',
-                  children: [
-                    {
-                      id: 'programs-folder-na',
-                      label: 'Programs',
-                      children: [
-                        {
-                          id: 'auto-program',
-                          label: 'Auto Program 2024',
-                          children: [
-                            {
-                              id: 'treaties-folder-auto',
-                              label: 'Treaties',
-                              children: [
-                                { id: 'auto-liability-treaty', label: 'Auto Liability Treaty' },
-                                { id: 'auto-physical-damage-treaty', label: 'Auto Physical Damage Treaty' }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          id: 'workers-comp-program',
-                          label: 'Workers Comp Program 2024',
-                          children: [
-                            {
-                              id: 'treaties-folder-workers',
-                              label: 'Treaties',
-                              children: [
-                                { id: 'workers-comp-excess-treaty', label: 'Workers Comp Excess Treaty' },
-                                { id: 'workers-comp-quota-treaty', label: 'Workers Comp Quota Share Treaty' }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
+                { id: 'auto-liability-treaty', label: 'Auto Liability Treaty' },
+                { id: 'workers-comp-excess-treaty', label: 'Workers Comp Excess Treaty' }
               ]
             }
           ]
@@ -361,80 +260,18 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
           label: 'Berkshire Hathaway Re',
           children: [
             {
-              id: 'mga-folder-berkshire',
-              label: 'MGA',
+              id: 'mga-international',
+              label: 'International MGA',
               children: [
-                {
-                  id: 'mga-international',
-                  label: 'International MGA',
-                  children: [
-                    {
-                      id: 'programs-folder-intl',
-                      label: 'Programs',
-                      children: [
-                        {
-                          id: 'aviation-program',
-                          label: 'Aviation Program 2024',
-                          children: [
-                            {
-                              id: 'treaties-folder-aviation',
-                              label: 'Treaties',
-                              children: [
-                                { id: 'aviation-hull-treaty', label: 'Aviation Hull Treaty' },
-                                { id: 'aviation-liability-treaty', label: 'Aviation Liability Treaty' }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 'lloyds-london',
-          label: 'Lloyd\'s of London',
-          children: [
-            {
-              id: 'mga-folder-lloyds',
-              label: 'MGA',
-              children: [
-                {
-                  id: 'mga-energy',
-                  label: 'Energy MGA',
-                  children: [
-                    {
-                      id: 'programs-folder-energy',
-                      label: 'Programs',
-                      children: [
-                        {
-                          id: 'energy-program',
-                          label: 'Energy Program 2024',
-                          children: [
-                            {
-                              id: 'treaties-folder-energy',
-                              label: 'Treaties',
-                              children: [
-                                { id: 'energy-liability-treaty', label: 'Energy Liability Treaty' },
-                                { id: 'energy-property-treaty', label: 'Energy Property Treaty' }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
+                { id: 'aviation-hull-treaty', label: 'Aviation Hull Treaty' },
+                { id: 'energy-liability-treaty', label: 'Energy Liability Treaty' }
               ]
             }
           ]
         }
       ]
     }
-  ];
+  ], []);
 
   // Handle clicks outside dropdown
   React.useEffect(() => {
@@ -712,35 +549,24 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
   return (
     <Layout
       breadcrumbs={[
-        { label: 'INSIGHTS EXPLORER', isActive: true }
+        { label: 'REPORTS EXPLORER', isActive: true }
       ]}
       selectedSidebarItem="reports"
-      selectedSidebarSubitem="insights-explorer"
+      selectedSidebarSubitem="reports-explorer"
       onNavigate={(itemId, subitemId) => {
-        console.log('Navigate to:', itemId, subitemId);
+        const routes = {
+          reports: {
+            transactions: 'transaction-management',
+            'bdx-upload': 'bdx-upload'
+          },
+          analytics: {
+            valuation: 'analytics-valuation'
+          },
+          contracts: 'contracts-explorer'
+        };
 
-        // Handle Reports navigation
-        if (itemId === 'reports') {
-          if (subitemId === 'transactions') {
-            onNavigateToPage && onNavigateToPage('transaction-management');
-          } else if (subitemId === 'insights-explorer') {
-            // Already on report navigation page
-            console.log('Already on report navigation page');
-          }
-        }
-        // Handle Analytics navigation
-        else if (itemId === 'analytics') {
-          if (subitemId === 'valuation') {
-            onNavigateToPage && onNavigateToPage('analytics-valuation');
-          }
-        }
-        // Handle Contracts navigation
-        else if (itemId === 'contracts') {
-          onNavigateToPage && onNavigateToPage('contracts-explorer');
-        }
-        else {
-          console.log('Unhandled navigation:', itemId, subitemId);
-        }
+        const route = routes[itemId]?.[subitemId] || routes[itemId];
+        if (route) onNavigateToPage?.(route);
       }}
       onInboxClick={() => {
         console.log('Inbox clicked');

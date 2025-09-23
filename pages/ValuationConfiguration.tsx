@@ -58,7 +58,7 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
         } else if (itemId === 'reports') {
           if (subitemId === 'transactions') {
             onNavigateToPage('transaction-management');
-          } else if (subitemId === 'insights-explorer') {
+          } else if (subitemId === 'reports-explorer') {
             onNavigateToPage('report-navigation');
           }
         } else if (itemId === 'contracts') {

@@ -551,3 +551,61 @@ import {
 
 ### Storybook Documentation
 All icons are documented in the **Design Tokens** story with interactive examples, organized by category with size specifications and color information.
+
+## CustomCell
+
+### Overview
+A highly flexible table cell component that can render multiple types of content elements with sophisticated layout controls. Designed for advanced data table scenarios requiring complex cell content.
+
+### Features
+- **Multi-Element Support**: Combine text, icons, buttons, badges, and status indicators in a single cell
+- **Flexible Layout**: Horizontal or vertical layouts with configurable alignment and spacing
+- **Rich Typography**: Full typography token integration with weight and color controls
+- **Interactive Elements**: Click handlers, hover effects, and link support
+- **Theme Integration**: Automatic color adaptation through semantic theme system
+
+### Element Types
+1. **Text Elements**: Rich typography with style, weight, and color options
+2. **Icon Elements**: Custom icons with size and color controls
+3. **Button Elements**: Full button component integration with all variants
+4. **Badge Elements**: Colored status badges with icon support
+5. **Status Elements**: Status indicators with dots and optional text
+
+### Usage Examples
+
+```tsx
+// Multi-element cell with mixed content
+<CustomCell
+  elements={[
+    { type: 'text', content: 'Premium Amount', style: 'bodyM', weight: 'medium' },
+    { type: 'text', content: '$125,430', style: 'bodyL', color: 'primary' },
+    { type: 'badge', text: 'Verified', variant: 'success' }
+  ]}
+  direction="vertical"
+  alignment="left"
+  gap={8}
+/>
+
+// Interactive cell with actions
+<CustomCell
+  elements={[
+    { type: 'text', content: 'Document.pdf', style: 'bodyM' },
+    { type: 'button', text: 'Download', variant: 'small', onClick: handleDownload }
+  ]}
+  alignment="space-between"
+/>
+```
+
+### Props
+- `elements`: Array of content elements to render
+- `alignment`: 'left' | 'center' | 'right' - Content alignment
+- `direction`: 'horizontal' | 'vertical' - Layout direction
+- `gap`: Number - Spacing between elements in pixels
+- `onClick`: Optional click handler for entire cell
+- `className`: Additional CSS classes
+- `style`: Custom styles
+
+### Working Examples
+For complete implementation examples, see:
+- [BDX Upload Page](./pages/BDXUpload.tsx) - Status cells with hover tooltips
+- [Transaction Management Page](./pages/TransactionManagement.tsx) - Complex table implementations

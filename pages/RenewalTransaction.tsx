@@ -227,7 +227,7 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
       onNavigate={(itemId, subitemId) => {
         if (itemId === 'reports' && subitemId === 'transactions') {
           onNavigateToPage('transaction-management');
-        } else if (itemId === 'reports' && subitemId === 'insights-explorer') {
+        } else if (itemId === 'reports' && subitemId === 'reports-explorer') {
           onNavigateToPage('report-navigation');
         } else if (itemId === 'analytics') {
           onNavigateToPage('analytics-valuation');

@@ -330,11 +330,11 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
   return (
     <Layout
       breadcrumbs={[
-        { label: 'INSIGHTS EXPLORER', onClick: () => onNavigateToPage?.('report-navigation') },
+        { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage?.('report-navigation') },
         { label: 'CESSION AND COLLATERAL', isActive: true }
       ]}
       selectedSidebarItem="reports"
-      selectedSidebarSubitem="insights-explorer"
+      selectedSidebarSubitem="reports-explorer"
       onNavigate={(itemId, subitemId) => {
         console.log('Navigate to:', itemId, subitemId);
         
@@ -342,7 +342,7 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
         if (itemId === 'reports') {
           if (subitemId === 'transactions') {
             onNavigateToPage && onNavigateToPage('transaction-management');
-          } else if (subitemId === 'insights-explorer') {
+          } else if (subitemId === 'reports-explorer') {
             onNavigateToPage && onNavigateToPage('report-navigation');
           }
         }

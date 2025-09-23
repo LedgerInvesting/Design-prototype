@@ -3,9 +3,10 @@ import { typography, borderRadius, shadows, useSemanticColors } from '../tokens'
 import { SearchMedium, ChevronLeftSmall, ChevronRightSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
 import { ActionCell, ActionType } from './ActionCell';
+import { CustomCell, CustomCellElement } from './CustomCell';
 
 // Base interfaces
-export type CellType = 'simple' | 'document' | 'action';
+export type CellType = 'simple' | 'document' | 'action' | 'custom';
 
 export interface TableColumn {
   key: string;
@@ -19,6 +20,12 @@ export interface TableColumn {
   hoverIcon?: 'download' | 'config' | 'open'; // For document cells hover icon
   actionType?: ActionType; // For action cells (edit, upload, validate, add, delete, plus)
   onAction?: (actionType: ActionType, text: string) => void; // For action cells
+  customCellProps?: {
+    alignment?: 'left' | 'center' | 'right';
+    direction?: 'horizontal' | 'vertical';
+    gap?: number;
+    onClick?: () => void;
+  }; // For custom cells
   render?: (value: any, row: any) => React.ReactNode; // Custom render function
 }
 
@@ -505,6 +512,23 @@ export const TableBody: React.FC<TableBodyProps> = ({
         }
         // Fallback to simple if value is not a string
         return value;
+      case 'custom':
+        // For custom cells, expect the value to be an array of CustomCellElement
+        if (Array.isArray(value)) {
+          return (
+            <div data-cell-type="custom">
+              <CustomCell
+                elements={value as CustomCellElement[]}
+                alignment={column.customCellProps?.alignment}
+                direction={column.customCellProps?.direction}
+                gap={column.customCellProps?.gap}
+                onClick={column.customCellProps?.onClick}
+              />
+            </div>
+          );
+        }
+        // Fallback to simple if value is not an array
+        return value;
       case 'simple':
       default:
         // For simple cells, wrap text content in a div with ellipsis styles and tooltip
@@ -948,9 +972,10 @@ export const Table: React.FC<TableProps> = ({
       return;
     }
 
-    // Don't start drag on clickable cells (document and action)
+    // Don't start drag on clickable cells (document, action, and custom)
     const isClickableCell = target.closest('[data-cell-type="document"]') ||
                            target.closest('[data-cell-type="action"]') ||
+                           target.closest('[data-cell-type="custom"]') ||
                            target.closest('th')?.textContent?.includes('Actions');
     if (isClickableCell) {
       return;

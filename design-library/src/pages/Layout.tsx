@@ -15,7 +15,6 @@ export interface LayoutProps {
   onUserMenuClick?: () => void;
   onNavigate?: (itemId: string, subitemId?: string) => void;
   onInboxClick?: () => void;
-  maxWidth?: string;
   className?: string;
   selectedSidebarItem?: string;
   selectedSidebarSubitem?: string;
@@ -33,7 +32,6 @@ export const Layout: React.FC<LayoutProps> = ({
   onUserMenuClick,
   onNavigate,
   onInboxClick,
-  maxWidth = '1200px',
   className,
   selectedSidebarItem,
   selectedSidebarSubitem,
@@ -67,7 +65,7 @@ export const Layout: React.FC<LayoutProps> = ({
     marginLeft: sidebarWidth,
     backgroundColor: colors.blackAndWhite.white,
     transition: 'margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-    width: `calc(100vw - ${sidebarWidth})`, // Fixed width calculation instead of maxWidth
+    width: `calc(100vw - ${sidebarWidth})`, // Full width minus sidebar
     overflow: 'hidden', // Contain any overflow
   };
 
@@ -75,8 +73,8 @@ export const Layout: React.FC<LayoutProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     minHeight: 'calc(100vh - 60px)',
     width: '100%', // Fill available width
-    margin: '60px 0 0 0', // 60px top offset for TopNav, no horizontal centering
-    padding: '40px 50px 60px 50px', // 40px top, 50px left/right margins, 60px bottom
+    margin: '0', // No margins - positioning handled by fixed elements
+    padding: '50px 50px 60px 50px', // 50px top padding, 50px left/right margins, 60px bottom
     overflow: 'hidden', // Prevent any content from overflowing
     boxSizing: 'border-box', // Include padding in width calculation
   };

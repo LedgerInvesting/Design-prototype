@@ -2040,7 +2040,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
         
         // Handle Reports navigation
         if (itemId === 'reports') {
-          if (subitemId === 'insights-explorer') {
+          if (subitemId === 'reports-explorer') {
             onNavigateToPage?.('report-navigation');
           } else if (subitemId === 'transactions') {
             onNavigateToPage?.('transaction-management');

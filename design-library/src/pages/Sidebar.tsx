@@ -43,10 +43,9 @@ const sidebarItems: SidebarItem[] = [
     label: 'Reports',
     icon: ReportsLogo,
     subitems: [
+      { id: 'reports-explorer', label: 'Reports Explorer' },
       { id: 'transactions', label: 'Transactions' },
-      { id: 'insights-explorer', label: 'Insights Explorer' },
-      { id: 'bdx-upload', label: 'BDX Upload' },
-      { id: 'reports-explorer', label: 'Reports Explorer' }
+      { id: 'bdx-upload', label: 'BDX Upload' }
     ]
   },
   {
@@ -80,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   
   // Use controlled state if provided, otherwise fall back to internal state
   const [internalSelectedItem, setInternalSelectedItem] = useState<string>('reports');
-  const [internalSelectedSubitem, setInternalSelectedSubitem] = useState<string>('transactions');
+  const [internalSelectedSubitem, setInternalSelectedSubitem] = useState<string>('reports-explorer');
   
   const selectedItem = propSelectedItem !== undefined ? propSelectedItem : internalSelectedItem;
   const selectedSubitem = propSelectedSubitem !== undefined ? propSelectedSubitem : internalSelectedSubitem;

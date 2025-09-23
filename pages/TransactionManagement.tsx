@@ -603,7 +603,13 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       cellType: 'action' as const,
       actionType: 'upload' as const,
       onAction: (actionType: string, text: string) => {
-        console.log('Action clicked:', actionType, text);
+        if (actionType === 'upload') {
+          onNavigateToPage && onNavigateToPage('bdx-upload');
+        } else if (actionType === 'setup') {
+          onNavigateToPage && onNavigateToPage('new-transaction-form');
+        } else {
+          console.log('Action clicked:', actionType, text);
+        }
       },
     },
   ];
@@ -688,8 +694,10 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
           if (subitemId === 'transactions') {
             // Already on transaction management page
             console.log('Already on transaction management page');
-          } else if (subitemId === 'insights-explorer') {
+          } else if (subitemId === 'reports-explorer') {
             onNavigateToPage && onNavigateToPage('report-navigation');
+          } else if (subitemId === 'bdx-upload') {
+            onNavigateToPage && onNavigateToPage('bdx-upload');
           }
         }
         // Handle Analytics navigation
@@ -708,14 +716,14 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       }}
     >
       {/* Header Section */}
-      <TransactionHeader 
-        onNewTransactionClick={() => setIsModalOpen(true)} 
+      <TransactionHeader
+        onNewTransactionClick={() => setIsModalOpen(true)}
         buttonRef={newTransactionButtonRef}
       />
-      
+
       {/* Stats Section */}
       <TransactionStats />
-      
+
       {/* Table Section */}
       <TransactionTable onNavigateToPage={onNavigateToPage} />
       

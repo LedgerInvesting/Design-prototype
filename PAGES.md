@@ -172,6 +172,51 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 ---
 
+### 7. ValuationConfiguration.tsx
+**Purpose:** Professional configuration form page featuring Financial Parameters configuration for valuation management.
+
+**Key Features:**
+- **Two-Section Layout:** Financial Parameters sections with 8 input fields across 2 columns
+- **Form Fields:** Loss Ratio Mean/Std Dev, Estimated Premium/Premium Cap, Paid Weight/CL Cutoffs, BF parameters
+- **Input Integration:** Uses Input component with left symbols (%, $) and InfoTooltips for field explanations
+- **Action Buttons:** Cancel (white) and Save (disabled grey) buttons without icons matching Figma design
+- **Program Name Consistency:** Uses same program name as dashboard for seamless navigation experience
+- **Analytics Theme:** Full theme integration with proper green color scheme and semantic tokens
+
+**Layout Configuration:**
+- MaxWidth: 1200px
+- Breadcrumb: "VALUATION > CONFIGURATION"
+- Navigation: Connected to Analytics Valuation Dashboard
+
+**Components Used:**
+- Layout, ThemeProvider, Input, Button components
+- Complete form styling with Analytics theme integration
+
+---
+
+### 8. ValuationStatus.tsx
+**Purpose:** Triangle upload management page featuring advanced table with triangle status indicators and action management.
+
+**Key Features:**
+- **Advanced Table:** 4 columns with Evaluation Date, Triangles (3 StatusCheck icons), Official valuation, Actions
+- **Triangle Status Icons:** Uses same StatusCheck SVG icons as dashboard with exact colors (#BD8B11, #744DEB, #3DA3CB)
+- **Mixed Triangle States:** Shows completed triangles (colored circles with checkmarks) and "Add" buttons for missing triangles
+- **ActionCell Integration:** Uses proper action cell types (upload=green, validate/generate=blue) instead of custom rendering
+- **Visual Legend:** Footer legend explaining all three triangle types with colored dots and descriptions
+- **Black Button Variant:** "Add New Valuation Data" button uses black variant with blue icon for professional appearance
+- **Enhanced Table Features:** Custom render function support for complex triangle display, footer pagination, proper action handling
+
+**Layout Configuration:**
+- MaxWidth: 1200px
+- Breadcrumb: "VALUATION > STATUS"
+- Navigation: Connected to Analytics Valuation system
+
+**Components Used:**
+- Layout, ThemeProvider, Table, StatusCheck, Button components
+- Advanced table with custom render functions for triangle status display
+
+---
+
 ### 9. NewTransactionForm.tsx
 **Purpose:** Comprehensive multi-tab transaction creation form with complete accordion-based Structure & Key Terms implementation.
 
@@ -313,6 +358,8 @@ pages/
 ├── App.tsx                    # Main application with page routing
 ├── TransactionManagement.tsx  # Transaction management page
 ├── ReportNavigation.tsx       # Insights explorer (default)
+├── ReportsExplorer.tsx        # Reports explorer with program selector
+├── BDXUpload.tsx             # Bordereau upload status tracking page
 ├── CashSettlement.tsx         # Financial dashboard
 ├── ContractsExplorer.tsx      # Contracts subpage with dual tables
 ├── AnalyticsValuation.tsx     # Analytics valuation page with theme integration

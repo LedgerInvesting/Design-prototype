@@ -160,7 +160,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
         else if (itemId === 'reports') {
           if (subitemId === 'transactions') {
             onNavigateToPage('transaction-management');
-          } else if (subitemId === 'insights-explorer') {
+          } else if (subitemId === 'reports-explorer') {
             onNavigateToPage('report-navigation');
           }
         }

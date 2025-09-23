@@ -21,7 +21,7 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
 }) => {
   // Define breadcrumbs
   const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'INSIGHTS EXPLORER', onClick: () => onNavigateToPage?.('report-navigation') },
+    { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage?.('report-navigation') },
     { label: 'CONTRACTS', isActive: true }
   ];
 
@@ -279,7 +279,7 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
         console.log('Navigate to:', itemId, subitemId);
         // Handle Reports navigation
         if (itemId === 'reports') {
-          if (subitemId === 'insights-explorer') {
+          if (subitemId === 'reports-explorer') {
             onNavigateToPage?.('report-navigation');
           } else if (subitemId === 'transactions') {
             onNavigateToPage?.('transaction-management');

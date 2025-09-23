@@ -1322,8 +1322,8 @@ export const StatusCheckTable: React.FC<TableIconProps> = ({
   className
 }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M6.2998 8.77778L8.44266 11L12.2998 7" stroke="#3DA3CB" strokeWidth="2"/>
-    <circle cx="9.2998" cy="9" r="7.5" stroke="#3DA3CB" strokeWidth="2"/>
+    <path d="M6.2998 8.77778L8.44266 11L12.2998 7" stroke={color} strokeWidth="2"/>
+    <circle cx="9.2998" cy="9" r="7.5" stroke={color} strokeWidth="2"/>
   </svg>
 );
 
@@ -1332,9 +1332,9 @@ export const StatusAlertTable: React.FC<TableIconProps> = ({
   className
 }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <circle cx="9" cy="9" r="7.5" stroke="#AB8703" strokeWidth="2"/>
-    <path d="M9 5.5V8.5" stroke="#AB8703" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M9 11.5V12" stroke="#AB8703" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="9" cy="9" r="7.5" stroke={color} strokeWidth="2"/>
+    <path d="M9 5.5V8.5" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    <path d="M9 11.5V12" stroke={color} strokeWidth="2" strokeLinecap="round"/>
   </svg>
 );
 
@@ -1343,8 +1343,8 @@ export const StatusErrorTable: React.FC<TableIconProps> = ({
   className
 }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M6.5 11.5L9 9L11.5 6.5M11.5 11.5L6.5 6.5" stroke="#FF8588" strokeWidth="2.4"/>
-    <circle cx="9" cy="9" r="7.5" stroke="#FF8588" strokeWidth="2"/>
+    <path d="M6.5 11.5L9 9L11.5 6.5M11.5 11.5L6.5 6.5" stroke={color} strokeWidth="2.4"/>
+    <circle cx="9" cy="9" r="7.5" stroke={color} strokeWidth="2"/>
   </svg>
 );
 
@@ -1353,9 +1353,9 @@ export const StatusProgressTable: React.FC<TableIconProps> = ({
   className
 }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <circle cx="9" cy="9" r="7.5" stroke="#B3E5FF" strokeWidth="2" strokeDasharray="3 3"/>
-    <path d="M17.5 9C17.5 9.5676 17.442 10.1218 17.3359 10.6582L15.376 10.2705C15.4569 9.86118 15.5 9.4366 15.5 9C15.5 8.5634 15.4569 8.13882 15.376 7.72949L17.3359 7.34082C17.4422 7.87757 17.5 8.43207 17.5 9ZM13.7217 1.93262C14.6485 2.55303 15.4458 3.35066 16.0664 4.27734L15.2373 4.83398L15.2363 4.83301L14.4062 5.38965C13.9312 4.68013 13.3199 4.06881 12.6104 3.59375L13.7217 1.93262ZM9 0.5C9.56753 0.5 10.1218 0.556997 10.6582 0.663086L10.2705 2.62402C9.86118 2.54306 9.4366 2.5 9 2.5C8.5634 2.5 8.13882 2.54306 7.72949 2.62402L7.34082 0.663086C7.87751 0.556876 8.43213 0.5 9 0.5Z" fill="#3DA3CB"/>
-    <circle cx="9" cy="9" r="2.5" stroke="#3DA3CB" strokeWidth="2"/>
+    <circle cx="9" cy="9" r="7.5" stroke={color} strokeWidth="2" strokeDasharray="3 3"/>
+    <path d="M17.5 9C17.5 9.5676 17.442 10.1218 17.3359 10.6582L15.376 10.2705C15.4569 9.86118 15.5 9.4366 15.5 9C15.5 8.5634 15.4569 8.13882 15.376 7.72949L17.3359 7.34082C17.4422 7.87757 17.5 8.43207 17.5 9ZM13.7217 1.93262C14.6485 2.55303 15.4458 3.35066 16.0664 4.27734L15.2373 4.83398L15.2363 4.83301L14.4062 5.38965C13.9312 4.68013 13.3199 4.06881 12.6104 3.59375L13.7217 1.93262ZM9 0.5C9.56753 0.5 10.1218 0.556997 10.6582 0.663086L10.2705 2.62402C9.86118 2.54306 9.4366 2.5 9 2.5C8.5634 2.5 8.13882 2.54306 7.72949 2.62402L7.34082 0.663086C7.87751 0.556876 8.43213 0.5 9 0.5Z" fill={color}/>
+    <circle cx="9" cy="9" r="2.5" stroke={color} strokeWidth="2"/>
   </svg>
 );
 
@@ -1367,6 +1367,16 @@ export const StatusAddTable: React.FC<TableIconProps> = ({
     <circle cx="9" cy="9" r="7.5" stroke="#B4C2C5" strokeWidth="2"/>
     <path d="M9 12.5V5.5" stroke="#B4C2C5" strokeWidth="2"/>
     <path d="M5.5 9L12.5 9" stroke="#B4C2C5" strokeWidth="2"/>
+  </svg>
+);
+
+export const StatusProhibitedTable: React.FC<TableIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M13.5 4.5L4.5 13.5" stroke="#D9E7EC" strokeWidth="2.4"/>
+    <circle cx="9" cy="9" r="7.5" stroke="#D9E7EC" strokeWidth="2"/>
   </svg>
 );
 
@@ -1615,6 +1625,7 @@ export const icons = {
     statusError: StatusErrorTable,
     statusProgress: StatusProgressTable,
     statusAdd: StatusAddTable,
+    statusProhibited: StatusProhibitedTable,
   },
   logos: {
     // Brand and navigation logos

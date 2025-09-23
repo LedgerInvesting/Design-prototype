@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CashSettlement } from './CashSettlement';
-import { ReportNavigation } from './ReportNavigation';
+import { ReportNavigation } from './ReportsExplorer';
 import { TransactionManagement } from './TransactionManagement';
 import { NewTransactionForm } from './NewTransactionForm';
 import { RenewalTransaction } from './RenewalTransaction';
@@ -9,15 +9,16 @@ import { AnalyticsValuation } from './AnalyticsValuation';
 import { ValuationDashboard } from './ValuationDashboard';
 import { ValuationConfiguration } from './ValuationConfiguration';
 import { ValuationStatus } from './ValuationStatus';
+import { BDXUpload } from './BDXUpload';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'renewal-transaction' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'renewal-transaction' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status' | 'bdx-upload';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('transaction-management');
+  const [currentPage, setCurrentPage] = useState<PageType>('report-navigation');
   const [valuationData, setValuationData] = useState<any>(null);
   const [renewalData, setRenewalData] = useState<any>(null);
 
@@ -55,6 +56,18 @@ function App() {
         return <ValuationConfiguration onNavigateToPage={setPage} valuationData={valuationData} />;
       case 'valuation-status':
         return <ValuationStatus onNavigateToPage={setPage} />;
+      case 'bdx-upload':
+        return <BDXUpload onNavigate={(page, subpage) => {
+          if (page === 'transaction-management') {
+            setPage('transaction-management');
+          } else if (page === 'report-navigation') {
+            setPage('report-navigation');
+          } else if (page === 'analytics-valuation') {
+            setPage('analytics-valuation');
+          } else if (page === 'contracts-explorer') {
+            setPage('contracts-explorer');
+          }
+        }} onInboxClick={() => console.log('Inbox clicked')} />;
       default:
         return <TransactionManagement onNavigateToPage={setPage} />;
     }

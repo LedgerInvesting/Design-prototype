@@ -59,6 +59,12 @@ export type { StatusProps, ChipsProps } from './Chips';
 export { Table, TableHeader, TableColumnHeader, TableBody } from './Table';
 export type { TableProps, TableHeaderProps, TableColumnHeaderProps, TableBodyProps, TableColumn, TableRow, SortState, SortDirection, CellType } from './Table';
 
+export { DocumentCell } from './DocumentCell';
+export type { DocumentCellProps } from './DocumentCell';
+
+export { CustomCell } from './CustomCell';
+export type { CustomCellProps, CustomCellElement, TextElement, IconElement, ButtonElement, BadgeElement, StatusElement, CustomCellContentType, TextStyle, TextWeight, TextColor, BadgeVariant, StatusType, CellAlignment, CellDirection } from './CustomCell';
+
 // Re-export design system
 export * from '../tokens';
 export * from '../icons/index';
