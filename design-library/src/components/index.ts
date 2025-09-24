@@ -8,6 +8,9 @@ export type { InfoTooltipProps, InfoTooltipSection } from './InfoTooltip';
 export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
 
+export { DashboardCard } from './DashboardCard';
+export type { DashboardCardProps } from './DashboardCard';
+
 // Form Components
 export { Input } from './Input';
 export type { InputProps } from './Input';

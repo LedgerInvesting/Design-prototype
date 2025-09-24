@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout } from '@design-library/pages';
-import { Button } from '@design-library/components';
+import { Button, DashboardCard } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium } from '@design-library/icons';
@@ -471,14 +471,18 @@ const ChartComponent: React.FC = () => {
 
 const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
   onNavigateToPage,
-  valuationData = {
+  valuationData
+}) => {
+  const colors = useSemanticColors();
+
+  // Provide default data if valuationData is null or undefined
+  const defaultData = {
     programName: 'Aviation Treaty 2023',
     evaluationDate: '2024-12-30',
     reportedLossRatio: '42.2%',
     currentWrittenPremium: '$20,107,359'
-  }
-}) => {
-  const colors = useSemanticColors();
+  };
+  const data = valuationData || defaultData;
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const statusData = [
@@ -510,7 +514,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
         }}
         breadcrumbs={[
           { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
-          { label: valuationData.programName, isActive: true }
+          { label: data.programName, isActive: true }
         ]}
       >
         {/* Header */}
@@ -530,7 +534,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               lineHeight: '1.2',
             }}>
               <span style={{ color: colors.blackAndWhite.black500 }}>You're now viewing </span>
-              <span>{valuationData.programName}</span>
+              <span>{data.programName}</span>
               <span>.</span>
               <span style={{ color: colors.blackAndWhite.black500 }}> Valuation dashboard</span>
             </h1>
@@ -539,7 +543,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             variant="primary"
             color="white"
             icon={<SettingsMedium color={colors.blackAndWhite.black900} />}
-            onClick={() => onNavigateToPage('valuation-configuration', { programName: valuationData.programName })}
+            onClick={() => onNavigateToPage('valuation-configuration', { programName: data.programName })}
             style={{
               border: `1px solid ${colors.theme.primary400}`,
               minWidth: '200px',
@@ -561,43 +565,15 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
           marginBottom: '40px',
         }}>
           {/* Valuation Summary Card */}
-          <div style={{
-            backgroundColor: colors.blackAndWhite.white,
-            border: `1px solid ${colors.theme.primary400}`,
-            borderRadius: borderRadius[12],
-            overflow: 'hidden',
-            width: '50%',
-            flex: '1',
-          }}>
-          {/* Card Header */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '16px 30px',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CardsGraph color={colors.theme.primary700} />
-              <h3 style={{
-                ...typography.styles.bodyL,
-                color: colors.blackAndWhite.black900,
-                margin: 0
-              }}>
-                Valuation Summary
-              </h3>
-            </div>
-          </div>
-          {/* Full-width separator */}
-          <div style={{
-            width: '100%',
-            height: '1px',
-            backgroundColor: colors.theme.primary400,
-            margin: '0',
-          }} />
-          {/* Card Content */}
-          <div style={{ padding: '20px 30px 26px 30px' }}>
+          <DashboardCard
+            title="Valuation Summary"
+            icon={<CardsGraph color={colors.theme.primary700} />}
+            showButton={false}
+            width="50%"
+            bodyStyle={{ padding: '20px 30px 26px 30px' }}
+          >
             {/* Metric 1: Evaluation Date */}
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '10px' }}>
               <div style={{
                 fontFamily: 'Söhne, system-ui, sans-serif',
                 fontSize: '12px',
@@ -615,7 +591,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
                 fontSize: '26px',
                 fontWeight: 400
               }}>
-                {valuationData.evaluationDate}
+                {data.evaluationDate}
               </div>
             </div>
             {/* Content-padded separator */}
@@ -623,10 +599,10 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               width: '100%',
               height: '1px',
               backgroundColor: colors.theme.primary400,
-              margin: '0 0 10px 0'
+              margin: '0 0 20px 0'
             }} />
             {/* Metric 2: Reported Loss Ratio */}
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '10px' }}>
               <div style={{
                 fontFamily: 'Söhne, system-ui, sans-serif',
                 fontSize: '12px',
@@ -659,10 +635,10 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               width: '100%',
               height: '1px',
               backgroundColor: colors.theme.primary400,
-              margin: '0 0 10px 0'
+              margin: '0 0 20px 0'
             }} />
             {/* Metric 3: Expected Loss Ratio */}
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '10px' }}>
               <div style={{
                 fontFamily: 'Söhne, system-ui, sans-serif',
                 fontSize: '12px',
@@ -695,10 +671,10 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               width: '100%',
               height: '1px',
               backgroundColor: colors.theme.primary400,
-              margin: '0 0 10px 0'
+              margin: '0 0 20px 0'
             }} />
             {/* Metric 4: Mean Loss Ratio */}
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '10px' }}>
               <div style={{
                 fontFamily: 'Söhne, system-ui, sans-serif',
                 fontSize: '12px',
@@ -731,10 +707,10 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               width: '100%',
               height: '1px',
               backgroundColor: colors.theme.primary400,
-              margin: '0 0 10px 0'
+              margin: '0 0 20px 0'
             }} />
             {/* Metric 5: Current Written Premium */}
-            <div>
+            <div style={{ marginBottom: '10px' }}>
               <div style={{
                 fontFamily: 'Söhne, system-ui, sans-serif',
                 fontSize: '12px',
@@ -755,127 +731,93 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
                 $20,107,359
               </div>
             </div>
-          </div>
-          </div>
+          </DashboardCard>
 
           {/* Latest Valuation Status Card */}
-          <div style={{
-            backgroundColor: colors.blackAndWhite.white,
-            borderRadius: borderRadius[12],
-            border: `1px solid ${colors.theme.primary400}`,
-            width: '50%',
-            flex: '1',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
-          {/* Header */}
-          <div style={{
-            padding: '16px 30px',
-            borderBottom: `1px solid ${colors.theme.primary400}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CardsText color={colors.theme.primary700} />
-              <div style={{ ...typography.styles.bodyL, color: colors.blackAndWhite.black900 }}>
-                Latest Valuation Status
+          <DashboardCard
+            title="Latest Valuation Status"
+            icon={<CardsText color={colors.theme.primary700} />}
+            button={{
+              text: "VIEW ALL",
+              onClick: () => onNavigateToPage('valuation-status')
+            }}
+            width="50%"
+          >
+            {/* Column Headers */}
+            <div style={{
+              display: 'flex',
+              padding: '20px 30px 10px 30px',
+            }}>
+              <div style={{
+                width: '107px',
+                ...typography.styles.bodyM,
+                color: colors.theme.primary450,
+              }}>
+                Evaluation Date
+              </div>
+              <div style={{
+                flex: 1,
+                ...typography.styles.bodyM,
+                color: colors.theme.primary450,
+                textAlign: 'center',
+                marginLeft: '-10px',
+              }}>
+                Triangles
+              </div>
+              <div style={{
+                width: '120px',
+                ...typography.styles.bodyM,
+                color: colors.theme.primary450,
+                textAlign: 'left',
+              }}>
+                official valuation
+              </div>
+              <div style={{
+                width: '70px',
+                ...typography.styles.bodyM,
+                color: colors.theme.primary450,
+                textAlign: 'right',
+              }}>
+                Cashflow file
               </div>
             </div>
-            <button
-              onClick={() => onNavigateToPage('valuation-status')}
-              style={{
-                backgroundColor: colors.theme.primary200,
-                border: 'none',
-                borderRadius: borderRadius.absolute,
-                padding: '6px 12px',
-                ...typography.styles.bodyS,
-                fontWeight: 600,
-                color: colors.blackAndWhite.black900,
-                cursor: 'pointer',
-                textTransform: 'uppercase'
-              }}
-            >
-              VIEW ALL
-            </button>
-          </div>
 
-          {/* Column Headers */}
-          <div style={{
-            display: 'flex',
-            padding: '20px 30px 10px 30px',
-          }}>
-            <div style={{
-              width: '107px',
-              ...typography.styles.bodyM,
-              color: colors.theme.primary450,
-            }}>
-              Evaluation Date
+            {/* Status Rows */}
+            <div style={{ flex: 1, overflow: 'auto' }}>
+              {statusData.map((row, index) => (
+                <StatusRow
+                  key={index}
+                  date={row.date}
+                  triangleStatuses={row.triangleStatuses}
+                  officialStatus={row.officialStatus}
+                />
+              ))}
             </div>
-            <div style={{
-              flex: 1,
-              ...typography.styles.bodyM,
-              color: colors.theme.primary450,
-              textAlign: 'center',
-              marginLeft: '-10px',
-            }}>
-              Triangles
-            </div>
-            <div style={{
-              width: '120px',
-              ...typography.styles.bodyM,
-              color: colors.theme.primary450,
-              textAlign: 'left',
-            }}>
-              official valuation
-            </div>
-            <div style={{
-              width: '70px',
-              ...typography.styles.bodyM,
-              color: colors.theme.primary450,
-              textAlign: 'right',
-            }}>
-              Cashflow file
-            </div>
-          </div>
 
-          {/* Status Rows */}
-          <div style={{ flex: 1, overflow: 'auto' }}>
-            {statusData.map((row, index) => (
-              <StatusRow
-                key={index}
-                date={row.date}
-                triangleStatuses={row.triangleStatuses}
-                officialStatus={row.officialStatus}
-              />
-            ))}
-          </div>
-
-          {/* Add New Button */}
-          <div style={{ padding: '20px 30px 26px 30px' }}>
-            <Button
-              variant="primary"
-              color="white"
-              icon={<AddMedium color={colors.blackAndWhite.black900} />}
-              onClick={() => setIsUploadModalOpen(true)}
-              style={{
-                border: `1px solid ${colors.theme.primary400}`,
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                boxSizing: 'border-box',
-                margin: '0',
-                padding: '12px 20px',
-                maxWidth: 'none',
-                minWidth: '100%',
-              }}
-            >
-              Add New Valuation Data
-            </Button>
-          </div>
-          </div>
+            {/* Add New Button */}
+            <div style={{ padding: '20px 30px 26px 30px' }}>
+              <Button
+                variant="primary"
+                color="white"
+                icon={<AddMedium color={colors.blackAndWhite.black900} />}
+                onClick={() => setIsUploadModalOpen(true)}
+                style={{
+                  border: `1px solid ${colors.theme.primary400}`,
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  boxSizing: 'border-box',
+                  margin: '0',
+                  padding: '12px 20px',
+                  maxWidth: 'none',
+                  minWidth: '100%',
+                }}
+              >
+                Add New Valuation Data
+              </Button>
+            </div>
+          </DashboardCard>
         </div>
 
         {/* Chart Section */}
@@ -885,7 +827,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
         <UploadTrianglesModal
           isOpen={isUploadModalOpen}
           onClose={() => setIsUploadModalOpen(false)}
-          programName={valuationData.programName}
+          programName={data.programName}
         />
       </Layout>
   );

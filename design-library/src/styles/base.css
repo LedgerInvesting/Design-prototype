@@ -40,6 +40,7 @@
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-bold: 700;
+  --fw-black: 900;
   
   /* Letter spacing */
   --ls-tight: -1px;
@@ -223,7 +224,7 @@ p, h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-size: var(--fs-caption-m);
   line-height: var(--lh-caption-m);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-black);
   font-style: italic;
   letter-spacing: var(--ls-normal);
 }
@@ -232,7 +233,7 @@ p, h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-size: var(--fs-caption-s);
   line-height: var(--lh-caption-s);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-black);
   font-style: italic;
   letter-spacing: var(--ls-normal);
 }

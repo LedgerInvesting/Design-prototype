@@ -3,14 +3,14 @@ import React from 'react';
 import { Layout } from '@design-library/pages';
 import type { BreadcrumbItem } from '@design-library/pages';
 
-// Import base components  
-import { Card, Button, Stack, Grid, Container } from '@design-library/components';
+// Import base components
+import { Card, Button, Stack, Grid, Container, DashboardCard } from '@design-library/components';
 
 // Import design tokens
 import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 
 // Import icons
-import { ArrowUpSmall, ArrowDownSmall, ChevronRightExtraSmall } from '@design-library/icons';
+import { ArrowUpSmall, ArrowDownSmall, ChevronRightExtraSmall, CardsGraph, CardsCheck, CardsText } from '@design-library/icons';
 
 const ChevronDownIcon: React.FC = () => (
   <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -596,213 +596,140 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             marginTop: '40px'
           }}>
             {/* Cession and Collateral Card */}
-            <div style={{
-              backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.theme.primary400}`,
-              borderRadius: borderRadius[12],
-              overflow: 'hidden',
-            }}>
-              {/* Card Header */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 30px',
-              }}>
-                <h3 style={{
-                  ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.black900,
-                  margin: 0
-                }}>
-                  Cession and Collateral
-                </h3>
-                <button 
-                  onClick={() => onNavigateToPage?.('cash-settlement')}
-                  style={{
-                    backgroundColor: colors.theme.primary200,
-                    border: 'none',
-                    borderRadius: borderRadius.absolute,
-                    padding: '6px 12px',
-                    ...typography.styles.bodyS,
-                    fontWeight: 600,
-                    color: colors.blackAndWhite.black900,
-                    cursor: 'pointer',
-                    textTransform: 'uppercase'
-                  }}>
-                  EXPLORE
-                </button>
-              </div>
-
-              {/* Full-width separator */}
-              <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: colors.theme.primary400,
-                margin: '0',
-              }} />
-
-              {/* Card Content */}
+            <DashboardCard
+              title="Cession and Collateral"
+              icon={<CardsGraph color={colors.theme.primary700} />}
+              button={{
+                text: "EXPLORE",
+                onClick: () => onNavigateToPage?.('cash-settlement')
+              }}
+              width="100%"
+            >
               <div style={{ padding: '20px 30px 26px 30px' }}>
-
-              {/* Metric 1: Quota Share Written Premium */}
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{
-                  fontFamily: 'Söhne, system-ui, sans-serif',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  lineHeight: 1.3,
-                  color: colors.blackAndWhite.black500,
-                  marginBottom: '5px'
-                }}>
-                  Quota Share Written Premium
-                </div>
-                <GrowthIndicator direction="up" percentage="7.8%" period="3m" />
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-end',
-                  marginTop: '12px'
-                }}>
+                {/* Metric 1: Quota Share Written Premium */}
+                <div style={{ marginBottom: '10px' }}>
                   <div style={{
                     fontFamily: 'Söhne, system-ui, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: 500,
                     lineHeight: 1.3,
-                    color: colors.blackAndWhite.black900,
-                    fontSize: '26px',
-                    fontWeight: 400
+                    color: colors.blackAndWhite.black500,
+                    marginBottom: '5px'
                   }}>
-                    $32,156,789
+                    Quota Share Written Premium
                   </div>
-                  <SmallChart trend="up" />
+                  <GrowthIndicator direction="up" percentage="7.8%" period="3m" />
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    marginTop: '12px'
+                  }}>
+                    <div style={{
+                      fontFamily: 'Söhne, system-ui, sans-serif',
+                      lineHeight: 1.3,
+                      color: colors.blackAndWhite.black900,
+                      fontSize: '26px',
+                      fontWeight: 400
+                    }}>
+                      $32,156,789
+                    </div>
+                    <SmallChart trend="up" />
+                  </div>
                 </div>
-              </div>
 
-              {/* Content-padded separator */}
-              <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: colors.theme.primary400,
-                margin: '0 0 10px 0'
-              }} />
+                {/* Content-padded separator */}
+                <div style={{
+                  width: '100%',
+                  height: '1px',
+                  backgroundColor: colors.theme.primary400,
+                  margin: '0 0 20px 0'
+                }} />
 
-              {/* Metric 2: Total Remittance */}
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{
-                  fontFamily: 'Söhne, system-ui, sans-serif',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  lineHeight: 1.3,
-                  color: colors.blackAndWhite.black500,
-                  marginBottom: '5px'
-                }}>
-                  Total Remittance
-                </div>
-                <GrowthIndicator direction="up" percentage="7.8%" period="3m" />
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-end',
-                  marginTop: '12px'
-                }}>
+                {/* Metric 2: Total Remittance */}
+                <div style={{ marginBottom: '10px' }}>
                   <div style={{
                     fontFamily: 'Söhne, system-ui, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: 500,
                     lineHeight: 1.3,
-                    color: colors.blackAndWhite.black900,
-                    fontSize: '26px',
-                    fontWeight: 400
+                    color: colors.blackAndWhite.black500,
+                    marginBottom: '5px'
                   }}>
-                    $19,794,232
+                    Total Remittance
                   </div>
-                  <SmallChart trend="up" />
+                  <GrowthIndicator direction="up" percentage="7.8%" period="3m" />
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    marginTop: '12px'
+                  }}>
+                    <div style={{
+                      fontFamily: 'Söhne, system-ui, sans-serif',
+                      lineHeight: 1.3,
+                      color: colors.blackAndWhite.black900,
+                      fontSize: '26px',
+                      fontWeight: 400
+                    }}>
+                      $19,794,232
+                    </div>
+                    <SmallChart trend="up" />
+                  </div>
                 </div>
-              </div>
 
-              {/* Content-padded separator */}
-              <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: colors.theme.primary400,
-                margin: '0 0 10px 0'
-              }} />
+                {/* Content-padded separator */}
+                <div style={{
+                  width: '100%',
+                  height: '1px',
+                  backgroundColor: colors.theme.primary400,
+                  margin: '0 0 20px 0'
+                }} />
 
-              {/* Metric 3: Collateral Required */}
-              <div>
-                <div style={{
-                  fontFamily: 'Söhne, system-ui, sans-serif',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  lineHeight: 1.3,
-                  color: colors.blackAndWhite.black500,
-                  marginBottom: '5px'
-                }}>
-                  Collateral Required
-                </div>
-                <GrowthIndicator direction="down" percentage="2.4%" period="3m" />
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-end',
-                  marginTop: '12px'
-                }}>
+                {/* Metric 3: Collateral Required */}
+                <div>
                   <div style={{
                     fontFamily: 'Söhne, system-ui, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: 500,
                     lineHeight: 1.3,
-                    color: colors.blackAndWhite.black900,
-                    fontSize: '26px',
-                    fontWeight: 400
+                    color: colors.blackAndWhite.black500,
+                    marginBottom: '5px'
                   }}>
-                    $7,468,987
+                    Collateral Required
                   </div>
-                  <SmallChart trend="down" />
+                  <GrowthIndicator direction="down" percentage="2.4%" period="3m" />
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    marginTop: '12px'
+                  }}>
+                    <div style={{
+                      fontFamily: 'Söhne, system-ui, sans-serif',
+                      lineHeight: 1.3,
+                      color: colors.blackAndWhite.black900,
+                      fontSize: '26px',
+                      fontWeight: 400
+                    }}>
+                      $7,468,987
+                    </div>
+                    <SmallChart trend="down" />
+                  </div>
                 </div>
               </div>
-              </div>
-            </div>
+            </DashboardCard>
 
             {/* Data Validation Card */}
-            <div style={{
-              backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.theme.primary400}`,
-              borderRadius: borderRadius[12],
-              overflow: 'hidden',
-            }}>
-              {/* Card Header */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 30px',
-              }}>
-                <h3 style={{
-                  ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.black900,
-                  margin: 0
-                }}>
-                  Data Validation
-                </h3>
-                <button style={{
-                  backgroundColor: colors.theme.primary200,
-                  border: 'none',
-                  borderRadius: borderRadius.absolute,
-                  padding: '6px 12px',
-                  ...typography.styles.bodyS,
-                  fontWeight: 600,
-                  color: colors.blackAndWhite.black900,
-                  cursor: 'pointer',
-                  textTransform: 'uppercase'
-                }}>
-                  EXPLORE
-                </button>
-              </div>
-
-              {/* Full-width separator */}
-              <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: colors.theme.primary400,
-                margin: '0',
-              }} />
-
-              {/* Card Content */}
+            <DashboardCard
+              title="Data Validation"
+              icon={<CardsCheck color={colors.theme.primary700} />}
+              button={{
+                text: "EXPLORE",
+                onClick: () => console.log('Data Validation explore clicked')
+              }}
+              width="100%"
+            >
               <div style={{ padding: '20px 30px 26px 30px' }}>
 
               {/* Metric 1: Policies with Critical Validation Issues */}
@@ -983,7 +910,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 </div>
               </div>
               </div>
-            </div>
+            </DashboardCard>
 
           </div>
 
@@ -1214,54 +1141,16 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             marginTop: '24px'
           }}>
             {/* Data Ingestion Card */}
-            <div style={{
-              backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.theme.primary400}`,
-              borderRadius: borderRadius[12],
-              overflow: 'hidden',
-            }}>
-              {/* Card Header */}
+            <DashboardCard
+              title="Data Ingestion"
+              icon={<CardsGraph color={colors.theme.primary700} />}
+              button={{
+                text: "EXPLORE",
+                onClick: () => onNavigateToPage?.('bdx-upload')
+              }}
+              width="100%"
+            >
               <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 30px',
-              }}>
-                <h3 style={{
-                  ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.black900,
-                  margin: 0
-                }}>
-                  Data Ingestion
-                </h3>
-                <button
-                  style={{
-                    backgroundColor: colors.theme.primary200,
-                    border: 'none',
-                    borderRadius: borderRadius.absolute,
-                    padding: '6px 12px',
-                    ...typography.styles.bodyS,
-                    fontWeight: 600,
-                    color: colors.blackAndWhite.black900,
-                    cursor: 'pointer',
-                    textTransform: 'uppercase'
-                  }}
-                  onClick={() => onNavigateToPage?.('bdx-upload')}
-                >
-                  EXPLORE
-                </button>
-              </div>
-
-              {/* Full-width separator */}
-              <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: colors.theme.primary400,
-                margin: '0',
-              }} />
-
-              {/* Card Content */}
-              <div style={{ 
                 padding: '30px 30px 26px 30px',
                 textAlign: 'center',
                 minHeight: '200px',
@@ -1337,56 +1226,19 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   </div>
                 </div>
               </div>
-            </div>
+            </DashboardCard>
 
             {/* Contracts Card */}
-            <div style={{
-              backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.theme.primary400}`,
-              borderRadius: borderRadius[12],
-              overflow: 'hidden',
-            }}>
-              {/* Card Header */}
+            <DashboardCard
+              title="Contracts"
+              icon={<CardsText color={colors.theme.primary700} />}
+              button={{
+                text: "EXPLORE",
+                onClick: () => onNavigateToPage?.('contracts-explorer')
+              }}
+              width="100%"
+            >
               <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 30px',
-              }}>
-                <h3 style={{
-                  ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.black900,
-                  margin: 0
-                }}>
-                  Contracts
-                </h3>
-                <button 
-                  onClick={() => onNavigateToPage?.('contracts-explorer')}
-                  style={{
-                    backgroundColor: colors.theme.primary200,
-                    border: 'none',
-                    borderRadius: borderRadius.absolute,
-                    padding: '6px 12px',
-                    ...typography.styles.bodyS,
-                    fontWeight: 600,
-                    color: colors.blackAndWhite.black900,
-                    cursor: 'pointer',
-                    textTransform: 'uppercase'
-                  }}>
-                  EXPLORE
-                </button>
-              </div>
-
-              {/* Full-width separator */}
-              <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: colors.theme.primary400,
-                margin: '0',
-              }} />
-
-              {/* Card Content */}
-              <div style={{ 
                 padding: '30px 30px 26px 30px',
                 textAlign: 'center',
                 minHeight: '200px',
@@ -1437,7 +1289,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   </div>
                 </div>
               </div>
-            </div>
+            </DashboardCard>
           </div>
     </Layout>
   );

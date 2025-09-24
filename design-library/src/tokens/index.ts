@@ -134,7 +134,7 @@ export const typography = {
     captionM: {
       fontFamily: ['Bradford LL', 'serif'],
       fontSize: '14px',
-      fontWeight: 700,
+      fontWeight: 900, // Increased from 700 to 900 for better visibility
       fontStyle: 'italic',
       lineHeight: 1.3,
       letterSpacing: '0px',
@@ -142,7 +142,7 @@ export const typography = {
     captionS: {
       fontFamily: ['Bradford LL', 'serif'],
       fontSize: '12px',
-      fontWeight: 700,
+      fontWeight: 900, // Increased from 700 to 900 for better visibility
       fontStyle: 'italic',
       lineHeight: 1.3,
       letterSpacing: '0px',
