@@ -912,10 +912,13 @@ export const Table: React.FC<TableProps> = ({
     const style = document.createElement('style');
     style.textContent = `
       .table-draggable {
-        cursor: ${needsScroll ? 'ew-resize' : 'default'};
+        cursor: ew-resize !important;
       }
       .table-dragging {
-        cursor: ew-resize;
+        cursor: ew-resize !important;
+      }
+      .table-no-drag {
+        cursor: default !important;
       }
 
       /* Custom scrollbar styling */
@@ -1063,7 +1066,7 @@ export const Table: React.FC<TableProps> = ({
       <div
         ref={tableContainerRef}
         style={tableContainerStyles}
-        className={`${isDragging ? 'table-dragging' : (needsScroll ? 'table-draggable' : '')} ${needsScroll ? 'table-container-scrollable' : ''}`.trim()}
+        className={`${isDragging ? 'table-dragging' : (needsScroll ? 'table-draggable' : 'table-no-drag')} ${needsScroll ? 'table-container-scrollable' : ''}`.trim()}
         onMouseDown={needsScroll ? handleMouseDown : undefined}
         onMouseMove={needsScroll ? handleMouseMove : undefined}
         onMouseUp={needsScroll ? handleMouseUp : undefined}

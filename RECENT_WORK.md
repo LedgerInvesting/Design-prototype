@@ -2,7 +2,55 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (BDX Upload Modal System & File Display Enhancement - September 23, 2025)
+## Latest Development Session (Browser History & UX Enhancement - September 23, 2025)
+
+### 🎯 **Browser History Integration & Navigation Enhancement**
+
+**Key Features Implemented:**
+1. **Full Browser History Support**:
+   - **URL Hash Navigation**: Each page now has unique URL (e.g., `#bdx-upload`, `#report-navigation`)
+   - **Browser Back/Forward**: Full support for browser navigation buttons
+   - **Page Persistence**: Refreshing maintains current page based on URL hash
+   - **Shareable URLs**: Direct links to specific pages work correctly
+
+2. **Theme-Aware Text Selection**:
+   - **Dynamic Selection Colors**: Text selection adapts to current product theme
+   - **Reports Theme**: Blue selection color (`#9ad5f7`)
+   - **Analytics Theme**: Green selection color (`#74efa3`)
+   - **Marketplace Theme**: Violet selection color (`#ceb5fb`)
+   - **CSS Custom Properties**: Uses CSS variables updated by ThemeProvider
+
+3. **Enhanced Table User Experience**:
+   - **Smart Cursor Behavior**: Drag cursor only appears when tables need horizontal scrolling
+   - **Conditional CSS Classes**: `table-draggable`, `table-no-drag`, `table-dragging` classes
+   - **Performance Optimization**: Scroll detection runs on mount and window resize
+   - **Visual Feedback**: Clear indication when tables are draggable vs. static
+
+4. **BDX Upload Navigation Integration**:
+   - **Reports Explorer Links**: Added navigation from "3 months (Need review)" button
+   - **Data Ingestion Explorer**: Added navigation from "EXPLORE" button
+   - **Interface Updates**: Extended navigation props to include 'bdx-upload' option
+   - **Consistent Navigation**: Maintains theme and layout consistency
+
+5. **BDX Table Border System Optimization**:
+   - **Border Thickness Fix**: Eliminated double borders causing thick appearance
+   - **Rounded Corner Fix**: Perfect corner rendering without clipping
+   - **Clean Grid Structure**: Proper internal borders while maintaining outer container
+   - **Visual Consistency**: Table borders now match design library standards
+
+**Technical Implementation:**
+- **History API Integration**: Added `popstate` event listeners and `window.history.pushState`
+- **ThemeProvider Enhancement**: CSS custom property injection for theme-aware selection
+- **Table Component Optimization**: Enhanced scroll detection and CSS class management
+- **Cross-Component Navigation**: Updated interfaces and navigation flow across pages
+
+**Design System Compliance:**
+- **Theme Integration**: All features respect current product theme automatically
+- **Performance Optimization**: Minimal overhead for history and theme management
+- **Accessibility**: Maintains keyboard navigation and screen reader compatibility
+- **Responsive Design**: All enhancements work across device sizes
+
+## Previous Development Session (BDX Upload Modal System & File Display Enhancement - September 23, 2025)
 
 ### 🎯 **File Upload Modal System - Complete Implementation**
 

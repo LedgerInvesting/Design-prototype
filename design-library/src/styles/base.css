@@ -253,14 +253,14 @@ p, h1, h2, h3, h4, h5, h6 {
   letter-spacing: var(--ls-wide);
 }
 
-/* Custom text selection color */
+/* Custom text selection color - theme-aware */
 ::selection {
-  background-color: #9ad5f7; /* Blue 700 from design tokens */
+  background-color: var(--theme-selection-color, #9ad5f7); /* Fallback to blue 700 if theme not set */
   color: #000000;
 }
 
 ::-moz-selection {
-  background-color: #9ad5f7; /* Blue 700 from design tokens */
+  background-color: var(--theme-selection-color, #9ad5f7); /* Fallback to blue 700 if theme not set */
   color: #000000;
 }
 

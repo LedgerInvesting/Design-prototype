@@ -524,7 +524,7 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
 
 // Main page component
 interface ReportNavigationProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation') => void;
+  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation' | 'bdx-upload') => void;
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
@@ -1234,17 +1234,20 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                 }}>
                   Data Ingestion
                 </h3>
-                <button style={{
-                  backgroundColor: colors.theme.primary200,
-                  border: 'none',
-                  borderRadius: borderRadius.absolute,
-                  padding: '6px 12px',
-                  ...typography.styles.bodyS,
-                  fontWeight: 600,
-                  color: colors.blackAndWhite.black900,
-                  cursor: 'pointer',
-                  textTransform: 'uppercase'
-                }}>
+                <button
+                  style={{
+                    backgroundColor: colors.theme.primary200,
+                    border: 'none',
+                    borderRadius: borderRadius.absolute,
+                    padding: '6px 12px',
+                    ...typography.styles.bodyS,
+                    fontWeight: 600,
+                    color: colors.blackAndWhite.black900,
+                    cursor: 'pointer',
+                    textTransform: 'uppercase'
+                  }}
+                  onClick={() => onNavigateToPage?.('bdx-upload')}
+                >
                   EXPLORE
                 </button>
               </div>
@@ -1308,14 +1311,18 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   flexDirection: 'column',
                   gap: '8px'
                 }}>
-                  <div style={{
-                    border: `1px solid ${colors.theme.primary400}`,
-                    borderRadius: borderRadius[4],
-                    padding: '12px 16px',
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    backgroundColor: colors.blackAndWhite.white
-                  }}>
+                  <div
+                    style={{
+                      border: `1px solid ${colors.theme.primary400}`,
+                      borderRadius: borderRadius[4],
+                      padding: '12px 16px',
+                      ...typography.styles.bodyM,
+                      color: colors.blackAndWhite.black900,
+                      backgroundColor: colors.blackAndWhite.white,
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => onNavigateToPage?.('bdx-upload')}
+                  >
                     3 months (Need review)
                   </div>
                   <div style={{

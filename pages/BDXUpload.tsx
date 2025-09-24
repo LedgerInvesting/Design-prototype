@@ -324,7 +324,6 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
 
     const headerStyles = {
       ...cellStyles,
-      backgroundColor: semanticColors.blackAndWhite.white,
       fontFamily: typography.styles.captionM.fontFamily.join(', '),
       fontSize: typography.styles.captionM.fontSize,
       fontWeight: typography.styles.captionM.fontWeight,
@@ -335,7 +334,6 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
 
     const yearCellStyles = {
       ...cellStyles,
-      backgroundColor: semanticColors.blackAndWhite.white,
       writingMode: 'vertical-rl' as const,
       textOrientation: 'mixed' as const,
       transform: 'rotate(180deg)',
@@ -345,7 +343,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
       fontWeight: typography.styles.captionM.fontWeight,
       fontStyle: typography.styles.captionM.fontStyle,
       color: semanticColors.blackAndWhite.black900,
-      borderLeft: `1px solid ${semanticColors.theme.primary400}`,
+      borderRight: `1px solid ${semanticColors.theme.primary400}`, // Ensure right border
     };
 
     const typeCellStyles = {
@@ -362,7 +360,6 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
 
     const documentCellStyles = {
       ...cellStyles,
-      backgroundColor: semanticColors.blackAndWhite.white,
       textAlign: 'left' as const,
       paddingLeft: '16px',
       width: '180px',
@@ -375,16 +372,31 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
     return (
       <table style={{
         width: '100%',
-        borderCollapse: 'collapse',
+        borderCollapse: 'separate',
+        borderSpacing: 0,
         backgroundColor: semanticColors.blackAndWhite.white,
+        border: `1px solid ${semanticColors.theme.primary400}`,
+        borderRadius: borderRadius[8],
       }}>
         {/* Header row */}
         <thead>
           <tr>
-            <th style={{ ...headerStyles, width: '80px', borderLeft: `1px solid ${semanticColors.theme.primary400}` }}></th>
-            <th style={{ ...headerStyles, width: '180px' }}></th>
-            {months.map((month) => (
-              <th key={month} style={{ ...headerStyles, width: '75px' }}>
+            <th style={{
+              ...headerStyles,
+              width: '80px',
+              borderLeft: 'none',
+              borderTop: 'none',
+              borderTopLeftRadius: borderRadius[8]
+            }}></th>
+            <th style={{ ...headerStyles, width: '180px', borderTop: 'none' }}></th>
+            {months.map((month, index) => (
+              <th key={month} style={{
+                ...headerStyles,
+                width: '75px',
+                borderTop: 'none',
+                borderRight: month === 'Dec' ? 'none' : `1px solid ${semanticColors.theme.primary400}`,
+                borderTopRightRadius: month === 'Dec' ? borderRadius[8] : 0
+              }}>
                 {month}
               </th>
             ))}
@@ -393,10 +405,16 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
         <tbody>
           {/* Policy row */}
           <tr>
-            <td rowSpan={2} style={yearCellStyles}>
+            <td rowSpan={2} style={{
+              ...yearCellStyles,
+              borderLeft: 'none',
+              borderBottom: 'none',
+              borderRight: 'none', // Remove right border as well
+              borderBottomLeftRadius: borderRadius[8]
+            }}>
               2025
             </td>
-            <td style={documentCellStyles}>
+            <td style={{ ...documentCellStyles, borderLeft: `1px solid ${semanticColors.theme.primary400}` }}>
               <DocumentCell
                 filename="Policy"
                 onDownload={(filename) => console.log('Download:', filename)}
@@ -404,7 +422,10 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
               />
             </td>
             {months.map((month) => (
-              <td key={`policy-${month}`} style={cellStyles}>
+              <td key={`policy-${month}`} style={{
+                ...cellStyles,
+                borderRight: month === 'Dec' ? 'none' : cellStyles.borderRight // Remove right border for last column
+              }}>
                 <CustomCell
                   elements={createStatusCell(uploadData.policy[month.toLowerCase() as keyof typeof uploadData.policy], month, 'Policy')}
                   alignment="center"
@@ -414,7 +435,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
           </tr>
           {/* Claims row */}
           <tr>
-            <td style={documentCellStyles}>
+            <td style={{ ...documentCellStyles, borderLeft: `1px solid ${semanticColors.theme.primary400}`, borderBottom: 'none' }}>
               <DocumentCell
                 filename="Claims"
                 onDownload={(filename) => console.log('Download:', filename)}
@@ -424,7 +445,9 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
             {months.map((month) => (
               <td key={`claims-${month}`} style={{
                 ...cellStyles,
-                borderBottom: month === 'Dec' ? 'none' : cellStyles.borderBottom
+                borderBottom: 'none', // Remove bottom border for last row
+                borderRight: month === 'Dec' ? 'none' : cellStyles.borderRight, // Remove right border for last column
+                borderBottomRightRadius: month === 'Dec' ? borderRadius[8] : 0 // Round bottom-right corner for December
               }}>
                 <CustomCell
                   elements={createStatusCell(uploadData.claims[month.toLowerCase() as keyof typeof uploadData.claims], month, 'Claims')}
@@ -529,12 +552,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
         </div>
 
         {/* Upload Table */}
-        <div style={{
-          backgroundColor: semanticColors.blackAndWhite.white,
-          borderRadius: borderRadius[8],
-          border: `1px solid ${semanticColors.theme.primary400}`,
-          overflow: 'hidden',
-        }}>
+        <div>
           {renderBDXTable()}
         </div>
 

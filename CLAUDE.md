@@ -208,11 +208,16 @@ npm run dev  # Start on http://localhost:5173
 3. Use design tokens: `import { colors, typography } from '@design-library/tokens'`
 4. Wrap content with Layout component for consistent navigation and responsive behavior
 5. Add to App.tsx for navigation
-6. Text selection will automatically use blue700 (#9ad5f7) via base.css import
+6. Text selection will automatically adapt to current product theme via ThemeProvider integration
 
 ## Recent Major Updates Summary
 
 ### ✅ Latest Completed (September 2025)
+- **Browser History Integration**: Full browser back/forward button support with URL hash navigation
+- **Theme-Aware Text Selection**: Dynamic selection colors that adapt to current product theme (Reports: blue, Analytics: green, Marketplace: violet)
+- **Enhanced Table UX**: Fixed drag cursor behavior - only shows drag cursor when tables actually need horizontal scrolling
+- **BDX Upload Navigation**: Added navigation buttons from Reports Explorer ("3 months (Need review)" and "EXPLORE" buttons)
+- **BDX Table Border Optimization**: Fixed thick border issues, perfect rounded corners, and clean grid structure
 - **Responsive Layout System**: Full-width responsive design with 50px margins, enhanced modal framework
 - **Complete Accordion Implementation**: NewTransactionForm accordion system with 5 collapsible sections
 - **Comprehensive Token Consolidation**: Eliminated redundant tokens, universal semantic theme system

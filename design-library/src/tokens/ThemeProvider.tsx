@@ -28,7 +28,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const themeColors = getThemeColors(currentTheme);
   const colors = createSemanticColors(currentTheme);
-  
+
+  // Update CSS custom properties for theme colors
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--theme-selection-color', themeColors.primary700);
+  }, [themeColors.primary700]);
+
   const contextValue: ThemeContextValue = {
     currentTheme,
     themeColors,

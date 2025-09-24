@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CashSettlement } from './CashSettlement';
 import { ReportNavigation } from './ReportsExplorer';
 import { TransactionManagement } from './TransactionManagement';
@@ -18,13 +18,33 @@ import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'renewal-transaction' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status' | 'bdx-upload';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('report-navigation');
+  const [currentPage, setCurrentPage] = useState<PageType>(() => {
+    // Initialize from URL hash or default
+    const hash = window.location.hash.slice(1) as PageType;
+    return hash || 'report-navigation';
+  });
   const [valuationData, setValuationData] = useState<any>(null);
   const [renewalData, setRenewalData] = useState<any>(null);
+
+  // Listen to browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const hash = window.location.hash.slice(1) as PageType;
+      if (hash) {
+        setCurrentPage(hash);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Function to handle page navigation with optional data
   const setPage = (page: PageType, data?: any) => {
     setCurrentPage(page);
+    // Update URL hash without triggering page reload
+    window.history.pushState(null, '', `#${page}`);
+
     if (data) {
       if (page === 'new-transaction-form') {
         setRenewalData(data);
@@ -73,8 +93,18 @@ function App() {
     }
   };
 
+  // Determine theme based on current page
+  const getThemeForPage = (page: PageType): 'reports' | 'analytics' | 'marketplace' => {
+    if (page === 'analytics-valuation' || page === 'valuation-dashboard' || page === 'valuation-configuration' || page === 'valuation-status') {
+      return 'analytics';
+    }
+    // Add marketplace pages here when they exist
+    // Default to reports theme for all other pages
+    return 'reports';
+  };
+
   return (
-    <ThemeProvider initialTheme="reports">
+    <ThemeProvider initialTheme={getThemeForPage(currentPage)}>
       <div>
         {renderPage()}
       </div>
