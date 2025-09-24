@@ -15,6 +15,7 @@ export interface TableColumn {
   sortable?: boolean;
   width?: string;
   align?: 'left' | 'center' | 'right';
+  headerAlign?: 'left' | 'center' | 'right'; // Alignment for column header text
   cellType?: CellType;
   onDownload?: (filename: string) => void; // For document cells
   hoverIcon?: 'download' | 'config' | 'open'; // For document cells hover icon
@@ -318,10 +319,10 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
   const isActionColumn = column.cellType === 'action';
 
   const baseHeaderStyles = {
-    padding: '8px 12px', // Compact padding for column headers
+    padding: '6px 12px', // Adjusted padding to accommodate 24px icons in 36px header
     backgroundColor: colors.blackAndWhite.white,
     cursor: canSort ? 'pointer' : 'default',
-    height: '32px', // Reduced height for compact design
+    height: '36px', // Target height for column headers
     boxSizing: 'border-box' as const,
     borderRight: `1px solid ${colors.theme.primary400}`, // Right border for column separation
     borderTop: `1px solid ${colors.theme.primary400}`,
@@ -345,18 +346,17 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     boxShadow: `inset 1px 0 0 0 ${colors.theme.primary400}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
   } : baseHeaderStyles;
 
+  // Determine header alignment (default to left)
+  const headerAlignment = column.headerAlign || 'left';
+
   const headerContentStyles = {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: headerAlignment === 'right' ? 'flex-end' :
+                   headerAlignment === 'center' ? 'center' :
+                   'flex-start',
     width: '100%',
-  };
-
-  const leftSectionStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '20px', // Gap from Figma design
-    flex: 1,
+    gap: '8px', // Gap between elements
   };
 
   const iconTextGroupStyles = {
@@ -364,7 +364,7 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     alignItems: 'center',
     gap: '6px', // Adjusted gap between icon and text to match Figma
     minWidth: 'fit-content', // Allow natural sizing to accommodate content
-    flex: 1, // Take available space but allow arrange icon to have its space
+    // Remove flex: 1 to allow proper alignment control
   };
 
   const textStyles = {
@@ -406,23 +406,21 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
       onClick={handleSort}
     >
       <div style={headerContentStyles}>
-        <div style={leftSectionStyles}>
-          
-          <div style={iconTextGroupStyles}>
-            {column.icon && (
-              <div style={{ 
-                flexShrink: 0, 
-                width: '20px', 
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                {column.icon}
-              </div>
-            )}
-            <span style={textStyles}>{column.title}</span>
-          </div>
+        {/* Content wrapper that handles different alignments */}
+        <div style={iconTextGroupStyles}>
+          {column.icon && (
+            <div style={{
+              flexShrink: 0,
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {column.icon}
+            </div>
+          )}
+          <span style={textStyles}>{column.title}</span>
         </div>
 
         {canSort && (
@@ -434,18 +432,18 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
               fill="none" 
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path 
-                d="M7 9L12 4L17 9" 
-                stroke={colors.blackAndWhite.black500} 
-                strokeWidth="1.4" 
-                strokeLinecap="round" 
+              <path
+                d="M7 9L12 4L17 9"
+                stroke={colors.blackAndWhite.black500}
+                strokeWidth="1.4"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <path 
-                d="M17 15L12 20L7 15" 
-                stroke={colors.blackAndWhite.black500} 
-                strokeWidth="1.4" 
-                strokeLinecap="round" 
+              <path
+                d="M17 15L12 20L7 15"
+                stroke={colors.blackAndWhite.black500}
+                strokeWidth="1.4"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
@@ -886,6 +884,48 @@ export const Table: React.FC<TableProps> = ({
 
   const currentSortState = onSort ? sortState : internalSortState;
 
+  // Sort data based on current sort state
+  const sortedData = React.useMemo(() => {
+    if (!currentSortState.column || !currentSortState.direction) {
+      return data;
+    }
+
+    const sortColumn = columns.find(col => col.key === currentSortState.column);
+    if (!sortColumn) return data;
+
+    return [...data].sort((a, b) => {
+      let aValue = a[currentSortState.column!];
+      let bValue = b[currentSortState.column!];
+
+      // Convert React nodes to string for comparison if needed
+      if (React.isValidElement(aValue)) {
+        aValue = String(aValue.props?.children || '');
+      }
+      if (React.isValidElement(bValue)) {
+        bValue = String(bValue.props?.children || '');
+      }
+
+      // Convert to strings for comparison
+      const aStr = String(aValue || '').toLowerCase();
+      const bStr = String(bValue || '').toLowerCase();
+
+      // Try to parse as numbers if possible
+      const aNum = parseFloat(aStr.replace(/[^0-9.-]/g, ''));
+      const bNum = parseFloat(bStr.replace(/[^0-9.-]/g, ''));
+
+      let comparison = 0;
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        // Numeric comparison
+        comparison = aNum - bNum;
+      } else {
+        // String comparison
+        comparison = aStr.localeCompare(bStr);
+      }
+
+      return currentSortState.direction === 'desc' ? -comparison : comparison;
+    });
+  }, [data, currentSortState, columns]);
+
   // Check if table needs horizontal scrolling
   React.useEffect(() => {
     const checkScrollNeeded = () => {
@@ -1089,7 +1129,7 @@ export const Table: React.FC<TableProps> = ({
 
           <TableBody
             columns={columns}
-            data={data}
+            data={sortedData}
             emptyMessage={emptyMessage}
           />
         </table>

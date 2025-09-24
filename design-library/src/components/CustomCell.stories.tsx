@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CustomCell } from './CustomCell';
 import type { CustomCellElement } from './CustomCell';
-import { AddSmall, DownloadMedium, CheckMedium, HelpExtraSmall } from '../icons';
+import { AddSmall, DownloadMedium, CheckMedium, HelpExtraSmall, EditMedium } from '../icons';
 
 const meta: Meta<typeof CustomCell> = {
   title: 'Components/Table/CustomCell',

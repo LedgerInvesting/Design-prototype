@@ -540,10 +540,12 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     {
       key: 'transactionName',
       title: 'Transaction Name',
-      icon: <DocumentTable color={colors.blackAndWhite.black500} />,
+      icon: <DocumentTable color={colors.theme.primary450} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'transactionName'),
       cellType: 'document' as const,
+      align: 'left', // First column left-aligned
+      headerAlign: 'left',
       hoverIcon: 'config' as const,
       onDownload: (filename: string) => {
         console.log('Configuring transaction document:', filename);
@@ -554,52 +556,65 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     {
       key: 'cedingCompany',
       title: 'Ceding Company',
-      icon: <TextTable color={colors.blackAndWhite.black500} />,
+      icon: <TextTable color={colors.theme.primary450} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'cedingCompany'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right', // Right-aligned headers
     },
     {
       key: 'reinsurerName',
       title: 'Reinsurer Name',
-      icon: <TextTable color={colors.blackAndWhite.black500} />,
+      icon: <TextTable color={colors.theme.primary450} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'reinsurerName'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right', // Right-aligned headers
     },
     {
       key: 'effectiveDate',
       title: 'Effective Date',
-      icon: <CalendarTable color={colors.blackAndWhite.black500} />,
+      icon: <CalendarTable color={colors.theme.primary450} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'effectiveDate'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right', // Right-aligned headers
     },
     {
       key: 'expiryDate',
       title: 'Expiry Date',
-      icon: <CalendarTable color={colors.blackAndWhite.black500} />,
+      icon: <CalendarTable color={colors.theme.primary450} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'expiryDate'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right', // Right-aligned headers
     },
     {
       key: 'premium',
       title: 'Premium',
-      icon: <AmmountTable color={colors.blackAndWhite.black500} />,
+      icon: <AmmountTable color={colors.theme.primary450} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'premium'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right', // Right-aligned headers
     },
     {
       key: 'status',
       title: 'Status',
-      icon: <StatusTable color={colors.blackAndWhite.black500} />,
+      icon: <StatusTable color={colors.theme.primary450} />,
       sortable: false,
       width: getOptimizedColumnWidth(sampleData, 'status'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right', // Right-aligned headers
     },
     {
       key: 'actions',
       title: 'Actions',
-      icon: <StatusTable color={colors.blackAndWhite.black500} />,
+      icon: <StatusTable color={colors.theme.primary450} />,
       sortable: false,
       width: getOptimizedColumnWidth(sampleData, 'actions'),
-      align: 'center' as const,
+      align: 'center' as const, // Keep actions centered
+      headerAlign: 'right', // Right-aligned header
       cellType: 'action' as const,
       actionType: 'upload' as const,
       onAction: (actionType: string, text: string) => {
@@ -644,8 +659,6 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
         totalItems={25}
         itemsPerPage={10}
         onPageChange={(page) => console.log('Page changed to:', page)}
-        sortState={{ column: null, direction: null }}
-        onSort={(column) => console.log('Sort by:', column)}
       />
     </div>
   );

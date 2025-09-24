@@ -163,7 +163,7 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Dropdown**: Same specs as Input, custom styling, 6 states
 - **Selector**: Unified checkbox/radio component with 2 variants
 - **ButtonSelector**: Button-style selectors for prominent binary choices
-- **Table**: Advanced responsive data table with intelligent features (3 specialized cell types, enhanced action buttons, intelligent column sizing, dual pagination options)
+- **Table**: Advanced responsive data table with intelligent features (3 specialized cell types, enhanced action buttons, intelligent column sizing, dual pagination options, comprehensive alignment control for headers and cells)
 - **Layout**: Stack, Grid, Container, Spacer for flexible layouts
 - **Page Layout**: Layout component that combines TopNav and Sidebar with responsive design
 
@@ -213,6 +213,15 @@ npm run dev  # Start on http://localhost:5173
 ## Recent Major Updates Summary
 
 ### ✅ Latest Completed (September 2025)
+- **Table Column Alignment System**: Complete alignment control for both headers and cells across all tables
+  - Added `align` property for cell content alignment (left/center/right)
+  - Added `headerAlign` property for column header alignment (left/center/right)
+  - Professional layout pattern: first column left-aligned, data columns right-aligned
+  - Updated all table implementations: Analytics Valuation, Transaction Management, Contracts Explorer
+  - Enhanced Storybook documentation with ColumnAlignment story
+- **Table Header Icon Optimization**: Fixed 36px header height with proper 24px icon sizing
+- **Sidebar Padding Refinement**: Updated navigation padding from 1.5rem to 1rem for improved compactness
+- **Enhanced Table Sorting**: Functional arrange arrows with intelligent numeric/text detection
 - **Browser History Integration**: Full browser back/forward button support with URL hash navigation
 - **Theme-Aware Text Selection**: Dynamic selection colors that adapt to current product theme (Reports: blue, Analytics: green, Marketplace: violet)
 - **Enhanced Table UX**: Fixed drag cursor behavior - only shows drag cursor when tables actually need horizontal scrolling

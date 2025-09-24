@@ -176,7 +176,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     width: showFullMode ? '220px' : '80px',
     minHeight: '100vh',
     backgroundColor: colors.blackAndWhite.black900,
-    padding: `${spacing[6]} ${spacing[4]}`,
+    padding: `${spacing[4]} ${spacing[4]}`,
     display: 'flex',
     flexDirection: 'column',
     gap: spacing[1],

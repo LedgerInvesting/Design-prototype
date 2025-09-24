@@ -175,87 +175,107 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
 
   // Define columns for Reinsurance Trust table
   const reinsuranceTrustColumns = [
-    { 
-      key: 'contractName', 
+    {
+      key: 'contractName',
       title: 'Contract Name',
       cellType: 'document' as const,
       sortable: true,
       width: getOptimizedColumnWidth(reinsuranceTrustData, 'contractName'),
+      align: 'left', // First column left-aligned
+      headerAlign: 'left',
       hoverIcon: 'download' as const,
       onDownload: (filename: string) => {
         console.log('Download contract:', filename);
       }
     },
-    { 
-      key: 'amended', 
+    {
+      key: 'amended',
       title: 'Amended?',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceTrustData, 'amended')
+      width: getOptimizedColumnWidth(reinsuranceTrustData, 'amended'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     },
-    { 
-      key: 'signedDate', 
+    {
+      key: 'signedDate',
       title: 'Signed Date',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceTrustData, 'signedDate')
+      width: getOptimizedColumnWidth(reinsuranceTrustData, 'signedDate'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     },
-    { 
-      key: 'effectiveDate', 
+    {
+      key: 'effectiveDate',
       title: 'Effective Date',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceTrustData, 'effectiveDate')
+      width: getOptimizedColumnWidth(reinsuranceTrustData, 'effectiveDate'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     },
-    { 
-      key: 'pageCount', 
+    {
+      key: 'pageCount',
       title: 'Page Count',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceTrustData, 'pageCount')
+      width: getOptimizedColumnWidth(reinsuranceTrustData, 'pageCount'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     }
   ];
 
   // Define columns for Reinsurance Schedule table
   const reinsuranceScheduleColumns = [
-    { 
-      key: 'contractName', 
+    {
+      key: 'contractName',
       title: 'Contract Name',
       cellType: 'document' as const,
       sortable: true,
       width: getOptimizedColumnWidth(reinsuranceScheduleData, 'contractName'),
+      align: 'left', // First column left-aligned
+      headerAlign: 'left',
       hoverIcon: 'download' as const,
       onDownload: (filename: string) => {
         console.log('Download contract:', filename);
       }
     },
-    { 
-      key: 'amended', 
+    {
+      key: 'amended',
       title: 'Amended?',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'amended')
+      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'amended'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     },
-    { 
-      key: 'signedDate', 
+    {
+      key: 'signedDate',
       title: 'Signed Date',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'signedDate')
+      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'signedDate'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     },
-    { 
-      key: 'effectiveDate', 
+    {
+      key: 'effectiveDate',
       title: 'Effective Date',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'effectiveDate')
+      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'effectiveDate'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     },
-    { 
-      key: 'pageCount', 
+    {
+      key: 'pageCount',
       title: 'Page Count',
       cellType: 'simple' as const,
       sortable: true,
-      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'pageCount')
+      width: getOptimizedColumnWidth(reinsuranceScheduleData, 'pageCount'),
+      align: 'right', // Right-aligned cells
+      headerAlign: 'right' // Right-aligned headers
     }
   ];
 
@@ -321,9 +341,6 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
             tabs={[]}
             selectedTab=""
             onTabClick={() => {}}
-            onSort={(column, direction) => {
-              console.log('Sort:', column, direction);
-            }}
             showSearch={false}
             showTabs={false}
             title="Reinsurance Trust"
@@ -344,9 +361,6 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
             tabs={[]}
             selectedTab=""
             onTabClick={() => {}}
-            onSort={(column, direction) => {
-              console.log('Sort:', column, direction);
-            }}
             showSearch={false}
             showTabs={false}
             title="Reinsurance Schedule"

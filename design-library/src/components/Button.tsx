@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { typography, borderRadius, useSemanticColors } from '../tokens';
+import { typography, borderRadius, useSemanticColors, useTheme } from '../tokens';
 import { icons } from '../icons';
 
 export type ButtonVariant = 'primary' | 'small' | 'icon' | 'tertiary';
@@ -54,6 +54,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 
   const [isHovered, setIsHovered] = useState(false);
   const colors = useSemanticColors();
+
+  // Get current theme, with fallback for when not in ThemeProvider
+  let currentTheme = 'reports';
+  try {
+    const theme = useTheme();
+    currentTheme = theme.currentTheme;
+  } catch (error) {
+    // Outside ThemeProvider, use default theme
+  }
 
   // Extract variant-specific props with defaults
   const variant = props.variant || 'primary';
@@ -346,7 +355,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'green':
         return colors.blackAndWhite.black900;
       case 'white':
-        return colors.theme.primary700;
+        // Use green900 for analytics theme to ensure proper contrast
+        return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
       default:
         return 'currentColor';
     }
@@ -358,7 +368,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'black':
         return colors.theme.primary700;
       case 'white':
-        return colors.theme.primary700;
+        // Use green900 for analytics theme to ensure proper contrast
+        return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
       default:
         return colors.blackAndWhite.black900;
     }
@@ -393,7 +404,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'green':
         return colors.blackAndWhite.black900;
       case 'white':
-        return colors.theme.primary700; // Updated to blue700
+        // Use green900 for analytics theme to ensure proper contrast
+        return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
       default:
         return colors.blackAndWhite.black900;
     }

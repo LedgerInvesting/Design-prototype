@@ -70,6 +70,7 @@ export type ProductTheme = 'reports' | 'marketplace' | 'analytics';
 export interface ThemeColors {
   // Essential theme colors only (the ones that need to adapt per product)
   primary700: string; // main color
+  primary450: string; // column headers, icons
   primary400: string; // strokes (borders, separators)
   primary300: string; // hover states
   primary200: string; // background (light backgrounds)
@@ -79,18 +80,21 @@ export interface ThemeColors {
 const themeColorMappings: Record<ProductTheme, ThemeColors> = {
   reports: {
     primary700: colors.reports.blue700,
+    primary450: colors.reports.blue450,
     primary400: colors.reports.dynamic.blue400,
     primary300: colors.reports.dynamic.blue300,
     primary200: colors.reports.dynamic.blue200,
   },
   marketplace: {
     primary700: colors.marketplace.violet700,
+    primary450: colors.marketplace.violet700, // Use same as primary700 for marketplace
     primary400: colors.marketplace.dynamic.violet400,
     primary300: colors.marketplace.dynamic.violet300,
     primary200: colors.marketplace.dynamic.violet200,
   },
   analytics: {
     primary700: colors.analytics.green700,
+    primary450: '#B4C5BC', // Custom color for analytics column headers
     primary400: colors.analytics.dynamic.green400,
     primary300: colors.analytics.dynamic.green300,
     primary200: colors.analytics.dynamic.green200,
@@ -121,6 +125,7 @@ export function createSemanticColors(theme: ProductTheme) {
       ...themeColors,
       // Common semantic uses (renamed to match Figma)
       'primary700 (main)': themeColors.primary700,       // Main brand color for the product
+      'primary450 (headers)': themeColors.primary450,    // Used for column headers, icons
       'primary400 (strokes)': themeColors.primary400,    // Used for borders, separators, outlines
       'primary300 (hover)': themeColors.primary300,      // Used for hover states
       'primary200 (background)': themeColors.primary200, // Used for light backgrounds
@@ -129,6 +134,7 @@ export function createSemanticColors(theme: ProductTheme) {
       background: themeColors.primary200,
       hover: themeColors.primary300,
       main: themeColors.primary700,
+      headers: themeColors.primary450,
     },
     // Original color structure remains intact
     ...colors,

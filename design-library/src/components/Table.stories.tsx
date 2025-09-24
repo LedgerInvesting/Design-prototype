@@ -19,7 +19,7 @@ const meta: Meta<typeof Table> = {
   },
   argTypes: {
     columns: {
-      description: 'Array of column definitions with title, key, sorting, and alignment options',
+      description: 'Array of column definitions with title, key, sorting, and alignment options. Each column can have: title, key, icon, sortable, **align** (for cell content alignment), **headerAlign** (for column header alignment), cellType, etc. Use align and headerAlign properties together to create professional layouts where the first column is left-aligned and data columns are right-aligned.',
       control: 'object',
     },
     data: {
@@ -1093,6 +1093,81 @@ export const DataTypesShowcase: Story = {
     docs: {
       description: {
         story: 'Showcase of different data types in table cells: plain text, numbers, status chips, status icons, and mixed content with multiple components.',
+      },
+    },
+  },
+};
+
+// Column alignment showcase - both headers and cells
+export const ColumnAlignment: Story = {
+  args: {
+    columns: [
+      {
+        key: 'document',
+        title: 'Document Name',
+        icon: <DocumentTable color={colors.analytics.green700} />,
+        headerAlign: 'left',
+        align: 'left',
+        sortable: true,
+        width: '300px',
+        cellType: 'simple' as const,
+      },
+      {
+        key: 'year',
+        title: 'Treaty Year',
+        icon: <TextTable color={colors.analytics.green700} />,
+        headerAlign: 'right',
+        align: 'right',
+        sortable: true,
+        cellType: 'simple' as const,
+      },
+      {
+        key: 'ratio',
+        title: 'Loss Ratio',
+        icon: <TextTable color={colors.analytics.green700} />,
+        headerAlign: 'right',
+        align: 'right',
+        sortable: true,
+        cellType: 'simple' as const,
+      },
+      {
+        key: 'premium',
+        title: 'Premium Amount',
+        icon: <AmmountTable color={colors.analytics.green700} />,
+        headerAlign: 'right',
+        align: 'right',
+        sortable: true,
+        cellType: 'simple' as const,
+      },
+    ],
+    data: [
+      {
+        document: 'Aviation Treaty 2023',
+        year: 'TY23',
+        ratio: '53.2%',
+        premium: '$3,800,000',
+      },
+      {
+        document: 'Marine Insurance Policy',
+        year: 'TY24',
+        ratio: '47.8%',
+        premium: '€2,150,000',
+      },
+      {
+        document: 'Property Coverage Plan',
+        year: 'TY23',
+        ratio: '61.5%',
+        premium: '£1,900,000',
+      },
+    ],
+    title: 'Column Alignment Demo',
+    showTabs: false,
+    showSearch: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates both `headerAlign` and `align` properties for comprehensive column alignment control. **headerAlign** controls the alignment of column header text and icons, while **align** controls the alignment of cell content. The first column uses left alignment for both headers and cells, while all other columns use right alignment. This creates a clean, professional layout where the primary identification column is left-aligned and data columns are right-aligned for better number readability.',
       },
     },
   },

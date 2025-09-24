@@ -260,7 +260,7 @@ const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialS
 
         {/* Download Column */}
         <div style={{ width: '70px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <DownloadSmall color={colors.blackAndWhite.black900} />
+          <DownloadSmall color={colors.theme.primary450} />
         </div>
       </div>
 
@@ -809,14 +809,14 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             <div style={{
               width: '107px',
               ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black500,
+              color: colors.theme.primary450,
             }}>
               Evaluation Date
             </div>
             <div style={{
               flex: 1,
               ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black500,
+              color: colors.theme.primary450,
               textAlign: 'center',
               marginLeft: '-10px',
             }}>
@@ -825,7 +825,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             <div style={{
               width: '120px',
               ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black500,
+              color: colors.theme.primary450,
               textAlign: 'left',
             }}>
               official valuation
@@ -833,7 +833,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             <div style={{
               width: '70px',
               ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black500,
+              color: colors.theme.primary450,
               textAlign: 'right',
             }}>
               Cashflow file

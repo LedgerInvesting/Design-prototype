@@ -107,6 +107,7 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, 
 };
 
 export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNavigateToPage }) => {
+  const colors = useSemanticColors();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const newValuationButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -189,11 +190,13 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
             {
               key: 'programTag',
               title: 'Program Tag',
-              icon: <DocumentTable color={baseColors.analytics.dynamic.green400} />,
-              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              icon: <DocumentTable color={colors.theme.primary450} />,
+              sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
               width: 309,
               cellType: 'document',
+              align: 'left', // First column left-aligned
+              headerAlign: 'left',
               hoverIcon: 'open',
               onDownload: (filename: string) => {
                 console.log('Opening program:', filename);
@@ -208,39 +211,43 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               }
             },
             {
-              key: 'treatyYear', 
+              key: 'treatyYear',
               title: 'Treaty Year',
-              icon: <TextTable color={baseColors.analytics.dynamic.green400} />,
-              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              icon: <TextTable color={colors.theme.primary450} />,
+              sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
-              align: 'right',
+              align: 'right', // Right-aligned cells
+              headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'
             },
             {
               key: 'insuranceLossRatio',
               title: 'Insurance Loss Ratio',
-              icon: <TextTable color={baseColors.analytics.dynamic.green400} />,
-              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />, 
+              icon: <TextTable color={colors.theme.primary450} />,
+              sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
-              align: 'right',
+              align: 'right', // Right-aligned cells
+              headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'
             },
             {
               key: 'lineOfBusiness',
               title: 'Line of Business',
-              icon: <TextTable color={baseColors.analytics.dynamic.green400} />,
-              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              icon: <TextTable color={colors.theme.primary450} />,
+              sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
-              align: 'right', 
+              align: 'right', // Right-aligned cells
+              headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'
             },
             {
               key: 'premium',
               title: 'Premium',
-              icon: <AmmountTable color={baseColors.analytics.dynamic.green400} />,
-              sortIcon: <ArrangeTable color={baseColors.analytics.dynamic.green400} />,
+              icon: <AmmountTable color={colors.theme.primary450} />,
+              sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
-              align: 'right',
+              align: 'right', // Right-aligned cells
+              headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'
             }
           ]}
@@ -311,11 +318,11 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
           ]}
           showSearch={true}
           searchPlaceholder="Search configurations..."
+          showTabs={false}
           itemsPerPage={10}
           totalItems={80}
           currentPage={1}
           onPageChange={(page) => console.log('Page changed to:', page)}
-          onSort={(column, direction) => console.log('Sort:', column, direction)}
         />
       </div>
       
