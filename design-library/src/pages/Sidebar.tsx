@@ -25,7 +25,8 @@ interface SidebarProps {
   onInboxClick?: () => void;
   selectedItem?: string;
   selectedSubitem?: string;
-  onHoverChange?: (isHovered: boolean) => void; // New prop to communicate hover state
+  onHoverChange?: (isHovered: boolean) => void;
+  isCompact?: boolean; // Controlled compact state from parent
 }
 
 const sidebarItems: SidebarItem[] = [
@@ -73,7 +74,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onInboxClick,
   selectedItem: propSelectedItem,
   selectedSubitem: propSelectedSubitem,
-  onHoverChange
+  onHoverChange,
+  isCompact: propIsCompact = false
 }) => {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['reports']));
   
@@ -90,20 +92,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       setExpandedItems(prev => new Set([...prev, selectedItem]));
     }
   }, [selectedItem, selectedSubitem]);
-  const [isCompact, setIsCompact] = useState<boolean>(false);
+
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  // Check viewport width and update compact mode
-  useEffect(() => {
-    const checkViewportWidth = () => {
-      setIsCompact(window.innerWidth <= 1650);
-    };
-
-    checkViewportWidth(); // Check on mount
-    window.addEventListener('resize', checkViewportWidth);
-    return () => window.removeEventListener('resize', checkViewportWidth);
-  }, []);
+  // Use controlled compact mode from parent
+  const isCompact = propIsCompact;
 
   // Handle hover with proper delays for smooth UX
   const handleMouseEnter = () => {

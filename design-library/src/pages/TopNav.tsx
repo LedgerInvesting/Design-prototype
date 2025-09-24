@@ -1,6 +1,6 @@
 import React from 'react';
 import { colors, typography, spacing, borderRadius, shadows } from '../tokens';
-import { ChevronRightExtraSmall, ChevronDownExtraSmall, ExternalLinkSmall } from '../icons';
+import { ChevronRightExtraSmall, ChevronDownExtraSmall, ExternalLinkSmall, HideShowSidebarMedium } from '../icons';
 import { Button } from '../components/Button';
 
 export interface BreadcrumbItem {
@@ -18,6 +18,7 @@ export interface TopNavProps {
   showShare?: boolean;
   onShareClick?: () => void;
   onUserMenuClick?: () => void;
+  onSidebarToggle?: () => void;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -30,6 +31,7 @@ export const TopNav: React.FC<TopNavProps> = ({
   showShare = false,
   onShareClick,
   onUserMenuClick,
+  onSidebarToggle,
   className,
   style,
 }) => {
@@ -137,10 +139,54 @@ export const TopNav: React.FC<TopNavProps> = ({
     }
   };
 
+  const sidebarToggleButtonStyles: React.CSSProperties = {
+    width: '40px',
+    height: '40px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderRadius: borderRadius[8],
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.15s ease',
+  };
+
   return (
     <nav className={className} style={containerStyles}>
-      {/* Left Section - Breadcrumbs */}
+      {/* Left Section - Sidebar Toggle + Breadcrumbs */}
       <div style={leftSectionStyles}>
+        {/* Sidebar Toggle Button */}
+        {onSidebarToggle && (
+          <>
+            <button
+              style={sidebarToggleButtonStyles}
+              onClick={onSidebarToggle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+              title="Toggle Sidebar"
+            >
+              <div style={{
+                width: '18px',
+                height: '18px',
+                padding: '1px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <HideShowSidebarMedium color={colors.blackAndWhite.black900} />
+              </div>
+            </button>
+
+            {/* Separator */}
+            <div style={separatorStyles} />
+          </>
+        )}
+
         <div style={breadcrumbsStyles}>
           {breadcrumbs.map((item, index) => (
             <React.Fragment key={index}>

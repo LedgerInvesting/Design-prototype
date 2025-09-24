@@ -40,16 +40,10 @@ export const Layout: React.FC<LayoutProps> = ({
   const [isCompact, setIsCompact] = useState<boolean>(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState<boolean>(false);
 
-  // Check viewport width and update compact mode
-  useEffect(() => {
-    const checkViewportWidth = () => {
-      setIsCompact(window.innerWidth <= 1650);
-    };
-
-    checkViewportWidth(); // Check on mount
-    window.addEventListener('resize', checkViewportWidth);
-    return () => window.removeEventListener('resize', checkViewportWidth);
-  }, []);
+  // Handle sidebar toggle - button controls compact mode instead of viewport
+  const handleSidebarToggle = () => {
+    setIsCompact(!isCompact);
+  };
 
   // Calculate sidebar width based on compact mode and hover state
   const sidebarWidth = isCompact && !isSidebarHovered ? '80px' : '220px';
@@ -97,6 +91,7 @@ export const Layout: React.FC<LayoutProps> = ({
           selectedItem={selectedSidebarItem}
           selectedSubitem={selectedSidebarSubitem}
           onHoverChange={setIsSidebarHovered}
+          isCompact={isCompact}
         />
       </div>
 
@@ -120,6 +115,7 @@ export const Layout: React.FC<LayoutProps> = ({
             showShare={showShare}
             onShareClick={onShareClick || (() => alert('Share clicked'))}
             onUserMenuClick={onUserMenuClick || (() => alert('User menu clicked'))}
+            onSidebarToggle={handleSidebarToggle}
           />
         </div>
 

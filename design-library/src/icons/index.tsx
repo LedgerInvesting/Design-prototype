@@ -879,6 +879,26 @@ export const Help2Medium: React.FC<MediumIconProps> = ({
     </svg>
 );
 
+export const HideShowSidebarMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    {/* Sidebar rectangle (left box) */}
+    <rect x="1" y="2" width="5" height="12" rx="1" fill="white" stroke={color} strokeWidth="2"/>
+    {/* Right border line only */}
+    <line x1="17" y1="3" x2="17" y2="13" stroke={color} strokeWidth="2"/>
+    {/* Top border line */}
+    <line x1="6" y1="2" x2="16" y2="2" stroke={color} strokeWidth="2"/>
+    {/* Bottom border line */}
+    <line x1="6" y1="14" x2="16" y2="14" stroke={color} strokeWidth="2"/>
+    {/* Top right corner */}
+    <path d="M16 2 Q17 2 17 3" fill="none" stroke={color} strokeWidth="2"/>
+    {/* Bottom right corner */}
+    <path d="M17 13 Q17 14 16 14" fill="none" stroke={color} strokeWidth="2"/>
+  </svg>
+);
+
 export const HelpMedium: React.FC<MediumIconProps> = ({ 
   color = 'currentColor', 
   className 
