@@ -2,7 +2,79 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
-## Latest Development Session (Browser History & UX Enhancement - September 23, 2025)
+## Latest Development Session (Tooltip Portal Fixes & Upload Animation - September 24, 2025)
+
+### 🎯 **Critical Tooltip Positioning Fixes & UX Enhancement**
+
+**Key Issues Resolved:**
+1. **Analytics Illustration Update**:
+   - **File Replacement**: Updated `analytics_Illustration.png` from temp folder
+   - **Format Change**: Switched from SVG to PNG format for better compatibility
+   - **AnalyticsValuation.tsx**: Updated image source path accordingly
+
+2. **Tooltip Positioning Crisis Resolution**:
+   - **Root Cause**: Page transition animations using `transform: scale()` created new stacking contexts
+   - **Affected Components**: TriangleTooltip in ValuationDashboard, hover modals in BDX upload
+   - **Solution**: React Portal rendering to bypass parent transform inheritance
+
+3. **Portal Rendering Implementation**:
+   - **TriangleTooltip Fix**: Added `createPortal` to render tooltip to `document.body`
+   - **BDX Upload Modals**: Fixed 4 hover modals (progress, error, success, attention)
+   - **Positioning Adjustment**: Added +35px offset to position modals below status icons
+   - **Hover Interaction**: Maintained proper mouse enter/leave behaviors
+
+4. **Upload Success Animation System**:
+   - **Visual Feedback**: Clear indication of which month/type was just uploaded
+   - **Smooth Transition**: "Add" button morphs into progress icon with scaling effects
+   - **Animation States**: Intermediate scaling (0.8x) → Final bouncy scale (1.2x) → Normal (1x)
+   - **Professional Easing**: Uses `cubic-bezier` curves for polished animations
+
+**Technical Implementation:**
+
+```tsx
+// Portal rendering pattern implemented across all affected tooltips
+{isVisible && typeof document !== 'undefined' && createPortal(
+  <div style={{ position: 'fixed', ... }}>
+    {/* tooltip content */}
+  </div>,
+  document.body
+)}
+
+// Upload animation state management
+const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
+
+// Animation sequence with proper timing
+setTimeout(() => {
+  setUploadedFiles(prev => new Set([...prev, fileKey]));
+  setAnimatingCells(prev => {
+    const newSet = new Set(prev);
+    newSet.delete(fileKey);
+    return newSet;
+  });
+}, 700); // Total animation duration
+```
+
+**Files Modified:**
+- `pages/AnalyticsValuation.tsx` - Image source update
+- `pages/ValuationDashboard.tsx` - TriangleTooltip portal fix
+- `pages/BDXUpload.tsx` - Major updates: 4 modal portal fixes + upload animation
+- `pages/public/analytics_Illustration.png` - New illustration file
+
+**Code Quality Improvements:**
+- **Import Cleanup**: Removed unused imports after linter optimization
+- **Dead Code Removal**: Eliminated redundant modal ref assignments
+- **Animation Optimization**: Streamlined timeout logic for better performance
+- **Portal Consistency**: Uniform portal rendering pattern across all components
+
+**User Experience Enhancements:**
+- **Immediate Feedback**: Upload success is instantly visible with clear visual indication
+- **Spatial Awareness**: Tooltips appear below icons instead of covering them
+- **Professional Polish**: Smooth, bouncy animations similar to page transitions
+- **Problem Resolution**: Fixed "tooltips appearing in wrong spot" across all reported areas
+
+---
+
+## Previous Development Session (Browser History & UX Enhancement - September 23, 2025)
 
 ### 🎯 **Browser History Integration & Navigation Enhancement**
 

@@ -4,6 +4,7 @@ import { Button, Table } from '@design-library/components';
 import { colors as baseColors, typography, borderRadius, shadows } from '@design-library/tokens';
 import { AddSmall, DocumentTable, TextTable, AmmountTable, ArrangeTable } from '@design-library/icons';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
+import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
 import { NewValuationModal, ValuationFormData } from './NewValuationModal';
 
 interface AnalyticsValuationProps {
@@ -61,9 +62,9 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, 
     <div style={headerStyles}>
       <div style={leftContentStyles}>
         <div style={illustrationContainerStyles}>
-          <img 
-            src="/Valuation_illustration.png" 
-            alt="analytics valuation" 
+          <img
+            src="/analytics_Illustration.png"
+            alt="analytics valuation"
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </div>
@@ -147,35 +148,8 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
       <Layout
       selectedSidebarItem="analytics"
       selectedSidebarSubitem="valuation"
-      onNavigate={(itemId, subitemId) => {
-        console.log('Navigate to:', itemId, subitemId);
-        
-        // Handle Analytics navigation
-        if (itemId === 'analytics') {
-          if (subitemId === 'valuation') {
-            // Already on analytics valuation page
-            console.log('Already on analytics valuation page');
-          }
-        }
-        // Handle Reports navigation
-        else if (itemId === 'reports') {
-          if (subitemId === 'transactions') {
-            onNavigateToPage('transaction-management');
-          } else if (subitemId === 'reports-explorer') {
-            onNavigateToPage('report-navigation');
-          }
-        }
-        // Handle Contracts navigation
-        else if (itemId === 'contracts') {
-          onNavigateToPage('contracts-explorer');
-        }
-        else {
-          console.log('Unhandled navigation:', itemId, subitemId);
-        }
-      }}
-      breadcrumbs={[
-        { label: 'Valuation', isActive: true }
-      ]}
+      onNavigate={createPageNavigationHandler(onNavigateToPage, 'analytics-valuation')}
+      breadcrumbs={createBreadcrumbs.analytics.valuation()}
     >
       {/* Header Section */}
       <AnalyticsHeader 

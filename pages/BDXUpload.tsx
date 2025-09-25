@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
 import {
   Table,
   CustomCell,
   CustomCellElement,
-  TableColumn,
-  TableRow,
   DocumentCell,
   Modal,
   Button,
@@ -19,7 +18,6 @@ import {
   StatusProgressTable,
   StatusAlertTable,
   StatusErrorTable,
-  StatusError,
   StatusCheckTable,
   StatusProhibitedTable,
   DocumentMedium,
@@ -50,11 +48,8 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
   const [addModalContext, setAddModalContext] = useState<{ month: string; type: string } | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<Set<string>>(new Set());
-  const modalRef = useRef<HTMLDivElement>(null);
+  const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Disabled click outside handler for now to avoid conflicts with hover
-  // Will re-enable once hover is working properly
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -282,6 +277,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
         // Check if file has been uploaded for this month/type combination
         const fileKey = `${type}-${month}`;
         const isUploaded = uploadedFiles.has(fileKey);
+        const isAnimating = animatingCells.has(fileKey);
 
         if (isUploaded) {
           return [{
@@ -290,7 +286,35 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
               <div
                 onMouseEnter={(e) => handleIconEnter(e, 'progress')}
                 onMouseLeave={handleIconLeave}
-                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transform: isAnimating ? 'scale(1.2)' : 'scale(1)',
+                  transition: 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                }}
+              >
+                <StatusProgressTable color="#3DA3CB" />
+              </div>
+            )
+          }];
+        }
+
+        if (isAnimating) {
+          // Show a scaling transition from button to icon
+          return [{
+            type: 'icon',
+            icon: (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transform: 'scale(0.8)',
+                  opacity: 0.7,
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
               >
                 <StatusProgressTable color="#3DA3CB" />
               </div>
@@ -304,7 +328,11 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
           variant: 'small',
           color: 'white',
           onClick: () => handleAddClick(month || 'Unknown', type || 'Unknown'),
-          style: { boxShadow: shadows.small },
+          style: {
+            boxShadow: shadows.small,
+            transform: 'scale(1)',
+            transition: 'transform 0.2s ease',
+          },
         }];
     }
   };
@@ -556,16 +584,15 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
           {renderBDXTable()}
         </div>
 
-        {/* Progress Modal */}
-        {modalState.isOpen && modalState.type === 'progress' && (
+        {/* Progress Modal - Rendered in portal to avoid parent transform issues */}
+        {modalState.isOpen && modalState.type === 'progress' && typeof document !== 'undefined' && createPortal(
           <div
-            ref={modalRef}
             onMouseEnter={handleModalEnter}
             onMouseLeave={handleModalLeave}
             style={{
               position: 'fixed',
               left: `${modalState.position.x - 140}px`, // Center the 280px modal
-              top: `${modalState.position.y}px`,
+              top: `${modalState.position.y + 35}px`, // Position below the icon
               zIndex: 1000,
               backgroundColor: semanticColors.blackAndWhite.white,
               borderRadius: borderRadius[8],
@@ -629,19 +656,19 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
                 </Button>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
-        {/* Error Modal */}
-        {modalState.isOpen && modalState.type === 'error' && (
+        {/* Error Modal - Rendered in portal to avoid parent transform issues */}
+        {modalState.isOpen && modalState.type === 'error' && typeof document !== 'undefined' && createPortal(
           <div
-            ref={modalRef}
             onMouseEnter={handleModalEnter}
             onMouseLeave={handleModalLeave}
             style={{
               position: 'fixed',
               left: `${modalState.position.x - 140}px`, // Center the 280px modal
-              top: `${modalState.position.y}px`,
+              top: `${modalState.position.y + 35}px`, // Position below the icon
               zIndex: 1000,
               backgroundColor: semanticColors.blackAndWhite.white,
               borderRadius: borderRadius[8],
@@ -705,19 +732,19 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
                 </Button>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
-        {/* Success Modal */}
-        {modalState.isOpen && modalState.type === 'success' && (
+        {/* Success Modal - Rendered in portal to avoid parent transform issues */}
+        {modalState.isOpen && modalState.type === 'success' && typeof document !== 'undefined' && createPortal(
           <div
-            ref={modalRef}
             onMouseEnter={handleModalEnter}
             onMouseLeave={handleModalLeave}
             style={{
               position: 'fixed',
               left: `${modalState.position.x - 140}px`, // Center the 280px modal
-              top: `${modalState.position.y}px`,
+              top: `${modalState.position.y + 35}px`, // Position below the icon
               zIndex: 1000,
               backgroundColor: semanticColors.blackAndWhite.white,
               borderRadius: borderRadius[8],
@@ -756,19 +783,19 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
-        {/* Attention Modal */}
-        {modalState.isOpen && modalState.type === 'attention' && (
+        {/* Attention Modal - Rendered in portal to avoid parent transform issues */}
+        {modalState.isOpen && modalState.type === 'attention' && typeof document !== 'undefined' && createPortal(
           <div
-            ref={modalRef}
             onMouseEnter={handleModalEnter}
             onMouseLeave={handleModalLeave}
             style={{
               position: 'fixed',
               left: `${modalState.position.x - 140}px`, // Center the 280px modal
-              top: `${modalState.position.y}px`,
+              top: `${modalState.position.y + 35}px`, // Position below the icon
               zIndex: 1000,
               backgroundColor: semanticColors.blackAndWhite.white,
               borderRadius: borderRadius[8],
@@ -807,7 +834,8 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {/* Add Bordereau Modal */}
@@ -866,11 +894,26 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
                     // Handle fake upload
                     if (selectedFile && addModalContext) {
                       const fileKey = `${addModalContext.type}-${addModalContext.month}`;
-                      setUploadedFiles(prev => new Set([...prev, fileKey]));
+
+                      // Close modal first
+                      setIsAddModalOpen(false);
+                      setSelectedFile(null);
+
+                      // Start animation
+                      setAnimatingCells(prev => new Set([...prev, fileKey]));
+
+                      // Complete upload and stop animation after delay
+                      setTimeout(() => {
+                        setUploadedFiles(prev => new Set([...prev, fileKey]));
+                        setAnimatingCells(prev => {
+                          const newSet = new Set(prev);
+                          newSet.delete(fileKey);
+                          return newSet;
+                        });
+                      }, 700); // Total animation duration
+
                       console.log('File added:', selectedFile.name, 'for', addModalContext);
                     }
-                    setIsAddModalOpen(false);
-                    setSelectedFile(null);
                   }}
                 >
                   Add File

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
 import { Button, DashboardCard } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
@@ -54,7 +55,8 @@ const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) 
         {children}
       </div>
 
-      {isVisible && (
+      {/* Render tooltip in portal to avoid parent transform issues */}
+      {isVisible && typeof document !== 'undefined' && createPortal(
         <div
           style={{
             position: 'fixed',
@@ -87,7 +89,8 @@ const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) 
               <span>Policy-Year triangle</span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
@@ -267,7 +270,6 @@ const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialS
       {/* Dashed separator with proper padding */}
       <div style={{
         height: '1px',
-        backgroundColor: '#e1eae5',
         margin: '0 30px',
         borderTop: '1px dashed #e1eae5',
         backgroundColor: 'transparent',
@@ -507,6 +509,8 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               onNavigateToPage('transaction-management');
             } else if (subitemId === 'reports-explorer') {
               onNavigateToPage('report-navigation');
+            } else if (subitemId === 'bdx-upload') {
+              onNavigateToPage('bdx-upload');
             }
           } else if (itemId === 'contracts') {
             onNavigateToPage('contracts-explorer');
