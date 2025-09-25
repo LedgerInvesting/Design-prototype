@@ -47,13 +47,13 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: borderRadius[12],
+    borderRadius: borderRadius[16],
     height: '250px',
     position: 'relative',
     overflow: 'hidden',
     width: '100%',
     boxSizing: 'border-box',
-    backgroundImage: `url('/header_bg_animated.svg')`,
+    backgroundImage: `url('/pattern_reports.svg')`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top right',
     backgroundSize: '50%',
@@ -115,7 +115,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
       <div style={{
         backgroundColor: colors.blackAndWhite.white,
         padding: '10px',
-        borderRadius: borderRadius[12],
+        borderRadius: borderRadius[16],
         boxShadow: shadows.base,
         width: '260px', // Container width: 240px button + 20px padding (10px each side)
       }}>
@@ -173,7 +173,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const cardStyles: React.CSSProperties = {
     backgroundColor: colors.blackAndWhite.white,
     border: `1px solid ${colors.theme.primary400}`,
-    borderRadius: borderRadius[12],
+    borderRadius: borderRadius[16],
     overflow: 'hidden',
     position: 'relative',
     display: 'flex',

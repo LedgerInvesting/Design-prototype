@@ -83,12 +83,14 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '10px 16px', // Compact padding for table header
+    padding: '0 16px', // Remove vertical padding, use height instead
+    height: '60px', // Fixed height for table header
     backgroundColor: colors.blackAndWhite.white,
     borderTopLeftRadius: borderRadius[8],
     borderTopRightRadius: borderRadius[8],
     border: `1px solid ${colors.theme.primary400}`, // Theme-aware border
     borderBottom: 'none', // Will be handled by table border
+    boxSizing: 'border-box',
   };
 
   const leftSectionStyles = {
@@ -193,11 +195,11 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   };
 
   const paginationStyles = {
-    fontFamily: typography.styles.bodyS.fontFamily.join(', '),
-    fontSize: typography.styles.bodyS.fontSize,
-    fontWeight: typography.styles.bodyS.fontWeight,
-    lineHeight: typography.styles.bodyS.lineHeight,
-    letterSpacing: typography.styles.bodyS.letterSpacing,
+    fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+    fontSize: typography.styles.bodyM.fontSize,
+    fontWeight: typography.styles.bodyM.fontWeight,
+    lineHeight: typography.styles.bodyM.lineHeight,
+    letterSpacing: typography.styles.bodyM.letterSpacing,
     color: colors.blackAndWhite.black500, // Use semantic color
     margin: 0,
   };
@@ -575,11 +577,11 @@ export const TableBody: React.FC<TableBodyProps> = ({
 
   const cellStyles = {
     padding: '6px 12px', // Reduced padding for more compact rows
-    fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-    fontSize: typography.styles.bodyM.fontSize,
-    fontWeight: typography.styles.bodyM.fontWeight,
-    lineHeight: typography.styles.bodyM.lineHeight,
-    letterSpacing: typography.styles.bodyM.letterSpacing,
+    fontFamily: typography.styles.bodyL.fontFamily.join(', '),
+    fontSize: typography.styles.bodyL.fontSize,
+    fontWeight: typography.styles.bodyL.fontWeight,
+    lineHeight: typography.styles.bodyL.lineHeight,
+    letterSpacing: typography.styles.bodyL.letterSpacing,
     color: colors.blackAndWhite.black700,
     verticalAlign: 'middle' as const,
     borderBottom: `1px solid ${colors.theme.primary400}`, // Theme-aware border color
@@ -1113,7 +1115,7 @@ export const Table: React.FC<TableProps> = ({
   const tableContainerStyles = {
     width: '100%',
     overflowX: needsScroll ? 'auto' as const : 'hidden' as const, // Only enable horizontal scroll when needed
-    overflowY: 'hidden' as const,
+    overflowY: 'visible' as const, // Allow vertical borders to be visible
     borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : borderRadius[8],
     border: `1px solid ${colors.theme.primary400}`,
     borderTop: showHeader ? 'none' : `1px solid ${colors.theme.primary400}`,
@@ -1140,7 +1142,7 @@ export const Table: React.FC<TableProps> = ({
   const mainContainerStyles = {
     width: '100%',
     maxWidth: '100%', // Respect parent container width instead of viewport
-    overflow: 'hidden', // Prevent any overflow at the main level
+    overflow: 'visible', // Allow borders to be visible
     boxSizing: 'border-box' as const,
   };
 
