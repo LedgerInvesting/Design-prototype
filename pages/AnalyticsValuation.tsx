@@ -71,6 +71,7 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, 
         <div style={textContentStyles}>
           <h1 style={{
             ...typography.styles.headlineH2,
+            fontSize: '36px',
             color: baseColors.blackAndWhite.black900,
             margin: 0,
           }}>
@@ -167,7 +168,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               icon: <DocumentTable color={colors.theme.primary450} />,
               sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
-              width: 309,
+              width: '309px',
               cellType: 'document',
               align: 'left', // First column left-aligned
               headerAlign: 'left',
@@ -190,6 +191,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               icon: <TextTable color={colors.theme.primary450} />,
               sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
+              width: '150px',
               align: 'right', // Right-aligned cells
               headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'
@@ -200,6 +202,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               icon: <TextTable color={colors.theme.primary450} />,
               sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
+              width: '180px',
               align: 'right', // Right-aligned cells
               headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'
@@ -210,6 +213,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               icon: <TextTable color={colors.theme.primary450} />,
               sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
+              width: '160px',
               align: 'right', // Right-aligned cells
               headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'
@@ -220,6 +224,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               icon: <AmmountTable color={colors.theme.primary450} />,
               sortIcon: <ArrangeTable color={colors.theme.primary450} />,
               sortable: true,
+              width: '150px',
               align: 'right', // Right-aligned cells
               headerAlign: 'right', // Right-aligned headers
               cellType: 'simple'

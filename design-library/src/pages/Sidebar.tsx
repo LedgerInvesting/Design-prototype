@@ -224,7 +224,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const mainItemTextStyles: React.CSSProperties = {
-    ...typography.styles.bodyM,
+    ...typography.styles.bodyL,
     color: colors.blackAndWhite.white,
     fontFamily: 'Bradford LL, serif',
     fontWeight: 700, // Bold
@@ -245,9 +245,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const subitemTextStyles: React.CSSProperties = {
-    ...typography.styles.bodyM,
-    color: colors.blackAndWhite.black300,
-    fontWeight: 400
+    ...typography.styles.bodyL,
+    color: colors.blackAndWhite.black300
   };
 
   const selectedSubitemStyles: React.CSSProperties = {

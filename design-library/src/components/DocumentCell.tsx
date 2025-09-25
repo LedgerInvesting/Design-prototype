@@ -152,17 +152,17 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
         }}
       >
         <div style={leftSectionStyles}>
-          <DocumentTable color={colors.blackAndWhite.black700} />
+          <DocumentTable color={colors.theme.primary450} />
           <span style={textStyles}>{filename}</span>
         </div>
 
         <div style={downloadIconStyles}>
           {hoverIcon === 'config' ? (
-            <ConfigSmall color={colors.blackAndWhite.black700} />
+            <ConfigSmall color={colors.theme.primary450} />
           ) : hoverIcon === 'open' ? (
-            <ChevronRightSmall color={colors.blackAndWhite.black700} />
+            <ChevronRightSmall color={colors.theme.primary450} />
           ) : (
-            <DownloadSmall color={colors.blackAndWhite.black700} />
+            <DownloadSmall color={colors.theme.primary450} />
           )}
         </div>
       </div>

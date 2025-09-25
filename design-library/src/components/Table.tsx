@@ -891,13 +891,68 @@ export const Table: React.FC<TableProps> = ({
 
   const currentSortState = onSort ? sortState : internalSortState;
 
+  // Smart column sizing: Make first column longer when table doesn't need horizontal scroll
+  const adjustedColumns = React.useMemo(() => {
+    // Only apply smart sizing when table doesn't need horizontal scroll
+    if (needsScroll || columns.length === 0) {
+      return columns;
+    }
+
+    // Find the first document column (typically the first column)
+    const firstDocumentColumnIndex = columns.findIndex(col => col.cellType === 'document');
+    if (firstDocumentColumnIndex === -1) {
+      return columns; // No document column found, return original columns
+    }
+
+    // Calculate total width of all columns except the first document column
+    let totalOtherColumnsWidth = 0;
+    let hasFixedWidths = true;
+
+    columns.forEach((col, index) => {
+      if (index !== firstDocumentColumnIndex && col.width) {
+        // Extract numeric value from width (e.g., "150px" -> 150)
+        const widthValue = parseInt(col.width.replace(/[^\d]/g, ''), 10);
+        if (!isNaN(widthValue)) {
+          totalOtherColumnsWidth += widthValue;
+        } else {
+          hasFixedWidths = false;
+        }
+      } else if (index !== firstDocumentColumnIndex) {
+        hasFixedWidths = false;
+      }
+    });
+
+    // Only apply smart sizing if we have fixed widths for other columns
+    if (!hasFixedWidths) {
+      return columns;
+    }
+
+    // Calculate remaining width for the first document column
+    // Assume table container is typically around 1200px wide, leave some margin
+    const assumedContainerWidth = 1200;
+    const baseRemainingWidth = Math.max(300, assumedContainerWidth - totalOtherColumnsWidth - 40); // Minimum 300px, account for borders/padding
+
+    // Reduce the first column width by 30% for better proportions
+    const reducedWidth = Math.max(300, Math.floor(baseRemainingWidth * 0.7)); // 30% reduction, minimum 300px
+
+    return columns.map((col, index) => {
+      if (index === firstDocumentColumnIndex) {
+        return {
+          ...col,
+          width: `${reducedWidth}px`
+        };
+      }
+      return col;
+    });
+  }, [columns, needsScroll]);
+
   // Sort data based on current sort state
   const sortedData = React.useMemo(() => {
     if (!currentSortState.column || !currentSortState.direction) {
       return data;
     }
 
-    const sortColumn = columns.find(col => col.key === currentSortState.column);
+    const sortColumn = adjustedColumns.find(col => col.key === currentSortState.column);
     if (!sortColumn) return data;
 
     return [...data].sort((a, b) => {
@@ -931,7 +986,7 @@ export const Table: React.FC<TableProps> = ({
 
       return currentSortState.direction === 'desc' ? -comparison : comparison;
     });
-  }, [data, currentSortState, columns]);
+  }, [data, currentSortState, adjustedColumns]);
 
   // Check if table needs horizontal scrolling
   React.useEffect(() => {
@@ -1122,20 +1177,20 @@ export const Table: React.FC<TableProps> = ({
         <table style={tableStyles}>
           <thead>
             <tr>
-              {columns.map((column, columnIndex) => (
+              {adjustedColumns.map((column, columnIndex) => (
                 <TableColumnHeader
                   key={column.key}
                   column={column}
                   sortState={currentSortState}
                   onSort={handleSort}
-                  isLastColumn={columnIndex === columns.length - 1}
+                  isLastColumn={columnIndex === adjustedColumns.length - 1}
                 />
               ))}
             </tr>
           </thead>
 
           <TableBody
-            columns={columns}
+            columns={adjustedColumns}
             data={sortedData}
             emptyMessage={emptyMessage}
           />
