@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../components/Button';
-import { colors, typography, spacing, borderRadius } from '../tokens';
+import { colors, typography, spacing, borderRadius, useSemanticColors } from '../tokens';
 import { 
   ChevronDownExtraSmall, 
   ChevronRightExtraSmall,
@@ -77,6 +77,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onHoverChange,
   isCompact: propIsCompact = false
 }) => {
+  const colors = useSemanticColors();
+
+  // Helper function to get theme 900 colors for compact mode icons
+  const getCompactIconColor = (itemId: string): string => {
+    switch (itemId) {
+      case 'reports':
+        return '#1c6297'; // Reports blue 900
+      case 'analytics':
+        return '#0f9342'; // Analytics green 900
+      case 'marketplace':
+        return '#643ed8'; // Marketplace violet 900
+      case 'contracts':
+        return colors.blackAndWhite.black700; // Default for contracts
+      default:
+        return colors.blackAndWhite.black700;
+    }
+  };
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['reports']));
   
   // Use controlled state if provided, otherwise fall back to internal state
@@ -250,11 +267,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const selectedSubitemStyles: React.CSSProperties = {
-    backgroundColor: colors.blackAndWhite.black800 // #3a423d - solid color for selected state
+    backgroundColor: colors.blackAndWhite.white // Test: white background for selected state
   };
 
   const selectedSubitemTextStyles: React.CSSProperties = {
-    color: colors.blackAndWhite.white
+    color: colors.blackAndWhite.black900 // Test: black text for white background
   };
 
   return (
@@ -336,7 +353,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   ...mainItemStyles,
                   // In full mode: only highlight if no subitem is selected
                   // In compact mode: highlight if item is selected (regardless of subitem)
-                  ...((selectedItem === item.id && (!showFullMode || !selectedSubitem)) ? { backgroundColor: colors.blackAndWhite.black800 } : {})
+                  ...((selectedItem === item.id && (!showFullMode || !selectedSubitem)) ? { backgroundColor: colors.blackAndWhite.white } : {})
                 }}
                 onClick={() => handleMainItemClick(item)}
                 onMouseEnter={(e) => {
@@ -353,7 +370,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
               >
                 <div style={mainItemContentStyles}>
-                  <item.icon />
+                  <item.icon color={!showFullMode && selectedItem === item.id ? getCompactIconColor(item.id) : undefined} />
                   <span style={{
                     ...mainItemTextStyles,
                     opacity: showFullMode ? 1 : 0,
