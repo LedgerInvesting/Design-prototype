@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { typography, borderRadius, shadows, useSemanticColors } from '../tokens';
 import { DocumentTable, DownloadSmall, ConfigSmall, ChevronRightSmall } from '../icons';
 
@@ -50,13 +51,14 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    margin: '6px',
     padding: '4px 8px',
     borderRadius: borderRadius[4],
     backgroundColor: isHovered ? colors.theme.primary300 : colors.theme.primary200, // Theme-aware colors
     cursor: 'pointer',
     transition: 'all 0.2s ease',
-    minHeight: '24px',
-    width: '100%',
+    minHeight: '21px', // Adjust for the margin
+    width: 'calc(100% - 12px)', // Account for left and right margin
     boxSizing: 'border-box' as const,
     position: 'relative' as const,
   };
@@ -118,49 +120,55 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     boxSizing: 'border-box' as const,
   };
 
-  return (
-    <div
-      className={className}
-      style={containerStyles}
-      onClick={handleClick}
-      onMouseEnter={() => {
-        setIsHovered(true);
-        setShowTooltip(true);
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setShowTooltip(false);
-      }}
-      onMouseMove={handleMouseMove}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
-      }}
-    >
-      {/* Custom Tooltip */}
-      <div style={tooltipStyles}>
-        {getTooltipText()}
-      </div>
-
-      <div style={leftSectionStyles}>
-        <DocumentTable color={colors.blackAndWhite.black700} />
-        <span style={textStyles}>{filename}</span>
-      </div>
-
-      <div style={downloadIconStyles}>
-        {hoverIcon === 'config' ? (
-          <ConfigSmall color={colors.blackAndWhite.black700} />
-        ) : hoverIcon === 'open' ? (
-          <ChevronRightSmall color={colors.blackAndWhite.black700} />
-        ) : (
-          <DownloadSmall color={colors.blackAndWhite.black700} />
-        )}
-      </div>
+  // Create tooltip content
+  const tooltipContent = showTooltip && (
+    <div style={tooltipStyles}>
+      {getTooltipText()}
     </div>
+  );
+
+  return (
+    <>
+      <div
+        className={className}
+        style={containerStyles}
+        onClick={handleClick}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          setShowTooltip(true);
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setShowTooltip(false);
+        }}
+        onMouseMove={handleMouseMove}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+      >
+        <div style={leftSectionStyles}>
+          <DocumentTable color={colors.blackAndWhite.black700} />
+          <span style={textStyles}>{filename}</span>
+        </div>
+
+        <div style={downloadIconStyles}>
+          {hoverIcon === 'config' ? (
+            <ConfigSmall color={colors.blackAndWhite.black700} />
+          ) : hoverIcon === 'open' ? (
+            <ChevronRightSmall color={colors.blackAndWhite.black700} />
+          ) : (
+            <DownloadSmall color={colors.blackAndWhite.black700} />
+          )}
+        </div>
+      </div>
+      {/* Render tooltip in portal to avoid parent transform issues */}
+      {typeof document !== 'undefined' && tooltipContent && createPortal(tooltipContent, document.body)}
+    </>
   );
 };
 

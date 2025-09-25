@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { Table, TableColumn, TableRow } from './Table';
 import { StatusWarning, StatusError, StatusSuccess } from '../icons';
-import { Chips, Status } from './';
+import { Chips, Status, CustomCell } from './';
 import { CalendarTable, TextTable, FileTable, StatusTable, AmmountTable, DocumentTable } from '../icons';
 import { colors } from '../tokens';
 
@@ -686,6 +686,13 @@ export const CellTypesShowcase: Story = {
         },
       },
       {
+        key: 'custom',
+        title: 'Custom Cells',
+        sortable: false,
+        width: '250px',
+        cellType: 'simple', // Use simple cellType since we're manually providing CustomCell content
+      },
+      {
         key: 'action',
         title: 'Actions',
         sortable: false,
@@ -703,6 +710,24 @@ export const CellTypesShowcase: Story = {
         document: 'policy_alpha_contract.pdf',
         documentConfig: 'policy_alpha_config.json',
         documentOpen: 'policy_alpha_details.pdf',
+        custom: (
+          <CustomCell
+            elements={[
+              {
+                type: 'status',
+                status: 'active',
+                text: 'Active',
+              },
+              {
+                type: 'badge',
+                text: 'High Priority',
+                variant: 'success',
+              }
+            ]}
+            alignment="left"
+            gap={8}
+          />
+        ),
         action: 'Edit Policy',
       },
       {
@@ -710,6 +735,25 @@ export const CellTypesShowcase: Story = {
         document: 'policy_beta_terms.docx',
         documentConfig: 'policy_beta_config.json',
         documentOpen: 'policy_beta_details.docx',
+        custom: (
+          <CustomCell
+            elements={[
+              {
+                type: 'icon',
+                icon: <StatusWarning color="#F59E0B" />,
+              },
+              {
+                type: 'text',
+                content: 'Needs Review',
+                style: 'bodyM',
+                weight: 'medium',
+                color: 'warning',
+              }
+            ]}
+            alignment="left"
+            gap={6}
+          />
+        ),
         action: 'Configure',
       },
       {
@@ -717,6 +761,26 @@ export const CellTypesShowcase: Story = {
         document: 'policy_gamma_summary.xlsx',
         documentConfig: 'policy_gamma_config.json',
         documentOpen: 'policy_gamma_details.xlsx',
+        custom: (
+          <CustomCell
+            elements={[
+              {
+                type: 'status',
+                status: 'error',
+                text: 'Error',
+              },
+              {
+                type: 'button',
+                text: 'Retry',
+                variant: 'small',
+                color: 'white',
+                onClick: () => alert('Retry clicked!'),
+              }
+            ]}
+            alignment="left"
+            gap={12}
+          />
+        ),
         action: 'Review',
       },
     ],
@@ -729,7 +793,7 @@ export const CellTypesShowcase: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates all cell types in the Table component: simple text cells, document cells with download icon, document cells with config icon, document cells with open icon (chevron right), and action button cells (click to trigger actions).',
+        story: 'Demonstrates all cell types in the Table component: simple text cells, document cells with download/config/open icons, custom cells with status indicators and mixed content using the CustomCell component, and action button cells (click to trigger actions). The Custom Cells column shows examples of status + badge combinations, icon + text combinations, and status + button combinations.',
       },
     },
   },

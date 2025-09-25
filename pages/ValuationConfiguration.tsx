@@ -60,6 +60,8 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
             onNavigateToPage('transaction-management');
           } else if (subitemId === 'reports-explorer') {
             onNavigateToPage('report-navigation');
+          } else if (subitemId === 'bdx-upload') {
+            onNavigateToPage('bdx-upload');
           }
         } else if (itemId === 'contracts') {
           onNavigateToPage('contracts-explorer');

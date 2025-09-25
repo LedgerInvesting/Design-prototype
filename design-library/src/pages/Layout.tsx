@@ -39,11 +39,39 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
   const [isCompact, setIsCompact] = useState<boolean>(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [contentKey, setContentKey] = useState<string>('initial');
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
 
   // Handle sidebar toggle - button controls compact mode instead of viewport
   const handleSidebarToggle = () => {
     setIsCompact(!isCompact);
   };
+
+  // Detect page changes and trigger animation
+  useEffect(() => {
+    // Skip animation on first render
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
+
+    // Generate a key based on the page content to detect changes
+    const newKey = `${selectedSidebarItem}-${selectedSidebarSubitem}-${breadcrumbs?.length || 0}`;
+
+    if (newKey !== contentKey) {
+      // Start animation: content scales down and fades slightly
+      setIsAnimating(true);
+      setContentKey(newKey);
+
+      // After a short delay, end animation to show full content
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 20); // Very short delay to trigger the animation
+
+      return () => clearTimeout(timer);
+    }
+  }, [selectedSidebarItem, selectedSidebarSubitem, breadcrumbs, contentKey, isFirstRender]);
 
   // Calculate sidebar width based on compact mode and hover state
   const sidebarWidth = isCompact && !isSidebarHovered ? '80px' : '220px';
@@ -71,6 +99,10 @@ export const Layout: React.FC<LayoutProps> = ({
     padding: '50px 50px 60px 50px', // 50px top padding, 50px left/right margins, 60px bottom
     overflow: 'hidden', // Prevent any content from overflowing
     boxSizing: 'border-box', // Include padding in width calculation
+    // Page transition animation - start small and fade in
+    opacity: isAnimating ? 0.95 : 1, // Start slightly faded, then fully visible
+    transform: isAnimating ? 'scale(0.98)' : 'scale(1)', // Start slightly smaller, then normal size
+    transition: 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
   };
 
   return (
@@ -116,6 +148,7 @@ export const Layout: React.FC<LayoutProps> = ({
             onShareClick={onShareClick || (() => alert('Share clicked'))}
             onUserMenuClick={onUserMenuClick || (() => alert('User menu clicked'))}
             onSidebarToggle={handleSidebarToggle}
+            isSidebarCompact={isCompact}
           />
         </div>
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { borderRadius, shadows } from '../tokens';
 import { useSemanticColors } from '../tokens/ThemeProvider';
 import { CloseMedium } from '../icons';
@@ -193,6 +194,8 @@ export const Modal: React.FC<ModalProps> = ({
     justifyContent: centered && !buttonRef && !position ? 'center' : 'flex-start',
     zIndex: 10000,
     transition: `background-color ${animationDuration}ms ease-out, backdrop-filter ${animationDuration}ms ease-out`,
+    // Reset any parent transforms to ensure viewport-relative positioning
+    transform: 'none',
   };
 
   // Parse padding to separate top/left/right from bottom
@@ -232,7 +235,7 @@ export const Modal: React.FC<ModalProps> = ({
     ...modalStyle,
   };
 
-  return (
+  const modalContent = (
     <div style={backdropStyles} onClick={handleBackdropClick}>
       <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
         {/* Close button */}
@@ -316,6 +319,9 @@ export const Modal: React.FC<ModalProps> = ({
       </div>
     </div>
   );
+
+  // Render modal in a portal to avoid parent transform issues
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null;
 };
 
 export default Modal;

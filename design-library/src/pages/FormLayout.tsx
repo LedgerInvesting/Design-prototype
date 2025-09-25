@@ -40,20 +40,15 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
   tabs
 }) => {
   const [isCompact, setIsCompact] = useState<boolean>(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState<boolean>(false);
 
-  // Check viewport width and update compact mode
-  useEffect(() => {
-    const checkViewportWidth = () => {
-      setIsCompact(window.innerWidth <= 1650);
-    };
+  // Handle sidebar toggle - button controls compact mode instead of viewport
+  const handleSidebarToggle = () => {
+    setIsCompact(!isCompact);
+  };
 
-    checkViewportWidth(); // Check on mount
-    window.addEventListener('resize', checkViewportWidth);
-    return () => window.removeEventListener('resize', checkViewportWidth);
-  }, []);
-
-  // Calculate sidebar width based on compact mode
-  const sidebarWidth = isCompact ? '80px' : '220px';
+  // Calculate sidebar width based on compact mode and hover state
+  const sidebarWidth = isCompact && !isSidebarHovered ? '80px' : '220px';
 
   const pageStyles: React.CSSProperties = {
     display: 'flex',
@@ -97,6 +92,8 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
           onInboxClick={onInboxClick || (() => {})}
           selectedItem={selectedSidebarItem}
           selectedSubitem={selectedSidebarSubitem}
+          onHoverChange={setIsSidebarHovered}
+          isCompact={isCompact}
         />
       </div>
 
@@ -118,6 +115,8 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
             showStatus={showStatus}
             progress={progress}
             onBackClick={onBackClick}
+            onSidebarToggle={handleSidebarToggle}
+            isSidebarCompact={isCompact}
           />
         </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Status } from '../components';
 import { colors, typography, spacing, borderRadius, shadows } from '../tokens';
+import { HideShowSidebarMedium } from '../icons';
 
 export interface FormTopNavProps {
   title?: string;
@@ -10,6 +11,8 @@ export interface FormTopNavProps {
   showStatus?: boolean;
   progress?: number; // 0-100
   onBackClick?: () => void;
+  onSidebarToggle?: () => void;
+  isSidebarCompact?: boolean; // Track sidebar state for icon color
   className?: string;
   style?: React.CSSProperties;
 }
@@ -22,6 +25,8 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
   showStatus = true,
   progress = 0,
   onBackClick,
+  onSidebarToggle,
+  isSidebarCompact = false,
   className,
   style
 }) => {
@@ -97,11 +102,61 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
     whiteSpace: 'nowrap',
   };
 
+  const separatorStyles: React.CSSProperties = {
+    width: '1px',
+    height: '23px',
+    backgroundColor: '#d9e7ec',
+  };
+
+  const sidebarToggleButtonStyles: React.CSSProperties = {
+    width: '40px',
+    height: '40px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderRadius: borderRadius[8],
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.15s ease',
+  };
+
 
   return (
     <nav className={className} style={containerStyles}>
-      {/* Left Section: Title + Entry Type + Status */}
+      {/* Left Section - Sidebar Toggle + Title + Entry Type + Status */}
       <div style={leftSectionStyles}>
+        {/* Sidebar Toggle Button */}
+        {onSidebarToggle && (
+          <>
+            <button
+              style={sidebarToggleButtonStyles}
+              onClick={onSidebarToggle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+              title="Toggle Sidebar"
+            >
+              <div style={{
+                width: '18px',
+                height: '18px',
+                padding: '1px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <HideShowSidebarMedium color={isSidebarCompact ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900} />
+              </div>
+            </button>
+
+            {/* Separator */}
+            <div style={separatorStyles} />
+          </>
+        )}
+
         <span style={titleStyles}>{title}</span>
         {/* Entry Type Pill */}
         <div style={{

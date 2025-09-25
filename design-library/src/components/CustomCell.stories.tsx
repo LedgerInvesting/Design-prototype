@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CustomCell } from './CustomCell';
 import type { CustomCellElement } from './CustomCell';
-import { AddSmall, DownloadMedium, CheckMedium, HelpExtraSmall, EditMedium } from '../icons';
+import { AddSmall, DownloadMedium, CheckMedium, HelpExtraSmall, EditSmall, StatusWarning } from '../icons';
 
 const meta: Meta<typeof CustomCell> = {
   title: 'Components/Table/CustomCell',
@@ -85,7 +85,7 @@ export const SimpleIcon: Story = {
     elements: [
       {
         type: 'icon',
-        icon: <EditMedium color="#6B7280" />,
+        icon: <EditSmall color="#6B7280" />,
       }
     ] as CustomCellElement[],
   },
@@ -227,7 +227,7 @@ export const TextWithIcon: Story = {
     elements: [
       {
         type: 'icon',
-        icon: <EditMedium color="#6B7280" />,
+        icon: <EditSmall color="#6B7280" />,
       },
       {
         type: 'text',
@@ -289,7 +289,7 @@ export const ComplexCell: Story = {
     elements: [
       {
         type: 'icon',
-        icon: <AlertTriangleMedium color="#F59E0B" />,
+        icon: <StatusWarning color="#F59E0B" />,
       },
       {
         type: 'text',
@@ -399,7 +399,7 @@ export const ClickableCell: Story = {
       },
       {
         type: 'icon',
-        icon: <EditMedium color="#6B7280" />,
+        icon: <EditSmall color="#6B7280" />,
       }
     ] as CustomCellElement[],
     alignment: 'left',
@@ -439,7 +439,7 @@ export const TableIntegrationExample: Story = {
             elements={[
               {
                 type: 'icon',
-                icon: <EditMedium color="#6B7280" />,
+                icon: <EditSmall color="#6B7280" />,
               },
               {
                 type: 'text',
@@ -493,7 +493,7 @@ export const TableIntegrationExample: Story = {
             elements={[
               {
                 type: 'icon',
-                icon: <AlertTriangleMedium color="#F59E0B" />,
+                icon: <StatusWarning color="#F59E0B" />,
               },
               {
                 type: 'text',

@@ -370,7 +370,7 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
   const textStyles = {
     fontFamily: typography.styles.captionS.fontFamily.join(', '),
     fontSize: typography.styles.captionS.fontSize, // 12px
-    fontWeight: typography.fontWeight.regular, // 400 (Regular) - much lighter than original 700 to match Figma
+    fontWeight: typography.styles.captionS.fontWeight, // 900 (Black) - matches Figma design
     fontStyle: typography.styles.captionS.fontStyle, // italic
     lineHeight: typography.styles.captionS.lineHeight, // 1.3
     letterSpacing: typography.letterSpacing.normal, // -0.5px
@@ -482,7 +482,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
         // For document cells, expect the value to be a string filename
         if (typeof value === 'string') {
           return (
-            <div data-cell-type="document" style={{ cursor: 'pointer' }}>
+            <div data-cell-type="document" style={{ cursor: 'pointer', height: '100%', display: 'flex' }}>
               <DocumentCell
                 filename={value}
                 onDownload={column.onDownload || ((filename) => console.log('Download:', filename))}
@@ -577,6 +577,9 @@ export const TableBody: React.FC<TableBodyProps> = ({
     padding: '6px 12px', // Reduced padding for more compact rows
     fontFamily: typography.styles.bodyM.fontFamily.join(', '),
     fontSize: typography.styles.bodyM.fontSize,
+    fontWeight: typography.styles.bodyM.fontWeight,
+    lineHeight: typography.styles.bodyM.lineHeight,
+    letterSpacing: typography.styles.bodyM.letterSpacing,
     color: colors.blackAndWhite.black700,
     verticalAlign: 'middle' as const,
     borderBottom: `1px solid ${colors.theme.primary400}`, // Theme-aware border color
@@ -611,8 +614,12 @@ export const TableBody: React.FC<TableBodyProps> = ({
           {columns.map((column, columnIndex) => {
             const isActionColumn = column.cellType === 'action';
             
+            const isDocumentColumn = column.cellType === 'document';
+
             const baseCellStyle = {
               ...cellStyles,
+              // Remove padding for document cells so DocumentCell can control its own padding
+              padding: isDocumentColumn ? '0' : cellStyles.padding,
               textAlign: column.align || 'left',
               width: column.width,
               // Remove right border from last column to avoid double border
@@ -697,10 +704,10 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
     alignItems: 'center',
     gap: '12px',
     fontFamily: typography.styles.bodyS.fontFamily.join(', '),
-    fontSize: '12px',
-    fontWeight: 500,
-    lineHeight: 1.3,
-    letterSpacing: typography.letterSpacing.normal,
+    fontSize: typography.styles.bodyS.fontSize,
+    fontWeight: typography.styles.bodyS.fontWeight,
+    lineHeight: typography.styles.bodyS.lineHeight,
+    letterSpacing: typography.styles.bodyS.letterSpacing,
   };
 
   const pageNumberStyles = {

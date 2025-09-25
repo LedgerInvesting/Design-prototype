@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { colors, borderRadius, typography, shadows } from '../tokens';
 
 export interface InfoTooltipSection {
@@ -34,23 +35,11 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 });
+  const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
-  // Get position-specific transform
-  const getPositionTransform = (pos: string) => {
-    switch (pos) {
-      case 'top':
-      case 'bottom':
-        return 'translateX(-50%)';
-      case 'left':
-      case 'right':
-        return 'translateY(-50%)';
-      case 'follow-mouse':
-        return '';
-      case 'bottom-right':
-      default:
-        return '';
-    }
-  };
+  // This function is no longer needed as we handle transforms in each position case
+  // const getPositionTransform = (pos: string) => { ... }
 
   // Mouse-following animation effect
   useEffect(() => {
@@ -77,7 +66,7 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
     };
   }, [targetPosition, isVisible, position, easingFactor]);
 
-  // Tooltip styles
+  // Calculate tooltip position relative to viewport
   const getTooltipStyles = () => {
     // Determine padding based on content type
     const getPadding = () => {
@@ -107,7 +96,7 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
     };
 
     const baseStyles = {
-      position: position === 'follow-mouse' ? 'fixed' as const : 'absolute' as const,
+      position: 'fixed' as const, // Always use fixed positioning for portal
       backgroundColor: colors.blackAndWhite.black900,
       color: colors.blackAndWhite.white,
       padding: getPadding(),
@@ -116,55 +105,64 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
       zIndex: 1000,
       opacity: isVisible ? 1 : 0,
       visibility: isVisible ? 'visible' as const : 'hidden' as const,
-      transform: `${getPositionTransform(position)} ${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
       transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       whiteSpace: 'normal' as const,
       pointerEvents: 'none' as const, // Prevent tooltip from interfering with mouse events
       ...getSizeConstraints(),
     };
 
-    // Position-specific styles
+    if (!triggerRect) {
+      return {
+        ...baseStyles,
+        top: '0px',
+        left: '0px',
+        transform: `${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
+      };
+    }
+
+    // Position-specific styles based on trigger element's viewport position
     switch (position) {
       case 'top':
         return {
           ...baseStyles,
-          bottom: '100%',
-          left: '50%',
-          marginBottom: '8px',
+          top: `${triggerRect.top - 8}px`,
+          left: `${triggerRect.left + triggerRect.width / 2}px`,
+          transform: `translateX(-50%) translateY(-100%) ${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
         };
       case 'bottom':
         return {
           ...baseStyles,
-          top: '100%',
-          left: '50%',
-          marginTop: '8px',
+          top: `${triggerRect.bottom + 8}px`,
+          left: `${triggerRect.left + triggerRect.width / 2}px`,
+          transform: `translateX(-50%) ${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
         };
       case 'left':
         return {
           ...baseStyles,
-          right: '100%',
-          top: '50%',
-          marginRight: '8px',
+          top: `${triggerRect.top + triggerRect.height / 2}px`,
+          left: `${triggerRect.left - 8}px`,
+          transform: `translateX(-100%) translateY(-50%) ${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
         };
       case 'right':
         return {
           ...baseStyles,
-          left: '100%',
-          top: '50%',
-          marginLeft: '8px',
+          top: `${triggerRect.top + triggerRect.height / 2}px`,
+          left: `${triggerRect.right + 8}px`,
+          transform: `translateY(-50%) ${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
         };
       case 'follow-mouse':
         return {
           ...baseStyles,
           left: `${mousePosition.x + 10}px`,
           top: `${mousePosition.y + 10}px`,
+          transform: `${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
         };
       case 'bottom-right':
         return {
           ...baseStyles,
-          top: '100%',
-          left: '0',
-          marginTop: '8px',
+          top: `${triggerRect.bottom + 8}px`,
+          left: `${triggerRect.left}px`,
+          transform: `${isVisible ? 'scale(1)' : 'scale(0.95)'}`,
         };
       default:
         return baseStyles;
@@ -247,6 +245,16 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
     </svg>
   );
 
+  // Update trigger position when tooltip becomes visible
+  useEffect(() => {
+    if (isVisible && triggerRef.current && position !== 'follow-mouse') {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setTriggerRect(rect);
+      // Debug: log the rect to see if it's being calculated correctly
+      // console.log('Trigger rect:', rect);
+    }
+  }, [isVisible, position]);
+
   // Event handlers
   const handleMouseEnter = (e: React.MouseEvent) => {
     setIsVisible(true);
@@ -254,6 +262,11 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
       const pos = { x: e.clientX, y: e.clientY };
       setMousePosition(pos);
       setTargetPosition(pos);
+    } else if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setTriggerRect(rect);
+      // Debug: log the rect immediately on hover
+      // console.log('Immediate trigger rect:', rect);
     }
   };
 
@@ -267,24 +280,33 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
     setIsVisible(false);
   };
 
-  return (
-    <div
-      className={className}
-      style={{ position: 'relative', display: 'inline-block', verticalAlign: 'middle', marginLeft: '4px' }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
-      onFocus={() => setIsVisible(true)}
-      onBlur={() => setIsVisible(false)}
-      tabIndex={0}
-      role="button"
-      aria-label={`Info: ${text || sections?.map(s => s.title).join(', ') || 'Custom tooltip'}`}
-    >
-      <InfoIcon />
-      <div style={tooltipStyles}>
-        {renderTooltipContent()}
-      </div>
+  // Create tooltip content
+  const tooltipContent = isVisible && (
+    <div style={tooltipStyles}>
+      {renderTooltipContent()}
     </div>
+  );
+
+  return (
+    <>
+      <div
+        ref={triggerRef}
+        className={className}
+        style={{ position: 'relative', display: 'inline-block', verticalAlign: 'middle', marginLeft: '4px' }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseMove={handleMouseMove}
+        onFocus={() => setIsVisible(true)}
+        onBlur={() => setIsVisible(false)}
+        tabIndex={0}
+        role="button"
+        aria-label={`Info: ${text || sections?.map(s => s.title).join(', ') || 'Custom tooltip'}`}
+      >
+        <InfoIcon />
+      </div>
+      {/* Render tooltip in portal to avoid parent transform issues */}
+      {typeof document !== 'undefined' && tooltipContent && createPortal(tooltipContent, document.body)}
+    </>
   );
 };
 

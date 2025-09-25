@@ -19,6 +19,7 @@ export interface TopNavProps {
   onShareClick?: () => void;
   onUserMenuClick?: () => void;
   onSidebarToggle?: () => void;
+  isSidebarCompact?: boolean; // Track sidebar state for icon color
   className?: string;
   style?: React.CSSProperties;
 }
@@ -32,6 +33,7 @@ export const TopNav: React.FC<TopNavProps> = ({
   onShareClick,
   onUserMenuClick,
   onSidebarToggle,
+  isSidebarCompact = false,
   className,
   style,
 }) => {
@@ -178,7 +180,7 @@ export const TopNav: React.FC<TopNavProps> = ({
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <HideShowSidebarMedium color={colors.blackAndWhite.black900} />
+                <HideShowSidebarMedium color={isSidebarCompact ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900} />
               </div>
             </button>
 
