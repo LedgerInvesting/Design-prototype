@@ -16,7 +16,7 @@ export interface InputProps {
   /** Input type */
   type?: 'text' | 'number' | 'email' | 'password';
   /** Input state */
-  state?: 'default' | 'active' | 'filled' | 'warning' | 'error' | 'disabled';
+  state?: 'default' | 'active' | 'filled' | 'warning' | 'error' | 'success' | 'disabled';
   /** Left symbol ($ or %) */
   leftSymbol?: '$' | '%' | null;
   /** Show info tooltip */
@@ -73,12 +73,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     commonStyles.hideNumberSpinners('input');
   }, []);
   
-  // Determine actual state - prioritize error/warning, then check if filled, then use internal state
-  const actualState = disabled ? 'disabled' : 
-    (state === 'error' || state === 'warning') ? state : 
+  // Determine actual state - prioritize error/warning/success, then check if filled, then use internal state
+  const actualState = disabled ? 'disabled' :
+    (state === 'error' || state === 'warning' || state === 'success') ? state :
     (value && internalState !== 'active') ? 'filled' : internalState;
   const isError = state === 'error';
   const isWarning = state === 'warning';
+  const isSuccess = state === 'success';
   const isActive = state === 'active';
   
   // Get styles based on state
@@ -107,6 +108,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           ...baseStyles,
           backgroundColor: colors.warning.fillLight,
           borderColor: colors.warning.dark,
+        };
+      case 'success':
+        return {
+          ...baseStyles,
+          backgroundColor: colors.blackAndWhite.white,
+          borderColor: colors.success.textAndStrokes,
         };
       case 'active':
         return {
@@ -147,7 +154,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     return {
       ...commonTypographyStyles.helper(),
       marginTop: spacing[2],
-      color: isError ? colors.error.darkBorders : isWarning ? colors.warning.dark : colors.blackAndWhite.black500,
+      color: isError ? colors.error.darkBorders : isWarning ? colors.warning.dark : isSuccess ? colors.success.textAndStrokes : colors.blackAndWhite.black500,
     };
   };
 
@@ -209,13 +216,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           placeholder={placeholder}
           onChange={onChange}
           onFocus={(e) => {
-            if (!disabled && state !== 'error' && state !== 'warning') {
+            if (!disabled && state !== 'error' && state !== 'warning' && state !== 'success') {
               setInternalState('active');
             }
             onFocus?.(e);
           }}
           onBlur={(e) => {
-            if (!disabled && state !== 'error' && state !== 'warning') {
+            if (!disabled && state !== 'error' && state !== 'warning' && state !== 'success') {
               setInternalState(value ? 'filled' : 'default');
             }
             onBlur?.(e);
@@ -242,6 +249,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
             cursor: 'pointer',
           }}>
             <icons.small.calendar color={colors.blackAndWhite.black900} />
+          </div>
+        )}
+
+        {/* Success check icon */}
+        {isSuccess && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '22px',
+            height: '22px',
+            marginLeft: spacing[1],
+          }}>
+            <icons.small.check color={colors.success.textAndStrokes} />
           </div>
         )}
 

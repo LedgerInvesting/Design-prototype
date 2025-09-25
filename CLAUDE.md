@@ -111,12 +111,17 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Theme System**: All components use `useSemanticColors()` hook for theme-aware color adaptation across Reports (blue), Analytics (green), and Marketplace (violet)
 - **Components**: Button, InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, Modal
 - **Modal System**: Comprehensive unified modal component with flexible positioning and theme-aware styling
-- **Page Components**: Layout (unified TopNav + Sidebar), responsive Sidebar with hover expansion, FormTabs
+- **Page Components**:
+  - **Unified Layout System**: Single Layout component with conditional TopNav/FormTopNav rendering
+  - **Legacy FormLayout**: Backward-compatible wrapper (deprecated, use `Layout` with `formMode=true`)
+  - **Responsive Sidebar**: Hover expansion with localStorage state persistence
+  - **Enhanced Form Integration**: Connect Bank API modal with success states and theme-aware styling
 - **Icons**: Complete 6-tier icon system with 115+ total icons across extraSmall, small, medium, table, cards, logos
 - **Enhanced Table System**: Action buttons, document cells, intelligent column sizing, dual pagination options
 - **Global Styling**: Custom text selection color using design system's blue700 (#9ad5f7)
 - **Responsive Design**: Mobile-first responsive design with consistent breakpoints
 - **External Testing Environment**: React development environment in `/pages` folder for real component integration
+- **Code Quality**: Comprehensive JSDoc documentation, cleanup commands, and consolidated architecture
 
 ## Technical Details
 - Framework: React 18 + TypeScript
@@ -134,6 +139,15 @@ This is a React design library built with TypeScript and Storybook, containing d
 - `npm run build`: Build library
 - `npm run lint`: Lint code
 - `npm run typecheck`: TypeScript validation
+- `npm run claude-cleanup`: Display Claude cleanup command prompt
+
+### Code Maintenance
+- **Claude Cleanup**: Type `"claude cleanup"` to trigger comprehensive code cleanup including:
+  - 🗑️ Remove dead code and unused imports
+  - 📝 Add missing JSDoc documentation
+  - 🔗 Consolidate duplicate patterns
+  - ✨ Optimize code structure
+  - 📚 Update outdated comments
 
 ### External Page Testing (run from pages/ folder)
 - `npm run dev`: Start React development server on port 5173

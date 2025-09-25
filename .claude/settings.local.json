@@ -67,7 +67,8 @@
       "Bash(Y)",
       "Bash(npx tsc:*)",
       "Bash(git restore:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

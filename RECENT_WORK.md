@@ -2,6 +2,32 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
+## 🧹 Code Cleanup - September 25, 2025
+
+### Completed Cleanup Tasks
+- **✅ Dead Code Removal**: Removed unused imports, cleaned up spacing inconsistencies
+- **✅ JSDoc Documentation**: Added comprehensive documentation to Layout, FormLayout, and ConnectBankAPIModal components
+- **✅ Pattern Consolidation**: Unified layout system, eliminated duplicate logic between Layout and FormLayout
+- **✅ Code Organization**: Simplified component structure and optimized styling patterns
+- **✅ Documentation Updates**: Updated CLAUDE.md with unified layout system information and cleanup command
+
+### Key Improvements Made
+1. **Unified Layout System**: FormLayout now serves as a thin wrapper around Layout with `formMode={true}`
+2. **Enhanced Modal Documentation**: ConnectBankAPIModal now has comprehensive JSDoc with usage examples
+3. **Cleaner Code Structure**: Removed redundant spacing and unused style objects
+4. **Maintenance Commands**: Added `claude-cleanup` npm script for future code maintenance
+
+### TypeScript Issues Identified
+Found 59+ TypeScript errors primarily related to:
+- Font family type incompatibility (readonly arrays vs string)
+- Missing color token properties (black50, black200, etc.)
+- Icon component prop mismatches
+- Typography style misalignment
+
+*Note: These TypeScript issues existed prior to cleanup and require separate attention.*
+
+---
+
 ## Latest Development Session (Tooltip Portal Fixes & Upload Animation - September 24, 2025)
 
 ### 🎯 **Critical Tooltip Positioning Fixes & UX Enhancement**

@@ -1,11 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { TopNav, Sidebar } from './';
+import { TopNav, Sidebar, FormTopNav } from './';
 import type { BreadcrumbItem } from './TopNav';
 import { colors } from '../tokens';
 
-// Layout component props
+/**
+ * Unified layout component that supports both navigation and form modes
+ *
+ * Navigation mode: Uses TopNav with breadcrumbs, user profile, and share functionality
+ * Form mode: Uses FormTopNav with form title, status, and progress indicators
+ *
+ * @example Navigation Mode
+ * ```tsx
+ * <Layout
+ *   breadcrumbs={[{label: 'Home', href: '/'}]}
+ *   userName="John Doe"
+ * >
+ *   <div>Content</div>
+ * </Layout>
+ * ```
+ *
+ * @example Form Mode
+ * ```tsx
+ * <Layout
+ *   formMode={true}
+ *   formTitle="New Transaction"
+ *   progress={60}
+ *   statusText="draft"
+ * >
+ *   <div>Form content</div>
+ * </Layout>
+ * ```
+ */
 export interface LayoutProps {
   children: React.ReactNode;
+  className?: string;
+  selectedSidebarItem?: string;
+  selectedSidebarSubitem?: string;
+  tabs?: React.ReactNode; // Optional tabs component to render between TopNav and content
+  onNavigate?: (itemId: string, subitemId?: string) => void;
+  onInboxClick?: () => void;
+  maxWidth?: string; // For form layouts
+
+  // Navigation mode props (regular TopNav)
   breadcrumbs?: BreadcrumbItem[];
   userName?: string;
   userInitials?: string;
@@ -13,16 +49,29 @@ export interface LayoutProps {
   showShare?: boolean;
   onShareClick?: () => void;
   onUserMenuClick?: () => void;
-  onNavigate?: (itemId: string, subitemId?: string) => void;
-  onInboxClick?: () => void;
-  className?: string;
-  selectedSidebarItem?: string;
-  selectedSidebarSubitem?: string;
-  tabs?: React.ReactNode; // Optional tabs component to render between TopNav and content
+
+  // Form mode props (FormTopNav)
+  formMode?: boolean;
+  formTitle?: string;
+  entryType?: string;
+  statusText?: string;
+  statusVariant?: 'warning' | 'success' | 'error' | 'info' | 'inactive';
+  showStatus?: boolean;
+  progress?: number;
+  onBackClick?: () => void;
 }
 
 export const Layout: React.FC<LayoutProps> = ({
   children,
+  className,
+  selectedSidebarItem,
+  selectedSidebarSubitem,
+  tabs,
+  onNavigate,
+  onInboxClick,
+  maxWidth = '1200px',
+
+  // Navigation mode props
   breadcrumbs,
   userName = "ALEC WHITTEN",
   userInitials = "AW",
@@ -30,14 +79,25 @@ export const Layout: React.FC<LayoutProps> = ({
   showShare = false,
   onShareClick,
   onUserMenuClick,
-  onNavigate,
-  onInboxClick,
-  className,
-  selectedSidebarItem,
-  selectedSidebarSubitem,
-  tabs
+
+  // Form mode props
+  formMode = false,
+  formTitle,
+  entryType,
+  statusText,
+  statusVariant,
+  showStatus = true,
+  progress,
+  onBackClick,
 }) => {
-  const [isCompact, setIsCompact] = useState<boolean>(false);
+  // Initialize sidebar state from localStorage
+  const [isCompact, setIsCompact] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebarCompact');
+      return saved ? JSON.parse(saved) : false;
+    }
+    return false;
+  });
   const [isSidebarHovered, setIsSidebarHovered] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [contentKey, setContentKey] = useState<string>('initial');
@@ -45,7 +105,10 @@ export const Layout: React.FC<LayoutProps> = ({
 
   // Handle sidebar toggle - button controls compact mode instead of viewport
   const handleSidebarToggle = () => {
-    setIsCompact(!isCompact);
+    const newCompactState = !isCompact;
+    setIsCompact(newCompactState);
+    // Save to localStorage
+    localStorage.setItem('sidebarCompact', JSON.stringify(newCompactState));
   };
 
   // Detect page changes and trigger animation
@@ -95,14 +158,14 @@ export const Layout: React.FC<LayoutProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     minHeight: 'calc(100vh - 60px)',
     width: '100%', // Fill available width
-    margin: '0', // No margins - positioning handled by fixed elements
-    padding: '50px 50px 60px 50px', // 50px top padding, 50px left/right margins, 60px bottom
+    margin: formMode ? '60px 0 0 0' : '0', // Form mode: 60px top offset, nav mode: no margins
+    padding: formMode ? '40px 50px 60px 50px' : '50px 50px 60px 50px', // Form mode: less top padding
     overflow: 'hidden', // Prevent any content from overflowing
     boxSizing: 'border-box', // Include padding in width calculation
-    // Page transition animation - start small and fade in
-    opacity: isAnimating ? 0.95 : 1, // Start slightly faded, then fully visible
-    transform: isAnimating ? 'scale(0.98)' : 'scale(1)', // Start slightly smaller, then normal size
-    transition: 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+    // Page transition animation - start small and fade in (only in nav mode)
+    opacity: (!formMode && isAnimating) ? 0.95 : 1,
+    transform: (!formMode && isAnimating) ? 'scale(0.98)' : 'scale(1)',
+    transition: !formMode ? 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none',
   };
 
   return (
@@ -128,28 +191,42 @@ export const Layout: React.FC<LayoutProps> = ({
       </div>
 
       <div style={mainContentStyles}>
-        {/* Fixed Top Navigation */}
-        <div style={{ 
-          position: 'fixed', 
-          top: 0, 
-          right: 0, 
-          width: `calc(100% - ${sidebarWidth})`, 
+        {/* Fixed Top Navigation - Conditional TopNav/FormTopNav */}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          width: `calc(100% - ${sidebarWidth})`,
           zIndex: 999,
           backgroundColor: colors.blackAndWhite.black900,
           borderRadius: '0 0 12px 12px',
           transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
         }}>
-          <TopNav
-            breadcrumbs={breadcrumbs || []}
-            userName={userName}
-            userInitials={userInitials}
-            profileColor={profileColor}
-            showShare={showShare}
-            onShareClick={onShareClick || (() => alert('Share clicked'))}
-            onUserMenuClick={onUserMenuClick || (() => alert('User menu clicked'))}
-            onSidebarToggle={handleSidebarToggle}
-            isSidebarCompact={isCompact}
-          />
+          {formMode ? (
+            <FormTopNav
+              title={formTitle}
+              entryType={entryType}
+              statusText={statusText}
+              statusVariant={statusVariant}
+              showStatus={showStatus}
+              progress={progress}
+              onBackClick={onBackClick}
+              onSidebarToggle={handleSidebarToggle}
+              isSidebarCompact={isCompact}
+            />
+          ) : (
+            <TopNav
+              breadcrumbs={breadcrumbs || []}
+              userName={userName}
+              userInitials={userInitials}
+              profileColor={profileColor}
+              showShare={showShare}
+              onShareClick={onShareClick || (() => alert('Share clicked'))}
+              onUserMenuClick={onUserMenuClick || (() => alert('User menu clicked'))}
+              onSidebarToggle={handleSidebarToggle}
+              isSidebarCompact={isCompact}
+            />
+          )}
         </div>
 
         {/* Optional Tabs - Full width under TopNav */}

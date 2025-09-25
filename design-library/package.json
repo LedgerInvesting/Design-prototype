@@ -14,7 +14,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "eslint src --ext .ts,.tsx",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "claude-cleanup": "echo \"🧹 CLAUDE CLEANUP COMMAND\" && echo \"\" && echo \"📋 Copy and paste this message to Claude:\" && echo \"\" && echo \"claude cleanup\" && echo \"\" && echo \"This will trigger comprehensive code cleanup including:\" && echo \"🗑️  Remove dead code and unused imports\" && echo \"📝 Add missing documentation\" && echo \"🔗 Consolidate duplicate patterns\" && echo \"✨ Optimize code structure\" && echo \"📚 Update outdated comments\""
   },
   "keywords": [
     "design-system",

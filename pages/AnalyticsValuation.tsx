@@ -34,7 +34,7 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, 
     backgroundImage: `url('/pattern_analytics.svg')`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top right',
-    backgroundSize: '50%',
+    backgroundSize: '33%',
     boxShadow: shadows.base,
   };
 

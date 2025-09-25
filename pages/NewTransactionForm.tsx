@@ -3,6 +3,7 @@ import { FormLayout } from '@design-library/pages';
 import { FormTabs, FormTab, Input, Dropdown, DatePicker, Button, ButtonSelector, Selector } from '@design-library/components';
 import { typography, spacing, borderRadius, useSemanticColors } from '@design-library/tokens';
 import { PlusExtraSmall, icons } from '@design-library/icons';
+import { ConnectBankAPIModal } from './ConnectBankAPIModal';
 
 const formTabs: FormTab[] = [
   { id: 'basic-info', label: 'Basic Info' },
@@ -40,6 +41,10 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
   const [profitCommissionTiers, setProfitCommissionTiers] = useState<Array<{ id: number }>>([]);
   const [policyLimitsTerms, setPolicyLimitsTerms] = useState<Array<{ id: number }>>([]);
   const [brokerInfo, setBrokerInfo] = useState<Array<{ id: number }>>([]);
+
+  // Bank API Modal state
+  const [isBankAPIModalOpen, setIsBankAPIModalOpen] = useState(false);
+  const [isBankAPIConnected, setIsBankAPIConnected] = useState(false);
 
   // Accordion state for Structure & Key Terms sections
   const [sectionExpanded, setSectionExpanded] = useState({
@@ -1828,14 +1833,38 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
               </div>
             </div>
 
-            {/* Right side - Button */}
-            <Button
-              variant="primary"
-              color="white"
-              showIcon={false}
-            >
-              Connect Bank API
-            </Button>
+            {/* Right side - Button or Connected State */}
+            {isBankAPIConnected ? (
+              <div style={{
+                backgroundColor: '#E5F8EC',
+                border: `1px solid ${colors.success.textAndStrokes}`,
+                borderRadius: borderRadius[8],
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                width: '240px',
+                justifyContent: 'center',
+              }}>
+                <icons.small.check color={colors.success.textAndStrokes} />
+                <span style={{
+                  ...typography.styles.bodyL,
+                  color: colors.success.textAndStrokes,
+                  fontWeight: 500,
+                }}>
+                  API Connected
+                </span>
+              </div>
+            ) : (
+              <Button
+                variant="primary"
+                color="white"
+                showIcon={false}
+                onClick={() => setIsBankAPIModalOpen(true)}
+              >
+                Connect Bank API
+              </Button>
+            )}
           </div>
 
           {/* Additional Trust Account Fields */}
@@ -1862,43 +1891,136 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
             </div>
 
             {/* Trust/Principal Account Number */}
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{
+              marginBottom: '20px',
+              display: 'grid',
+              gridTemplateColumns: '2fr 1fr',
+              gap: '5px',
+              alignItems: 'end'
+            }}>
               <Input
                 label="Trust/Principal Account Number"
                 placeholder="Enter main trust account number"
                 value=""
                 onChange={(e) => console.log('Trust/Principal Account Number:', e.target.value)}
               />
+              <Dropdown
+                label="Currency"
+                placeholder="USD"
+                value=""
+                options={[
+                  { value: 'usd', label: 'USD' },
+                  { value: 'eur', label: 'EUR' },
+                  { value: 'gbp', label: 'GBP' },
+                  { value: 'cad', label: 'CAD' },
+                  { value: 'aud', label: 'AUD' },
+                  { value: 'jpy', label: 'JPY' },
+                ]}
+                onChange={(value) => console.log('Trust/Principal Account Currency:', value)}
+              />
             </div>
 
-            {/* Reserve and Capital Accounts Grid */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '20px',
-              marginBottom: '20px'
-            }}>
-              <Input
-                label="Reserve Account"
-                placeholder="Enter reserve account number"
-                value=""
-                onChange={(e) => console.log('Reserve Account:', e.target.value)}
-              />
-              <Input
-                label="Capital Account"
-                placeholder="Enter capital account number"
-                value=""
-                onChange={(e) => console.log('Capital Account:', e.target.value)}
-              />
+            {/* Reserve and Capital Accounts Section */}
+            <div style={{ marginBottom: '20px' }}>
+              <h4 style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black900,
+                marginBottom: spacing[1],
+                marginTop: '0',
+              }}>Associated Accounts</h4>
+              <div style={coverageLayerContainerStyles}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '20px'
+                }}>
+                  {/* Reserve Account Row */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '2fr 1fr',
+                    gap: '5px',
+                    alignItems: 'end'
+                  }}>
+                    <Input
+                      label="Reserve Account"
+                      placeholder="Enter reserve account number"
+                      value=""
+                      onChange={(e) => console.log('Reserve Account:', e.target.value)}
+                    />
+                    <Dropdown
+                      label="Currency"
+                      placeholder="USD"
+                      value=""
+                      options={[
+                        { value: 'usd', label: 'USD' },
+                        { value: 'eur', label: 'EUR' },
+                        { value: 'gbp', label: 'GBP' },
+                        { value: 'cad', label: 'CAD' },
+                        { value: 'aud', label: 'AUD' },
+                        { value: 'jpy', label: 'JPY' },
+                      ]}
+                      onChange={(value) => console.log('Reserve Account Currency:', value)}
+                    />
+                  </div>
+                  {/* Capital Account Row */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '2fr 1fr',
+                    gap: '5px',
+                    alignItems: 'end'
+                  }}>
+                    <Input
+                      label="Capital Account"
+                      placeholder="Enter capital account number"
+                      value=""
+                      onChange={(e) => console.log('Capital Account:', e.target.value)}
+                    />
+                    <Dropdown
+                      label="Currency"
+                      placeholder="USD"
+                      value=""
+                      options={[
+                        { value: 'usd', label: 'USD' },
+                        { value: 'eur', label: 'EUR' },
+                        { value: 'gbp', label: 'GBP' },
+                        { value: 'cad', label: 'CAD' },
+                        { value: 'aud', label: 'AUD' },
+                        { value: 'jpy', label: 'JPY' },
+                      ]}
+                      onChange={(value) => console.log('Capital Account Currency:', value)}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Income Account */}
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{
+              marginBottom: '20px',
+              display: 'grid',
+              gridTemplateColumns: '2fr 1fr',
+              gap: '5px',
+              alignItems: 'end'
+            }}>
               <Input
                 label="Income Account"
                 placeholder="Enter income account number"
                 value=""
                 onChange={(e) => console.log('Income Account:', e.target.value)}
+              />
+              <Dropdown
+                label="Currency"
+                placeholder="USD"
+                value=""
+                options={[
+                  { value: 'usd', label: 'USD' },
+                  { value: 'eur', label: 'EUR' },
+                  { value: 'gbp', label: 'GBP' },
+                  { value: 'cad', label: 'CAD' },
+                  { value: 'aud', label: 'AUD' },
+                  { value: 'jpy', label: 'JPY' },
+                ]}
+                onChange={(value) => console.log('Income Account Currency:', value)}
               />
             </div>
           </div>
@@ -2073,6 +2195,13 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       }
     >
       {renderTabContent()}
+
+      {/* Connect Bank API Modal */}
+      <ConnectBankAPIModal
+        isOpen={isBankAPIModalOpen}
+        onClose={() => setIsBankAPIModalOpen(false)}
+        onConnect={() => setIsBankAPIConnected(true)}
+      />
     </FormLayout>
   );
 };

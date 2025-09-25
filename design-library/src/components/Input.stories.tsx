@@ -35,7 +35,7 @@ const meta: Meta<typeof Input> = {
     state: {
       description: 'Visual state of the input',
       control: 'radio',
-      options: ['default', 'active', 'filled', 'warning', 'error', 'disabled'],
+      options: ['default', 'active', 'filled', 'warning', 'error', 'success', 'disabled'],
     },
     leftSymbol: {
       description: 'Left symbol ($ or %)',
@@ -168,16 +168,24 @@ export const AllStates: Story = {
         helperText="Select an end date"
       />
       
-      <Input 
-        label="Error State" 
+      <Input
+        label="Error State"
         state="error"
         value="invalid@email"
         helperText="Please enter a valid email address"
         type="email"
       />
-      
-      <Input 
-        label="Disabled State" 
+
+      <Input
+        label="Success State"
+        state="success"
+        value="user@example.com"
+        helperText="Valid email address entered"
+        type="email"
+      />
+
+      <Input
+        label="Disabled State"
         disabled={true}
         value="Read only value"
         leftSymbol="%"
@@ -187,7 +195,7 @@ export const AllStates: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'All six input states: Default (idle), Active (focused), Filled (has content), Warning (potential issue), Error (validation failure), and Disabled (non-interactive).',
+        story: 'All seven input states: Default (idle), Active (focused), Filled (has content), Warning (potential issue), Error (validation failure), Success (validation passed), and Disabled (non-interactive).',
       },
     },
   },

@@ -56,7 +56,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
     backgroundImage: `url('/pattern_reports.svg')`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top right',
-    backgroundSize: '50%',
+    backgroundSize: '33%',
     boxShadow: shadows.base,
   };
 
