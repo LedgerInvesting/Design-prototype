@@ -185,6 +185,7 @@ For detailed component documentation, see [COMPONENTS.md](./COMPONENTS.md)
 For pages and external testing environment, see [PAGES.md](./PAGES.md)
 For Storybook standards and guidelines, see [STORYBOOK_STANDARDS.md](./STORYBOOK_STANDARDS.md)
 For recent work history and changelog, see [RECENT_WORK.md](./RECENT_WORK.md)
+For prototype settings and feature toggles, see [PROTOTYPE_SETTINGS.md](./PROTOTYPE_SETTINGS.md)
 
 ## External Testing Environment
 

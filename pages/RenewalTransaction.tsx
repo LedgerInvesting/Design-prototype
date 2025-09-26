@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormLayout } from '@design-library/pages';
-import { SearchBar, Button, Status, Selector } from '@design-library/components';
+import { SearchBar, Button, Status, Selector, InfoTooltip } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { StatusWarning, PencilMedium } from '@design-library/icons';
+import { StatusWarning, PencilMedium, AnalyticsLogo, ContractsLogo } from '@design-library/icons';
+import { createPageNavigationHandler } from '@design-library/utils/navigation';
+import { useSettings } from '@design-library/contexts';
 
 interface Transaction {
   id: string;
@@ -185,9 +187,40 @@ const TransactionCard: React.FC<{
 
 const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
+  const settings = useSettings();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Cleanup tooltips on component unmount or page change
+  useEffect(() => {
+    return () => {
+      // Clean up any existing tooltips when component unmounts
+      const existingTooltips = document.querySelectorAll('[id$="-tooltip"]');
+      existingTooltips.forEach(tooltip => tooltip.remove());
+    };
+  }, []);
+
+  // Also cleanup tooltips when navigating away
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const existingTooltips = document.querySelectorAll('[id$="-tooltip"]');
+      existingTooltips.forEach(tooltip => tooltip.remove());
+    };
+
+    const handleHashChange = () => {
+      const existingTooltips = document.querySelectorAll('[id$="-tooltip"]');
+      existingTooltips.forEach(tooltip => tooltip.remove());
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
   const filteredTransactions = mockTransactions.filter(transaction =>
     transaction.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -224,17 +257,7 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
       progress={0}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="transactions"
-      onNavigate={(itemId, subitemId) => {
-        if (itemId === 'reports' && subitemId === 'transactions') {
-          onNavigateToPage('transaction-management');
-        } else if (itemId === 'reports' && subitemId === 'reports-explorer') {
-          onNavigateToPage('report-navigation');
-        } else if (itemId === 'analytics') {
-          onNavigateToPage('analytics-valuation');
-        } else if (itemId === 'contracts') {
-          onNavigateToPage('contracts-explorer');
-        }
-      }}
+      onNavigate={createPageNavigationHandler(onNavigateToPage, 'renewal-transaction')}
     >
       {/* Header spanning full width */}
       <div style={{
@@ -349,10 +372,169 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
                 }}>
                   {selectedTransaction.name}
                 </h2>
-                <Status
-                  variant={selectedTransaction.status === 'Renew' ? 'warning' : 'inactive'}
-                  text={selectedTransaction.status}
-                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Status
+                    variant={selectedTransaction.status === 'Renew' ? 'warning' : 'inactive'}
+                    text={selectedTransaction.status}
+                  />
+                  {settings.appIntegration.showExtraCardButtons && (
+                    <>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '24px',
+                          height: '24px',
+                          backgroundColor: colors.blackAndWhite.black900,
+                          borderRadius: borderRadius[4],
+                          cursor: 'pointer',
+                          position: 'relative'
+                        }}
+                        onClick={() => onNavigateToPage('valuation-dashboard')}
+                        onMouseEnter={(e) => {
+                          // Remove any existing tooltip first
+                          const existingTooltip = document.getElementById('analytics-tooltip');
+                          if (existingTooltip) existingTooltip.remove();
+
+                          const tooltip = document.createElement('div');
+                          tooltip.textContent = 'Review in Analytics';
+                          tooltip.style.cssText = `
+                            position: fixed;
+                            background: ${colors.blackAndWhite.black900};
+                            color: ${colors.blackAndWhite.white};
+                            padding: 6px 12px;
+                            border-radius: ${borderRadius[8]};
+                            font-size: ${typography.styles.bodyS.fontSize};
+                            font-family: ${typography.styles.bodyS.fontFamily.join(', ')};
+                            font-weight: ${typography.styles.bodyS.fontWeight};
+                            white-space: nowrap;
+                            z-index: 1000;
+                            box-shadow: ${shadows.base};
+                            pointer-events: none;
+                            visibility: hidden;
+                          `;
+                          tooltip.id = 'analytics-tooltip';
+                          document.body.appendChild(tooltip);
+
+                          // Calculate positioning to stay within viewport
+                          const rect = tooltip.getBoundingClientRect();
+                          const viewportWidth = window.innerWidth;
+                          const viewportHeight = window.innerHeight;
+
+                          let top = e.clientY + 10;
+                          let left = e.clientX + 10;
+
+                          // Adjust if tooltip goes beyond right edge
+                          if (left + rect.width > viewportWidth - 10) {
+                            left = e.clientX - rect.width - 10;
+                          }
+
+                          // Adjust if tooltip goes beyond bottom edge
+                          if (top + rect.height > viewportHeight - 10) {
+                            top = e.clientY - rect.height - 10;
+                          }
+
+                          // Adjust if tooltip goes beyond left edge
+                          if (left < 10) {
+                            left = 10;
+                          }
+
+                          // Adjust if tooltip goes beyond top edge
+                          if (top < 10) {
+                            top = 10;
+                          }
+
+                          tooltip.style.top = `${top}px`;
+                          tooltip.style.left = `${left}px`;
+                          tooltip.style.visibility = 'visible';
+                        }}
+                        onMouseLeave={() => {
+                          const tooltip = document.getElementById('analytics-tooltip');
+                          if (tooltip) tooltip.remove();
+                        }}
+                      >
+                        <AnalyticsLogo color={colors.analytics.green600} />
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '24px',
+                          height: '24px',
+                          backgroundColor: colors.blackAndWhite.black900,
+                          borderRadius: borderRadius[4],
+                          cursor: 'pointer',
+                          position: 'relative'
+                        }}
+                        onMouseEnter={(e) => {
+                          // Remove any existing tooltip first
+                          const existingTooltip = document.getElementById('contract-tooltip');
+                          if (existingTooltip) existingTooltip.remove();
+
+                          const tooltip = document.createElement('div');
+                          tooltip.textContent = 'Review in contracts';
+                          tooltip.style.cssText = `
+                            position: fixed;
+                            background: ${colors.blackAndWhite.black900};
+                            color: ${colors.blackAndWhite.white};
+                            padding: 6px 12px;
+                            border-radius: ${borderRadius[8]};
+                            font-size: ${typography.styles.bodyS.fontSize};
+                            font-family: ${typography.styles.bodyS.fontFamily.join(', ')};
+                            font-weight: ${typography.styles.bodyS.fontWeight};
+                            white-space: nowrap;
+                            z-index: 1000;
+                            box-shadow: ${shadows.base};
+                            pointer-events: none;
+                            visibility: hidden;
+                          `;
+                          tooltip.id = 'contract-tooltip';
+                          document.body.appendChild(tooltip);
+
+                          // Calculate positioning to stay within viewport
+                          const rect = tooltip.getBoundingClientRect();
+                          const viewportWidth = window.innerWidth;
+                          const viewportHeight = window.innerHeight;
+
+                          let top = e.clientY + 10;
+                          let left = e.clientX + 10;
+
+                          // Adjust if tooltip goes beyond right edge
+                          if (left + rect.width > viewportWidth - 10) {
+                            left = e.clientX - rect.width - 10;
+                          }
+
+                          // Adjust if tooltip goes beyond bottom edge
+                          if (top + rect.height > viewportHeight - 10) {
+                            top = e.clientY - rect.height - 10;
+                          }
+
+                          // Adjust if tooltip goes beyond left edge
+                          if (left < 10) {
+                            left = 10;
+                          }
+
+                          // Adjust if tooltip goes beyond top edge
+                          if (top < 10) {
+                            top = 10;
+                          }
+
+                          tooltip.style.top = `${top}px`;
+                          tooltip.style.left = `${left}px`;
+                          tooltip.style.visibility = 'visible';
+                        }}
+                        onMouseLeave={() => {
+                          const tooltip = document.getElementById('contract-tooltip');
+                          if (tooltip) tooltip.remove();
+                        }}
+                      >
+                        <ContractsLogo color="#FFE671" />
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
 
           {/* Basic Info Section */}

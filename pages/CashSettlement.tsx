@@ -9,6 +9,9 @@ import { Card, Button, Stack, Grid, Container } from '@design-library/components
 // Import design tokens
 import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 
+// Import navigation utilities
+import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
+
 // Custom document icon component
 interface DocumentIconProps {
   fillColor?: string;
@@ -301,7 +304,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
 // Main page component
 interface CashSettlementProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation') => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
 }
 
 export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage }) => {
@@ -329,34 +332,10 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
 
   return (
     <Layout
-      breadcrumbs={[
-        { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage?.('report-navigation') },
-        { label: 'CESSION AND COLLATERAL', isActive: true }
-      ]}
+      breadcrumbs={createBreadcrumbs.reports.cashSettlement(onNavigateToPage!)}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="reports-explorer"
-      onNavigate={(itemId, subitemId) => {
-        console.log('Navigate to:', itemId, subitemId);
-        
-        // Handle Reports navigation
-        if (itemId === 'reports') {
-          if (subitemId === 'transactions') {
-            onNavigateToPage && onNavigateToPage('transaction-management');
-          } else if (subitemId === 'reports-explorer') {
-            onNavigateToPage && onNavigateToPage('report-navigation');
-          }
-        }
-        // Handle Analytics navigation
-        else if (itemId === 'analytics') {
-          if (subitemId === 'valuation') {
-            onNavigateToPage && onNavigateToPage('analytics-valuation');
-          }
-        }
-        // Handle Contracts navigation
-        else if (itemId === 'contracts') {
-          onNavigateToPage && onNavigateToPage('contracts-explorer');
-        }
-      }}
+      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'cash-settlement')}
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}

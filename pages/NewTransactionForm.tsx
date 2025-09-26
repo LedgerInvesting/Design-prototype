@@ -4,6 +4,7 @@ import { FormTabs, FormTab, Input, Dropdown, DatePicker, Button, ButtonSelector,
 import { typography, spacing, borderRadius, useSemanticColors } from '@design-library/tokens';
 import { PlusExtraSmall, icons } from '@design-library/icons';
 import { ConnectBankAPIModal } from './ConnectBankAPIModal';
+import { createPageNavigationHandler } from '@design-library/utils/navigation';
 
 const formTabs: FormTab[] = [
   { id: 'basic-info', label: 'Basic Info' },
@@ -15,7 +16,7 @@ const formTabs: FormTab[] = [
 type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'analytics-valuation' | 'contracts-explorer';
 
 export interface NewTransactionFormProps {
-  onNavigateToPage?: (page: PageType) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
   renewalData?: any;
 }
 
@@ -2157,32 +2158,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
         console.log('Back to Dashboard clicked');
         onNavigateToPage?.('transaction-management');
       }}
-      onNavigate={(itemId, subitemId) => {
-        console.log('Navigate to:', itemId, subitemId);
-        
-        // Handle Reports navigation
-        if (itemId === 'reports') {
-          if (subitemId === 'reports-explorer') {
-            onNavigateToPage?.('report-navigation');
-          } else if (subitemId === 'transactions') {
-            onNavigateToPage?.('transaction-management');
-          }
-        }
-        // Handle Analytics navigation
-        else if (itemId === 'analytics') {
-          if (subitemId === 'valuation') {
-            onNavigateToPage?.('analytics-valuation');
-          }
-        }
-        // Handle Contracts navigation
-        else if (itemId === 'contracts') {
-          onNavigateToPage?.('contracts-explorer');
-        }
-        // Handle other navigation (legacy marketplace)
-        else if (itemId === 'marketplace' && subitemId === 'settlement') {
-          onNavigateToPage?.('cash-settlement');
-        }
-      }}
+      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'new-transaction-form')}
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}

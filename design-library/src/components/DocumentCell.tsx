@@ -52,7 +52,7 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     alignItems: 'center',
     justifyContent: 'space-between',
     margin: '6px',
-    padding: '4px 8px',
+    padding: '4px 4px 4px 8px',
     borderRadius: borderRadius[4],
     backgroundColor: isHovered ? colors.theme.primary300 : colors.theme.primary200, // Theme-aware colors
     cursor: 'pointer',
@@ -113,7 +113,8 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     justifyContent: 'center',
     backgroundColor: colors.blackAndWhite.white, // White background from library
     borderRadius: borderRadius[8], // 8px border radius from library
-    boxShadow: shadows.sm, // Small shadow from library
+    boxShadow: shadows.base, // Base shadow from library for better visibility
+    border: `1px solid ${colors.theme.primary400}`, // Add theme 400 border
     padding: '6px', // Small padding around the icon
     width: '24px', // Fixed size for consistent appearance
     height: '24px',
@@ -158,11 +159,11 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
 
         <div style={downloadIconStyles}>
           {hoverIcon === 'config' ? (
-            <ConfigSmall color={colors.theme.primary450} />
+            <ConfigSmall color={colors.blackAndWhite.black900} />
           ) : hoverIcon === 'open' ? (
-            <ChevronRightSmall color={colors.theme.primary450} />
+            <ChevronRightSmall color={colors.blackAndWhite.black900} />
           ) : (
-            <DownloadSmall color={colors.theme.primary450} />
+            <DownloadSmall color={colors.blackAndWhite.black900} />
           )}
         </div>
       </div>

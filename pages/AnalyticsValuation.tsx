@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Layout } from '@design-library/pages';
 import { Button, Table } from '@design-library/components';
 import { colors as baseColors, typography, borderRadius, shadows } from '@design-library/tokens';
-import { AddSmall, DocumentTable, TextTable, AmmountTable, ArrangeTable } from '@design-library/icons';
+import { AddSmall, DocumentTable, TextTable, AmmountTable, ArrangeTable, ContractsLogo } from '@design-library/icons';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
+import { useSettings } from '@design-library/contexts';
 import { NewValuationModal, ValuationFormData } from './NewValuationModal';
 
 interface AnalyticsValuationProps {
@@ -14,9 +15,10 @@ interface AnalyticsValuationProps {
 interface AnalyticsHeaderProps {
   onNewValuationClick: () => void;
   buttonRef?: React.RefObject<HTMLButtonElement>;
+  settings: any;
 }
 
-const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, buttonRef }) => {
+const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, buttonRef, settings }) => {
   const colors = useSemanticColors();
 
   const headerStyles: React.CSSProperties = {
@@ -110,6 +112,7 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, 
 
 export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
+  const settings = useSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const newValuationButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -153,9 +156,10 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
       breadcrumbs={createBreadcrumbs.analytics.valuation()}
     >
       {/* Header Section */}
-      <AnalyticsHeader 
+      <AnalyticsHeader
         onNewValuationClick={handleNewValuationClick}
         buttonRef={newValuationButtonRef}
+        settings={settings}
       />
       
       {/* Valuation Table */}

@@ -8,6 +8,10 @@ import { Card, Button, Stack, Grid, Container, Table } from '@design-library/com
 
 // Import design tokens
 import { typography, spacing, borderRadius, shadows, useSemanticColors } from '@design-library/tokens';
+import { createPageNavigationHandler } from '@design-library/utils/navigation';
+
+// Import prototype settings
+import { useSettings } from '@design-library/contexts';
 
 // Import table icons
 import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } from '@design-library/icons';
@@ -117,7 +121,9 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
         padding: '10px',
         borderRadius: borderRadius[16],
         boxShadow: shadows.base,
-        width: '260px', // Container width: 240px button + 20px padding (10px each side)
+        width: '260px',
+        display: 'flex',
+        gap: '0',
       }}>
         <Button
           ref={buttonRef}
@@ -126,9 +132,11 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionC
           icon={<span style={{ color: colors.theme.primary700 }}>+</span>}
           onClick={onNewTransactionClick}
           className="custom-button-width"
+          style={{ flex: 'unset' }}
         >
           New Transaction
         </Button>
+
       </div>
     </div>
   );
@@ -852,6 +860,7 @@ interface TransactionManagementProps {
 
 export const TransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
+  const settings = useSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
   const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -880,33 +889,17 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       ]}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="transactions"
-      onNavigate={(itemId, subitemId) => {
-        console.log('Navigate to:', itemId, subitemId);
-        
-        // Handle Reports navigation
-        if (itemId === 'reports') {
-          if (subitemId === 'transactions') {
-            // Already on transaction management page
-            console.log('Already on transaction management page');
-          } else if (subitemId === 'reports-explorer') {
-            onNavigateToPage && onNavigateToPage('report-navigation');
-          } else if (subitemId === 'bdx-upload') {
-            onNavigateToPage && onNavigateToPage('bdx-upload');
-          }
-        }
-        // Handle Analytics navigation
-        else if (itemId === 'analytics') {
-          if (subitemId === 'valuation') {
-            onNavigateToPage && onNavigateToPage('analytics-valuation');
-          }
-        }
-        // Handle other navigation
-        else if (itemId === 'contracts') {
-          onNavigateToPage && onNavigateToPage('contracts-explorer');
-        }
-      }}
+      onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'transaction-management')}
       onInboxClick={() => {
         console.log('Inbox clicked');
+      }}
+      onManageAccountClick={() => {
+        console.log('Manage account clicked');
+        alert('Manage account functionality would go here');
+      }}
+      onSettingsClick={() => {
+        console.log('Settings clicked');
+        alert('Settings functionality would go here');
       }}
     >
       {/* Header Section */}

@@ -61,11 +61,7 @@ const sidebarItems: SidebarItem[] = [
   {
     id: 'contracts',
     label: 'Contracts',
-    icon: ContractsLogo,
-    subitems: [
-      { id: 'option-1', label: 'Option 1' },
-      { id: 'option-2', label: 'Option 2' }
-    ]
+    icon: ContractsLogo
   }
 ];
 
@@ -94,7 +90,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
         return colors.blackAndWhite.black700;
     }
   };
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['reports']));
+  // Initialize expanded items from localStorage with reports as default
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebarExpandedItems');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          return new Set(Array.isArray(parsed) ? parsed : ['reports']);
+        } catch {
+          return new Set(['reports']);
+        }
+      }
+    }
+    return new Set(['reports']);
+  });
   
   // Use controlled state if provided, otherwise fall back to internal state
   const [internalSelectedItem, setInternalSelectedItem] = useState<string>('reports');
@@ -102,6 +112,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   
   const selectedItem = propSelectedItem !== undefined ? propSelectedItem : internalSelectedItem;
   const selectedSubitem = propSelectedSubitem !== undefined ? propSelectedSubitem : internalSelectedSubitem;
+
+  // Save expanded items to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sidebarExpandedItems', JSON.stringify([...expandedItems]));
+    }
+  }, [expandedItems]);
 
   // Auto-expand the selected item if it has subitems and a subitem is selected
   useEffect(() => {

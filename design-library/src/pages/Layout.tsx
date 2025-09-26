@@ -49,6 +49,8 @@ export interface LayoutProps {
   showShare?: boolean;
   onShareClick?: () => void;
   onUserMenuClick?: () => void;
+  onManageAccountClick?: () => void;
+  onSettingsClick?: () => void;
 
   // Form mode props (FormTopNav)
   formMode?: boolean;
@@ -73,12 +75,14 @@ export const Layout: React.FC<LayoutProps> = ({
 
   // Navigation mode props
   breadcrumbs,
-  userName = "ALEC WHITTEN",
-  userInitials = "AW",
+  userName = "SARAH JOHNSON",
+  userInitials = "SJ",
   profileColor = colors.reports.blue700,
   showShare = false,
   onShareClick,
   onUserMenuClick,
+  onManageAccountClick,
+  onSettingsClick,
 
   // Form mode props
   formMode = false,
@@ -222,7 +226,9 @@ export const Layout: React.FC<LayoutProps> = ({
               profileColor={profileColor}
               showShare={showShare}
               onShareClick={onShareClick || (() => alert('Share clicked'))}
-              onUserMenuClick={onUserMenuClick || (() => alert('User menu clicked'))}
+              onUserMenuClick={onUserMenuClick}
+              onManageAccountClick={onManageAccountClick}
+              onSettingsClick={onSettingsClick}
               onSidebarToggle={handleSidebarToggle}
               isSidebarCompact={isCompact}
             />

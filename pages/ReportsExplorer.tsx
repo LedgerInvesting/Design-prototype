@@ -9,6 +9,9 @@ import { Card, Button, Stack, Grid, Container, DashboardCard } from '@design-lib
 // Import design tokens
 import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 
+// Import navigation utilities
+import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
+
 // Import icons
 import { ArrowUpSmall, ArrowDownSmall, ChevronRightExtraSmall, CardsGraph, CardsCheck, CardsText } from '@design-library/icons';
 
@@ -524,7 +527,7 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
 
 // Main page component
 interface ReportNavigationProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation' | 'bdx-upload') => void;
+  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation' | 'bdx-upload' | 'marketplace-offerings') => void;
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
@@ -553,21 +556,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
       ]}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="reports-explorer"
-      onNavigate={(itemId, subitemId) => {
-        const routes = {
-          reports: {
-            transactions: 'transaction-management',
-            'bdx-upload': 'bdx-upload'
-          },
-          analytics: {
-            valuation: 'analytics-valuation'
-          },
-          contracts: 'contracts-explorer'
-        };
-
-        const route = routes[itemId]?.[subitemId] || routes[itemId];
-        if (route) onNavigateToPage?.(route);
-      }}
+      onNavigate={createPageNavigationHandler(onNavigateToPage, 'report-navigation')}
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}

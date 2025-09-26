@@ -24,6 +24,7 @@ import {
   DownloadMedium,
   CloseMedium
 } from '@design-library/icons';
+import { createPageNavigationHandler, type PageType } from '@design-library/utils/navigation';
 
 interface BDXUploadProps {
   onNavigate?: (page: string, subpage?: string) => void;
@@ -499,21 +500,9 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
       breadcrumbs={breadcrumbs}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="bdx-upload"
-      onNavigate={(itemId, subitemId) => {
-        console.log('Navigate to:', itemId, subitemId);
-
-        if (itemId === 'reports') {
-          if (subitemId === 'reports-explorer') {
-            onNavigate && onNavigate('report-navigation');
-          } else if (subitemId === 'transactions') {
-            onNavigate && onNavigate('transaction-management');
-          }
-        } else if (itemId === 'analytics' && subitemId === 'valuation') {
-          onNavigate && onNavigate('analytics-valuation');
-        } else if (itemId === 'contracts') {
-          onNavigate && onNavigate('contracts-explorer');
-        }
-      }}
+      onNavigate={createPageNavigationHandler((page: PageType, data?: any) => {
+        onNavigate && onNavigate(page, data);
+      }, 'bdx-upload')}
       onInboxClick={onInboxClick}
     >
       {/* Header Section */}

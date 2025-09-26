@@ -9,21 +9,19 @@ import { Table } from '@design-library/components';
 // Import design tokens
 import { colors, typography, spacing, borderRadius } from '@design-library/tokens';
 
+// Import navigation utilities
+import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
+
 // Define page type for navigation
 type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer' | 'analytics-valuation';
 
 export interface ContractsExplorerProps {
-  onNavigateToPage?: (page: PageType) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
 }
 
 export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
   onNavigateToPage
 }) => {
-  // Define breadcrumbs
-  const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage?.('report-navigation') },
-    { label: 'CONTRACTS', isActive: true }
-  ];
 
   // Sample data for Reinsurance Trust table
   const reinsuranceTrustData = [
@@ -294,33 +292,8 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
     <Layout
       selectedSidebarItem="reports"
       selectedSidebarSubitem="explorer"
-      breadcrumbs={breadcrumbs}
-      onNavigate={(itemId, subitemId) => {
-        console.log('Navigate to:', itemId, subitemId);
-        // Handle Reports navigation
-        if (itemId === 'reports') {
-          if (subitemId === 'reports-explorer') {
-            onNavigateToPage?.('report-navigation');
-          } else if (subitemId === 'transactions') {
-            onNavigateToPage?.('transaction-management');
-          }
-        }
-        // Handle Analytics navigation
-        else if (itemId === 'analytics') {
-          if (subitemId === 'valuation') {
-            onNavigateToPage?.('analytics-valuation');
-          }
-        }
-        // Handle Contracts navigation
-        else if (itemId === 'contracts') {
-          // Already on contracts explorer page
-          console.log('Already on contracts explorer page');
-        }
-        // Handle other navigation (legacy marketplace)
-        else if (itemId === 'marketplace' && subitemId === 'settlement') {
-          onNavigateToPage?.('cash-settlement');
-        }
-      }}
+      breadcrumbs={createBreadcrumbs.contracts.explorer(onNavigateToPage!)}
+      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'contracts-explorer')}
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}

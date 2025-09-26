@@ -577,9 +577,9 @@ export const UploadSmall: React.FC<SmallIconProps> = ({
   </svg>
 );
 
-export const ConfigSmall: React.FC<SmallIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const ConfigSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <circle cx="5.99728" cy="6.00336" r="3.37716" stroke={color} strokeWidth="1.5"/>
@@ -591,6 +591,16 @@ export const ConfigSmall: React.FC<SmallIconProps> = ({
     <path d="M3.75977 8.224L2.12173 9.86203" stroke={color} strokeWidth="1.5"/>
     <path d="M9.8916 9.86176L8.25357 8.22372" stroke={color} strokeWidth="1.5"/>
     <path d="M3.76758 3.73788L2.12954 2.09985" stroke={color} strokeWidth="1.5"/>
+  </svg>
+);
+
+export const UserSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M1.8418 10.2754V7.56734M10.1592 10.2721V7.56734M2.53462 10.86H9.47994" stroke={color} strokeWidth="1.6"/>
+    <circle cx="6.00171" cy="3.92688" r="2.78686" stroke={color} strokeWidth="1.6"/>
   </svg>
 );
 
@@ -1600,6 +1610,9 @@ export const icons = {
   },
   small: {
     add: AddSmall,
+    arrowDown: ArrowDownSmall,
+    arrowUp: ArrowUpSmall,
+    calculator: CalculatorSmall,
     calendar: CalendarSmall,
     check: CheckSmall,
     chevronBottom: ChevronBottomSmall,
@@ -1608,6 +1621,7 @@ export const icons = {
     circledCheck: CircledCheckSmall,
     circledX: CircledXSmall,
     close: CloseSmall,
+    config: ConfigSmall,
     document: DocumentSmall,
     download: DownloadSmall,
     edit: EditSmall,
@@ -1626,6 +1640,8 @@ export const icons = {
     s1ArrowRight: S1ArrowRightSmall,
     s2ArrowRight: S2ArrowRightSmall,
     trash: TrashSmall,
+    upload: UploadSmall,
+    user: UserSmall,
   },
   medium: {
     add: AddMedium,

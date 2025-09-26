@@ -4,8 +4,9 @@ import { Layout } from '@design-library/pages';
 import { Button, DashboardCard } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium } from '@design-library/icons';
+import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
+import { useSettings } from '@design-library/contexts';
 
 // Custom StatusCheck component with proper color support
 const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
@@ -476,6 +477,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
   valuationData
 }) => {
   const colors = useSemanticColors();
+  const settings = useSettings();
 
   // Provide default data if valuationData is null or undefined
   const defaultData = {
@@ -542,6 +544,46 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               <span>.</span>
               <span style={{ color: colors.blackAndWhite.black500 }}> Valuation dashboard</span>
             </h1>
+            {settings.appIntegration.showExtraCardButtons && (
+              <div style={{
+                marginTop: '12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: colors.theme.primary200,
+                borderRadius: borderRadius[8],
+                padding: '8px 12px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = colors.theme.primary300;
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
+              }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '20px',
+                  height: '20px',
+                  backgroundColor: colors.blackAndWhite.black900,
+                  borderRadius: borderRadius[4],
+                }}>
+                  <ContractsLogo color="#FFE671" />
+                </div>
+                <span style={{
+                  ...typography.styles.bodyM,
+                  color: colors.blackAndWhite.black900,
+                  fontWeight: 500,
+                  backgroundColor: 'transparent',
+                }}>
+                  Explore associated contracts
+                </span>
+              </div>
+            )}
           </div>
           <Button
             variant="primary"

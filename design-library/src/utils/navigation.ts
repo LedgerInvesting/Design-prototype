@@ -12,7 +12,8 @@ export type PageType =
   | 'valuation-configuration'
   | 'valuation-status'
   | 'bdx-upload'
-  | 'cash-settlement';
+  | 'cash-settlement'
+  | 'marketplace-offerings';
 
 export interface NavigationHandler {
   (page: PageType, data?: any): void;
@@ -46,6 +47,14 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
     // Handle Contracts navigation
     else if (itemId === 'contracts') {
       onNavigateToPage('contracts-explorer');
+    }
+    // Handle Marketplace navigation
+    else if (itemId === 'marketplace') {
+      if (subitemId === 'offerings') {
+        onNavigateToPage('marketplace-offerings');
+      } else if (subitemId === 'my-transactions') {
+        onNavigateToPage('transaction-management');
+      }
     }
     // Handle other navigation items
     else {
@@ -107,6 +116,22 @@ export const createPageNavigationHandler = (
         onNavigateToPage('contracts-explorer');
       }
     }
+    // Handle Marketplace navigation
+    else if (itemId === 'marketplace') {
+      if (subitemId === 'offerings') {
+        if (currentPage === 'marketplace-offerings') {
+          console.log('Already on marketplace offerings page');
+        } else {
+          onNavigateToPage('marketplace-offerings');
+        }
+      } else if (subitemId === 'my-transactions') {
+        if (currentPage === 'transaction-management') {
+          console.log('Already on transaction management page');
+        } else {
+          onNavigateToPage('transaction-management');
+        }
+      }
+    }
     // Handle other navigation items
     else {
       console.log('Unhandled navigation:', itemId, subitemId);
@@ -138,9 +163,19 @@ export const createBreadcrumbs = {
   reports: {
     transactions: () => [{ label: 'Transaction Management', isActive: true }],
     explorer: () => [{ label: 'Reports Explorer', isActive: true }],
-    bdxUpload: () => [{ label: 'BDX UPLOAD', isActive: true }]
+    bdxUpload: () => [{ label: 'BDX UPLOAD', isActive: true }],
+    cashSettlement: (onNavigateToPage: NavigationHandler) => [
+      { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('report-navigation'), isActive: false },
+      { label: 'CESSION AND COLLATERAL', isActive: true }
+    ]
   },
   contracts: {
-    explorer: () => [{ label: 'Contracts Explorer', isActive: true }]
+    explorer: (onNavigateToPage: NavigationHandler) => [
+      { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('report-navigation'), isActive: false },
+      { label: 'CONTRACTS', isActive: true }
+    ]
+  },
+  marketplace: {
+    offerings: () => [{ label: 'Marketplace', isActive: false }, { label: 'Offerings', isActive: true }]
   }
 };

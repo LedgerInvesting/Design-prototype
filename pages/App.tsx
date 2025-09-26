@@ -10,12 +10,14 @@ import { ValuationDashboard } from './ValuationDashboard';
 import { ValuationConfiguration } from './ValuationConfiguration';
 import { ValuationStatus } from './ValuationStatus';
 import { BDXUpload } from './BDXUpload';
+import { MarketplaceOfferings } from './MarketplaceOfferings';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
+import { PrototypeSettingsProvider } from '@design-library/contexts';
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'renewal-transaction' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status' | 'bdx-upload';
+type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'renewal-transaction' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status' | 'bdx-upload' | 'marketplace-offerings';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>(() => {
@@ -86,8 +88,12 @@ function App() {
             setPage('analytics-valuation');
           } else if (page === 'contracts-explorer') {
             setPage('contracts-explorer');
+          } else if (page === 'marketplace-offerings') {
+            setPage('marketplace-offerings');
           }
         }} onInboxClick={() => console.log('Inbox clicked')} />;
+      case 'marketplace-offerings':
+        return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:
         return <TransactionManagement onNavigateToPage={setPage} />;
     }
@@ -98,17 +104,21 @@ function App() {
     if (page === 'analytics-valuation' || page === 'valuation-dashboard' || page === 'valuation-configuration' || page === 'valuation-status') {
       return 'analytics';
     }
-    // Add marketplace pages here when they exist
+    if (page === 'marketplace-offerings') {
+      return 'marketplace';
+    }
     // Default to reports theme for all other pages
     return 'reports';
   };
 
   return (
-    <ThemeProvider initialTheme={getThemeForPage(currentPage)}>
-      <div>
-        {renderPage()}
-      </div>
-    </ThemeProvider>
+    <PrototypeSettingsProvider>
+      <ThemeProvider initialTheme={getThemeForPage(currentPage)}>
+        <div>
+          {renderPage()}
+        </div>
+      </ThemeProvider>
+    </PrototypeSettingsProvider>
   );
 }
 
