@@ -6,7 +6,8 @@
  *
  * Key Components:
  * - ResponsiveChartUI: Reusable chart background with grid lines
- * - AnimatedCashFlowChart: Yellow animated cash flow visualization
+ * - AnimatedCashFlowChart: Yellow animated cash flow visualization (updated)
+ * - AnimatedLossRatioChart: Purple animated loss ratio visualization (new)
  * - AnimatedEarnedPremiumChart: Green animated premium bars with overlay architecture
  * - OfferingCard: Complete card layout with 4-column data presentation
  * - MarketplaceBanner: Header banner with theme-aware styling
@@ -19,7 +20,7 @@
  * - Performance-optimized scroll event handling
  *
  * @author Claude (Anthropic)
- * @version 2.0
+ * @version 2.1
  * @since 2024
  */
 
@@ -151,9 +152,10 @@ const ResponsiveChartUI: React.FC = () => {
  * - Automatic cleanup of observers and state on unmount
  *
  * Animation Details:
- * - Color: Yellow ([0.98, 0.812, 0.2]) identifying it as cash flow data
+ * - Color: Yellow identifying it as cash flow data (updated version)
  * - Duration: Approximately 4 seconds
  * - Format: Lottie JSON animation exported from design tools
+ * - File: yellow.json (latest version)
  */
 const AnimatedCashFlowChart: React.FC = () => {
   const [animationData, setAnimationData] = useState<any>(null);
@@ -167,7 +169,7 @@ const AnimatedCashFlowChart: React.FC = () => {
     setIsMounted(true);
     const loadAnimation = async () => {
       try {
-        const response = await fetch('/graph-2.json');
+        const response = await fetch('/yellow.json');
         const data = await response.json();
         setAnimationData(data);
       } catch (error) {
@@ -190,7 +192,12 @@ const AnimatedCashFlowChart: React.FC = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasPlayed && lottieRef.current) {
-            lottieRef.current.play();
+            // Cash Flow animation - 150ms delay
+            setTimeout(() => {
+              if (lottieRef.current) {
+                lottieRef.current.play();
+              }
+            }, 150);
             setHasPlayed(true);
           }
         });
@@ -208,7 +215,7 @@ const AnimatedCashFlowChart: React.FC = () => {
   }, [animationData, hasPlayed]);
 
   return (
-    <div ref={chartRef} style={{ height: '100%', width: '100%', position: 'relative' }}>
+    <div ref={chartRef} style={{ height: '100%', width: '100%', position: 'relative', zIndex: 10 }}>
       {animationData && (
         <Lottie
           lottieRef={lottieRef}
@@ -217,7 +224,104 @@ const AnimatedCashFlowChart: React.FC = () => {
           autoplay={false}
           style={{
             width: '100%',
-            height: '100%'
+            height: '100%',
+            position: 'relative',
+            zIndex: 10,
+            transform: 'scale(0.7)',
+            transformOrigin: 'left center'
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+/**
+ * Animated Loss Ratio Chart Component
+ *
+ * Purple-colored loss ratio data visualization with scroll-triggered animation.
+ * Features responsive scaling and performance-optimized rendering with cleanup.
+ *
+ * Animation Details:
+ * - Color: Purple identifying it as loss ratio data
+ * - Duration: Approximately 4 seconds
+ * - Format: Lottie JSON animation exported from design tools
+ * - File: purple.json (new animation)
+ */
+const AnimatedLossRatioChart: React.FC = () => {
+  const [animationData, setAnimationData] = useState<any>(null);
+  const [hasPlayed, setHasPlayed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const lottieRef = useRef<any>(null);
+
+  // Load animation data
+  useEffect(() => {
+    setIsMounted(true);
+    const loadAnimation = async () => {
+      try {
+        const response = await fetch('/purple.json');
+        const data = await response.json();
+        setAnimationData(data);
+      } catch (error) {
+        console.error('Error loading loss ratio animation:', error);
+      }
+    };
+
+    if (isMounted) {
+      loadAnimation();
+    }
+
+    return () => {
+      setIsMounted(false);
+    };
+  }, [isMounted]);
+
+  // Intersection observer for scroll-triggered animation
+  useEffect(() => {
+    if (!animationData || !chartRef.current || hasPlayed) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasPlayed && lottieRef.current) {
+            // Loss Ratio animation - 300ms delay
+            setTimeout(() => {
+              if (lottieRef.current) {
+                lottieRef.current.play();
+              }
+            }, 300);
+            setHasPlayed(true);
+          }
+        });
+      },
+      { threshold: 0.3, rootMargin: '0px 0px -100px 0px' }
+    );
+
+    observer.observe(chartRef.current);
+
+    return () => {
+      if (chartRef.current) {
+        observer.unobserve(chartRef.current);
+      }
+    };
+  }, [animationData, hasPlayed]);
+
+  return (
+    <div ref={chartRef} style={{ height: '100%', width: '100%', position: 'relative', zIndex: 10 }}>
+      {animationData && (
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={animationData}
+          loop={false}
+          autoplay={false}
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            zIndex: 10,
+            transform: 'scale(0.7)',
+            transformOrigin: 'left center'
           }}
         />
       )}
@@ -295,7 +399,7 @@ const AnimatedEarnedPremiumChart: React.FC = () => {
   }, [animationData, hasPlayed]);
 
   return (
-    <div ref={chartRef} style={{ height: '100%', width: '100%', position: 'relative' }}>
+    <div ref={chartRef} style={{ height: '100%', width: '100%', position: 'relative', zIndex: 10 }}>
       {/* Background chart UI */}
       <ResponsiveChartUI />
 
@@ -811,7 +915,9 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
                 <ChevronRightSmall color={colors.blackAndWhite.black700} />
               </button>
             </div>
-            <img src={lossRatioGraph} alt="Loss Ratio" style={{ width: '100%', height: '80px', objectFit: 'contain' }} />
+            <div style={{ width: '100%', height: '80px', position: 'relative' }}>
+              <AnimatedLossRatioChart />
+            </div>
             {/* Dotted reference line aligned with 9M */}
             <div style={{
               position: 'absolute',

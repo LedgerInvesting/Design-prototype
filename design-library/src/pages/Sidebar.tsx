@@ -35,8 +35,7 @@ const sidebarItems: SidebarItem[] = [
     label: 'Marketplace',
     icon: MarketplaceLogo,
     subitems: [
-      { id: 'offerings', label: 'Offerings' },
-      { id: 'my-transactions', label: 'My Transactions' }
+      { id: 'offerings', label: 'Offerings' }
     ]
   },
   {

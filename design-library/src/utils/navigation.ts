@@ -44,16 +44,15 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
         onNavigateToPage('bdx-upload');
       }
     }
-    // Handle Contracts navigation
+    // Handle Contracts navigation - disabled until contracts page is implemented
     else if (itemId === 'contracts') {
-      onNavigateToPage('contracts-explorer');
+      console.log('Contracts navigation disabled - page not implemented yet');
+      return; // Don't navigate anywhere
     }
     // Handle Marketplace navigation
     else if (itemId === 'marketplace') {
       if (subitemId === 'offerings') {
         onNavigateToPage('marketplace-offerings');
-      } else if (subitemId === 'my-transactions') {
-        onNavigateToPage('transaction-management');
       }
     }
     // Handle other navigation items
@@ -108,13 +107,10 @@ export const createPageNavigationHandler = (
         }
       }
     }
-    // Handle Contracts navigation
+    // Handle Contracts navigation - disabled until contracts page is implemented
     else if (itemId === 'contracts') {
-      if (currentPage === 'contracts-explorer') {
-        console.log('Already on contracts explorer page');
-      } else {
-        onNavigateToPage('contracts-explorer');
-      }
+      console.log('Contracts navigation disabled - page not implemented yet');
+      return; // Don't navigate anywhere
     }
     // Handle Marketplace navigation
     else if (itemId === 'marketplace') {
@@ -123,12 +119,6 @@ export const createPageNavigationHandler = (
           console.log('Already on marketplace offerings page');
         } else {
           onNavigateToPage('marketplace-offerings');
-        }
-      } else if (subitemId === 'my-transactions') {
-        if (currentPage === 'transaction-management') {
-          console.log('Already on transaction management page');
-        } else {
-          onNavigateToPage('transaction-management');
         }
       }
     }

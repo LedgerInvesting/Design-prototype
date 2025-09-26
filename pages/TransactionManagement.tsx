@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 // Import page components
 import { Layout } from '@design-library/pages';
-import type { BreadcrumbItem } from '@design-library/pages';
 
 // Import base components  
-import { Card, Button, Stack, Grid, Container, Table } from '@design-library/components';
+import { Button, Table } from '@design-library/components';
 
 // Import design tokens
-import { typography, spacing, borderRadius, shadows, useSemanticColors } from '@design-library/tokens';
+import { typography, borderRadius, shadows, useSemanticColors } from '@design-library/tokens';
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
 
 // Import prototype settings
@@ -20,26 +19,14 @@ import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } fr
 import { NewTransactionModal } from './NewTransactionModal';
 import { BrandNewTransactionModal } from './BrandNewTransactionModal';
 
-// Custom document icon component
-const DocumentIcon: React.FC = () => (
-  <svg width="40" height="52" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="40" height="52" rx="6" fill={colors.blackAndWhite.white}/>
-    <rect x="2" y="2" width="36" height="48" rx="4" fill={colors.blackAndWhite.white} stroke={colors.blackAndWhite.black300} strokeWidth="1"/>
-    {/* Document lines */}
-    <line x1="8" y1="12" x2="32" y2="12" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-    <line x1="8" y1="16" x2="32" y2="16" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-    <line x1="8" y1="20" x2="28" y2="20" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-    <line x1="8" y1="24" x2="30" y2="24" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-    <line x1="8" y1="28" x2="32" y2="28" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-    <line x1="8" y1="32" x2="26" y2="32" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-    <line x1="8" y1="36" x2="30" y2="36" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-    <line x1="8" y1="40" x2="32" y2="40" stroke={colors.blackAndWhite.black400} strokeWidth="1"/>
-  </svg>
-);
-
-// Header component for the Transaction Management page
+/**
+ * Props for the Transaction Management page header component
+ * @interface TransactionHeaderProps
+ */
 interface TransactionHeaderProps {
+  /** Callback fired when the new transaction button is clicked */
   onNewTransactionClick: () => void;
+  /** Optional reference to the new transaction button element */
   buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
@@ -151,7 +138,10 @@ const TransactionIcon: React.FC = () => (
   </svg>
 );
 
-// MetricCard component (adapted from CashSettlement)
+/**
+ * Props for the MetricCard component displaying transaction statistics
+ * @interface MetricCardProps
+ */
 interface MetricCardProps {
   title: string;
   value: string;
@@ -737,7 +727,6 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       headerAlign: 'left',
       hoverIcon: 'config' as const,
       onDownload: (filename: string) => {
-        console.log('Configuring transaction document:', filename);
         // Navigate to new transaction workflow when config is clicked
         onNavigateToPage && onNavigateToPage('new-transaction-form');
       },
@@ -812,7 +801,6 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
         } else if (actionType === 'setup') {
           onNavigateToPage && onNavigateToPage('new-transaction-form');
         } else {
-          console.log('Action clicked:', actionType, text);
         }
       },
     },
@@ -847,7 +835,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
         totalPages={3}
         totalItems={25}
         itemsPerPage={10}
-        onPageChange={(page) => console.log('Page changed to:', page)}
+        onPageChange={(page) => {}}
       />
     </div>
   );
@@ -891,14 +879,11 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       selectedSidebarSubitem="transactions"
       onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'transaction-management')}
       onInboxClick={() => {
-        console.log('Inbox clicked');
       }}
       onManageAccountClick={() => {
-        console.log('Manage account clicked');
         alert('Manage account functionality would go here');
       }}
       onSettingsClick={() => {
-        console.log('Settings clicked');
         alert('Settings functionality would go here');
       }}
     >
@@ -920,7 +905,6 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
         onClose={() => setIsModalOpen(false)}
         buttonRef={newTransactionButtonRef}
         onContinue={(transactionType) => {
-          console.log('Selected transaction type:', transactionType);
           if (transactionType === 'brand-new') {
             setIsModalOpen(false);
             setIsBrandNewModalOpen(true);
@@ -941,12 +925,10 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
           setIsModalOpen(true);
         }}
         onContinue={(inputMethod) => {
-          console.log('Brand new transaction input method:', inputMethod);
           if (inputMethod === 'enter-manually') {
             onNavigateToPage && onNavigateToPage('new-transaction-form');
           } else if (inputMethod === 'upload-pdf') {
             // TODO: Handle PDF upload flow
-            console.log('Handling PDF upload flow');
           }
         }}
       />
