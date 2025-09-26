@@ -720,12 +720,12 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
   };
 
   const dataLabelStyles: React.CSSProperties = {
-    ...typography.styles.bodyS,
+    ...typography.styles.bodyM,
     color: colors.blackAndWhite.black500,
   };
 
   const dataValueStyles: React.CSSProperties = {
-    ...typography.styles.bodyS,
+    ...typography.styles.bodyM,
     color: colors.blackAndWhite.black900,
     fontWeight: typography.fontWeight.medium,
   };
