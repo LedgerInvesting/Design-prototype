@@ -481,20 +481,29 @@ export const TopNav: React.FC<TopNavProps> = ({
             </div>
           </div>
 
-          {/* Reset Button */}
+          {/* Action Buttons */}
           <div style={{
             paddingTop: '16px',
             borderTop: `1px solid ${colors.blackAndWhite.black100}`,
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}>
             <Button
               variant="primary"
-              color="black"
+              color="white"
               onClick={resetSettings}
               showIcon={false}
             >
               Reset All Settings
+            </Button>
+            <Button
+              variant="primary"
+              color="black"
+              onClick={() => setIsSettingsModalOpen(false)}
+              showIcon={false}
+            >
+              Apply
             </Button>
           </div>
         </div>

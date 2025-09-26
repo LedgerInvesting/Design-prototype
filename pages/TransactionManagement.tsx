@@ -880,12 +880,8 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'transaction-management')}
       onInboxClick={() => {
       }}
-      onManageAccountClick={() => {
-        alert('Manage account functionality would go here');
-      }}
-      onSettingsClick={() => {
-        alert('Settings functionality would go here');
-      }}
+      onManageAccountClick={undefined}
+      onSettingsClick={undefined}
     >
       {/* Header Section */}
       <TransactionHeader
