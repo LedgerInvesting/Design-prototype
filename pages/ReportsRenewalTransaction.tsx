@@ -281,7 +281,7 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
           disabled={!selectedTransaction}
           onClick={() => {
             if (selectedTransaction) {
-              onNavigateToPage('new-transaction-form', {
+              onNavigateToPage('reports-new-transaction-form', {
                 transactionName: `${selectedTransaction.name} - Renewal`,
                 reinsurerName: selectedTransaction.reinsurer,
                 cedingReinsurer: selectedTransaction.cedent,
@@ -291,7 +291,7 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
                 isRenewal: true
               });
             } else {
-              onNavigateToPage('new-transaction-form');
+              onNavigateToPage('reports-new-transaction-form');
             }
           }}
           style={{
@@ -391,7 +391,7 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
                           cursor: 'pointer',
                           position: 'relative'
                         }}
-                        onClick={() => onNavigateToPage('valuation-dashboard')}
+                        onClick={() => onNavigateToPage('analytics-valuation-dashboard')}
                         onMouseEnter={(e) => {
                           // Remove any existing tooltip first
                           const existingTooltip = document.getElementById('analytics-tooltip');
@@ -777,7 +777,7 @@ const RenewalTransactionContent: React.FC<RenewalTransactionProps> = ({ onNaviga
   );
 };
 
-export const RenewalTransaction: React.FC<RenewalTransactionProps> = (props) => {
+export const ReportsRenewalTransaction: React.FC<RenewalTransactionProps> = (props) => {
   return (
     <ThemeProvider initialTheme="reports">
       <RenewalTransactionContent {...props} />

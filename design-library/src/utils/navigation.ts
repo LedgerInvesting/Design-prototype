@@ -2,17 +2,18 @@
 // This file contains all navigation logic to avoid updating pages individually
 
 export type PageType =
-  | 'report-navigation'
-  | 'transaction-management'
-  | 'new-transaction-form'
-  | 'renewal-transaction'
-  | 'contracts-explorer'
+  | 'reports-explorer'
+  | 'reports-transaction-management'
+  | 'reports-new-transaction-form'
+  | 'reports-renewal-transaction'
+  | 'reports-cash-settlement'
+  | 'reports-bdx-upload'
+  | 'reports-contracts-explorer'
+  | 'contracts-ai-extraction'
   | 'analytics-valuation'
-  | 'valuation-dashboard'
-  | 'valuation-configuration'
-  | 'valuation-status'
-  | 'bdx-upload'
-  | 'cash-settlement'
+  | 'analytics-valuation-dashboard'
+  | 'analytics-valuation-configuration'
+  | 'analytics-valuation-status'
   | 'marketplace-offerings';
 
 export interface NavigationHandler {
@@ -37,17 +38,22 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
     // Handle Reports navigation
     else if (itemId === 'reports') {
       if (subitemId === 'transactions') {
-        onNavigateToPage('transaction-management');
+        onNavigateToPage('reports-transaction-management');
       } else if (subitemId === 'reports-explorer') {
-        onNavigateToPage('report-navigation');
+        onNavigateToPage('reports-explorer');
       } else if (subitemId === 'bdx-upload') {
-        onNavigateToPage('bdx-upload');
+        onNavigateToPage('reports-bdx-upload');
       }
     }
-    // Handle Contracts navigation - disabled until contracts page is implemented
+    // Handle Contracts navigation
     else if (itemId === 'contracts') {
-      console.log('Contracts navigation disabled - page not implemented yet');
-      return; // Don't navigate anywhere
+      if (subitemId === 'contracts') {
+        onNavigateToPage('contracts-ai-extraction');
+      } else if (subitemId === 'start') {
+        onNavigateToPage('contracts-ai-extraction');
+      } else if (subitemId === 'contracts-explorer') {
+        onNavigateToPage('contracts-explorer');
+      }
     }
     // Handle Marketplace navigation
     else if (itemId === 'marketplace') {
@@ -88,29 +94,34 @@ export const createPageNavigationHandler = (
     // Handle Reports navigation
     else if (itemId === 'reports') {
       if (subitemId === 'transactions') {
-        if (currentPage === 'transaction-management') {
+        if (currentPage === 'reports-transaction-management') {
           console.log('Already on transaction management page');
         } else {
-          onNavigateToPage('transaction-management');
+          onNavigateToPage('reports-transaction-management');
         }
       } else if (subitemId === 'reports-explorer') {
-        if (currentPage === 'report-navigation') {
+        if (currentPage === 'reports-explorer') {
           console.log('Already on report navigation page');
         } else {
-          onNavigateToPage('report-navigation');
+          onNavigateToPage('reports-explorer');
         }
       } else if (subitemId === 'bdx-upload') {
-        if (currentPage === 'bdx-upload') {
+        if (currentPage === 'reports-bdx-upload') {
           console.log('Already on BDX upload page');
         } else {
-          onNavigateToPage('bdx-upload');
+          onNavigateToPage('reports-bdx-upload');
         }
       }
     }
-    // Handle Contracts navigation - disabled until contracts page is implemented
+    // Handle Contracts navigation
     else if (itemId === 'contracts') {
-      console.log('Contracts navigation disabled - page not implemented yet');
-      return; // Don't navigate anywhere
+      if (subitemId === 'contracts') {
+        onNavigateToPage('contracts-ai-extraction');
+      } else if (subitemId === 'start') {
+        onNavigateToPage('contracts-ai-extraction');
+      } else if (subitemId === 'contracts-explorer') {
+        onNavigateToPage('contracts-explorer');
+      }
     }
     // Handle Marketplace navigation
     else if (itemId === 'marketplace') {
@@ -155,17 +166,18 @@ export const createBreadcrumbs = {
     explorer: () => [{ label: 'Reports Explorer', isActive: true }],
     bdxUpload: () => [{ label: 'BDX UPLOAD', isActive: true }],
     cashSettlement: (onNavigateToPage: NavigationHandler) => [
-      { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('report-navigation'), isActive: false },
+      { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('reports-explorer'), isActive: false },
       { label: 'CESSION AND COLLATERAL', isActive: true }
     ]
   },
   contracts: {
+    start: () => [{ label: 'Contracts', isActive: true }],
     explorer: (onNavigateToPage: NavigationHandler) => [
-      { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('report-navigation'), isActive: false },
-      { label: 'CONTRACTS', isActive: true }
+      { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('reports-explorer'), isActive: false },
+      { label: 'Contracts', isActive: true }
     ]
   },
   marketplace: {
-    offerings: () => [{ label: 'Marketplace', isActive: false }, { label: 'Offerings', isActive: true }]
+    offerings: () => [{ label: 'Offerings', isActive: true }]
   }
 };

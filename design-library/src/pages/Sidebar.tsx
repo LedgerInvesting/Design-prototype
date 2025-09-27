@@ -60,7 +60,10 @@ const sidebarItems: SidebarItem[] = [
   {
     id: 'contracts',
     label: 'Contracts',
-    icon: ContractsLogo
+    icon: ContractsLogo,
+    subitems: [
+      { id: 'contracts', label: 'Contracts' }
+    ]
   }
 ];
 
@@ -84,7 +87,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       case 'marketplace':
         return '#643ed8'; // Marketplace violet 900
       case 'contracts':
-        return colors.blackAndWhite.black700; // Default for contracts
+        return '#987c17'; // Contracts yellow 900
       default:
         return colors.blackAndWhite.black700;
     }

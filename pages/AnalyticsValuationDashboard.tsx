@@ -508,14 +508,14 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             onNavigateToPage('analytics-valuation');
           } else if (itemId === 'reports') {
             if (subitemId === 'transactions') {
-              onNavigateToPage('transaction-management');
+              onNavigateToPage('reports-transaction-management');
             } else if (subitemId === 'reports-explorer') {
-              onNavigateToPage('report-navigation');
+              onNavigateToPage('reports-explorer');
             } else if (subitemId === 'bdx-upload') {
-              onNavigateToPage('bdx-upload');
+              onNavigateToPage('reports-bdx-upload');
             }
           } else if (itemId === 'contracts') {
-            onNavigateToPage('contracts-explorer');
+            onNavigateToPage('reports-contracts-explorer');
           }
         }}
         breadcrumbs={[
@@ -589,7 +589,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             variant="primary"
             color="white"
             icon={<SettingsMedium color={colors.blackAndWhite.black900} />}
-            onClick={() => onNavigateToPage('valuation-configuration', { programName: data.programName })}
+            onClick={() => onNavigateToPage('analytics-valuation-configuration', { programName: data.programName })}
             style={{
               border: `1px solid ${colors.theme.primary400}`,
               minWidth: '200px',
@@ -785,7 +785,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             icon={<CardsText color={colors.theme.primary700} />}
             button={{
               text: "VIEW ALL",
-              onClick: () => onNavigateToPage('valuation-status')
+              onClick: () => onNavigateToPage('analytics-valuation-status')
             }}
             width="50%"
           >
@@ -879,7 +879,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
   );
 };
 
-export const ValuationDashboard: React.FC<ValuationDashboardProps> = (props) => {
+export const AnalyticsValuationDashboard: React.FC<ValuationDashboardProps> = (props) => {
   return (
     <ThemeProvider initialTheme="analytics">
       <ValuationDashboardContent {...props} />

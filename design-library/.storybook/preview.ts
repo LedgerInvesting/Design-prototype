@@ -15,6 +15,7 @@ const preview: Preview = {
           { value: 'reports', title: 'Reports (Blue)', icon: 'circle' },
           { value: 'marketplace', title: 'Marketplace (Purple)', icon: 'circle' },
           { value: 'analytics', title: 'Analytics (Green)', icon: 'circle' },
+          { value: 'contracts', title: 'Contracts (Yellow)', icon: 'circle' },
         ],
         dynamicTitle: true,
       },

@@ -14,7 +14,7 @@ const ThemedComponentDemo: React.FC = () => {
       <div style={{ marginBottom: '32px' }}>
         <h3 style={{ marginBottom: '16px' }}>Current Theme: {currentTheme}</h3>
         <div style={{ display: 'flex', gap: '12px' }}>
-          {(['reports', 'marketplace', 'analytics'] as ProductTheme[]).map((theme) => (
+          {(['reports', 'marketplace', 'analytics', 'contracts'] as ProductTheme[]).map((theme) => (
             <button
               key={theme}
               onClick={() => setTheme(theme)}
@@ -39,6 +39,7 @@ const ThemedComponentDemo: React.FC = () => {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
           {[
             { key: 'primary700', label: '700 (Main)', color: colors.theme.primary700 },
+            { key: 'primary450', label: '450 (Dark Strokes)', color: colors.theme.primary450 },
             { key: 'primary400', label: '400 (Strokes)', color: colors.theme.primary400 },
             { key: 'primary300', label: '300 (Hover)', color: colors.theme.primary300 },
             { key: 'primary200', label: '200 (Background)', color: colors.theme.primary200 },
@@ -168,7 +169,7 @@ const meta: Meta<typeof ThemeDemoWithProvider> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Interactive demonstration of the product theming system. Switch between Reports (blue), Marketplace (violet), and Analytics (green) themes to see how components automatically adapt their colors.',
+        component: 'Interactive demonstration of the product theming system. Switch between Reports (blue), Marketplace (violet), Analytics (green), and Contracts (yellow) themes to see how components automatically adapt their colors.',
       },
     },
   },
@@ -176,7 +177,7 @@ const meta: Meta<typeof ThemeDemoWithProvider> = {
     initialTheme: {
       description: 'Initial theme to display',
       control: 'select',
-      options: ['reports', 'marketplace', 'analytics'],
+      options: ['reports', 'marketplace', 'analytics', 'contracts'],
     },
   },
 };
@@ -205,5 +206,11 @@ export const MarketplaceTheme: Story = {
 export const AnalyticsTheme: Story = {
   args: {
     initialTheme: 'analytics',
+  },
+};
+
+export const ContractsTheme: Story = {
+  args: {
+    initialTheme: 'contracts',
   },
 };

@@ -527,7 +527,7 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
 
 // Main page component
 interface ReportNavigationProps {
-  onNavigateToPage?: (page: 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'contracts-explorer' | 'analytics-valuation' | 'bdx-upload' | 'marketplace-offerings') => void;
+  onNavigateToPage?: (page: 'reports-cash-settlement' | 'reports-explorer' | 'reports-transaction-management' | 'reports-contracts-explorer' | 'analytics-valuation' | 'reports-bdx-upload' | 'marketplace-offerings') => void;
 }
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
@@ -556,7 +556,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
       ]}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="reports-explorer"
-      onNavigate={createPageNavigationHandler(onNavigateToPage, 'report-navigation')}
+      onNavigate={createPageNavigationHandler(onNavigateToPage, 'reports-explorer')}
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}
@@ -590,7 +590,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               icon={<CardsGraph color={colors.theme.primary700} />}
               button={{
                 text: "EXPLORE",
-                onClick: () => onNavigateToPage?.('cash-settlement')
+                onClick: () => onNavigateToPage?.('reports-cash-settlement')
               }}
               width="100%"
             >
@@ -1135,7 +1135,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               icon={<CardsGraph color={colors.theme.primary700} />}
               button={{
                 text: "EXPLORE",
-                onClick: () => onNavigateToPage?.('bdx-upload')
+                onClick: () => onNavigateToPage?.('reports-bdx-upload')
               }}
               width="100%"
             >
@@ -1199,7 +1199,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       backgroundColor: colors.blackAndWhite.white,
                       cursor: 'pointer'
                     }}
-                    onClick={() => onNavigateToPage?.('bdx-upload')}
+                    onClick={() => onNavigateToPage?.('reports-bdx-upload')}
                   >
                     3 months (Need review)
                   </div>
@@ -1223,7 +1223,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               icon={<CardsText color={colors.theme.primary700} />}
               button={{
                 text: "EXPLORE",
-                onClick: () => onNavigateToPage?.('contracts-explorer')
+                onClick: () => onNavigateToPage?.('reports-contracts-explorer')
               }}
               width="100%"
             >

@@ -72,7 +72,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
         reportedLossRatio: formData.expectedLossRatio || '42.2%',
         currentWrittenPremium: formData.expectedPremium || '$20,107,359'
       };
-      onNavigateToPage('valuation-dashboard', valuationData);
+      onNavigateToPage('analytics-valuation-dashboard', valuationData);
     }
   };
 

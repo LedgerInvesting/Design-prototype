@@ -12,11 +12,42 @@ This document provides a comprehensive guide for creating new pages in the Ledge
 
 ### **2. LAYOUT & NAVIGATION REQUIREMENTS**
 - **ALWAYS use the Layout component** from `@design-library/pages`
+- **NEVER add extra padding containers** - Layout handles responsive padding automatically
 - **ALWAYS set proper sidebar navigation** with `selectedSidebarItem` and `selectedSidebarSubitem`
 - **ALWAYS use navigation utilities** from `@design-library/utils/navigation`
 - **ALWAYS implement breadcrumbs** using `createBreadcrumbs` utility
 
-### **3. DESIGN TOKEN USAGE**
+### **3. PAGE NAMING CONVENTION**
+**CRITICAL**: All page files and components MUST follow the descriptive naming system that indicates which business section they belong to:
+
+**File naming pattern**: `[BusinessSection][PageName].tsx`
+**Component naming pattern**: `[BusinessSection][PageName]`
+
+**Business Sections:**
+- **Reports**: `Reports[PageName].tsx` (e.g., `ReportsTransactionManagement.tsx`, `ReportsContractsExplorer.tsx`)
+- **Analytics**: `Analytics[PageName].tsx` (e.g., `AnalyticsValuation.tsx`, `AnalyticsValuationDashboard.tsx`)
+- **Contracts**: `Contracts[PageName].tsx` (e.g., `ContractsAIExtraction.tsx`)
+- **Marketplace**: `Marketplace[PageName].tsx` (e.g., `MarketplaceOfferings.tsx`)
+
+**Examples:**
+```tsx
+// ✅ CORRECT - Descriptive naming
+export const ReportsTransactionManagement: React.FC<Props> = () => { ... }
+export const AnalyticsValuationConfiguration: React.FC<Props> = () => { ... }
+export const ContractsAIExtraction: React.FC<Props> = () => { ... }
+
+// ❌ INCORRECT - Ambiguous naming
+export const TransactionManagement: React.FC<Props> = () => { ... }
+export const Contracts: React.FC<Props> = () => { ... }
+```
+
+**Why this matters:**
+- **Prevents confusion**: Clearly identifies which section a page belongs to
+- **Scalability**: Supports multiple pages with similar functionality across different sections
+- **Team coordination**: Other team members can instantly understand page organization
+- **Navigation consistency**: Aligns with the navigation system's section-based structure
+
+### **4. DESIGN TOKEN USAGE**
 - **ALWAYS use `useSemanticColors()` hook** for theme-aware colors
 - **ALWAYS use typography tokens** (never override font properties)
 - **ALWAYS use spacing tokens** from the design system
@@ -46,21 +77,23 @@ import { AddSmall, ChevronRightSmall, DocumentTable } from '@design-library/icon
 
 ### **Page Component Structure**
 ```tsx
-interface YourPageProps {
+// Example: ReportsYourPageName.tsx
+interface ReportsYourPageNameProps {
   onNavigateToPage?: (page: string, data?: any) => void;
 }
 
-export const YourPage: React.FC<YourPageProps> = ({ onNavigateToPage }) => {
+export const ReportsYourPageName: React.FC<ReportsYourPageNameProps> = ({ onNavigateToPage }) => {
   const [activeState, setActiveState] = useState('default');
 
   return (
     <Layout
-      selectedSidebarItem="your-section"          // reports, analytics, marketplace
+      selectedSidebarItem="reports"               // reports, analytics, contracts, marketplace
       selectedSidebarSubitem="your-page"          // transactions, valuation, offerings
-      onNavigate={createPageNavigationHandler(onNavigateToPage, 'your-page-type')}
-      breadcrumbs={createBreadcrumbs.yourSection.yourPage()}
+      onNavigate={createPageNavigationHandler(onNavigateToPage, 'reports-your-page-name')}
+      breadcrumbs={createBreadcrumbs.reports.yourPageName()}
     >
-      {/* Page content goes here */}
+      {/* Page content goes directly here - NO wrapper with padding */}
+      <YourPageContent />
     </Layout>
   );
 };
@@ -196,7 +229,33 @@ case 'your-page':
 
 ## 📐 Layout Standards
 
-### **Full-Width Layout (Recommended)**
+### **Critical Layout Rules**
+
+#### ✅ **CORRECT - Direct Content in Layout**
+```tsx
+return (
+  <Layout {...navigationProps}>
+    {/* Content goes directly here - Layout handles all responsive behavior */}
+    <YourPageHeader />
+    <YourPageContent />
+    <YourPageTable />
+  </Layout>
+);
+```
+
+#### ❌ **INCORRECT - Extra Padding Container**
+```tsx
+return (
+  <Layout {...navigationProps}>
+    {/* DON'T DO THIS - Layout already handles responsive padding */}
+    <div style={{ padding: spacing[12] }}>
+      <YourPageContent />
+    </div>
+  </Layout>
+);
+```
+
+### **Full-Width Layout Pattern**
 ```tsx
 return (
   <Layout {...navigationProps}>
@@ -334,10 +393,11 @@ colors.error.error500
 1. **Don't create custom SVG icons** - Use design library icons
 2. **Don't hardcode colors** - Use semantic color tokens
 3. **Don't override typography properties** - Use complete typography tokens
-4. **Don't use fixed widths** - Let Layout handle responsive behavior
-5. **Don't use tertiary buttons** as primary actions - Use primary variant
-6. **Don't forget navigation integration** - Always update utilities
-7. **Don't mix external libraries** - Stick to design library components
+4. **Don't add extra padding containers** - Layout handles responsive padding automatically
+5. **Don't use fixed widths** - Let Layout handle responsive behavior
+6. **Don't use tertiary buttons** as primary actions - Use primary variant
+7. **Don't forget navigation integration** - Always update utilities
+8. **Don't mix external libraries** - Stick to design library components
 
 ## 📚 Reference Files
 

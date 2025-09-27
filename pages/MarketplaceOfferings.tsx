@@ -451,7 +451,7 @@ interface MarketplaceOfferingsProps {
  * - Design consistent with other page banners (Reports, Analytics)
  *
  * @note Consider extracting to shared banner component to reduce duplication
- * across TransactionManagement, ReportsExplorer, and MarketplaceOfferings
+ * across ReportsTransactionManagement, ReportsExplorer, and MarketplaceOfferings
  */
 const MarketplaceBanner: React.FC = () => {
   const colors = useSemanticColors();
@@ -1058,18 +1058,18 @@ export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNa
       }}>
           <MarketplaceBanner />
 
-          <div style={{ marginTop: '50px' }}>
-            <div style={{ paddingBottom: '50px' }}>
-              <Tabs
-                tabs={[
-                  { id: 'primary', label: 'Primary Market' },
-                  { id: 'secondary', label: 'Secondary Market' }
-                ]}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-              />
-            </div>
+          <div style={{ margin: '40px 0' }}>
+            <Tabs
+              tabs={[
+                { id: 'primary', label: 'Primary Market' },
+                { id: 'secondary', label: 'Secondary Market' }
+              ]}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+          </div>
 
+          <div>
             {offerings.map((offering, index) => (
               <OfferingCard
                 key={index}

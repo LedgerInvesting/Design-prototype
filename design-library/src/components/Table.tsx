@@ -88,7 +88,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     borderTopLeftRadius: borderRadius[8],
     borderTopRightRadius: borderRadius[8],
-    border: `1px solid ${colors.theme.primary400}`, // Theme-aware border
+    borderTop: `1px solid ${colors.theme.primary400}`, // Theme-aware border
+    borderLeft: `1px solid ${colors.theme.primary400}`,
+    borderRight: `1px solid ${colors.theme.primary400}`,
     borderBottom: 'none', // Will be handled by table border
     boxSizing: 'border-box',
   };
@@ -1117,7 +1119,8 @@ export const Table: React.FC<TableProps> = ({
     overflowX: needsScroll ? 'auto' as const : 'hidden' as const, // Only enable horizontal scroll when needed
     overflowY: 'visible' as const, // Allow vertical borders to be visible
     borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : borderRadius[8],
-    border: `1px solid ${colors.theme.primary400}`,
+    borderLeft: `1px solid ${colors.theme.primary400}`,
+    borderRight: `1px solid ${colors.theme.primary400}`,
     borderTop: showHeader ? 'none' : `1px solid ${colors.theme.primary400}`,
     borderBottom: showFooterPagination ? 'none' : `1px solid ${colors.theme.primary400}`,
     // Force container to be constrained and show scrollbar

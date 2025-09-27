@@ -307,16 +307,8 @@ interface CashSettlementProps {
   onNavigateToPage?: (page: string, data?: any) => void;
 }
 
-export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage }) => {
+export const ReportsCashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
-  const backButtonStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    cursor: 'pointer',
-    marginBottom: '24px',
-  };
-
   const titleStyles: React.CSSProperties = {
     ...typography.styles.headlineH2,
     color: colors.blackAndWhite.black900,
@@ -335,26 +327,11 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
       breadcrumbs={createBreadcrumbs.reports.cashSettlement(onNavigateToPage!)}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="reports-explorer"
-      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'cash-settlement')}
+      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'reports-cash-settlement')}
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}
     >
-      {/* Back Button and Title */}
-      <div style={backButtonStyles} onClick={() => onNavigateToPage?.('report-navigation')}>
-        <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
-          <path d="M4.25 0.5L2.5 2.25L0.75 0.5" stroke={staticColors.reports.dynamic.blue400} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" transform="rotate(90)" />
-        </svg>
-        <span style={{ 
-          ...typography.styles.bodyM, 
-          color: staticColors.blackAndWhite.black700,
-          textDecoration: 'underline',
-          cursor: 'pointer'
-        }}>
-          Back
-        </span>
-      </div>
-
       <div style={titleStyles}>
         <span style={{ color: staticColors.blackAndWhite.black500 }}>You're now reviewing Contracts from </span>
         <span style={{ color: staticColors.blackAndWhite.black900 }}>Cucumber GL Seasonal.</span>
@@ -378,4 +355,4 @@ export const CashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage
   );
 };
 
-export default CashSettlement;
+export default ReportsCashSettlement;

@@ -13,13 +13,13 @@ import { colors, typography, spacing, borderRadius } from '@design-library/token
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
 
 // Define page type for navigation
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'contracts-explorer' | 'analytics-valuation';
+type PageType = 'reports-cash-settlement' | 'reports-explorer' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-contracts-explorer' | 'analytics-valuation';
 
-export interface ContractsExplorerProps {
+export interface ReportsContractsExplorerProps {
   onNavigateToPage?: (page: string, data?: any) => void;
 }
 
-export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
+export const ReportsContractsExplorer: React.FC<ReportsContractsExplorerProps> = ({
   onNavigateToPage
 }) => {
 
@@ -292,8 +292,11 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
     <Layout
       selectedSidebarItem="reports"
       selectedSidebarSubitem="explorer"
-      breadcrumbs={createBreadcrumbs.contracts.explorer(onNavigateToPage!)}
-      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'contracts-explorer')}
+      breadcrumbs={[
+        { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage?.('reports-explorer'), isActive: false },
+        { label: 'CONTRACTS', isActive: true }
+      ]}
+      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'reports-contracts-explorer')}
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}
@@ -353,4 +356,4 @@ export const ContractsExplorer: React.FC<ContractsExplorerProps> = ({
   );
 };
 
-export default ContractsExplorer;
+export default ReportsContractsExplorer;

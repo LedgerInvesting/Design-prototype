@@ -7,6 +7,20 @@ cd "E:\Ledger design library\design-library" && npm run storybook
 ```
 This ensures you can view components and changes in real-time at http://localhost:6006/
 
+## 🚨 CRITICAL: Page Creation Rules
+**SUPER IMPORTANT - WHEN CREATING ANY NEW PAGE:**
+
+### **📖 ALWAYS READ NEW_PAGE_GUIDE.md FIRST**
+**MANDATORY**: Before creating ANY new page or major component, you MUST read and follow `NEW_PAGE_GUIDE.md`. This file contains critical patterns, rules, and examples that ensure consistency with the existing design system.
+
+**Key requirements from NEW_PAGE_GUIDE.md:**
+- **Layout Component Usage**: Always use `<Layout>` from `@design-library/pages` without extra padding containers
+- **Navigation Integration**: Proper sidebar, breadcrumbs, and navigation utilities setup
+- **Theme Integration**: Correct use of `useSemanticColors()` and semantic color tokens
+- **Component Standards**: Button variants, typography tokens, and spacing standards
+
+**TEAM DEPENDENCY**: Other team members rely on consistent patterns. Following NEW_PAGE_GUIDE.md ensures anyone can maintain and extend the pages you create.
+
 ## ⚠️ CRITICAL: Design Token Usage Rules
 **SUPER IMPORTANT - ALWAYS FOLLOW THESE RULES:**
 
@@ -83,6 +97,7 @@ The project has this directory structure:
 ```
 E:\Ledger design library\
 ├── CLAUDE.md                  # This context file (root level)
+├── NEW_PAGE_GUIDE.md          # 🚨 CRITICAL: Page creation rules and patterns
 ├── COMPONENTS.md               # Detailed component documentation
 ├── PAGES.md                   # Complete pages documentation
 ├── RECENT_WORK.md             # Work history and changelog
@@ -181,6 +196,9 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Layout**: Stack, Grid, Container, Spacer for flexible layouts
 - **Page Layout**: Layout component that combines TopNav and Sidebar with responsive design
 
+**🚨 CRITICAL DOCUMENTATION:**
+For page creation rules and patterns, see [NEW_PAGE_GUIDE.md](./NEW_PAGE_GUIDE.md) **- MUST READ BEFORE CREATING PAGES**
+
 For detailed component documentation, see [COMPONENTS.md](./COMPONENTS.md)
 For pages and external testing environment, see [PAGES.md](./PAGES.md)
 For Storybook standards and guidelines, see [STORYBOOK_STANDARDS.md](./STORYBOOK_STANDARDS.md)
@@ -200,16 +218,38 @@ The `/pages` folder contains a complete React development environment for testin
 - **Static Assets**: All images must be placed in `/pages/public/` folder and referenced with absolute paths
 - **Custom Favicon**: Professional K logo favicon with black900 background for both pages and Storybook environments
 
+## 📋 Page Naming Convention
+
+**CRITICAL**: All pages follow a descriptive naming system that indicates which business section they belong to:
+
+**File naming pattern**: `[BusinessSection][PageName].tsx`
+**Component naming pattern**: `[BusinessSection][PageName]`
+
+**Business Sections:**
+- **Reports**: Transaction management, BDX upload, cash settlement, contracts explorer
+- **Analytics**: Valuation, dashboard, configuration, status management
+- **Contracts**: AI extraction, document processing
+- **Marketplace**: Offerings, product listings
+
+**Examples:**
+- `ReportsTransactionManagement.tsx` → `ReportsTransactionManagement`
+- `AnalyticsValuationDashboard.tsx` → `AnalyticsValuationDashboard`
+- `ContractsAIExtraction.tsx` → `ContractsAIExtraction`
+- `MarketplaceOfferings.tsx` → `MarketplaceOfferings`
+
 **Current Pages:**
-- **TransactionManagement.tsx**: Complete transaction management interface with animated header, transaction stats, and advanced data table
-- **NewTransactionForm.tsx**: Comprehensive multi-tab transaction creation form with accordion-based Structure & Key Terms
-- **ReportNavigation.tsx** (Default): Advanced report navigation interface with program selector and insights visualization
-- **CashSettlement.tsx**: Cession and Collateral subpage demonstrating financial dashboard
-- **ContractsExplorer.tsx**: Contracts subpage with dual table interface
+- **ReportsTransactionManagement.tsx**: Complete transaction management interface with animated header, transaction stats, and advanced data table
+- **ReportsNewTransactionForm.tsx**: Comprehensive multi-tab transaction creation form with accordion-based Structure & Key Terms
+- **ReportsExplorer.tsx** (Default): Advanced report navigation interface with program selector and insights visualization
+- **ReportsCashSettlement.tsx**: Cession and Collateral subpage demonstrating financial dashboard
+- **ReportsContractsExplorer.tsx**: Reports contracts subpage with dual table interface
+- **ReportsBDXUpload.tsx**: BDX upload and management interface
+- **ContractsAIExtraction.tsx**: Contracts AI extraction page with PDF viewer and terms sections
 - **AnalyticsValuation.tsx**: Analytics Valuation page demonstrating theme system integration
-- **ValuationDashboard.tsx**: Complete valuation management dashboard with charts and status management
-- **ValuationConfiguration.tsx**: Professional configuration form page
-- **ValuationStatus.tsx**: Triangle upload management page
+- **AnalyticsValuationDashboard.tsx**: Complete valuation management dashboard with charts and status management
+- **AnalyticsValuationConfiguration.tsx**: Professional configuration form page
+- **AnalyticsValuationStatus.tsx**: Triangle upload management page
+- **MarketplaceOfferings.tsx**: Marketplace offerings and product listings
 
 **Usage:**
 ```bash
@@ -218,16 +258,24 @@ npm run dev  # Start on http://localhost:5173
 ```
 
 **Adding New Pages:**
-1. Create new `.tsx` files in `/pages` folder
-2. Import Layout component: `import { Layout } from '@design-library/pages'`
-3. Use design tokens: `import { colors, typography } from '@design-library/tokens'`
-4. Wrap content with Layout component for consistent navigation and responsive behavior
-5. Add to App.tsx for navigation
-6. Text selection will automatically adapt to current product theme via ThemeProvider integration
+1. **FIRST**: Read `NEW_PAGE_GUIDE.md` for comprehensive creation guidelines
+2. **Follow naming convention**: Use `[BusinessSection][PageName].tsx` format
+3. Create new `.tsx` files in `/pages` folder following the naming pattern
+4. Import Layout component: `import { Layout } from '@design-library/pages'`
+5. Use design tokens: `import { colors, typography } from '@design-library/tokens'`
+6. Wrap content with Layout component for consistent navigation and responsive behavior
+7. Add to App.tsx routing with proper page type
+8. Update navigation utilities with new page type
+9. Text selection will automatically adapt to current product theme via ThemeProvider integration
 
 ## Recent Major Updates Summary
 
 ### ✅ Latest Completed (September 2025)
+- **Descriptive Page Naming System**: Comprehensive page organization with business section prefixes
+  - Implemented naming convention: `[BusinessSection][PageName].tsx`
+  - All pages renamed for clarity: Reports, Analytics, Contracts, Marketplace prefixes
+  - Updated navigation system and routing to support new naming structure
+  - Enhanced page organization for better scalability and team coordination
 - **Table Column Alignment System**: Complete alignment control for both headers and cells across all tables
   - Added `align` property for cell content alignment (left/center/right)
   - Added `headerAlign` property for column header alignment (left/center/right)

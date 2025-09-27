@@ -728,7 +728,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       hoverIcon: 'config' as const,
       onDownload: (filename: string) => {
         // Navigate to new transaction workflow when config is clicked
-        onNavigateToPage && onNavigateToPage('new-transaction-form');
+        onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
       },
     },
     {
@@ -797,9 +797,9 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       actionType: 'upload' as const,
       onAction: (actionType: string, text: string) => {
         if (actionType === 'upload') {
-          onNavigateToPage && onNavigateToPage('bdx-upload');
+          onNavigateToPage && onNavigateToPage('reports-bdx-upload');
         } else if (actionType === 'setup') {
-          onNavigateToPage && onNavigateToPage('new-transaction-form');
+          onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
         } else {
         }
       },
@@ -846,7 +846,7 @@ interface TransactionManagementProps {
   onNavigateToPage?: (page: string) => void;
 }
 
-export const TransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
+export const ReportsTransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
   const settings = useSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -877,7 +877,7 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
       ]}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="transactions"
-      onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'transaction-management')}
+      onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'reports-transaction-management')}
       onInboxClick={() => {
       }}
       onManageAccountClick={undefined}
@@ -906,7 +906,7 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
             setIsBrandNewModalOpen(true);
           } else if (transactionType === 'renewal') {
             setIsModalOpen(false);
-            onNavigateToPage && onNavigateToPage('renewal-transaction');
+            onNavigateToPage && onNavigateToPage('reports-renewal-transaction');
           }
         }}
       />
@@ -922,7 +922,7 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
         }}
         onContinue={(inputMethod) => {
           if (inputMethod === 'enter-manually') {
-            onNavigateToPage && onNavigateToPage('new-transaction-form');
+            onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
           } else if (inputMethod === 'upload-pdf') {
             // TODO: Handle PDF upload flow
           }
@@ -932,4 +932,4 @@ export const TransactionManagement: React.FC<TransactionManagementProps> = ({ on
   );
 };
 
-export default TransactionManagement;
+export default ReportsTransactionManagement;

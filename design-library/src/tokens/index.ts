@@ -220,7 +220,7 @@ export const colors = {
     violet500: '#f0c9fc',
     // Dynamic colors (correct from Figma)
     dynamic: {
-      violet400: '#d1d1ec', // D1D1EC
+      violet400: '#d7d7ec', // D7D7EC
       violet300: '#efeffa', // EFEFFA
       violet200: '#f6f6ff', // F6F6FF
     },
@@ -238,6 +238,20 @@ export const colors = {
       green400: '#e1eae5', // E1EAE5 (this one was already correct)
       green300: '#e9f1ec', // E9F1EC
       green200: '#f2f7f4', // F2F7F4
+    },
+  },
+  // @deprecated Use the Theme System instead: useSemanticColors() hook
+  contracts: {
+    // Main colors
+    yellow900: '#987c17',
+    yellow800: '#caac41',
+    yellow600: '#fee68d',
+    yellow500: '#ffefb0',
+    // Dynamic colors (correct from Figma)
+    dynamic: {
+      yellow400: '#e5ded2', // E5DED2
+      yellow300: '#f0ebe1', // F0EBE1
+      yellow200: '#f9f6f0', // F9F6F0
     },
   },
 } as const;

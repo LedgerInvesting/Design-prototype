@@ -39,13 +39,13 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
   };
 
   const handleCancel = () => {
-    onNavigateToPage('valuation-dashboard');
+    onNavigateToPage('analytics-valuation-dashboard');
   };
 
   const handleSave = () => {
     // Here you would save the configuration data
     console.log('Saving configuration:', formData);
-    onNavigateToPage('valuation-dashboard');
+    onNavigateToPage('analytics-valuation-dashboard');
   };
 
   return (
@@ -57,19 +57,19 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
           onNavigateToPage('analytics-valuation');
         } else if (itemId === 'reports') {
           if (subitemId === 'transactions') {
-            onNavigateToPage('transaction-management');
+            onNavigateToPage('reports-transaction-management');
           } else if (subitemId === 'reports-explorer') {
-            onNavigateToPage('report-navigation');
+            onNavigateToPage('reports-explorer');
           } else if (subitemId === 'bdx-upload') {
-            onNavigateToPage('bdx-upload');
+            onNavigateToPage('reports-bdx-upload');
           }
         } else if (itemId === 'contracts') {
-          onNavigateToPage('contracts-explorer');
+          onNavigateToPage('reports-contracts-explorer');
         }
       }}
       breadcrumbs={[
         { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
-        { label: displayProgramName, onClick: () => onNavigateToPage?.('valuation-dashboard'), isActive: false },
+        { label: displayProgramName, onClick: () => onNavigateToPage?.('analytics-valuation-dashboard'), isActive: false },
         { label: 'Configuration', isActive: true }
       ]}
     >
@@ -289,7 +289,7 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
   );
 };
 
-export const ValuationConfiguration: React.FC<ValuationConfigurationProps> = (props) => {
+export const AnalyticsValuationConfiguration: React.FC<ValuationConfigurationProps> = (props) => {
   return (
     <ThemeProvider initialTheme="analytics">
       <ValuationConfigurationContent {...props} />

@@ -27,12 +27,12 @@ import {
 import { createPageNavigationHandler, type PageType } from '@design-library/utils/navigation';
 
 interface BDXUploadProps {
-  onNavigate?: (page: string, subpage?: string) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
   onInboxClick?: () => void;
 }
 
-export const BDXUpload: React.FC<BDXUploadProps> = ({
-  onNavigate,
+export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
+  onNavigateToPage,
   onInboxClick,
 }) => {
   const semanticColors = useSemanticColors();
@@ -491,8 +491,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
   };
 
   const breadcrumbs = [
-    { label: 'TRANSACTION MANAGEMENT', href: '#', isActive: false },
-    { label: 'BDX UPLOAD', href: '#', isActive: true }
+    { label: 'BDX UPLOAD', isActive: true }
   ];
 
   return (
@@ -500,9 +499,7 @@ export const BDXUpload: React.FC<BDXUploadProps> = ({
       breadcrumbs={breadcrumbs}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="bdx-upload"
-      onNavigate={createPageNavigationHandler((page: PageType, data?: any) => {
-        onNavigate && onNavigate(page, data);
-      }, 'bdx-upload')}
+      onNavigate={createPageNavigationHandler(onNavigateToPage!, 'reports-bdx-upload')}
       onInboxClick={onInboxClick}
     >
       {/* Header Section */}

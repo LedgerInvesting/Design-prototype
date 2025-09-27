@@ -265,19 +265,19 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
           onNavigateToPage('analytics-valuation');
         } else if (itemId === 'reports') {
           if (subitemId === 'transactions') {
-            onNavigateToPage('transaction-management');
+            onNavigateToPage('reports-transaction-management');
           } else if (subitemId === 'reports-explorer') {
-            onNavigateToPage('report-navigation');
+            onNavigateToPage('reports-explorer');
           } else if (subitemId === 'bdx-upload') {
-            onNavigateToPage('bdx-upload');
+            onNavigateToPage('reports-bdx-upload');
           }
         } else if (itemId === 'contracts') {
-          onNavigateToPage('contracts-explorer');
+          onNavigateToPage('reports-contracts-explorer');
         }
       }}
       breadcrumbs={[
         { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
-        { label: programName, onClick: () => onNavigateToPage?.('valuation-dashboard'), isActive: false },
+        { label: programName, onClick: () => onNavigateToPage?.('analytics-valuation-dashboard'), isActive: false },
         { label: 'Valuation Status', isActive: true }
       ]}
     >
@@ -401,7 +401,7 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
   );
 };
 
-export const ValuationStatus: React.FC<ValuationStatusProps> = (props) => {
+export const AnalyticsValuationStatus: React.FC<ValuationStatusProps> = (props) => {
   return (
     <ThemeProvider initialTheme="analytics">
       <ValuationStatusContent {...props} />

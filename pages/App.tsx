@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { CashSettlement } from './CashSettlement';
+import { ReportsCashSettlement } from './ReportsCashSettlement';
 import { ReportNavigation } from './ReportsExplorer';
-import { TransactionManagement } from './TransactionManagement';
-import { NewTransactionForm } from './NewTransactionForm';
-import { RenewalTransaction } from './RenewalTransaction';
-import { ContractsExplorer } from './ContractsExplorer';
+import { ReportsTransactionManagement } from './ReportsTransactionManagement';
+import { ReportsNewTransactionForm } from './ReportsNewTransactionForm';
+import { ReportsRenewalTransaction } from './ReportsRenewalTransaction';
+import { ReportsContractsExplorer } from './ReportsContractsExplorer';
+import { ContractsAIExtraction } from './ContractsAIExtraction';
 import { AnalyticsValuation } from './AnalyticsValuation';
-import { ValuationDashboard } from './ValuationDashboard';
-import { ValuationConfiguration } from './ValuationConfiguration';
-import { ValuationStatus } from './ValuationStatus';
-import { BDXUpload } from './BDXUpload';
+import { AnalyticsValuationDashboard } from './AnalyticsValuationDashboard';
+import { AnalyticsValuationConfiguration } from './AnalyticsValuationConfiguration';
+import { AnalyticsValuationStatus } from './AnalyticsValuationStatus';
+import { ReportsBDXUpload } from './ReportsBDXUpload';
 import { MarketplaceOfferings } from './MarketplaceOfferings';
 
 // Import base styles from the design library
@@ -17,13 +18,13 @@ import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider } from '@design-library/contexts';
 
-type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-management' | 'new-transaction-form' | 'renewal-transaction' | 'contracts-explorer' | 'analytics-valuation' | 'valuation-dashboard' | 'valuation-configuration' | 'valuation-status' | 'bdx-upload' | 'marketplace-offerings';
+type PageType = 'reports-cash-settlement' | 'reports-explorer' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-ai-extraction' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'reports-bdx-upload' | 'marketplace-offerings';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>(() => {
     // Initialize from URL hash or default
     const hash = window.location.hash.slice(1) as PageType;
-    return hash || 'report-navigation';
+    return hash || 'marketplace-offerings';
   });
   const [valuationData, setValuationData] = useState<any>(null);
   const [renewalData, setRenewalData] = useState<any>(null);
@@ -58,54 +59,47 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'cash-settlement':
-        return <CashSettlement onNavigateToPage={setPage} />;
-      case 'report-navigation':
+      case 'reports-cash-settlement':
+        return <ReportsCashSettlement onNavigateToPage={setPage} />;
+      case 'reports-explorer':
         return <ReportNavigation onNavigateToPage={setPage} />;
-      case 'transaction-management':
-        return <TransactionManagement onNavigateToPage={setPage} />;
-      case 'new-transaction-form':
-        return <NewTransactionForm onNavigateToPage={setPage} renewalData={renewalData} />;
-      case 'renewal-transaction':
-        return <RenewalTransaction onNavigateToPage={setPage} />;
-      case 'contracts-explorer':
-        return <ContractsExplorer onNavigateToPage={setPage} />;
+      case 'reports-transaction-management':
+        return <ReportsTransactionManagement onNavigateToPage={setPage} />;
+      case 'reports-new-transaction-form':
+        return <ReportsNewTransactionForm onNavigateToPage={setPage} renewalData={renewalData} />;
+      case 'reports-renewal-transaction':
+        return <ReportsRenewalTransaction onNavigateToPage={setPage} />;
+      case 'reports-contracts-explorer':
+        return <ReportsContractsExplorer onNavigateToPage={setPage} />;
+      case 'contracts-ai-extraction':
+        return <ContractsAIExtraction onNavigateToPage={setPage} />;
       case 'analytics-valuation':
         return <AnalyticsValuation onNavigateToPage={setPage} />;
-      case 'valuation-dashboard':
-        return <ValuationDashboard onNavigateToPage={setPage} valuationData={valuationData} />;
-      case 'valuation-configuration':
-        return <ValuationConfiguration onNavigateToPage={setPage} valuationData={valuationData} />;
-      case 'valuation-status':
-        return <ValuationStatus onNavigateToPage={setPage} />;
-      case 'bdx-upload':
-        return <BDXUpload onNavigate={(page, subpage) => {
-          if (page === 'transaction-management') {
-            setPage('transaction-management');
-          } else if (page === 'report-navigation') {
-            setPage('report-navigation');
-          } else if (page === 'analytics-valuation') {
-            setPage('analytics-valuation');
-          } else if (page === 'contracts-explorer') {
-            setPage('contracts-explorer');
-          } else if (page === 'marketplace-offerings') {
-            setPage('marketplace-offerings');
-          }
-        }} onInboxClick={() => console.log('Inbox clicked')} />;
+      case 'analytics-valuation-dashboard':
+        return <AnalyticsValuationDashboard onNavigateToPage={setPage} valuationData={valuationData} />;
+      case 'analytics-valuation-configuration':
+        return <AnalyticsValuationConfiguration onNavigateToPage={setPage} valuationData={valuationData} />;
+      case 'analytics-valuation-status':
+        return <AnalyticsValuationStatus onNavigateToPage={setPage} />;
+      case 'reports-bdx-upload':
+        return <ReportsBDXUpload onNavigateToPage={setPage} onInboxClick={() => console.log('Inbox clicked')} />;
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:
-        return <TransactionManagement onNavigateToPage={setPage} />;
+        return <MarketplaceOfferings onNavigateToPage={setPage} />;
     }
   };
 
   // Determine theme based on current page
-  const getThemeForPage = (page: PageType): 'reports' | 'analytics' | 'marketplace' => {
-    if (page === 'analytics-valuation' || page === 'valuation-dashboard' || page === 'valuation-configuration' || page === 'valuation-status') {
+  const getThemeForPage = (page: PageType): 'reports' | 'analytics' | 'marketplace' | 'contracts' => {
+    if (page === 'analytics-valuation' || page === 'analytics-valuation-dashboard' || page === 'analytics-valuation-configuration' || page === 'analytics-valuation-status') {
       return 'analytics';
     }
     if (page === 'marketplace-offerings') {
       return 'marketplace';
+    }
+    if (page === 'reports-contracts-explorer' || page === 'contracts-ai-extraction') {
+      return 'contracts';
     }
     // Default to reports theme for all other pages
     return 'reports';
@@ -123,3 +117,4 @@ function App() {
 }
 
 export default App;
+

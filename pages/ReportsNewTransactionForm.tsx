@@ -20,7 +20,7 @@ export interface NewTransactionFormProps {
   renewalData?: any;
 }
 
-export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
+export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
   onNavigateToPage,
   renewalData
 }) => {
@@ -907,7 +907,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
           onClick={() => {
             console.log('Create Transaction clicked');
             // Navigate back to transaction management page after creation
-            onNavigateToPage?.('transaction-management');
+            onNavigateToPage?.('reports-transaction-management');
           }}
           showIcon={false}
         >
@@ -2156,7 +2156,7 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
       selectedSidebarSubitem="transactions"
       onBackClick={() => {
         console.log('Back to Dashboard clicked');
-        onNavigateToPage?.('transaction-management');
+        onNavigateToPage?.('reports-transaction-management');
       }}
       onNavigate={createPageNavigationHandler(onNavigateToPage!, 'new-transaction-form')}
       onInboxClick={() => {
@@ -2182,4 +2182,4 @@ export const NewTransactionForm: React.FC<NewTransactionFormProps> = ({
   );
 };
 
-export default NewTransactionForm;
+export default ReportsNewTransactionForm;

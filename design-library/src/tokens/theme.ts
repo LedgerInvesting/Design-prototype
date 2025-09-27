@@ -46,7 +46,7 @@ const colors = {
     violet600: '#e0bffb',
     violet500: '#f0c9fc',
     dynamic: {
-      violet400: '#d1d1ec', // D1D1EC
+      violet400: '#d7d7ec', // D7D7EC
       violet300: '#efeffa', // EFEFFA
       violet200: '#f6f6ff', // F6F6FF
     },
@@ -63,9 +63,20 @@ const colors = {
       green200: '#f2f7f4', // F2F7F4
     },
   },
+  contracts: {
+    yellow900: '#987c17',
+    yellow800: '#caac41',
+    yellow600: '#fee68d',
+    yellow500: '#ffefb0',
+    dynamic: {
+      yellow400: '#e5ded2', // E5DED2
+      yellow300: '#f0ebe1', // F0EBE1
+      yellow200: '#f9f6f0', // F9F6F0
+    },
+  },
 } as const;
 
-export type ProductTheme = 'reports' | 'marketplace' | 'analytics';
+export type ProductTheme = 'reports' | 'marketplace' | 'analytics' | 'contracts';
 
 export interface ThemeColors {
   // Essential theme colors only (the ones that need to adapt per product)
@@ -87,7 +98,7 @@ const themeColorMappings: Record<ProductTheme, ThemeColors> = {
   },
   marketplace: {
     primary700: colors.marketplace.violet700,
-    primary450: colors.marketplace.violet700, // Use same as primary700 for marketplace
+    primary450: '#c1c1d5', // Custom color for marketplace dark strokes
     primary400: colors.marketplace.dynamic.violet400,
     primary300: colors.marketplace.dynamic.violet300,
     primary200: colors.marketplace.dynamic.violet200,
@@ -98,6 +109,13 @@ const themeColorMappings: Record<ProductTheme, ThemeColors> = {
     primary400: colors.analytics.dynamic.green400,
     primary300: colors.analytics.dynamic.green300,
     primary200: colors.analytics.dynamic.green200,
+  },
+  contracts: {
+    primary700: '#fcdc6a', // main color (yellow700)
+    primary450: '#d2cbbf', // Custom color for contracts dark strokes
+    primary400: colors.contracts.dynamic.yellow400,
+    primary300: colors.contracts.dynamic.yellow300,
+    primary200: colors.contracts.dynamic.yellow200,
   },
 };
 

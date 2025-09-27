@@ -186,7 +186,7 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
                   reportedLossRatio: '42.2%',
                   currentWrittenPremium: '$20,107,359'
                 };
-                onNavigateToPage('valuation-dashboard', selectedProgram);
+                onNavigateToPage('analytics-valuation-dashboard', selectedProgram);
               }
             },
             {

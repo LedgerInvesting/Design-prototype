@@ -213,6 +213,14 @@ const DesignTokensShowcase: React.FC = () => {
           <ColorSwatch color={colors.analytics.green500} name="Green 500" />
         </div>
 
+        <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Contracts</h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '32px' }}>
+          <ColorSwatch color={colors.contracts.yellow900} name="Yellow 900" />
+          <ColorSwatch color={colors.contracts.yellow800} name="Yellow 800" />
+          <ColorSwatch color={colors.contracts.yellow600} name="Yellow 600" />
+          <ColorSwatch color={colors.contracts.yellow500} name="Yellow 500" />
+        </div>
+
         <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Theme Colors</h3>
         <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', fontStyle: 'italic' }}>
           The main brand colors (700), strokes (400), hover (300), and background (200) are managed through the Theme System to adapt automatically across products.
