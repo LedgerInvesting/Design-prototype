@@ -516,7 +516,7 @@ const MarketplaceBanner: React.FC = () => {
       <div style={leftContentStyles}>
         <div style={illustrationContainerStyles}>
           <img
-            src="/transaction header icon.png"
+            src="/marketplace_illustration.png"
             alt="marketplace"
             style={{
               width: '100%',
