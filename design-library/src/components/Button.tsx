@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { typography, borderRadius, useSemanticColors, useTheme } from '../tokens';
 import { icons } from '../icons';
 
-export type ButtonVariant = 'primary' | 'small' | 'icon' | 'tertiary';
+export type ButtonVariant = 'primary' | 'small' | 'icon' | 'tertiary' | 'secondary';
 export type PrimaryColor = 'black' | 'white' | 'main' | 'light' | 'green';
 export type SmallColor = 'black' | 'white' | 'main' | 'light' | 'green';
 export type IconColor = 'black' | 'main' | 'light' | 'green' | 'white';
 export type TertiaryColor = 'white';
+export type SecondaryColor = 'primary200';
 export type ButtonShape = 'circle' | 'square';
 export type IconPosition = 'left' | 'right';
 
@@ -25,7 +26,7 @@ interface BaseButtonProps {
 }
 
 // All possible color values
-export type ButtonColor = PrimaryColor | SmallColor | IconColor | TertiaryColor;
+export type ButtonColor = PrimaryColor | SmallColor | IconColor | TertiaryColor | SecondaryColor;
 
 // Unified Button interface
 export interface ButtonProps extends BaseButtonProps {
@@ -66,7 +67,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 
   // Extract variant-specific props with defaults
   const variant = props.variant || 'primary';
-  const color = props.color || (variant === 'primary' ? 'black' : variant === 'small' ? 'main' : variant === 'tertiary' ? 'white' : 'main');
+  const color = props.color || (variant === 'primary' ? 'black' : variant === 'small' ? 'main' : variant === 'tertiary' ? 'white' : variant === 'secondary' ? 'primary200' : 'main');
   
   // Reset hover state when key props change (fixes Storybook control issues)
   useEffect(() => {
@@ -87,11 +88,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'main':
         return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity
       case 'light':
-        return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity  
+        return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity
       case 'green':
         return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity
       case 'white':
         return colors.theme.primary200; // Primary200 solid color
+      case 'primary200':
+        return colors.theme.primary300; // Theme 300 solid color for secondary buttons
       default:
         return 'rgba(255, 255, 255, 0.15)';
     }
@@ -105,12 +108,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     
     if (isHovered) {
       const hoverColor = getHoverColor(colorKey);
-      // For white buttons, use solid hover color
-      if (colorKey === 'white') {
+      // For white and primary200 buttons, use solid hover color
+      if (colorKey === 'white' || colorKey === 'primary200') {
         return { backgroundColor: hoverColor };
       }
       // For others, blend the colors
-      return { 
+      return {
         backgroundColor: normalColor,
         boxShadow: `inset 0 0 0 1000px ${hoverColor}`,
       };
@@ -262,6 +265,32 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       ...baseStyles,
       ...getSimpleBackground(colors.blackAndWhite.white, 'white'),
       color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black800,
+    };
+  };
+
+  // Secondary button styles
+  const getSecondaryStyles = () => {
+    const baseStyles = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '6px 12px',
+      borderRadius: borderRadius.absolute, // Round corners
+      border: 'none',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      transition: 'all 0.2s ease',
+      fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+      fontSize: typography.styles.bodyS.fontSize,
+      fontWeight: 600,
+      lineHeight: typography.styles.bodyS.lineHeight,
+      letterSpacing: '1px', // 1px letter spacing
+      textTransform: 'uppercase', // All caps
+    };
+
+    return {
+      ...baseStyles,
+      ...getSimpleBackground(colors.theme.primary200, 'primary200'),
+      color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
     };
   };
 
@@ -422,6 +451,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         return getIconStyles();
       case 'tertiary':
         return getTertiaryStyles();
+      case 'secondary':
+        return getSecondaryStyles();
       default:
         return getPrimaryStyles();
     }
@@ -522,6 +553,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           <span>{children}</span>
         </>
       );
+    }
+
+    if (variant === 'secondary') {
+      return <span>{children}</span>;
     }
 
     // Fallback

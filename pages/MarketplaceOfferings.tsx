@@ -75,7 +75,7 @@ const ResponsiveChartUI: React.FC = () => {
     bottom: '13%',
     left: '0',
     right: '0',
-    height: '1px',
+    height: '2px',
     backgroundColor: colors.blackAndWhite.black900,
   };
 
@@ -227,7 +227,7 @@ const AnimatedCashFlowChart: React.FC = () => {
             height: '100%',
             position: 'relative',
             zIndex: 10,
-            transform: 'scale(0.7)',
+            transform: 'scale(0.9)',
             transformOrigin: 'left center'
           }}
         />
@@ -320,7 +320,7 @@ const AnimatedLossRatioChart: React.FC = () => {
             height: '100%',
             position: 'relative',
             zIndex: 10,
-            transform: 'scale(0.7)',
+            transform: 'scale(0.9)',
             transformOrigin: 'left center'
           }}
         />
@@ -458,12 +458,12 @@ const MarketplaceBanner: React.FC = () => {
 
   const headerStyles: React.CSSProperties = {
     backgroundColor: colors.theme.primary700, // Uses marketplace theme primary700 (violet)
-    padding: 'clamp(20px, 3vw, 40px)',
+    padding: '0 40px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: borderRadius[16],
-    height: 'clamp(200px, 25vh, 250px)',
+    height: '250px',
     position: 'relative',
     overflow: 'hidden',
     width: '100%',
@@ -471,7 +471,7 @@ const MarketplaceBanner: React.FC = () => {
     backgroundImage: `url('/pattern_marketplace.svg')`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top right',
-    backgroundSize: 'clamp(25%, 5vw, 33%)',
+    backgroundSize: '33%',
     boxShadow: shadows.base,
   };
 
@@ -495,6 +495,7 @@ const MarketplaceBanner: React.FC = () => {
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
+    maxWidth: '450px',
   };
 
   const titleStyles: React.CSSProperties = {
@@ -526,7 +527,7 @@ const MarketplaceBanner: React.FC = () => {
         </div>
         <div style={textContentStyles}>
           <h1 style={titleStyles}>Marketplace</h1>
-          <p style={subtitleStyles}>Explore opportunities to invest in casualty insurance risk</p>
+          <p style={subtitleStyles}>Explore opportunities to invest in casualty insurance risk and find offerings that align with your investment goals.</p>
         </div>
       </div>
       <div style={{
@@ -647,6 +648,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
     height: '380px',
     display: 'flex',
     flexDirection: 'column',
+    boxSizing: 'border-box',
+    // Ensure crisp 1px borders
+    transform: 'translateZ(0)',
+    backfaceVisibility: 'hidden',
   };
 
   const headerStyles: React.CSSProperties = {
@@ -658,6 +663,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
     borderBottom: `1px solid ${colors.theme.primary400}`,
     marginBottom: '0',
     flexShrink: 0,
+    boxSizing: 'border-box',
   };
 
   const titleContainerStyles: React.CSSProperties = {
@@ -680,23 +686,20 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
 
   const contentStyles: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: '1fr auto 1fr auto minmax(120px, 1fr) auto minmax(120px, 1fr)',
-    gap: 'clamp(8px, 2vw, 32px)',
+    gridTemplateColumns: '2fr 3fr 220px 220px', // 160px content + 60px padding = 220px total
+    columnGap: '0px', // No gap needed, borders handle spacing
+    rowGap: '0px',
     alignItems: 'stretch',
-    padding: 'clamp(16px, 2vw, 32px)',
+    padding: '20px 20px 20px 30px', // top right bottom left - 30px left, 20px others
     height: '300px',
   };
 
-  const dividerStyles: React.CSSProperties = {
-    width: '0px',
-    borderLeft: `1px solid ${colors.theme.primary400}`,
-    alignSelf: 'stretch',
-    flexShrink: 0,
-  };
 
   const descriptionStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
+    borderRight: `1px solid ${colors.theme.primary400}`,
+    padding: '0 30px 0 0', // top right bottom left - no left padding since card already has it
   };
 
   const descriptionTextStyles: React.CSSProperties = {
@@ -709,6 +712,8 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
   const dataTableStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
+    borderRight: `1px solid ${colors.theme.primary400}`,
+    padding: '0 30px',
   };
 
   const dataRowStyles: React.CSSProperties = {
@@ -735,12 +740,15 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    borderRight: `1px solid ${colors.theme.primary400}`,
+    padding: '0 30px',
   };
 
   const cashFlowLossRatioColumnStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    padding: '0 0 0 30px', // top right bottom left - no right padding since card already has it
   };
 
   const chartHeaderStyles: React.CSSProperties = {
@@ -774,11 +782,16 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
   };
 
   const horizontalDividerStyles: React.CSSProperties = {
-    height: '0px',
-    borderTop: `1px solid ${colors.theme.primary400}`,
+    height: '1px !important' as any,
+    minHeight: '1px',
+    maxHeight: '1px',
+    backgroundColor: colors.theme.primary400,
     width: '100%',
-    margin: '16px 0',
+    margin: '15px 0', // 15px top + 15px bottom = 30px total padding
     flexShrink: 0,
+    boxSizing: 'border-box',
+    // Ensure crisp 1px borders
+    transform: 'translateZ(0)',
   };
 
   return (
@@ -788,22 +801,12 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
           <h3 style={titleStyles}>{title}</h3>
           <p style={subtitleStyles}>{subtitle}</p>
         </div>
-        <button
-          style={{
-            backgroundColor: colors.theme.primary200,
-            border: 'none',
-            borderRadius: borderRadius.absolute,
-            padding: '6px 12px',
-            ...typography.styles.bodyS,
-            fontWeight: 600,
-            color: colors.blackAndWhite.black900,
-            cursor: 'pointer',
-            textTransform: 'uppercase',
-          }}
+        <Button
+          variant="secondary"
           onClick={() => alert('Explore clicked (prototype)')}
         >
           EXPLORE
-        </button>
+        </Button>
       </div>
 
       <div style={contentStyles}>
@@ -812,14 +815,11 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
           <p style={descriptionTextStyles}>{description}</p>
         </div>
 
-        {/* Divider 1 */}
-        <div style={dividerStyles}></div>
-
         {/* Column 2: List of values */}
         <div style={dataTableStyles}>
           <div style={dataRowStyles}>
             <span style={dataLabelStyles}>Status</span>
-            <Status variant="success" label={status} />
+            <Status variant="success" text={status} />
           </div>
           <div style={dataRowStyles}>
             <span style={dataLabelStyles}>Risk Period</span>
@@ -851,9 +851,6 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
           </div>
         </div>
 
-        {/* Divider 2 */}
-        <div style={dividerStyles}></div>
-
         {/* Column 3: Earned Premium */}
         <div style={earnedPremiumColumnStyles}>
           <div style={chartHeaderStyles}>
@@ -867,19 +864,16 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
           </div>
         </div>
 
-        {/* Divider 3 */}
-        <div style={dividerStyles}></div>
-
         {/* Column 4: Cash Flow (top) and Loss Ratio (bottom) */}
         <div style={cashFlowLossRatioColumnStyles}>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', flex: '1', display: 'flex', flexDirection: 'column' }}>
             <div style={chartHeaderStyles}>
               <span style={chartLabelStyles}>Cash Flow</span>
               <button style={chartIconButtonStyles} onClick={() => alert('Cash Flow details (prototype)')}>
                 <ChevronRightSmall color={colors.blackAndWhite.black700} />
               </button>
             </div>
-            <div style={{ width: '100%', height: '80px', position: 'relative' }}>
+            <div style={{ width: '100%', flex: '1', position: 'relative', minHeight: '60px' }}>
               <AnimatedCashFlowChart />
               {/* Dotted reference line aligned with 8M */}
               <div style={{
@@ -908,38 +902,38 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
 
           <div style={horizontalDividerStyles}></div>
 
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', flex: '1', display: 'flex', flexDirection: 'column' }}>
             <div style={chartHeaderStyles}>
               <span style={chartLabelStyles}>Loss Ratio</span>
               <button style={chartIconButtonStyles} onClick={() => alert('Loss Ratio details (prototype)')}>
                 <ChevronRightSmall color={colors.blackAndWhite.black700} />
               </button>
             </div>
-            <div style={{ width: '100%', height: '80px', position: 'relative' }}>
+            <div style={{ width: '100%', flex: '1', position: 'relative', minHeight: '60px' }}>
               <AnimatedLossRatioChart />
+              {/* Dotted reference line aligned with 9M - moved inside chart container */}
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '0',
+                right: '20px',
+                height: '1px',
+                borderTop: `1px dotted ${colors.theme.primary400}`,
+                pointerEvents: 'none',
+                transform: 'translateY(-50%)'
+              }}></div>
+              <span style={{
+                position: 'absolute',
+                top: '50%',
+                right: '0',
+                ...typography.styles.bodyS,
+                color: colors.blackAndWhite.black900,
+                fontWeight: typography.fontWeight.medium,
+                fontSize: 'clamp(8px, 1.2vw, 10px)',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none'
+              }}>9M</span>
             </div>
-            {/* Dotted reference line aligned with 9M */}
-            <div style={{
-              position: 'absolute',
-              top: '85%',
-              left: '0',
-              right: '20px',
-              height: '1px',
-              borderTop: `1px dotted ${colors.theme.primary400}`,
-              pointerEvents: 'none',
-              transform: 'translateY(-50%)'
-            }}></div>
-            <span style={{
-              position: 'absolute',
-              top: '85%',
-              right: '0',
-              ...typography.styles.bodyS,
-              color: colors.blackAndWhite.black900,
-              fontWeight: typography.fontWeight.medium,
-              fontSize: 'clamp(8px, 1.2vw, 10px)',
-              transform: 'translateY(-50%)',
-              pointerEvents: 'none'
-            }}>9M</span>
           </div>
         </div>
       </div>
@@ -982,7 +976,7 @@ export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNa
       title: "Vacation Homes GL 2024",
       subtitle: "General Liability",
       description: "The non-standard auto (NSA) market is generally described as auto insurance policies that provide the minimum liability limits required by the state, it is a $47 billion market nationally and is generally resilient to economic cycles and highly fragmented.",
-      status: "Active",
+      status: "active",
       riskPeriod: "July 1, 2023 - Jun 30, 2024",
       grossPremium: "$62,000,000",
       quotaShare: "30%",
@@ -998,7 +992,7 @@ export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNa
       title: "Commercial Auto FL 2024",
       subtitle: "Commercial Auto",
       description: "Commercial auto insurance coverage for fleet vehicles and commercial transportation businesses operating in high-risk metropolitan areas. This program focuses on established operators with strong safety records and modern vehicle fleets.",
-      status: "Active",
+      status: "active",
       riskPeriod: "Jan 1, 2024 - Dec 31, 2024",
       grossPremium: "$45,800,000",
       quotaShare: "25%",
@@ -1014,7 +1008,7 @@ export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNa
       title: "Professional Liability TX 2024",
       subtitle: "Professional Liability",
       description: "Professional liability coverage for technology companies and consulting firms, targeting mid-market businesses with established revenue streams. Focus on cyber liability and errors & omissions protection.",
-      status: "Active",
+      status: "active",
       riskPeriod: "Oct 1, 2023 - Sep 30, 2024",
       grossPremium: "$38,500,000",
       quotaShare: "40%",
@@ -1030,7 +1024,7 @@ export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNa
       title: "Coastal Property CA 2024",
       subtitle: "Property Insurance",
       description: "Coastal property insurance for high-value residential and commercial properties in California. Comprehensive coverage including earthquake and wildfire protection with enhanced risk assessment protocols.",
-      status: "Active",
+      status: "active",
       riskPeriod: "Apr 1, 2024 - Mar 31, 2025",
       grossPremium: "$78,200,000",
       quotaShare: "35%",

@@ -78,7 +78,7 @@ export const Status: React.FC<StatusProps> = ({
       chevron: colors.blackAndWhite.black900,
     },
     success: {
-      background: colors.success.fill, // #7fffb0
+      background: colors.analytics.green500, // #c6ffc1
       text: colors.blackAndWhite.black900,
       dot: colors.success.textAndStrokes, // #2fa915
       chevron: colors.blackAndWhite.black900,

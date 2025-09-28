@@ -1,5 +1,6 @@
 import React from 'react';
 import { borderRadius, typography, useSemanticColors } from '../tokens';
+import { Button } from './Button';
 
 export interface DashboardCardProps {
   /** Card title displayed in the header */
@@ -74,17 +75,6 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
     color: colors.blackAndWhite.black900,
   };
 
-  const buttonStyles: React.CSSProperties = {
-    backgroundColor: colors.theme.primary200,
-    border: 'none',
-    borderRadius: borderRadius.absolute,
-    padding: '6px 12px',
-    ...typography.styles.bodyS,
-    fontWeight: 600,
-    color: colors.blackAndWhite.black900,
-    cursor: 'pointer',
-    textTransform: 'uppercase',
-  };
 
   const bodyStyles: React.CSSProperties = {
     flex: 1,
@@ -104,15 +94,15 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
           </div>
         </div>
         {showButton && button && (
-          <button
+          <Button
+            variant="secondary"
             onClick={(e) => {
               e.stopPropagation(); // Prevent card click when button is clicked
               button.onClick();
             }}
-            style={buttonStyles}
           >
             {button.text}
-          </button>
+          </Button>
         )}
       </div>
 

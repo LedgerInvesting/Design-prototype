@@ -11,7 +11,7 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Unified button component with 4 variants: Primary (full-featured), Small (compact), Icon (icon-only), and Tertiary (white with circular icon). Supports multiple colors, icons, disabled states, and uses design system tokens. Use the theme selector in the toolbar to see theme adaptation.',
+        component: 'Unified button component with 5 variants: Primary (full-featured), Small (compact), Icon (icon-only), Tertiary (white with circular icon), and Secondary (compact with uppercase text). Supports multiple colors, icons, disabled states, and uses design system tokens. Use the theme selector in the toolbar to see theme adaptation.',
       },
     },
   },
@@ -19,7 +19,7 @@ const meta: Meta<typeof Button> = {
     variant: {
       description: 'Button variant type',
       control: 'radio',
-      options: ['primary', 'small', 'icon', 'tertiary'],
+      options: ['primary', 'small', 'icon', 'tertiary', 'secondary'],
     },
     children: {
       description: 'Button text content (not used for icon variant)',
@@ -28,7 +28,7 @@ const meta: Meta<typeof Button> = {
     color: {
       description: 'Button color variant (options vary by variant)',
       control: 'radio',
-      options: ['black', 'white', 'main', 'light', 'green'],
+      options: ['black', 'white', 'main', 'light', 'green', 'primary200'],
     },
     disabled: {
       description: 'Disabled state',
@@ -113,12 +113,20 @@ export const AllVariants: Story = {
           <Button variant="icon" color="black" disabled icon={<icons.small.s1ArrowRight />} />
         </div>
       </div>
+
+      <div>
+        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Secondary Variant</h3>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Button variant="secondary">EXPLORE</Button>
+          <Button variant="secondary" disabled>DISABLED</Button>
+        </div>
+      </div>
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'All three button variants with their available color options: Primary (black, white, main, light, green), Small (black, white, main, light, green), and Icon (black, main, light, green, white).',
+        story: 'All button variants with their available color options: Primary (black, white, main, light, green), Small (black, white, main, light, green), Icon (black, main, light, green, white), and Secondary (primary200 background with uppercase text).',
       },
     },
   },
@@ -237,6 +245,38 @@ export const TertiaryVariant: Story = {
     docs: {
       description: {
         story: 'Tertiary variant features a white background with border and a blue circular icon container. Perfect for secondary actions with visual emphasis.',
+      },
+    },
+  },
+};
+
+// Secondary variant showcase
+export const SecondaryVariant: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
+      <h3 style={{ margin: 0, fontSize: '16px' }}>Secondary Button Features</h3>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Button variant="secondary">EXPLORE</Button>
+        <Button variant="secondary">VIEW DETAILS</Button>
+        <Button variant="secondary">LEARN MORE</Button>
+        <Button variant="secondary" disabled>DISABLED</Button>
+      </div>
+      <div style={{
+        fontSize: '12px',
+        color: '#666',
+        textAlign: 'center',
+        maxWidth: '400px',
+        lineHeight: 1.4,
+        marginTop: '8px'
+      }}>
+        ✨ Features: All caps text • 1px letter spacing • Round corners • Theme-aware primary200 background
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Secondary variant features uppercase text with 1px letter spacing, round corners (absolute radius), and theme-aware primary200 background color. Perfect for call-to-action buttons in cards and content areas.',
       },
     },
   },

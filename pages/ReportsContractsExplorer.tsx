@@ -3,11 +3,12 @@ import React from 'react';
 import { Layout } from '@design-library/pages';
 import type { BreadcrumbItem } from '@design-library/pages';
 
-// Import base components  
+// Import base components
 import { Table } from '@design-library/components';
 
 // Import design tokens
-import { colors, typography, spacing, borderRadius } from '@design-library/tokens';
+import { typography, spacing, borderRadius, useSemanticColors } from '@design-library/tokens';
+import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 
 // Import navigation utilities
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
@@ -19,9 +20,10 @@ export interface ReportsContractsExplorerProps {
   onNavigateToPage?: (page: string, data?: any) => void;
 }
 
-export const ReportsContractsExplorer: React.FC<ReportsContractsExplorerProps> = ({
+const ReportsContractsExplorerContent: React.FC<ReportsContractsExplorerProps> = ({
   onNavigateToPage
 }) => {
+  const colors = useSemanticColors();
 
   // Sample data for Reinsurance Trust table
   const reinsuranceTrustData = [
@@ -353,6 +355,14 @@ export const ReportsContractsExplorer: React.FC<ReportsContractsExplorerProps> =
 
       </div>
     </Layout>
+  );
+};
+
+export const ReportsContractsExplorer: React.FC<ReportsContractsExplorerProps> = (props) => {
+  return (
+    <ThemeProvider productType="reports">
+      <ReportsContractsExplorerContent {...props} />
+    </ThemeProvider>
   );
 };
 

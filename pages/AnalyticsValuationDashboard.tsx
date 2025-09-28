@@ -7,6 +7,7 @@ import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemePr
 import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 import { useSettings } from '@design-library/contexts';
+import { createPageNavigationHandler } from '@design-library/utils/navigation';
 
 // Custom StatusCheck component with proper color support
 const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
@@ -503,21 +504,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
       <Layout
         selectedSidebarItem="analytics"
         selectedSidebarSubitem="valuation"
-        onNavigate={(itemId, subitemId) => {
-          if (itemId === 'analytics' && subitemId === 'valuation') {
-            onNavigateToPage('analytics-valuation');
-          } else if (itemId === 'reports') {
-            if (subitemId === 'transactions') {
-              onNavigateToPage('reports-transaction-management');
-            } else if (subitemId === 'reports-explorer') {
-              onNavigateToPage('reports-explorer');
-            } else if (subitemId === 'bdx-upload') {
-              onNavigateToPage('reports-bdx-upload');
-            }
-          } else if (itemId === 'contracts') {
-            onNavigateToPage('reports-contracts-explorer');
-          }
-        }}
+        onNavigate={createPageNavigationHandler(onNavigateToPage, 'analytics-valuation-dashboard')}
         breadcrumbs={[
           { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
           { label: data.programName, isActive: true }
