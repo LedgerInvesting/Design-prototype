@@ -27,7 +27,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // Import page components
-import { Layout } from '@design-library/pages';
+import { Layout, PageBanner } from '@design-library/pages';
 
 // Import base components
 import { Button, Status, Tabs } from '@design-library/components';
@@ -438,122 +438,6 @@ interface MarketplaceOfferingsProps {
   onNavigateToPage?: (page: string, data?: any) => void;
 }
 
-/**
- * Marketplace Banner Component
- *
- * Header banner for the marketplace page featuring gradient background,
- * transaction icon, title, subtitle, and status card with monthly metrics.
- *
- * Features:
- * - Theme-aware gradient background (marketplace violet theme)
- * - Responsive layout with illustration and text content
- * - Status card showing monthly transaction volume
- * - Design consistent with other page banners (Reports, Analytics)
- *
- * @note Consider extracting to shared banner component to reduce duplication
- * across ReportsTransactionManagement, ReportsExplorer, and MarketplaceOfferings
- */
-const MarketplaceBanner: React.FC = () => {
-  const colors = useSemanticColors();
-
-  const headerStyles: React.CSSProperties = {
-    backgroundColor: colors.theme.primary700, // Uses marketplace theme primary700 (violet)
-    padding: '0 40px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: borderRadius[16],
-    height: '250px',
-    position: 'relative',
-    overflow: 'hidden',
-    width: '100%',
-    boxSizing: 'border-box',
-    backgroundImage: `url('/pattern_marketplace.svg')`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'top right',
-    backgroundSize: '33%',
-    boxShadow: shadows.base,
-  };
-
-  const leftContentStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '40px',
-    position: 'relative',
-    zIndex: 1,
-  };
-
-  const illustrationContainerStyles: React.CSSProperties = {
-    width: '150px',
-    height: '150px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const textContentStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    maxWidth: '450px',
-  };
-
-  const titleStyles: React.CSSProperties = {
-    ...typography.styles.headlineH2,
-    fontSize: '36px',
-    color: colors.blackAndWhite.black900,
-    margin: 0,
-  };
-
-  const subtitleStyles: React.CSSProperties = {
-    ...typography.styles.bodyL,
-    color: colors.blackAndWhite.black900,
-    margin: 0,
-  };
-
-  return (
-    <div style={headerStyles}>
-      <div style={leftContentStyles}>
-        <div style={illustrationContainerStyles}>
-          <img
-            src="/marketplace_illustration.png"
-            alt="marketplace"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain'
-            }}
-          />
-        </div>
-        <div style={textContentStyles}>
-          <h1 style={titleStyles}>Marketplace</h1>
-          <p style={subtitleStyles}>Explore opportunities to invest in casualty insurance risk and find offerings that align with your investment goals.</p>
-        </div>
-      </div>
-      <div style={{
-        backgroundColor: colors.blackAndWhite.white,
-        padding: '10px',
-        borderRadius: borderRadius[16],
-        boxShadow: shadows.base,
-        width: '260px',
-        display: 'flex',
-        gap: '0',
-        position: 'relative',
-        zIndex: 1,
-      }}>
-        <Button
-          variant="primary"
-          color="black"
-          icon={<span style={{ color: colors.theme.primary700 }}>+</span>}
-          onClick={() => alert('Start investing clicked (prototype)')}
-          style={{ width: '100%' }}
-        >
-          Start Investing
-        </Button>
-      </div>
-    </div>
-  );
-};
 
 
 // Offering card component
@@ -649,9 +533,6 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
-    // Ensure crisp 1px borders
-    transform: 'translateZ(0)',
-    backfaceVisibility: 'hidden',
   };
 
   const headerStyles: React.CSSProperties = {
@@ -790,8 +671,6 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
     margin: '15px 0', // 15px top + 15px bottom = 30px total padding
     flexShrink: 0,
     boxSizing: 'border-box',
-    // Ensure crisp 1px borders
-    transform: 'translateZ(0)',
   };
 
   return (
@@ -968,6 +847,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
  * @param onNavigateToPage Optional navigation callback for programmatic routing
  */
 export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNavigateToPage }) => {
+  const colors = useSemanticColors();
   const [activeTab, setActiveTab] = useState<string>('primary');
 
   // Insurance offering data representing different risk categories
@@ -1050,7 +930,17 @@ export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNa
         flexDirection: 'column',
         gap: 'clamp(16px, 3vw, 32px)'
       }}>
-          <MarketplaceBanner />
+          <PageBanner
+            title="Marketplace"
+            subtitle="Explore opportunities to invest in casualty insurance risk and find offerings that align with your investment goals."
+            illustrationSrc="/marketplace_illustration.png"
+            patternSrc="/pattern_marketplace.svg"
+            buttonText="Start Investing"
+            buttonIcon={<span style={{ color: colors.theme.primary700 }}>+</span>}
+            onButtonClick={() => alert('Start investing clicked (prototype)')}
+            illustrationAlt="marketplace"
+            maxTextWidth="450px"
+          />
 
           <div style={{ margin: '40px 0' }}>
             <Tabs

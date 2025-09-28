@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { PageBanner } from './PageBanner';
 import { ThemeProvider } from '../tokens/ThemeProvider';
+import { AddSmall } from '../icons';
 
 const meta: Meta<typeof PageBanner> = {
   title: 'Pages/PageBanner',
@@ -10,7 +11,7 @@ const meta: Meta<typeof PageBanner> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Standardized banner layout used across Reports, Analytics, and Marketplace pages. Features theme-aware styling, consistent 250px height, left illustration + text content, and right action button in white container.',
+        component: 'Standardized banner layout used across Reports, Analytics, Marketplace, and Contracts pages. Features theme-aware styling with primary700 background, consistent 250px height, left illustration + text content with black900 text, and right action button in white container. SVG patterns use the 500 color variants.',
       },
     },
   },
@@ -74,7 +75,7 @@ export const Reports: Story = {
     illustrationSrc: '/transaction header icon.png',
     patternSrc: '/pattern_reports.svg',
     buttonText: 'New Transaction',
-    buttonIcon: <span style={{ color: '#2563eb' }}>+</span>,
+    buttonIcon: <AddSmall color="#9ad5f7" />,
     illustrationAlt: 'transaction management',
   },
   render: (args) => (
@@ -89,13 +90,13 @@ export const Reports: Story = {
 // Analytics banner
 export const Analytics: Story = {
   args: {
-    title: 'Analytics Dashboard',
+    title: 'Analytics Valuation',
     subtitle: 'Comprehensive analytics and valuation insights for your portfolio',
     illustrationSrc: '/transaction header icon.png',
     patternSrc: '/pattern_analytics.svg',
-    buttonText: 'Create Report',
-    buttonIcon: <span style={{ color: '#059669' }}>📊</span>,
-    illustrationAlt: 'analytics dashboard',
+    buttonText: 'Settings',
+    buttonIcon: <AddSmall color="#74efa3" />,
+    illustrationAlt: 'analytics valuation',
   },
   render: (args) => (
     <ThemeProvider initialTheme="analytics">
@@ -114,11 +115,32 @@ export const Marketplace: Story = {
     illustrationSrc: '/marketplace_illustration.png',
     patternSrc: '/pattern_marketplace.svg',
     buttonText: 'Browse Offerings',
+    buttonIcon: <AddSmall color="#ceb5fb" />,
     maxTextWidth: '450px',
     illustrationAlt: 'marketplace',
   },
   render: (args) => (
     <ThemeProvider initialTheme="marketplace">
+      <div style={{ padding: '20px', backgroundColor: '#f8fafc' }}>
+        <PageBanner {...args} />
+      </div>
+    </ThemeProvider>
+  ),
+};
+
+// Contracts banner
+export const Contracts: Story = {
+  args: {
+    title: 'AI Extraction',
+    subtitle: 'Extract and analyze contract terms using advanced AI technology',
+    illustrationSrc: '/transaction header icon.png',
+    patternSrc: '/pattern_contracts.svg',
+    buttonText: 'Upload Document',
+    buttonIcon: <AddSmall color="#fcdc6a" />,
+    illustrationAlt: 'contracts AI extraction',
+  },
+  render: (args) => (
+    <ThemeProvider initialTheme="contracts">
       <div style={{ padding: '20px', backgroundColor: '#f8fafc' }}>
         <PageBanner {...args} />
       </div>
@@ -142,6 +164,7 @@ export const ThemeComparison: Story = {
               illustrationSrc="/transaction header icon.png"
               patternSrc="/pattern_reports.svg"
               buttonText="New Transaction"
+              buttonIcon={<AddSmall color="#9ad5f7" />}
               onButtonClick={() => {}}
             />
           </ThemeProvider>
@@ -151,11 +174,12 @@ export const ThemeComparison: Story = {
           <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#666' }}>Analytics Theme (Green)</h3>
           <ThemeProvider initialTheme="analytics">
             <PageBanner
-              title="Analytics Dashboard"
+              title="Analytics Valuation"
               subtitle="Comprehensive analytics and valuation insights for your portfolio"
               illustrationSrc="/transaction header icon.png"
               patternSrc="/pattern_analytics.svg"
-              buttonText="Create Report"
+              buttonText="Settings"
+              buttonIcon={<AddSmall color="#74efa3" />}
               onButtonClick={() => {}}
             />
           </ThemeProvider>
@@ -170,7 +194,23 @@ export const ThemeComparison: Story = {
               illustrationSrc="/marketplace_illustration.png"
               patternSrc="/pattern_marketplace.svg"
               buttonText="Browse Offerings"
+              buttonIcon={<AddSmall color="#ceb5fb" />}
               maxTextWidth="450px"
+              onButtonClick={() => {}}
+            />
+          </ThemeProvider>
+        </div>
+
+        <div>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#666' }}>Contracts Theme (Yellow)</h3>
+          <ThemeProvider initialTheme="contracts">
+            <PageBanner
+              title="AI Extraction"
+              subtitle="Extract and analyze contract terms using advanced AI technology"
+              illustrationSrc="/transaction header icon.png"
+              patternSrc="/pattern_contracts.svg"
+              buttonText="Upload Document"
+              buttonIcon={<AddSmall color="#fcdc6a" />}
               onButtonClick={() => {}}
             />
           </ThemeProvider>
@@ -186,43 +226,17 @@ export const ThemeComparison: Story = {
         lineHeight: 1.4
       }}>
         The PageBanner component automatically adapts to different theme contexts using theme.primary700 background colors.
-        Each theme provides its own primary color palette while maintaining consistent layout and spacing.
+        Each theme provides its own primary color palette while maintaining consistent layout, spacing, and black900 text.
+        SVG patterns should use the corresponding 500 color variants (Reports: blue500, Analytics: green500, Marketplace: violet500, Contracts: yellow500).
       </div>
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'PageBanner component automatically adapts to different theme contexts (Reports=blue, Analytics=green, Marketplace=violet) while maintaining consistent layout structure.',
+        story: 'PageBanner component automatically adapts to different theme contexts (Reports=blue, Analytics=green, Marketplace=violet, Contracts=yellow) while maintaining consistent layout structure.',
       },
     },
   },
 };
 
-// Custom configurations
-export const CustomConfiguration: Story = {
-  args: {
-    title: 'Custom Banner',
-    subtitle: 'Example of customizable banner with different button styles',
-    illustrationSrc: '/transaction header icon.png',
-    patternSrc: '/pattern_reports.svg',
-    buttonText: 'EXPLORE',
-    buttonVariant: 'secondary',
-    maxTextWidth: '400px',
-    illustrationAlt: 'custom banner',
-  },
-  render: (args) => (
-    <ThemeProvider initialTheme="reports">
-      <div style={{ padding: '20px', backgroundColor: '#f8fafc' }}>
-        <PageBanner {...args} />
-      </div>
-    </ThemeProvider>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'Example showing customizable aspects: button variants, text width constraints, and different content configurations.',
-      },
-    },
-  },
-};

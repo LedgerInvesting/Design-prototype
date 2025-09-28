@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Layout } from '@design-library/pages';
+import React, { useState, useRef } from 'react';
+import { Layout, PageBanner } from '@design-library/pages';
 import { Button, Table } from '@design-library/components';
-import { colors as baseColors, typography, borderRadius, shadows } from '@design-library/tokens';
+import { typography } from '@design-library/tokens';
 import { AddSmall, DocumentTable, TextTable, AmmountTable, ArrangeTable, ContractsLogo } from '@design-library/icons';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
@@ -12,126 +12,12 @@ interface AnalyticsValuationProps {
   onNavigateToPage: (page: string) => void;
 }
 
-interface AnalyticsHeaderProps {
-  onNewValuationClick: () => void;
-  buttonRef?: React.RefObject<HTMLButtonElement>;
-  settings: any;
-}
-
-const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onNewValuationClick, buttonRef, settings }) => {
-  const colors = useSemanticColors();
-
-  const headerStyles: React.CSSProperties = {
-    backgroundColor: colors.theme.main,
-    padding: '0 40px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: borderRadius[16],
-    height: '250px',
-    position: 'relative',
-    overflow: 'hidden',
-    width: '100%',
-    boxSizing: 'border-box',
-    backgroundImage: `url('/pattern_analytics.svg')`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'top right',
-    backgroundSize: '33%',
-    boxShadow: shadows.base,
-  };
-
-  const leftContentStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '40px',
-  };
-
-  const illustrationContainerStyles: React.CSSProperties = {
-    width: '150px',
-    height: '150px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const textContentStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  };
-
-  return (
-    <div style={headerStyles}>
-      <div style={leftContentStyles}>
-        <div style={illustrationContainerStyles}>
-          <img
-            src="/analytics_Illustration.png"
-            alt="analytics valuation"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-        </div>
-        <div style={textContentStyles}>
-          <h1 style={{
-            ...typography.styles.headlineH2,
-            fontSize: '36px',
-            color: baseColors.blackAndWhite.black900,
-            margin: 0,
-          }}>
-            Valuation
-          </h1>
-          <p style={{
-            ...typography.styles.bodyL,
-            color: baseColors.blackAndWhite.black900,
-            margin: 0,
-          }}>
-            Create and manage Valuation configurations for your analytics workflows.
-          </p>
-        </div>
-      </div>
-      <div style={{
-        backgroundColor: baseColors.blackAndWhite.white,
-        padding: '10px',
-        borderRadius: borderRadius[16],
-        boxShadow: shadows.base,
-        width: '260px',
-      }}>
-        <Button
-          ref={buttonRef}
-          variant="primary"
-          color="black"
-          icon={<AddSmall color={colors.theme.main} />}
-          className="custom-button-width"
-          onClick={onNewValuationClick}
-        >
-          New Valuation
-        </Button>
-      </div>
-    </div>
-  );
-};
 
 export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
   const settings = useSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const newValuationButtonRef = useRef<HTMLButtonElement>(null);
-
-  // Add CSS for button width override to match Transaction Management
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      .custom-button-width {
-        width: 240px !important;
-        min-width: 240px !important;
-        max-width: 240px !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
 
   const handleNewValuationClick = () => {
     setIsModalOpen(true);
@@ -156,10 +42,15 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
       breadcrumbs={createBreadcrumbs.analytics.valuation()}
     >
       {/* Header Section */}
-      <AnalyticsHeader
-        onNewValuationClick={handleNewValuationClick}
-        buttonRef={newValuationButtonRef}
-        settings={settings}
+      <PageBanner
+        title="Valuation"
+        subtitle="Create and manage Valuation configurations for your analytics workflows."
+        illustrationSrc="/analytics_Illustration.png"
+        patternSrc="/pattern_analytics.svg"
+        buttonText="New Valuation"
+        buttonIcon={<AddSmall color={colors.theme.main} />}
+        onButtonClick={handleNewValuationClick}
+        illustrationAlt="analytics valuation"
       />
       
       {/* Valuation Table */}

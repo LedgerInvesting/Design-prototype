@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 // Import page components
-import { Layout } from '@design-library/pages';
+import { Layout, PageBanner } from '@design-library/pages';
 
 // Import base components  
 import { Button, Table } from '@design-library/components';
 
 // Import design tokens
-import { typography, borderRadius, shadows, useSemanticColors } from '@design-library/tokens';
+import { typography, borderRadius, useSemanticColors } from '@design-library/tokens';
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
 
 // Import prototype settings
@@ -19,115 +19,6 @@ import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } fr
 import { NewTransactionModal } from './NewTransactionModal';
 import { BrandNewTransactionModal } from './BrandNewTransactionModal';
 
-/**
- * Props for the Transaction Management page header component
- * @interface TransactionHeaderProps
- */
-interface TransactionHeaderProps {
-  /** Callback fired when the new transaction button is clicked */
-  onNewTransactionClick: () => void;
-  /** Optional reference to the new transaction button element */
-  buttonRef?: React.RefObject<HTMLButtonElement>;
-}
-
-const TransactionHeader: React.FC<TransactionHeaderProps> = ({ onNewTransactionClick, buttonRef }) => {
-  const colors = useSemanticColors();
-  const headerStyles: React.CSSProperties = {
-    backgroundColor: colors.theme.primary700, // Reports blue 700
-    padding: '0 40px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: borderRadius[16],
-    height: '250px',
-    position: 'relative',
-    overflow: 'hidden',
-    width: '100%',
-    boxSizing: 'border-box',
-    backgroundImage: `url('/pattern_reports.svg')`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'top right',
-    backgroundSize: '33%',
-    boxShadow: shadows.base,
-  };
-
-  const leftContentStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '40px',
-  };
-
-  const illustrationContainerStyles: React.CSSProperties = {
-    width: '150px',
-    height: '150px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const textContentStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  };
-
-  const titleStyles: React.CSSProperties = {
-    ...typography.styles.headlineH2,
-    fontSize: '36px',
-    color: colors.blackAndWhite.black900, // All text black900
-    margin: 0,
-  };
-
-  const subtitleStyles: React.CSSProperties = {
-    ...typography.styles.bodyL,
-    color: colors.blackAndWhite.black900, // All text black900
-    margin: 0,
-  };
-
-  return (
-    <div style={headerStyles}>
-      <div style={leftContentStyles}>
-        <div style={illustrationContainerStyles}>
-          <img 
-            src="/transaction header icon.png" 
-            alt="transaction management" 
-            style={{ 
-              width: '100%', 
-              height: '100%',
-              objectFit: 'contain'
-            }}
-          />
-        </div>
-        <div style={textContentStyles}>
-          <h1 style={titleStyles}>Transaction Management</h1>
-          <p style={subtitleStyles}>Manage your reinsurance transactions and workflow progress</p>
-        </div>
-      </div>
-      <div style={{
-        backgroundColor: colors.blackAndWhite.white,
-        padding: '10px',
-        borderRadius: borderRadius[16],
-        boxShadow: shadows.base,
-        width: '260px',
-        display: 'flex',
-        gap: '0',
-      }}>
-        <Button
-          ref={buttonRef}
-          variant="primary"
-          color="black"
-          icon={<span style={{ color: colors.theme.primary700 }}>+</span>}
-          onClick={onNewTransactionClick}
-          className="custom-button-width"
-          style={{ flex: 'unset' }}
-        >
-          New Transaction
-        </Button>
-
-      </div>
-    </div>
-  );
-};
 
 // Transaction icon component
 const TransactionIcon: React.FC = () => (
@@ -853,23 +744,6 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
   const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
 
-  // Add CSS for button width override
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      .custom-button-width {
-        width: 240px !important;
-        min-width: 240px !important;
-        max-width: 240px !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-
   return (
     <Layout
       breadcrumbs={[
@@ -884,9 +758,15 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
       onSettingsClick={undefined}
     >
       {/* Header Section */}
-      <TransactionHeader
-        onNewTransactionClick={() => setIsModalOpen(true)}
-        buttonRef={newTransactionButtonRef}
+      <PageBanner
+        title="Transaction Management"
+        subtitle="Manage your reinsurance transactions and workflow progress"
+        illustrationSrc="/transaction header icon.png"
+        patternSrc="/pattern_reports.svg"
+        buttonText="New Transaction"
+        buttonIcon={<span style={{ color: colors.theme.primary700 }}>+</span>}
+        onButtonClick={() => setIsModalOpen(true)}
+        illustrationAlt="transaction management"
       />
 
       {/* Stats Section */}

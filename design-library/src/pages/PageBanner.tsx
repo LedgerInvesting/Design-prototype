@@ -1,5 +1,5 @@
 import React from 'react';
-import { borderRadius, shadows, typography, useSemanticColors } from '../tokens';
+import { borderRadius, shadows, typography, spacing, useSemanticColors } from '../tokens';
 import { Button } from '../components';
 
 export interface PageBannerProps {
@@ -30,13 +30,13 @@ export interface PageBannerProps {
 /**
  * PageBanner Component
  *
- * Standardized banner layout used across Reports, Analytics, and Marketplace pages.
+ * Standardized banner layout used across Reports, Analytics, Marketplace, and Contracts pages.
  * Features theme-aware styling, consistent layout structure, and configurable content.
  *
  * Common usage pattern:
- * - Left side: Illustration (150x150px) + Title/Subtitle text
+ * - Left side: Illustration (150x150px) + Title/Subtitle text (black900)
  * - Right side: Action button in white container
- * - Background: Theme primary700 color with pattern overlay
+ * - Background: Theme primary700 color with 500-variant pattern overlay
  *
  * @example
  * ```tsx
@@ -68,7 +68,7 @@ export const PageBanner: React.FC<PageBannerProps> = ({
 
   const headerStyles: React.CSSProperties = {
     backgroundColor: colors.theme.primary700,
-    padding: '0 40px',
+    padding: `0 ${spacing[10]}`,  // 0 2.5rem (40px)
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -88,7 +88,7 @@ export const PageBanner: React.FC<PageBannerProps> = ({
   const leftContentStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '40px',
+    gap: spacing[10],  // 2.5rem (40px)
     position: 'relative',
     zIndex: 1,
   };
@@ -104,28 +104,28 @@ export const PageBanner: React.FC<PageBannerProps> = ({
   const textContentStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px',
+    gap: spacing[2],  // 0.5rem (8px)
     ...(maxTextWidth && { maxWidth: maxTextWidth }),
   };
 
   const titleStyles: React.CSSProperties = {
     ...typography.styles.headlineH2,
-    fontSize: '36px',
-    color: colors.blackAndWhite.white,
+    fontSize: '2.25rem',  // 36px
+    color: colors.blackAndWhite.black900,
     margin: 0,
   };
 
   const subtitleStyles: React.CSSProperties = {
     ...typography.styles.bodyL,
-    color: colors.blackAndWhite.white,
+    color: colors.blackAndWhite.black900,
     margin: 0,
     opacity: 0.9,
   };
 
   const buttonContainerStyles: React.CSSProperties = {
     backgroundColor: colors.blackAndWhite.white,
-    padding: '10px',
-    borderRadius: borderRadius[16],
+    padding: spacing[3],  // 0.75rem (12px) - closest to 10px
+    borderRadius: borderRadius[8], // Changed from 16 to 8px
     boxShadow: shadows.base,
     width: '260px',
     display: 'flex',
