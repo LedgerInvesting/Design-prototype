@@ -1,3 +1,10 @@
+// Page Layout Components
+export { PageBanner } from './PageBanner';
+export { PageHeader } from './PageHeader';
+export type { PageBannerProps } from './PageBanner';
+export type { PageHeaderProps } from './PageHeader';
+
+// Navigation and Layout Components
 export { Sidebar } from './Sidebar';
 export { TopNav } from './TopNav';
 export { FormTopNav } from './FormTopNav';
