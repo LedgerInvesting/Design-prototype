@@ -253,7 +253,7 @@ const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, offic
         </div>
 
         {/* Triangles Column */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '8px', marginLeft: '-10px' }}>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '8px', marginLeft: '-10px', minWidth: 0 }}>
           <div style={{ display: 'flex', gap: '8px' }}>
             {triangleStatuses.map((status, index) => {
               const position = index === 0 ? 'left' : index === 1 ? 'center' : 'right';
@@ -291,7 +291,7 @@ const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, offic
         </div>
 
         {/* Official Valuation Column */}
-        <div style={{ width: '120px', padding: '10px 0', display: 'flex', alignItems: 'center', gap: '12px', marginRight: '40px' }}>
+        <div style={{ width: '160px', padding: '10px 0', paddingLeft: '20px', display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
           <StatusDot status={officialStatus === 'Reviewed' ? 'reviewed' : officialStatus === 'Pending' ? 'pending' : 'none'} />
           <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
             {officialStatus}
@@ -299,7 +299,7 @@ const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, offic
         </div>
 
         {/* Download Column */}
-        <div style={{ width: '70px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ width: '70px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}>
           <Button
             variant="icon"
             color="light"
@@ -848,6 +848,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             <div style={{
               display: 'flex',
               padding: '20px 30px 10px 30px',
+              alignItems: 'center',
             }}>
               <div style={{
                 width: '107px',
@@ -862,15 +863,17 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
                 color: colors.blackAndWhite.black500,
                 textAlign: 'center',
                 marginLeft: '-10px',
+                minWidth: 0,
               }}>
                 Triangles
               </div>
               <div style={{
-                width: '120px',
+                width: '160px',
                 ...typography.styles.bodyM,
                 color: colors.blackAndWhite.black500,
                 textAlign: 'left',
-                marginRight: '40px',
+                paddingLeft: '20px',
+                flexShrink: 0,
               }}>
                 official valuation
               </div>
@@ -879,6 +882,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
                 ...typography.styles.bodyM,
                 color: colors.blackAndWhite.black500,
                 textAlign: 'right',
+                flexShrink: 0,
               }}>
                 Cashflow file
               </div>
