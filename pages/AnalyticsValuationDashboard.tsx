@@ -6,6 +6,7 @@ import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
+import { AddTriangleModal } from './AddTriangleModal';
 import { useSettings } from '@design-library/contexts';
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -930,14 +931,25 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
         {/* Chart Section */}
         <ChartComponent />
 
-        {/* Upload Triangles Modal */}
+        {/* Upload Triangles Modal - for "Add Valuation" button */}
         <UploadTrianglesModal
-          isOpen={isUploadModalOpen}
+          isOpen={isUploadModalOpen && !selectedTriangleType}
           onClose={() => setIsUploadModalOpen(false)}
           programName={data.programName}
-          directTriangleType={selectedTriangleType}
-          onTriangleAdded={handleTriangleAdded}
         />
+
+        {/* Add Triangle Modal - for direct triangle additions from table */}
+        {selectedTriangleType && (
+          <AddTriangleModal
+            isOpen={isUploadModalOpen}
+            onClose={() => {
+              setIsUploadModalOpen(false);
+              setSelectedTriangleType(null);
+            }}
+            triangleType={selectedTriangleType}
+            onTriangleAdded={handleTriangleAdded}
+          />
+        )}
       </Layout>
   );
 };

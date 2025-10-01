@@ -5,6 +5,7 @@ import { colors, typography, borderRadius } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { AddMedium, CalendarTable, TextTable, StatusProgressTable } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
+import { AddTriangleModal } from './AddTriangleModal';
 
 interface ValuationStatusProps {
   onNavigateToPage: (page: string) => void;
@@ -627,9 +628,9 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         itemsPerPage={10}
       />
 
-      {/* Upload Triangles Modal */}
+      {/* Upload Triangles Modal - for "Add Valuation" button */}
       <UploadTrianglesModal
-        isOpen={isUploadModalOpen}
+        isOpen={isUploadModalOpen && !selectedTriangleType}
         onClose={() => {
           setIsUploadModalOpen(false);
           setSelectedTriangleType(null);
@@ -637,9 +638,22 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
           setCurrentTriangleIndex(null);
         }}
         programName={programName}
-        directTriangleType={selectedTriangleType}
-        onTriangleAdded={handleTriangleAdded}
       />
+
+      {/* Add Triangle Modal - for direct triangle additions from table */}
+      {selectedTriangleType && (
+        <AddTriangleModal
+          isOpen={isUploadModalOpen}
+          onClose={() => {
+            setIsUploadModalOpen(false);
+            setSelectedTriangleType(null);
+            setCurrentRowId(null);
+            setCurrentTriangleIndex(null);
+          }}
+          triangleType={selectedTriangleType}
+          onTriangleAdded={handleTriangleAdded}
+        />
+      )}
     </Layout>
   );
 };
