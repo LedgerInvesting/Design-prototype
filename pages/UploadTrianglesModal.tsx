@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Input, Modal, ButtonSelector } from '@design-library/components';
+import { Button, Input, Modal, ButtonSelector, DatePicker } from '@design-library/components';
 import { typography, borderRadius } from '@design-library/tokens';
 import { useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { AddMedium, StatusWarning, DownloadMedium, CloseMedium } from '@design-library/icons';
@@ -8,6 +8,8 @@ interface UploadTrianglesModalProps {
   isOpen: boolean;
   onClose: () => void;
   programName?: string;
+  directTriangleType?: 'on-risk-aqt' | 'development-fit' | 'on-risk-pyt' | null;
+  onTriangleAdded?: () => void;
 }
 
 type TriangleType = 'development-fit' | 'on-risk-aqt' | 'on-risk-pyt' | null;
@@ -88,7 +90,9 @@ const TriangleUploadItem: React.FC<{
 export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
   isOpen,
   onClose,
-  programName = 'XPT Commercial Auto TY23'
+  programName = 'XPT Commercial Auto TY23',
+  directTriangleType = null,
+  onTriangleAdded
 }) => {
   const colors = useSemanticColors();
   const [currentPremium, setCurrentPremium] = useState('');
@@ -99,6 +103,20 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
   const [selectedExisting, setSelectedExisting] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [completedTriangles, setCompletedTriangles] = useState<Record<string, string>>({});
+
+  // When modal opens with a direct triangle type, set it as selected
+  React.useEffect(() => {
+    if (isOpen && directTriangleType) {
+      setSelectedTriangle(directTriangleType);
+    } else if (!isOpen) {
+      // Reset when modal closes
+      setSelectedTriangle(null);
+      setUploadMode('upload');
+      setSelectedFile('');
+      setSelectedExisting('');
+      setSearchQuery('');
+    }
+  }, [isOpen, directTriangleType]);
 
   // Sample existing triangles data
   const existingTriangles = [
@@ -152,7 +170,13 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
       triangleName = triangle?.label || selectedExisting;
     }
 
-    // Save the completed triangle
+    // If this is a direct triangle addition (from dashboard), call the callback
+    if (directTriangleType && onTriangleAdded) {
+      onTriangleAdded();
+      return;
+    }
+
+    // Otherwise, save the completed triangle and go back to first modal
     if (triangleName) {
       setCompletedTriangles({
         ...completedTriangles,
@@ -197,11 +221,11 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
   const getTriangleName = (type: TriangleType): string => {
     switch (type) {
       case 'development-fit':
-        return 'Development Fit Triangle';
+        return 'Loss Development Triangle';
       case 'on-risk-aqt':
-        return 'On Risk Triangle (AQT)';
+        return 'On Risk Triangle';
       case 'on-risk-pyt':
-        return 'On Risk Triangle (PYT)';
+        return 'Policy-Year Triangle';
       default:
         return '';
     }
@@ -298,11 +322,11 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: Object.keys(completedTriangles).length > 0 ? 'flex-end' : 'space-between',
+            justifyContent: (Object.keys(completedTriangles).length > 0 && evaluationDate) ? 'flex-end' : 'space-between',
             width: '100%'
           }}>
-            {/* Warning message on the left - only show if no triangles completed */}
-            {Object.keys(completedTriangles).length === 0 && (
+            {/* Warning message on the left - only show if requirements not met */}
+            {(Object.keys(completedTriangles).length === 0 || !evaluationDate) && (
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -314,7 +338,9 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
                   color: colors.blackAndWhite.black500,
                   fontWeight: 500,
                 }}>
-                  you should upload at least one triangle
+                  {Object.keys(completedTriangles).length === 0
+                    ? 'you should upload at least one triangle'
+                    : 'you should select an evaluation date'}
                 </div>
               </div>
             )}
@@ -328,12 +354,12 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
               style={{
                 width: '140px',
                 height: '37px',
-                ...(Object.keys(completedTriangles).length === 0 && {
+                ...((Object.keys(completedTriangles).length === 0 || !evaluationDate) && {
                   backgroundColor: colors.blackAndWhite.black300,
                   cursor: 'not-allowed',
                 }),
               }}
-              disabled={Object.keys(completedTriangles).length === 0}
+              disabled={Object.keys(completedTriangles).length === 0 || !evaluationDate}
             >
               Add Valuation
             </Button>
@@ -517,7 +543,7 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
             fontWeight: 500,
             marginBottom: '8px',
           }}>
-            Accident-Quarter Triangle (AQT)
+            Accident-Quarter
           </div>
 
           <div style={{
@@ -527,14 +553,14 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
             marginBottom: '20px',
           }}>
             <TriangleUploadItem
-              label="add Development Fit Triangle"
-              onClick={() => handleTriangleUpload('development-fit')}
-              completedName={completedTriangles['development-fit']}
-            />
-            <TriangleUploadItem
               label="add On Risk Triangle"
               onClick={() => handleTriangleUpload('on-risk-aqt')}
               completedName={completedTriangles['on-risk-aqt']}
+            />
+            <TriangleUploadItem
+              label="add Loss Development Triangle"
+              onClick={() => handleTriangleUpload('development-fit')}
+              completedName={completedTriangles['development-fit']}
             />
           </div>
 
@@ -545,12 +571,12 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
             fontWeight: 500,
             marginBottom: '8px',
           }}>
-            Policy-year Triangle (PYT)
+            Policy-year
           </div>
 
           <div style={{ marginBottom: '20px' }}>
             <TriangleUploadItem
-              label="add On Risk Triangle"
+              label="add Policy-Year Triangle"
               onClick={() => handleTriangleUpload('on-risk-pyt')}
               completedName={completedTriangles['on-risk-pyt']}
             />
@@ -573,13 +599,20 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
               />
             </div>
             <div style={{ flex: 1 }}>
-              <Input
+              <DatePicker
                 label="Evaluation Date"
                 value={evaluationDate}
                 onChange={(e) => setEvaluationDate(e.target.value)}
-                placeholder="MM/DD/YYYY"
-                required={true}
-                showCalendarIcon={true}
+                placeholder="Select date"
+                simpleMode={true}
+                onDateRangeChange={(startDate, endDate) => {
+                  // Format the date for display
+                  if (startDate) {
+                    const date = new Date(startDate);
+                    const formatted = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+                    setEvaluationDate(formatted);
+                  }
+                }}
               />
             </div>
           </div>

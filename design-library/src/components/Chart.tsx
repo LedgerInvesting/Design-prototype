@@ -117,7 +117,7 @@ export const Chart: React.FC<ChartProps> = ({
         <text
           x={x + offset.dx}
           y={y + offset.dy}
-          fill={colors.blackAndWhite.black700}
+          fill={colors.blackAndWhite.black500}
           style={{
             fontFamily: typography.styles.dataXS.fontFamily.join(', '),
             fontSize: typography.styles.dataXS.fontSize,
@@ -165,12 +165,12 @@ export const Chart: React.FC<ChartProps> = ({
               orientation={xAxisInside ? 'top' : 'bottom'}
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
-              tickLine={{ stroke: colors.theme.primary450 }}
+              tickLine={false}
               label={xAxisLabel ? {
                 value: xAxisLabel,
                 position: 'insideBottom',
                 offset: -35,
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
             {xAxisInside && (
@@ -190,12 +190,13 @@ export const Chart: React.FC<ChartProps> = ({
               orientation="left"
               mirror={yAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={false} />}
+              tickLine={false}
               label={yAxisLabel ? {
                 value: yAxisLabel,
                 angle: -90,
                 position: 'insideLeft',
                 offset: -35,
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
             <Area
@@ -231,12 +232,12 @@ export const Chart: React.FC<ChartProps> = ({
               orientation={xAxisInside ? 'top' : 'bottom'}
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
-              tickLine={{ stroke: colors.theme.primary450 }}
+              tickLine={false}
               label={xAxisLabel ? {
                 value: xAxisLabel,
                 position: 'insideBottom',
                 offset: -35,
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
             {xAxisInside && (
@@ -256,12 +257,13 @@ export const Chart: React.FC<ChartProps> = ({
               orientation="left"
               mirror={yAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={false} />}
+              tickLine={false}
               label={yAxisLabel ? {
                 value: yAxisLabel,
                 angle: -90,
                 position: 'insideLeft',
                 offset: -35,
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
             <Bar
@@ -295,12 +297,12 @@ export const Chart: React.FC<ChartProps> = ({
               orientation={xAxisInside ? 'top' : 'bottom'}
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
-              tickLine={{ stroke: colors.theme.primary450 }}
+              tickLine={false}
               label={xAxisLabel ? {
                 value: xAxisLabel,
                 position: 'insideBottom',
                 offset: -35,
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
             {xAxisInside && (
@@ -320,12 +322,13 @@ export const Chart: React.FC<ChartProps> = ({
               orientation="left"
               mirror={yAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={false} />}
+              tickLine={false}
               label={yAxisLabel ? {
                 value: yAxisLabel,
                 angle: -90,
                 position: 'insideLeft',
                 offset: -35,
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
             <Line

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { typography, borderRadius, shadows, useSemanticColors, colors as staticColors } from '../tokens';
-import { CheckSmall, UploadSmall, ConfigSmall, CalculatorSmall } from '../icons';
+import { CheckSmall, UploadSmall, ConfigSmall, CalculatorSmall, DownloadSmall, AddSmall, PlaySmall } from '../icons';
 
-export type ActionType = 'upload' | 'validate' | 'generate' | 'setup';
+export type ActionType = 'upload' | 'validate' | 'generate' | 'setup' | 'download' | 'add-data' | 'run-valuation' | 'custom';
 
 interface ActionConfig {
   icon: React.ReactNode;
@@ -10,43 +10,70 @@ interface ActionConfig {
 }
 
 export interface ActionCellProps {
-  actionType: ActionType;
+  actionType?: ActionType;
   onClick?: (actionType: ActionType, text: string) => void;
   className?: string;
+  // New flexible props
+  icon?: React.ReactNode;
+  text?: string;
+  iconBackgroundColor?: string;
+  iconColor?: string;
 }
 
 export const ActionCell: React.FC<ActionCellProps> = ({
-  actionType,
+  actionType = 'custom',
   onClick,
   className = '',
+  icon: customIcon,
+  text: customText,
+  iconBackgroundColor: customIconBg,
+  iconColor: customIconColor,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const colors = useSemanticColors();
-  
+
   const actionConfigs: Record<ActionType, ActionConfig> = {
     upload: {
       icon: <UploadSmall color={colors.success.textAndStrokes} />,
       text: 'Upload'
     },
     validate: {
-      icon: <CheckSmall color={colors.theme.main} />,
+      icon: <CheckSmall color={staticColors.reports.blue900} />,
       text: 'Validate'
     },
     generate: {
-      icon: <CalculatorSmall color={colors.theme.main} />,
+      icon: <CalculatorSmall color={staticColors.reports.blue900} />,
       text: 'Generate'
     },
     setup: {
-      icon: <ConfigSmall color={colors.theme.main} />,
+      icon: <ConfigSmall color={staticColors.reports.blue900} />,
       text: 'Setup'
+    },
+    download: {
+      icon: <DownloadSmall color={staticColors.reports.blue900} />,
+      text: 'Download Cashflow'
+    },
+    'add-data': {
+      icon: <AddSmall color={colors.success.textAndStrokes} />,
+      text: 'Add data'
+    },
+    'run-valuation': {
+      icon: <PlaySmall color={colors.success.textAndStrokes} />,
+      text: 'Run valuation'
+    },
+    custom: {
+      icon: customIcon || <AddSmall color={colors.success.textAndStrokes} />,
+      text: customText || 'Action'
     }
   };
-  
+
   const actionConfig = actionConfigs[actionType];
-  
+  const displayIcon = customIcon || actionConfig.icon;
+  const displayText = customText || actionConfig.text;
+
   const handleClick = () => {
     if (onClick) {
-      onClick(actionType, actionConfig.text);
+      onClick(actionType, displayText);
     }
   };
 
@@ -66,13 +93,22 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     boxSizing: 'border-box' as const,
   };
 
+  // Determine icon background color
+  const getIconBackgroundColor = () => {
+    if (customIconBg) return customIconBg;
+    if (actionType === 'upload' || actionType === 'add-data' || actionType === 'run-valuation') {
+      return '#C6FFC1'; // Light green
+    }
+    return staticColors.reports.blue500; // Blue for others
+  };
+
   const iconContainerStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     width: '22px',
     height: '22px',
-    backgroundColor: actionType === 'upload' ? '#C6FFC1' : staticColors.reports.blue500, // Light green for upload, blue500 for others
+    backgroundColor: getIconBackgroundColor(),
     borderRadius: borderRadius[4],
     flexShrink: 0, // Don't shrink the icon container
   };
@@ -105,11 +141,11 @@ export const ActionCell: React.FC<ActionCellProps> = ({
           handleClick();
         }
       }}
-      title={actionConfig.text} // Tooltip for full text if truncated
+      title={displayText} // Tooltip for full text if truncated
     >
-      <span style={textStyles}>{actionConfig.text}</span>
+      <span style={textStyles}>{displayText}</span>
       <div style={iconContainerStyles}>
-        {actionConfig.icon}
+        {displayIcon}
       </div>
     </div>
   );

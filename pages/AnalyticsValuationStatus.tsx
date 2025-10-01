@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Layout } from '@design-library/pages';
-import { Button, Table } from '@design-library/components';
+import { Button, Table, shadows } from '@design-library/components';
 import { colors, typography, borderRadius } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { AddMedium, DownloadSmall, AddSmall } from '@design-library/icons';
+import { AddMedium, CalendarTable, TextTable, StatusProgressTable } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 
 interface ValuationStatusProps {
@@ -11,36 +11,50 @@ interface ValuationStatusProps {
   programName?: string;
 }
 
-// Custom StatusCheck component matching the dashboard design
+/**
+ * Triangle Status Check Icon
+ *
+ * Custom check icon for completed triangles.
+ * Sized at 19x19px to match the table design.
+ */
 const TriangleStatusCheck: React.FC<{ color: string }> = ({ color }) => (
-  <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M5.7998 8.27778L7.94266 10.5L11.7998 6.5" stroke={color} strokeWidth="2"/>
-    <circle cx="8.7998" cy="8.5" r="7.5" stroke={color} strokeWidth="2"/>
+  <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6.7998 9.27778L8.94266 11.5L12.7998 7.5" stroke={color} strokeWidth="2"/>
+    <circle cx="9.7998" cy="9.5" r="7.5" stroke={color} strokeWidth="2"/>
   </svg>
 );
 
-// Triangle status component matching the design
-const TriangleStatus: React.FC<{ status: 'completed' | 'add'; color: string }> = ({ status, color }) => {
+/**
+ * Triangle Status Component
+ *
+ * Displays the status of triangle uploads in the table.
+ * - 'completed': Shows check icon (reviewed and approved)
+ * - 'pending-review': Shows animated progress icon (uploaded but needs review)
+ * - 'add': Shows "Add" button to upload a new triangle
+ */
+const TriangleStatus: React.FC<{ status: 'completed' | 'add' | 'pending-review'; color: string; onClick?: () => void }> = ({ status, color, onClick }) => {
   const colors = useSemanticColors();
 
   if (status === 'add') {
     return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '32px',
-        height: '20px',
-        backgroundColor: colors.blackAndWhite.black100,
-        borderRadius: '4px',
-        fontSize: '10px',
-        color: colors.blackAndWhite.black500,
-        fontFamily: 'Söhne, system-ui, sans-serif',
-        fontWeight: 500,
-      }}>
+      <Button
+        variant="small"
+        color="white"
+        showIcon={false}
+        onClick={onClick}
+        style={{
+          boxShadow: shadows.small,
+          transform: 'scale(1)',
+          transition: 'transform 0.2s ease',
+        }}
+      >
         Add
-      </div>
+      </Button>
     );
+  }
+
+  if (status === 'pending-review') {
+    return <StatusProgressTable color={color} />;
   }
 
   return <TriangleStatusCheck color={color} />;
@@ -52,8 +66,8 @@ const StatusIndicator: React.FC<{ status: 'reviewed' | 'pending' | 'none' }> = (
     switch (status) {
       case 'reviewed': return '#74efa3';
       case 'pending': return '#ffdd61';
-      case 'none': return '#e1eae5';
-      default: return '#e1eae5';
+      case 'none': return '#ff8588';
+      default: return '#ff8588';
     }
   };
 
@@ -93,24 +107,27 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
   const colors = useSemanticColors();
   const [activeTab, setActiveTab] = useState('All');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedTriangleType, setSelectedTriangleType] = useState<'on-risk-aqt' | 'development-fit' | 'on-risk-pyt' | null>(null);
+  const [currentRowId, setCurrentRowId] = useState<string | null>(null);
+  const [currentTriangleIndex, setCurrentTriangleIndex] = useState<number | null>(null);
 
   // Sample data for the table
-  const tableData = [
+  const [tableData, setTableData] = useState([
     {
       id: '1',
-      evaluationDate: 'Jan 30, 2025',
+      evaluationDate: 'Dec 31, 2024',
       triangles: 'triangles',
       triangleData: [
         { status: 'completed' as const, color: '#BD8B11' },
-        { status: 'add' as const, color: '#744DEB' },
-        { status: 'add' as const, color: '#3DA3CB' }
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'completed' as const, color: '#3DA3CB' }
       ],
       officialStatus: 'reviewed' as const,
-      action: 'generate'
+      action: 'download'
     },
     {
       id: '2',
-      evaluationDate: 'Jan 30, 2025',
+      evaluationDate: 'Nov 30, 2024',
       triangles: 'triangles',
       triangleData: [
         { status: 'completed' as const, color: '#BD8B11' },
@@ -118,23 +135,35 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         { status: 'completed' as const, color: '#3DA3CB' }
       ],
       officialStatus: 'reviewed' as const,
-      action: 'generate'
+      action: 'download'
     },
     {
       id: '3',
-      evaluationDate: 'Jan 30, 2025',
+      evaluationDate: 'Oct 31, 2024',
       triangles: 'triangles',
       triangleData: [
         { status: 'completed' as const, color: '#BD8B11' },
         { status: 'completed' as const, color: '#744DEB' },
         { status: 'completed' as const, color: '#3DA3CB' }
       ],
-      officialStatus: 'pending' as const,
-      action: 'generate'
+      officialStatus: 'reviewed' as const,
+      action: 'download'
     },
     {
       id: '4',
-      evaluationDate: 'Jan 30, 2025',
+      evaluationDate: 'Sep 30, 2024',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'add' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'pending' as const,
+      action: 'download'
+    },
+    {
+      id: '5',
+      evaluationDate: 'Aug 31, 2024',
       triangles: 'triangles',
       triangleData: [
         { status: 'completed' as const, color: '#BD8B11' },
@@ -142,23 +171,35 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         { status: 'add' as const, color: '#3DA3CB' }
       ],
       officialStatus: 'pending' as const,
-      action: 'generate'
+      action: 'download'
     },
     {
-      id: '5',
-      evaluationDate: 'Jan 30, 2025',
+      id: '6',
+      evaluationDate: 'Jul 31, 2024',
       triangles: 'triangles',
       triangleData: [
         { status: 'completed' as const, color: '#BD8B11' },
         { status: 'completed' as const, color: '#744DEB' },
-        { status: 'completed' as const, color: '#3DA3CB' }
+        { status: 'add' as const, color: '#3DA3CB' }
       ],
       officialStatus: 'none' as const,
-      action: 'upload'
+      action: 'run-valuation'
     },
     {
-      id: '6',
-      evaluationDate: 'Jan 30, 2025',
+      id: '7',
+      evaluationDate: 'Jun 30, 2024',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'add' as const, color: '#744DEB' },
+        { status: 'add' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'none' as const,
+      action: 'run-valuation'
+    },
+    {
+      id: '8',
+      evaluationDate: 'May 31, 2024',
       triangles: 'triangles',
       triangleData: [
         { status: 'add' as const, color: '#BD8B11' },
@@ -166,11 +207,35 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         { status: 'add' as const, color: '#3DA3CB' }
       ],
       officialStatus: 'none' as const,
-      action: 'validate'
+      action: 'add-data'
     },
     {
-      id: '7',
-      evaluationDate: 'Jan 30, 2025',
+      id: '9',
+      evaluationDate: 'Apr 30, 2024',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'completed' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'reviewed' as const,
+      action: 'download'
+    },
+    {
+      id: '10',
+      evaluationDate: 'Mar 31, 2024',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'add' as const, color: '#744DEB' },
+        { status: 'completed' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'pending' as const,
+      action: 'download'
+    },
+    {
+      id: '11',
+      evaluationDate: 'Feb 28, 2024',
       triangles: 'triangles',
       triangleData: [
         { status: 'add' as const, color: '#BD8B11' },
@@ -178,28 +243,155 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         { status: 'completed' as const, color: '#3DA3CB' }
       ],
       officialStatus: 'none' as const,
-      action: 'generate'
+      action: 'run-valuation'
+    },
+    {
+      id: '12',
+      evaluationDate: 'Jan 31, 2024',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'add' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'pending' as const,
+      action: 'download'
+    },
+    {
+      id: '13',
+      evaluationDate: 'Dec 31, 2023',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'completed' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'reviewed' as const,
+      action: 'download'
+    },
+    {
+      id: '14',
+      evaluationDate: 'Nov 30, 2023',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'add' as const, color: '#BD8B11' },
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'completed' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'pending' as const,
+      action: 'download'
+    },
+    {
+      id: '15',
+      evaluationDate: 'Oct 31, 2023',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'completed' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'reviewed' as const,
+      action: 'download'
+    },
+    {
+      id: '16',
+      evaluationDate: 'Sep 30, 2023',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'add' as const, color: '#BD8B11' },
+        { status: 'add' as const, color: '#744DEB' },
+        { status: 'add' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'none' as const,
+      action: 'add-data'
+    },
+    {
+      id: '17',
+      evaluationDate: 'Aug 31, 2023',
+      triangles: 'triangles',
+      triangleData: [
+        { status: 'completed' as const, color: '#BD8B11' },
+        { status: 'completed' as const, color: '#744DEB' },
+        { status: 'completed' as const, color: '#3DA3CB' }
+      ],
+      officialStatus: 'reviewed' as const,
+      action: 'download'
     }
-  ];
+  ]);
+
+  // Handler for when an "Add" triangle button is clicked
+  const handleAddTriangleClick = (rowId: string, triangleIndex: number) => {
+    // Map triangle index to type
+    const triangleTypeMap = {
+      0: 'on-risk-aqt' as const,
+      1: 'development-fit' as const,
+      2: 'on-risk-pyt' as const,
+    };
+
+    setCurrentRowId(rowId);
+    setCurrentTriangleIndex(triangleIndex);
+    setSelectedTriangleType(triangleTypeMap[triangleIndex as 0 | 1 | 2]);
+    setIsUploadModalOpen(true);
+  };
+
+  /**
+   * Handle Triangle Upload Success
+   *
+   * Updates triangle status from 'add' to 'pending-review' after successful upload.
+   * The triangle will show an animated progress icon until it's reviewed and approved.
+   */
+  const handleTriangleAdded = () => {
+    if (!currentRowId || currentTriangleIndex === null) return;
+
+    // Update the table data to change 'add' to 'pending-review' for the specific triangle
+    setTableData(prevData =>
+      prevData.map(row => {
+        if (row.id === currentRowId) {
+          const newTriangleData = [...row.triangleData];
+          if (newTriangleData[currentTriangleIndex].status === 'add') {
+            newTriangleData[currentTriangleIndex] = {
+              ...newTriangleData[currentTriangleIndex],
+              status: 'pending-review' as const
+            };
+          }
+          return { ...row, triangleData: newTriangleData };
+        }
+        return row;
+      })
+    );
+
+    setIsUploadModalOpen(false);
+    setSelectedTriangleType(null);
+    setCurrentRowId(null);
+    setCurrentTriangleIndex(null);
+  };
 
   const columns = [
     {
       key: 'evaluationDate',
       title: 'Evaluation Date',
+      icon: <CalendarTable color={colors.theme.primary450} />,
+      sortable: true,
       cellType: 'simple' as const,
-      width: 150
+      width: '30%',
+      align: 'left' as const,
+      headerAlign: 'left' as const
     },
     {
       key: 'triangles',
       title: 'Triangles',
+      icon: <TextTable color={colors.theme.primary450} />,
+      sortable: true,
       cellType: 'simple' as const,
-      width: 180,
+      width: '25%',
+      align: 'center' as const,
+      headerAlign: 'left' as const,
       render: (value: any, row: any) => (
         <div style={{
           display: 'flex',
-          gap: '12px',
+          gap: '50px',
           alignItems: 'center',
-          justifyContent: 'flex-start',
+          justifyContent: 'center',
           padding: '8px 0'
         }}>
           {row.triangleData.map((triangle: any, index: number) => (
@@ -215,6 +407,11 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
               <TriangleStatus
                 status={triangle.status}
                 color={triangle.color}
+                onClick={() => {
+                  if (triangle.status === 'add') {
+                    handleAddTriangleClick(row.id, index);
+                  }
+                }}
               />
             </div>
           ))}
@@ -224,15 +421,23 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
     {
       key: 'officialStatus',
       title: 'Official valuation',
+      icon: <TextTable color={colors.theme.primary450} />,
+      sortable: true,
       cellType: 'simple' as const,
       width: 220,
+      align: 'left' as const,
+      headerAlign: 'left' as const,
       render: (value: any) => <StatusIndicator status={value} />
     },
     {
       key: 'action',
       title: 'Actions',
+      icon: <TextTable color={colors.theme.primary450} />,
+      sortable: true,
       cellType: 'action' as const,
       width: 180,
+      align: 'right' as const,
+      headerAlign: 'left' as const,
       onAction: (actionType, text) => {
         console.log('Action clicked:', actionType, text);
         // Handle different actions here
@@ -243,11 +448,23 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
           case 'validate':
             console.log('Validate action for:', text);
             break;
-          case 'generate':
-            console.log('Generate action for:', text);
+          case 'download':
+            console.log('Download Cashflow action for:', text);
             break;
           case 'setup':
             console.log('Setup action for:', text);
+            break;
+          case 'add-data':
+            console.log('Add data action for:', text);
+            // Open the upload modal without pre-selecting a triangle
+            setSelectedTriangleType(null);
+            setCurrentRowId(null);
+            setCurrentTriangleIndex(null);
+            setIsUploadModalOpen(true);
+            break;
+          case 'run-valuation':
+            console.log('Run valuation action for:', text);
+            // Handle run valuation logic here
             break;
           default:
             console.log('Unknown action:', actionType);
@@ -295,9 +512,8 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
             margin: '0 0 8px 0',
             lineHeight: '1.2',
           }}>
-            <span style={{ color: colors.blackAndWhite.black500 }}>You're now viewing all Valuation Status of </span>
-            <span>{programName}</span>
-            <span>.</span>
+            <div style={{ color: colors.blackAndWhite.black500 }}>You're now viewing all Valuation Status of</div>
+            <div>{programName}</div>
           </h1>
         </div>
 
@@ -306,7 +522,12 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
           variant="primary"
           color="black"
           icon={<AddMedium color={colors.theme.primary700} />}
-          onClick={() => setIsUploadModalOpen(true)}
+          onClick={() => {
+            setSelectedTriangleType(null);
+            setCurrentRowId(null);
+            setCurrentTriangleIndex(null);
+            setIsUploadModalOpen(true);
+          }}
           style={{
             minWidth: '240px',
           }}
@@ -315,87 +536,109 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         </Button>
       </div>
 
-      {/* Table */}
-      <div style={{ marginBottom: '20px' }}>
-        <Table
-          columns={columns}
-          data={tableData}
-          showHeader={true}
-          showTabs={false}
-          showPagination={true}
-          paginationPosition="footer"
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          recordsInfo="10 of 60 Policy groups"
-        />
-      </div>
-
       {/* Triangle Legend */}
       <div style={{
         display: 'flex',
         gap: '30px',
         alignItems: 'center',
-        padding: '20px 0',
-        borderTop: `1px solid ${colors.theme.primary400}`,
+        padding: '0 0 40px 0',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            border: '2px solid #BD8B11',
-            backgroundColor: 'transparent',
-          }} />
+            width: '28px',
+            height: '28px',
+            borderRadius: borderRadius[4],
+            backgroundColor: '#EBCE87',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <TriangleStatusCheck color="#BD8B11" />
+          </div>
           <span style={{
             fontFamily: 'Söhne, system-ui, sans-serif',
             fontSize: '12px',
             fontWeight: 500,
-            color: colors.blackAndWhite.black500,
+            color: colors.blackAndWhite.black900,
           }}>
             On risk triangle (Accident-quarter)
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            border: '2px solid #744DEB',
-            backgroundColor: 'transparent',
-          }} />
+            width: '28px',
+            height: '28px',
+            borderRadius: borderRadius[4],
+            backgroundColor: '#C7B4F9',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <TriangleStatusCheck color="#744DEB" />
+          </div>
           <span style={{
             fontFamily: 'Söhne, system-ui, sans-serif',
             fontSize: '12px',
             fontWeight: 500,
-            color: colors.blackAndWhite.black500,
+            color: colors.blackAndWhite.black900,
           }}>
             Loss Development triangle (Accident-quarter)
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            border: '2px solid #3DA3CB',
-            backgroundColor: 'transparent',
-          }} />
+            width: '28px',
+            height: '28px',
+            borderRadius: borderRadius[4],
+            backgroundColor: '#9AD5F7',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <TriangleStatusCheck color="#3DA3CB" />
+          </div>
           <span style={{
             fontFamily: 'Söhne, system-ui, sans-serif',
             fontSize: '12px',
             fontWeight: 500,
-            color: colors.blackAndWhite.black500,
+            color: colors.blackAndWhite.black900,
           }}>
             Policy-Year triangle
           </span>
         </div>
       </div>
 
+      {/* Table */}
+      <Table
+        columns={columns}
+        data={tableData}
+        showHeader={true}
+        showTabs={false}
+        showPagination={true}
+        showFooterPagination={true}
+        currentPage={1}
+        totalPages={2}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        totalItems={tableData.length}
+        itemsPerPage={10}
+      />
+
       {/* Upload Triangles Modal */}
       <UploadTrianglesModal
         isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
+        onClose={() => {
+          setIsUploadModalOpen(false);
+          setSelectedTriangleType(null);
+          setCurrentRowId(null);
+          setCurrentTriangleIndex(null);
+        }}
         programName={programName}
+        directTriangleType={selectedTriangleType}
+        onTriangleAdded={handleTriangleAdded}
       />
     </Layout>
   );

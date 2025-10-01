@@ -18,6 +18,8 @@ export interface DatePickerModalProps {
   onApply: (startDate: string, endDate: string) => void;
   /** Callback when selection is cleared */
   onClear: () => void;
+  /** Simple mode - shows only a single calendar without time period selector */
+  simpleMode?: boolean;
 }
 
 type TimePeriod = 'custom' | 'current' | '1year' | '2years' | '3years' | '5years';
@@ -38,6 +40,7 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
   endDate = '',
   onApply,
   onClear,
+  simpleMode = false,
 }) => {
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('custom');
   const [internalStartDate, setInternalStartDate] = useState(startDate);
@@ -94,12 +97,14 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
   })() : null;
   
   // Show apply button based on period type
-  const showApplyButton = selectedPeriod === 'current' 
-    ? internalStartDate  // For current period, only need start date
-    : internalStartDate && internalEndDate; // For others, need both dates
-    
+  const showApplyButton = simpleMode
+    ? internalStartDate  // For simple mode, only need start date
+    : selectedPeriod === 'current'
+      ? internalStartDate  // For current period, only need start date
+      : internalStartDate && internalEndDate; // For others, need both dates
+
   // Determine if we should show single or dual calendar
-  const showSingleCalendar = selectedPeriod === 'current';
+  const showSingleCalendar = simpleMode || selectedPeriod === 'current';
   
   // Determine if end date should be disabled (auto-calculated)
   const isEndDateDisabled = ['1year', '2years', '3years', '5years'].includes(selectedPeriod);
@@ -320,79 +325,83 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
       onMouseDown={handleBackdropMouseDown}
     >
       <div style={modalStyles} onClick={handleModalClick}>
-        
-        {/* 1. Time Period Selector */}
-        <div style={{ marginBottom: spacing[6] }}>
-          <h3 style={{
-            ...typography.styles.bodyL,
-            fontFamily: typography.styles.bodyL.fontFamily.join(', '),
-            color: colors.blackAndWhite.black900,
-            margin: `0 0 ${spacing[4]} 0`,
-          }}>
-            Time period
-          </h3>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: showSingleCalendar ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
-            gap: spacing[2],
-            maxWidth: showSingleCalendar ? '380px' : '640px',
-          }}>
-            {TIME_PERIODS.map((period) => {
-              const isSelected = selectedPeriod === period.value;
-              return (
-                <Button
-                  key={period.value}
-                  variant="small"
-                  color={isSelected ? "dark" : "white"}
-                  onClick={() => handlePeriodChange(period.value)}
-                >
-                  {period.label}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* 2. Date Input Fields */}
-        <div style={{ 
-          display: 'flex', 
-          gap: spacing[4], 
-          marginBottom: spacing[6],
-        }}>
-          <div style={{ flex: 1 }}>
-            <Input
-              label="Start Date"
-              placeholder="DD/MM/YYYY"
-              value={displayStartDate}
-              onChange={handleStartDateInputChange}
-              type="text"
-            />
+        {/* 1. Time Period Selector - Hidden in simple mode */}
+        {!simpleMode && (
+          <div style={{ marginBottom: spacing[6] }}>
+            <h3 style={{
+              ...typography.styles.bodyL,
+              fontFamily: typography.styles.bodyL.fontFamily.join(', '),
+              color: colors.blackAndWhite.black900,
+              margin: `0 0 ${spacing[4]} 0`,
+            }}>
+              Time period
+            </h3>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: showSingleCalendar ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
+              gap: spacing[2],
+              maxWidth: showSingleCalendar ? '380px' : '640px',
+            }}>
+              {TIME_PERIODS.map((period) => {
+                const isSelected = selectedPeriod === period.value;
+                return (
+                  <Button
+                    key={period.value}
+                    variant="small"
+                    color={isSelected ? "dark" : "white"}
+                    onClick={() => handlePeriodChange(period.value)}
+                  >
+                    {period.label}
+                  </Button>
+                );
+              })}
+            </div>
           </div>
-          
-          {/* Only show end date input for non-current periods */}
-          {!showSingleCalendar && (
+        )}
+
+        {/* 2. Date Input Fields - Hidden in simple mode */}
+        {!simpleMode && (
+          <div style={{
+            display: 'flex',
+            gap: spacing[4],
+            marginBottom: spacing[6],
+          }}>
             <div style={{ flex: 1 }}>
               <Input
-                label="End date"
+                label="Start Date"
                 placeholder="DD/MM/YYYY"
-                value={displayEndDate}
-                onChange={handleEndDateInputChange}
+                value={displayStartDate}
+                onChange={handleStartDateInputChange}
                 type="text"
-                disabled={isEndDateDisabled}
-                helperText={isEndDateDisabled ? (() => {
-                  switch (selectedPeriod) {
-                    case '1year': return 'Auto-calculated (+1 year)';
-                    case '2years': return 'Auto-calculated (+2 years)';
-                    case '3years': return 'Auto-calculated (+3 years)';
-                    case '5years': return 'Auto-calculated (+5 years)';
-                    default: return 'Auto-calculated';
-                  }
-                })() : undefined}
               />
             </div>
-          )}
-        </div>
+
+            {/* Only show end date input for non-current periods */}
+            {!showSingleCalendar && (
+              <div style={{ flex: 1 }}>
+                <Input
+                  label="End date"
+                  placeholder="DD/MM/YYYY"
+                  value={displayEndDate}
+                  onChange={handleEndDateInputChange}
+                  type="text"
+                  disabled={isEndDateDisabled}
+                  helperText={isEndDateDisabled ? (() => {
+                    switch (selectedPeriod) {
+                      case '1year': return 'Auto-calculated (+1 year)';
+                      case '2years': return 'Auto-calculated (+2 years)';
+                      case '3years': return 'Auto-calculated (+3 years)';
+                      case '5years': return 'Auto-calculated (+5 years)';
+                      default: return 'Auto-calculated';
+                    }
+                  })() : undefined}
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 3. Calendar Section */}
         <div style={{ marginBottom: spacing[4] }}>

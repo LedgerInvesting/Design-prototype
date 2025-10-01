@@ -1162,6 +1162,285 @@ export const DataTypesShowcase: Story = {
   },
 };
 
+// Flexible Action Buttons - Copy/Paste Code Examples
+export const FlexibleActionButtons: Story = {
+  render: () => {
+    const { DownloadSmall, AddSmall, PlaySmall, CheckSmall, ConfigSmall, CalculatorSmall } = require('../icons');
+
+    return (
+      <div style={{
+        width: '100%',
+        maxWidth: '1400px',
+        margin: '0 auto',
+        padding: '20px',
+        boxSizing: 'border-box',
+      }}>
+        {/* Introduction */}
+        <div style={{
+          marginBottom: '30px',
+          padding: '20px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          fontSize: '14px',
+          lineHeight: '1.6'
+        }}>
+          <h3 style={{ margin: '0 0 12px 0', color: '#333' }}>🎨 Flexible Action Buttons</h3>
+          <p style={{ margin: '0 0 8px 0' }}>
+            The ActionCell component now supports fully customizable styling! You can either use predefined action types
+            OR pass custom icon, text, and colors for maximum flexibility.
+          </p>
+          <p style={{ margin: '0', color: '#666', fontWeight: 600 }}>
+            📋 Copy any code example below and paste it into your column definition!
+          </p>
+        </div>
+
+        {/* Table 1: Predefined Types */}
+        <div style={{ marginBottom: '40px' }}>
+          <h4 style={{ margin: '0 0 16px 0' }}>Option 1: Predefined Action Types (Easy)</h4>
+          <Table
+            columns={[
+              { key: 'name', title: 'Action Type', width: '150px', cellType: 'simple' },
+              { key: 'example', title: 'Example', width: '200px', cellType: 'action',
+                onAction: (type, text) => alert(`Clicked: ${text}`) },
+              { key: 'code', title: 'Copy This Code 👇', width: '700px', cellType: 'simple' },
+            ]}
+            data={[
+              {
+                name: 'Download',
+                example: 'download',
+                code: `{ key: 'action', cellType: 'action', onAction: (type, text) => console.log(type) }\n// Row data: { action: 'download' }`
+              },
+              {
+                name: 'Add Data',
+                example: 'add-data',
+                code: `{ key: 'action', cellType: 'action', onAction: (type, text) => console.log(type) }\n// Row data: { action: 'add-data' }`
+              },
+              {
+                name: 'Run Valuation',
+                example: 'run-valuation',
+                code: `{ key: 'action', cellType: 'action', onAction: (type, text) => console.log(type) }\n// Row data: { action: 'run-valuation' }`
+              },
+              {
+                name: 'Upload',
+                example: 'upload',
+                code: `{ key: 'action', cellType: 'action', onAction: (type, text) => console.log(type) }\n// Row data: { action: 'upload' }`
+              },
+              {
+                name: 'Validate',
+                example: 'validate',
+                code: `{ key: 'action', cellType: 'action', onAction: (type, text) => console.log(type) }\n// Row data: { action: 'validate' }`
+              },
+            ]}
+            showHeader={false}
+          />
+        </div>
+
+        {/* Table 2: Custom Styling */}
+        <div style={{ marginBottom: '40px' }}>
+          <h4 style={{ margin: '0 0 16px 0' }}>Option 2: Custom Action Buttons (Flexible)</h4>
+          <Table
+            columns={[
+              { key: 'name', title: 'Custom Style', width: '150px', cellType: 'simple' },
+              {
+                key: 'greenButton',
+                title: 'Green Add',
+                width: '180px',
+                cellType: 'action',
+                actionCellProps: {
+                  icon: <AddSmall color="#0f9342" />,
+                  text: 'Add New',
+                  iconBackgroundColor: '#C6FFC1'
+                },
+                onAction: () => alert('Green button clicked!')
+              },
+              {
+                key: 'blueButton',
+                title: 'Blue Download',
+                width: '180px',
+                cellType: 'action',
+                actionCellProps: {
+                  icon: <DownloadSmall color="#1253EE" />,
+                  text: 'Download',
+                  iconBackgroundColor: '#9AD5F7'
+                },
+                onAction: () => alert('Blue button clicked!')
+              },
+              {
+                key: 'customButton',
+                title: 'Custom Play',
+                width: '180px',
+                cellType: 'action',
+                actionCellProps: {
+                  icon: <PlaySmall color="#744DEB" />,
+                  text: 'Start Process',
+                  iconBackgroundColor: '#C7B4F9'
+                },
+                onAction: () => alert('Custom button clicked!')
+              },
+              { key: 'code', title: 'Copy This Code 👇', width: '600px', cellType: 'simple' },
+            ]}
+            data={[
+              {
+                name: 'Example 1',
+                greenButton: '',
+                blueButton: '',
+                customButton: '',
+                code: `{\n  key: 'action',\n  cellType: 'action',\n  actionCellProps: {\n    icon: <AddSmall color="#0f9342" />,\n    text: 'Add New',\n    iconBackgroundColor: '#C6FFC1'\n  },\n  onAction: () => alert('Clicked!')\n}`
+              },
+            ]}
+            showHeader={false}
+          />
+        </div>
+
+        {/* Code Examples Section */}
+        <div style={{
+          padding: '20px',
+          backgroundColor: '#17211B',
+          borderRadius: '8px',
+          color: '#fff',
+          fontFamily: 'monospace',
+          fontSize: '13px',
+          lineHeight: '1.6'
+        }}>
+          <h4 style={{ margin: '0 0 16px 0', color: '#64EF99' }}>📝 Complete Code Examples</h4>
+
+          <div style={{ marginBottom: '20px' }}>
+            <p style={{ margin: '0 0 8px 0', color: '#9AD5F7' }}>▸ Green "Add Data" Button:</p>
+            <pre style={{
+              margin: '0',
+              padding: '12px',
+              backgroundColor: '#0D1612',
+              borderRadius: '4px',
+              overflow: 'auto',
+              border: '1px solid #2A3832'
+            }}>{`{
+  key: 'action',
+  title: 'Actions',
+  cellType: 'action',
+  actionCellProps: {
+    icon: <AddSmall color="#0f9342" />,
+    text: 'Add data',
+    iconBackgroundColor: '#C6FFC1'
+  },
+  onAction: (type, text) => {
+    console.log('Action clicked:', text);
+    // Your custom logic here
+  }
+}`}</pre>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <p style={{ margin: '0 0 8px 0', color: '#9AD5F7' }}>▸ Blue "Download Cashflow" Button:</p>
+            <pre style={{
+              margin: '0',
+              padding: '12px',
+              backgroundColor: '#0D1612',
+              borderRadius: '4px',
+              overflow: 'auto',
+              border: '1px solid #2A3832'
+            }}>{`{
+  key: 'action',
+  title: 'Actions',
+  cellType: 'action',
+  actionCellProps: {
+    icon: <DownloadSmall color="#1253EE" />,
+    text: 'Download Cashflow',
+    iconBackgroundColor: '#9AD5F7'
+  },
+  onAction: (type, text) => {
+    handleDownload();
+  }
+}`}</pre>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <p style={{ margin: '0 0 8px 0', color: '#9AD5F7' }}>▸ Green "Run valuation" Button:</p>
+            <pre style={{
+              margin: '0',
+              padding: '12px',
+              backgroundColor: '#0D1612',
+              borderRadius: '4px',
+              overflow: 'auto',
+              border: '1px solid #2A3832'
+            }}>{`{
+  key: 'action',
+  title: 'Actions',
+  cellType: 'action',
+  actionCellProps: {
+    icon: <PlaySmall color="#0f9342" />,
+    text: 'Run valuation',
+    iconBackgroundColor: '#C6FFC1'
+  },
+  onAction: (type, text) => {
+    runValuationProcess();
+  }
+}`}</pre>
+          </div>
+
+          <div>
+            <p style={{ margin: '0 0 8px 0', color: '#9AD5F7' }}>▸ Using Predefined Types (Simpler):</p>
+            <pre style={{
+              margin: '0',
+              padding: '12px',
+              backgroundColor: '#0D1612',
+              borderRadius: '4px',
+              overflow: 'auto',
+              border: '1px solid #2A3832'
+            }}>{`// Column definition
+{
+  key: 'action',
+  title: 'Actions',
+  cellType: 'action',
+  onAction: (type, text) => console.log(type)
+}
+
+// Row data
+{
+  action: 'download'      // or 'add-data', 'run-valuation', etc.
+}`}</pre>
+          </div>
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**Flexible Action Button System** - One component, infinite possibilities!
+
+### Two Ways to Use:
+
+#### 1. Predefined Types (Quick & Easy)
+Use built-in action types: \`download\`, \`add-data\`, \`run-valuation\`, \`upload\`, \`validate\`, \`generate\`, \`setup\`
+
+#### 2. Custom Styling (Full Control)
+Pass custom \`actionCellProps\` with:
+- \`icon\`: Any React icon component
+- \`text\`: Custom button text
+- \`iconBackgroundColor\`: Custom background color for icon container
+- \`iconColor\`: Custom icon color (optional)
+
+### Benefits:
+✅ One component to maintain, not 10
+✅ Easy to customize per use case
+✅ Style changes apply everywhere automatically
+✅ Backward compatible with existing code
+✅ Copy/paste ready code examples
+
+### Available Icons:
+\`AddSmall\`, \`DownloadSmall\`, \`PlaySmall\`, \`CheckSmall\`, \`UploadSmall\`, \`ConfigSmall\`, \`CalculatorSmall\`
+
+### Color Palette:
+- Green background: \`#C6FFC1\` with icon color \`#0f9342\`
+- Blue background: \`#9AD5F7\` with icon color \`#1253EE\`
+- Purple background: \`#C7B4F9\` with icon color \`#744DEB\`
+        `,
+      },
+    },
+  },
+};
+
 // Column alignment showcase - both headers and cells
 export const ColumnAlignment: Story = {
   args: {

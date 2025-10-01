@@ -21,6 +21,12 @@ export interface TableColumn {
   hoverIcon?: 'download' | 'config' | 'open'; // For document cells hover icon
   actionType?: ActionType; // For action cells (edit, upload, validate, add, delete, plus)
   onAction?: (actionType: ActionType, text: string) => void; // For action cells
+  actionCellProps?: {
+    icon?: React.ReactNode;
+    text?: string;
+    iconBackgroundColor?: string;
+    iconColor?: string;
+  }; // For custom action cell styling
   customCellProps?: {
     alignment?: 'left' | 'center' | 'right';
     direction?: 'horizontal' | 'vertical';
@@ -501,13 +507,17 @@ export const TableBody: React.FC<TableBodyProps> = ({
         // For action cells, expect the value to be an ActionType string
         if (typeof value === 'string') {
           // Use the value as actionType if it's a valid ActionType, otherwise use column default
-          const validActionTypes = ['upload', 'validate', 'generate', 'setup'];
+          const validActionTypes = ['upload', 'validate', 'generate', 'setup', 'download', 'add-data', 'run-valuation'];
           const actionType = validActionTypes.includes(value) ? value as ActionType : (column.actionType || 'upload');
           return (
             <div data-cell-type="action" style={{ cursor: 'pointer' }}>
               <ActionCell
                 actionType={actionType}
                 onClick={column.onAction || ((actionType, text) => console.log('Action:', actionType, text))}
+                icon={column.actionCellProps?.icon}
+                text={column.actionCellProps?.text}
+                iconBackgroundColor={column.actionCellProps?.iconBackgroundColor}
+                iconColor={column.actionCellProps?.iconColor}
               />
             </div>
           );

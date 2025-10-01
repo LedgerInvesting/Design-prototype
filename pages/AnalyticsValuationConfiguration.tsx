@@ -103,17 +103,16 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
         {/* Action Buttons */}
         <div style={{
           display: 'flex',
-          gap: '20px',
+          gap: '10px',
           alignItems: 'center',
         }}>
           <Button
             variant="primary"
-            color="white"
+            color="whiteNoBorder"
             showIcon={false}
             onClick={handleCancel}
             style={{
-              border: `1px solid ${colors.theme.primary400}`,
-              minWidth: '196px',
+              minWidth: '80px',
             }}
           >
             Cancel

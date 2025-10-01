@@ -38,6 +38,8 @@ export interface DatePickerProps {
   endDate?: string;
   /** Date range selection handler */
   onDateRangeChange?: (startDate: string, endDate: string) => void;
+  /** Simple mode - shows only a single calendar without time period selector */
+  simpleMode?: boolean;
 }
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
@@ -57,6 +59,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
   onCalendarClick,
   endDate = '',
   onDateRangeChange,
+  simpleMode = false,
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,15 +108,15 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
 
     // Create the display format
     const formattedStartDate = formatDateForDisplay(startDate);
-    
+
     let dateDisplay = '';
     if (endDate) {
       // Date range format: "DD/MM/YYYY to DD/MM/YYYY"
       const formattedEndDate = formatDateForDisplay(endDate);
       dateDisplay = `${formattedStartDate} to ${formattedEndDate}`;
     } else {
-      // Single date format for "current" period: "From DD/MM/YYYY"
-      dateDisplay = `From ${formattedStartDate}`;
+      // Single date format - simple mode shows just the date, otherwise "From DD/MM/YYYY"
+      dateDisplay = simpleMode ? formattedStartDate : `From ${formattedStartDate}`;
     }
     
     // Update the input field with the formatted display
@@ -316,6 +319,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(({
         endDate={endDate}
         onApply={handleDateRangeApply}
         onClear={handleDateRangeClear}
+        simpleMode={simpleMode}
       />
     </div>
   );

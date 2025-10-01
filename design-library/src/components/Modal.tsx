@@ -62,7 +62,7 @@ export interface ModalProps {
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
-  animationDuration = 200,
+  animationDuration = 400,
   title,
   subtitle,
   children,
@@ -193,7 +193,7 @@ export const Modal: React.FC<ModalProps> = ({
     alignItems: centered && !buttonRef && !position ? 'center' : 'flex-start',
     justifyContent: centered && !buttonRef && !position ? 'center' : 'flex-start',
     zIndex: 10000,
-    transition: `background-color ${animationDuration}ms ease-out, backdrop-filter ${animationDuration}ms ease-out`,
+    transition: `background-color 400ms cubic-bezier(0.25, 0.8, 0.25, 1), backdrop-filter 400ms cubic-bezier(0.25, 0.8, 0.25, 1)`,
     // Reset any parent transforms to ensure viewport-relative positioning
     transform: 'none',
   };
@@ -228,10 +228,20 @@ export const Modal: React.FC<ModalProps> = ({
     overflow: 'auto',
     position: 'relative',
     ...calculatedPosition,
-    // Animation styles
-    opacity: isAnimating ? 1 : 0,
-    transform: `${calculatedPosition.transform || ''} scale(${isAnimating ? 1 : 0.95})`.trim(),
-    transition: `opacity ${animationDuration}ms ease-out, transform ${animationDuration}ms ease-out`,
+    /**
+     * Animation styles - matching page transitions
+     *
+     * Uses separate 'scale' property instead of combining with 'transform' to prevent
+     * position shifting (e.g., the "sliding from bottom-right" bug).
+     *
+     * Animation: Subtle fade (0.95 → 1 opacity) + scale (0.98 → 1) over 400ms
+     * Easing: cubic-bezier(0.25, 0.8, 0.25, 1) - smooth, matching page transitions
+     */
+    opacity: isAnimating ? 1 : 0.95,
+    transform: calculatedPosition.transform || 'none',
+    transformOrigin: 'center center',
+    scale: isAnimating ? '1' : '0.98',
+    transition: `opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1), scale 400ms cubic-bezier(0.25, 0.8, 0.25, 1)`,
     ...modalStyle,
   };
 

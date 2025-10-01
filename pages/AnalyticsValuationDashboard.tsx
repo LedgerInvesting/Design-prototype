@@ -4,11 +4,11 @@ import { Layout } from '@design-library/pages';
 import { Button, DashboardCard, ChartTooltip } from '@design-library/components';
 import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo } from '@design-library/icons';
+import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 import { useSettings } from '@design-library/contexts';
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
-import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // Custom StatusCheck component with proper color support
 const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
@@ -21,7 +21,7 @@ const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
 /**
  * Triangle Tooltip Component
  *
- * Custom tooltip wrapper that displays triangle type legend when hovering over StatusCheck icons.
+ * Custom tooltip wrapper that displays triangle type legend when hovering over status icons.
  * This replaces the InfoTooltip component to avoid unwanted "i" icon display.
  *
  * Features:
@@ -170,8 +170,15 @@ interface ValuationDashboardProps {
   };
 }
 
+/**
+ * Status Dot Component
+ *
+ * Displays status indicators for triangle uploads and official valuations.
+ * - Triangle icons (when position is set): StatusCheck for reviewed, StatusProgressTable for pending review
+ * - Status dots (when position is not set): colored dots for reviewed/pending/none states
+ */
 interface StatusDotProps {
-  status: 'reviewed' | 'pending' | 'none';
+  status: 'reviewed' | 'pending' | 'none' | 'add' | 'pending-review';
   position?: 'left' | 'center' | 'right';
 }
 
@@ -190,14 +197,17 @@ const StatusDot: React.FC<StatusDotProps> = ({ status, position }) => {
       switch (status) {
         case 'reviewed': return '#74efa3';
         case 'pending': return '#ffdd61';
-        case 'none': return '#e1eae5';
-        default: return '#e1eae5';
+        case 'none': return '#ff8588';
+        default: return '#ff8588';
       }
     }
   };
 
   if (position) {
-    // Render StatusCheck icon for triangle columns
+    // Render StatusProgressTable icon for triangles pending review, StatusCheck for reviewed
+    if (status === 'pending-review') {
+      return <StatusProgressTable color={getColor()} />;
+    }
     return <StatusCheck color={getColor()} />;
   }
 
@@ -215,12 +225,14 @@ const StatusDot: React.FC<StatusDotProps> = ({ status, position }) => {
 };
 
 interface StatusRowProps {
+  id: string;
   date: string;
-  triangleStatuses: ('reviewed' | 'pending' | 'none')[];
+  triangleStatuses: ('reviewed' | 'pending' | 'none' | 'add' | 'pending-review')[];
   officialStatus: string;
+  onAddTriangleClick: (rowId: string, position: 'left' | 'center' | 'right') => void;
 }
 
-const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialStatus }) => {
+const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, officialStatus, onAddTriangleClick }) => {
   const colors = useSemanticColors();
 
   return (
@@ -247,9 +259,31 @@ const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialS
               const position = index === 0 ? 'left' : index === 1 ? 'center' : 'right';
               return (
                 <div key={index} style={{ width: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <TriangleTooltip>
-                    <StatusDot status={status} position={position} />
-                  </TriangleTooltip>
+                  {status === 'add' ? (
+                    <Button
+                      variant="icon"
+                      color="white"
+                      icon={
+                        <div style={{ transform: 'scale(0.944)' }}>
+                          <StatusAddTable color={colors.theme.main} />
+                        </div>
+                      }
+                      onClick={() => onAddTriangleClick(id, position)}
+                      shape="square"
+                      style={{
+                        boxShadow: shadows.small,
+                        transform: 'scale(1)',
+                        transition: 'transform 0.2s ease',
+                        width: '28px',
+                        height: '28px',
+                        padding: '4px',
+                      }}
+                    />
+                  ) : (
+                    <TriangleTooltip>
+                      <StatusDot status={status} position={position} />
+                    </TriangleTooltip>
+                  )}
                 </div>
               );
             })}
@@ -266,7 +300,13 @@ const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialS
 
         {/* Download Column */}
         <div style={{ width: '70px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <DownloadSmall color={colors.theme.primary450} />
+          <Button
+            variant="icon"
+            color="light"
+            icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
+            onClick={() => console.log('Download clicked')}
+            shape="square"
+          />
         </div>
       </div>
 
@@ -349,7 +389,7 @@ const ChartComponent: React.FC = () => {
       </div>
 
       {/* Chart */}
-      <div style={{ height: '550px', overflow: 'visible', outline: 'none' }}>
+      <div style={{ height: '468px', overflow: 'visible', outline: 'none' }}>
         <ResponsiveContainer width="100%" height="100%" style={{ overflow: 'visible', outline: 'none' }}>
           <ComposedChart data={chartData} margin={{ top: 50, right: 50, left: 15, bottom: 30 }} style={{ overflow: 'visible', outline: 'none' }}>
             <CartesianGrid strokeDasharray="3 3" stroke={colors.theme.primary450} />
@@ -358,24 +398,26 @@ const ChartComponent: React.FC = () => {
               dataKey="month"
               stroke={colors.theme.primary450}
               axisLine={{ stroke: colors.blackAndWhite.black900 }}
-              tick={{ fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }}
+              tickLine={false}
+              tick={{ fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }}
               label={{
                 value: 'Evaluation Date',
                 position: 'insideBottom',
                 offset: -10,
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               }}
             />
             <YAxis
               stroke={colors.theme.primary450}
               axisLine={{ stroke: colors.theme.primary450 }}
-              tick={{ fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }}
+              tickLine={false}
+              tick={{ fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }}
               tickFormatter={(value) => `${value}%`}
               label={{
                 value: 'Loss Ratio',
                 angle: -90,
                 position: 'insideLeft',
-                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               }}
               domain={[0, 120]}
               ticks={[0, 20, 40, 60, 80, 100, 120]}
@@ -466,16 +508,60 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
   };
   const data = valuationData || defaultData;
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedTriangleType, setSelectedTriangleType] = useState<'on-risk-aqt' | 'development-fit' | 'on-risk-pyt' | null>(null);
+  const [statusData, setStatusData] = useState([
+    { id: '1', date: 'Jan 30, 2025', triangleStatuses: ['reviewed', 'pending', 'add'], officialStatus: 'Reviewed' },
+    { id: '2', date: 'Dec 31, 2024', triangleStatuses: ['reviewed', 'add', 'none'], officialStatus: 'Pending' },
+    { id: '3', date: 'Nov 30, 2024', triangleStatuses: ['reviewed', 'none', 'none'], officialStatus: 'No Valuation' },
+    { id: '4', date: 'Oct 31, 2024', triangleStatuses: ['reviewed', 'pending', 'add'], officialStatus: 'Reviewed' },
+    { id: '5', date: 'Sep 30, 2024', triangleStatuses: ['reviewed', 'pending', 'reviewed'], officialStatus: 'Reviewed' },
+    { id: '6', date: 'Aug 31, 2024', triangleStatuses: ['reviewed', 'reviewed', 'reviewed'], officialStatus: 'Reviewed' },
+    { id: '7', date: 'Jul 31, 2024', triangleStatuses: ['reviewed', 'add', 'none'], officialStatus: 'Pending' },
+  ]);
+  const [currentRowId, setCurrentRowId] = useState<string | null>(null);
 
-  const statusData = [
-    { date: 'Jan 30, 2025', triangleStatuses: ['reviewed', 'pending', 'none'], officialStatus: 'Reviewed' },
-    { date: 'Dec 31, 2024', triangleStatuses: ['reviewed', 'pending', 'none'], officialStatus: 'Pending' },
-    { date: 'Nov 30, 2024', triangleStatuses: ['reviewed', 'none', 'none'], officialStatus: 'No Valuation' },
-    { date: 'Oct 31, 2024', triangleStatuses: ['reviewed', 'pending', 'none'], officialStatus: 'Reviewed' },
-    { date: 'Sep 30, 2024', triangleStatuses: ['reviewed', 'pending', 'reviewed'], officialStatus: 'Reviewed' },
-    { date: 'Aug 31, 2024', triangleStatuses: ['reviewed', 'reviewed', 'reviewed'], officialStatus: 'Reviewed' },
-    { date: 'Jul 31, 2024', triangleStatuses: ['reviewed', 'pending', 'none'], officialStatus: 'Pending' },
-  ] as const;
+  const handleAddTriangleClick = (rowId: string, position: 'left' | 'center' | 'right') => {
+    // Map position to triangle type
+    const triangleTypeMap = {
+      'left': 'on-risk-aqt' as const,
+      'center': 'development-fit' as const,
+      'right': 'on-risk-pyt' as const,
+    };
+
+    setCurrentRowId(rowId);
+    setSelectedTriangleType(triangleTypeMap[position]);
+    setIsUploadModalOpen(true);
+  };
+
+  /**
+   * Handle Triangle Upload Success
+   *
+   * Updates triangle status from 'add' to 'pending-review' after successful upload.
+   * The triangle will show an animated progress icon until it's reviewed and approved.
+   */
+  const handleTriangleAdded = () => {
+    if (!currentRowId || !selectedTriangleType) return;
+
+    // Update the status data to change 'add' to 'pending-review' for the specific triangle
+    setStatusData(prevData =>
+      prevData.map(row => {
+        if (row.id === currentRowId) {
+          const newStatuses = [...row.triangleStatuses];
+          const positionIndex = selectedTriangleType === 'on-risk-aqt' ? 0 :
+                                selectedTriangleType === 'development-fit' ? 1 : 2;
+          if (newStatuses[positionIndex] === 'add') {
+            newStatuses[positionIndex] = 'pending-review';
+          }
+          return { ...row, triangleStatuses: newStatuses };
+        }
+        return row;
+      })
+    );
+
+    setIsUploadModalOpen(false);
+    setSelectedTriangleType(null);
+    setCurrentRowId(null);
+  };
 
   return (
       <Layout
@@ -503,10 +589,12 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               margin: '0 0 8px 0',
               lineHeight: '1.2',
             }}>
-              <span style={{ color: colors.blackAndWhite.black500 }}>You're now viewing </span>
-              <span>{data.programName}</span>
-              <span>.</span>
-              <span style={{ color: colors.blackAndWhite.black500 }}> Valuation dashboard</span>
+              <div>
+                <span style={{ color: colors.blackAndWhite.black500 }}>You're now viewing </span>
+                <span>{data.programName}</span>
+                <span>.</span>
+              </div>
+              <div style={{ color: colors.blackAndWhite.black500 }}>Valuation dashboard</div>
             </h1>
             {settings.appIntegration.showExtraCardButtons && (
               <div style={{
@@ -747,8 +835,12 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             title="Latest Valuation Status"
             icon={<CardsText color={colors.theme.primary700} />}
             button={{
-              text: "VIEW ALL",
-              onClick: () => onNavigateToPage('analytics-valuation-status')
+              text: "Add valuation",
+              onClick: () => {
+                setSelectedTriangleType(null);
+                setCurrentRowId(null);
+                setIsUploadModalOpen(true);
+              }
             }}
             width="50%"
           >
@@ -797,22 +889,23 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               {statusData.map((row, index) => (
                 <StatusRow
                   key={index}
+                  id={row.id}
                   date={row.date}
                   triangleStatuses={row.triangleStatuses}
                   officialStatus={row.officialStatus}
+                  onAddTriangleClick={handleAddTriangleClick}
                 />
               ))}
             </div>
 
-            {/* Add New Button */}
+            {/* View All Button */}
             <div style={{ padding: '20px 30px 26px 30px' }}>
               <Button
-                variant="tertiary"
+                variant="primary"
                 color="white"
-                icon={<AddMedium color={colors.blackAndWhite.black900} />}
-                onClick={() => setIsUploadModalOpen(true)}
+                icon={<ListMedium color={colors.blackAndWhite.black900} />}
+                onClick={() => onNavigateToPage('analytics-valuation-status')}
                 style={{
-                  border: `1px solid ${colors.theme.primary400}`,
                   width: '100%',
                   display: 'flex',
                   justifyContent: 'center',
@@ -824,7 +917,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
                   minWidth: '100%',
                 }}
               >
-                Add New Valuation Data
+                View all Valuation status
               </Button>
             </div>
           </DashboardCard>
@@ -838,6 +931,8 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
           isOpen={isUploadModalOpen}
           onClose={() => setIsUploadModalOpen(false)}
           programName={data.programName}
+          directTriangleType={selectedTriangleType}
+          onTriangleAdded={handleTriangleAdded}
         />
       </Layout>
   );
