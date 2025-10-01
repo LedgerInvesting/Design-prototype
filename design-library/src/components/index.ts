@@ -68,6 +68,12 @@ export type { DocumentCellProps } from './DocumentCell';
 export { CustomCell } from './CustomCell';
 export type { CustomCellProps, CustomCellElement, TextElement, IconElement, ButtonElement, BadgeElement, StatusElement, CustomCellContentType, TextStyle, TextWeight, TextColor, BadgeVariant, StatusType, CellAlignment, CellDirection } from './CustomCell';
 
+// Chart Components
+export { Chart } from './Chart';
+export type { ChartProps } from './Chart';
+export { ChartCustomTick } from './ChartCustomTick';
+export { ChartTooltip } from './ChartTooltip';
+
 // Re-export design system
 export * from '../tokens';
 export * from '../icons/index';

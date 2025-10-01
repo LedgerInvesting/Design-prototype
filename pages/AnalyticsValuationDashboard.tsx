@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
-import { Button, DashboardCard } from '@design-library/components';
+import { Button, DashboardCard, Chart, ChartCustomTick, ChartTooltip } from '@design-library/components';
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 import { useSettings } from '@design-library/contexts';
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
+import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 // Custom StatusCheck component with proper color support
 const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
@@ -256,7 +257,7 @@ const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialS
         </div>
 
         {/* Official Valuation Column */}
-        <div style={{ width: '120px', padding: '10px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ width: '120px', padding: '10px 0', display: 'flex', alignItems: 'center', gap: '12px', marginRight: '40px' }}>
           <StatusDot status={officialStatus === 'Reviewed' ? 'reviewed' : officialStatus === 'Pending' ? 'pending' : 'none'} />
           <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
             {officialStatus}
@@ -283,12 +284,48 @@ const StatusRow: React.FC<StatusRowProps> = ({ date, triangleStatuses, officialS
 const ChartComponent: React.FC = () => {
   const colors = useSemanticColors();
 
+  // Approximated data from Figma design
+  // Uncertainty bands: inner (±5%) and outer (±10%) around mean
+  const chartData = [
+    {
+      month: 'Mar 2024', paid: 0, reported: 30, mean: 65,
+      outerBandBase: 55, outerBandHeight: 20, // 55 to 75 (mean ± 10%)
+      innerBandBase: 60, innerBandHeight: 10  // 60 to 70 (mean ± 5%)
+    },
+    {
+      month: 'May 2024', paid: 20, reported: 39, mean: 70,
+      outerBandBase: 60, outerBandHeight: 20, // 60 to 80
+      innerBandBase: 65, innerBandHeight: 10  // 65 to 75
+    },
+    {
+      month: 'Jul 2024', paid: 25, reported: 50, mean: 78,
+      outerBandBase: 68, outerBandHeight: 20, // 68 to 88
+      innerBandBase: 73, innerBandHeight: 10  // 73 to 83
+    },
+    {
+      month: 'Sep 2024', paid: 25, reported: 65, mean: 90,
+      outerBandBase: 80, outerBandHeight: 20, // 80 to 100
+      innerBandBase: 85, innerBandHeight: 10  // 85 to 95
+    },
+    {
+      month: 'Nov 2024', paid: 30, reported: 80, mean: 95,
+      outerBandBase: 85, outerBandHeight: 20, // 85 to 105
+      innerBandBase: 90, innerBandHeight: 10  // 90 to 100
+    },
+    {
+      month: 'Jan 2025', paid: 60, reported: 80, mean: 98,
+      outerBandBase: 88, outerBandHeight: 20, // 88 to 108
+      innerBandBase: 93, innerBandHeight: 10  // 93 to 103
+    },
+  ];
+
   return (
     <div style={{
       backgroundColor: colors.blackAndWhite.white,
       borderRadius: borderRadius[12],
       border: `1px solid ${colors.theme.primary400}`,
-      overflow: 'hidden',
+      overflow: 'visible',
+      outline: 'none',
     }}>
       {/* Header */}
       <div style={{
@@ -296,17 +333,7 @@ const ChartComponent: React.FC = () => {
         borderBottom: `1px solid ${colors.theme.primary400}`,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
-          <div style={{
-            width: '14px',
-            height: '18px',
-            backgroundColor: colors.theme.primary300,
-            borderRadius: '3px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <div style={{ width: '6px', height: '6px', backgroundColor: colors.theme.primary700 }} />
-          </div>
+          <CardsGraph color="#8b68f5" />
           <div style={{ ...typography.styles.bodyL, color: colors.blackAndWhite.black900 }}>
             Valuation runs over time
           </div>
@@ -321,153 +348,103 @@ const ChartComponent: React.FC = () => {
         </div>
       </div>
 
-      {/* Legend */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '20px',
-        padding: '20px',
-        height: '50px',
-        alignItems: 'center',
-      }}>
-        {[
-          { label: 'Paid Loss Ratio', color: '#8b68f5' },
-          { label: 'Reported Loss Ratio', color: '#ffd028' },
-          { label: 'Mean Loss Ratio', color: '#0f9342' },
-        ].map((item, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '6px',
-              height: '6px',
-              backgroundColor: item.color,
-              borderRadius: '50%',
-            }} />
-            <div style={{ ...typography.styles.captionS, color: colors.blackAndWhite.black500 }}>
-              {item.label}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Chart */}
+      <div style={{ height: '550px', overflow: 'visible', outline: 'none' }}>
+        <ResponsiveContainer width="100%" height="100%" style={{ overflow: 'visible', outline: 'none' }}>
+          <ComposedChart data={chartData} margin={{ top: 50, right: 50, left: 15, bottom: 30 }} style={{ overflow: 'visible', outline: 'none' }}>
+            <CartesianGrid strokeDasharray="3 3" stroke={colors.theme.primary450} />
 
-      {/* Chart Area */}
-      <div style={{
-        height: '286px',
-        position: 'relative',
-        margin: '0 50px',
-        display: 'flex',
-        alignItems: 'flex-end',
-      }}>
-        {/* Y-axis labels */}
-        <div style={{
-          width: '50px',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          paddingRight: '10px',
-          paddingTop: '20px',
-          paddingBottom: '40px',
-        }}>
-          {['120%', '100%', '80%', '60%', '40%', '0%'].map((label, index) => (
-            <div key={index} style={{ ...typography.styles.captionS, color: colors.blackAndWhite.black500 }}>
-              {label}
-            </div>
-          ))}
-        </div>
-
-        {/* Chart body */}
-        <div style={{
-          flex: 1,
-          height: '237px',
-          marginBottom: '49px',
-          position: 'relative',
-          backgroundImage: `
-            linear-gradient(to right, transparent 0%, transparent 16.6%, #e1eae5 16.6%, #e1eae5 16.7%, transparent 16.7%, transparent 33.2%, #e1eae5 33.2%, #e1eae5 33.3%, transparent 33.3%, transparent 49.8%, #e1eae5 49.8%, #e1eae5 49.9%, transparent 49.9%, transparent 66.4%, #e1eae5 66.4%, #e1eae5 66.5%, transparent 66.5%, transparent 83%, #e1eae5 83%, #e1eae5 83.1%, transparent 83.1%),
-            linear-gradient(to bottom, #e1eae5 0%, #e1eae5 1px, transparent 1px, transparent 20%, #e1eae5 20%, #e1eae5 21%, transparent 21%, transparent 40%, #e1eae5 40%, #e1eae5 41%, transparent 41%, transparent 60%, #e1eae5 60%, #e1eae5 61%, transparent 61%, transparent 80%, #e1eae5 80%, #e1eae5 81%, transparent 81%)
-          `,
-        }}>
-          {/* Mock chart lines */}
-          <svg
-            width="100%"
-            height="100%"
-            style={{ position: 'absolute', top: 0, left: 0 }}
-            viewBox="0 0 996 237"
-          >
-            {/* Green uncertainty band */}
-            <path
-              d="M0,190 L166,185 L332,180 L498,175 L664,170 L830,165 L996,160 L996,120 L830,125 L664,130 L498,135 L332,140 L166,145 L0,150 Z"
-              fill="#e9f1ec"
-              opacity="0.5"
+            <XAxis
+              dataKey="month"
+              stroke={colors.theme.primary450}
+              axisLine={{ stroke: colors.blackAndWhite.black900 }}
+              tick={{ fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }}
+              label={{
+                value: 'Evaluation Date',
+                position: 'insideBottom',
+                offset: -10,
+                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+              }}
+            />
+            <YAxis
+              stroke={colors.theme.primary450}
+              axisLine={{ stroke: colors.theme.primary450 }}
+              tick={{ fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }}
+              tickFormatter={(value) => `${value}%`}
+              label={{
+                value: 'Loss Ratio',
+                angle: -90,
+                position: 'insideLeft',
+                style: { fill: colors.blackAndWhite.black700, ...typography.styles.dataXS }
+              }}
+              domain={[0, 120]}
+              ticks={[0, 20, 40, 60, 80, 100, 120]}
             />
 
-            {/* Green main line */}
-            <path
-              d="M0,170 L166,165 L332,160 L498,155 L664,150 L830,145 L996,140"
+            {/* Outer uncertainty band (±10%, lighter) */}
+            <Area
+              type="monotone"
+              dataKey="outerBandBase"
+              stroke="none"
+              fill="transparent"
+              stackId="outer"
+            />
+            <Area
+              type="monotone"
+              dataKey="outerBandHeight"
+              stroke="none"
+              fill="#64EF99"
+              fillOpacity={0.3}
+              stackId="outer"
+            />
+
+            {/* Inner uncertainty band (±5%, darker) */}
+            <Area
+              type="monotone"
+              dataKey="innerBandBase"
+              stroke="none"
+              fill="transparent"
+              stackId="inner"
+            />
+            <Area
+              type="monotone"
+              dataKey="innerBandHeight"
+              stroke="none"
+              fill="#64EF99"
+              fillOpacity={0.6}
+              stackId="inner"
+            />
+
+            {/* Lines */}
+            <Line
+              type="monotone"
+              dataKey="mean"
               stroke="#0f9342"
-              strokeWidth="2"
-              fill="none"
+              strokeWidth={2}
+              dot={{ fill: '#0f9342', r: 4 }}
+              activeDot={{ r: 6, fill: '#0f9342', stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
             />
-
-            {/* Yellow dashed line */}
-            <path
-              d="M0,200 L166,185 L332,170 L498,155 L664,140 L830,125 L996,110"
+            <Line
+              type="monotone"
+              dataKey="reported"
               stroke="#ffd028"
-              strokeWidth="2"
-              strokeDasharray="4,4"
-              fill="none"
+              strokeWidth={2}
+              strokeDasharray="5 5"
+              dot={{ fill: '#ffd028', r: 4 }}
+              activeDot={{ r: 6, fill: '#ffd028', stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
             />
-
-            {/* Purple line */}
-            <path
-              d="M0,210 L166,205 L332,200 L498,195 L664,190 L830,185 L996,180"
+            <Line
+              type="monotone"
+              dataKey="paid"
               stroke="#8b68f5"
-              strokeWidth="2"
-              fill="none"
+              strokeWidth={2}
+              dot={{ fill: '#8b68f5', r: 4 }}
+              activeDot={{ r: 6, fill: '#8b68f5', stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
             />
-          </svg>
-        </div>
 
-        {/* Y-axis label (right) */}
-        <div style={{
-          width: '50px',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <div style={{
-            ...typography.styles.captionS,
-            color: colors.blackAndWhite.black500,
-            transform: 'rotate(-90deg)',
-            whiteSpace: 'nowrap',
-          }}>
-            Loss Ratio
-          </div>
-        </div>
-      </div>
-
-      {/* X-axis labels */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '10px 100px 20px 100px',
-        ...typography.styles.captionS,
-        color: colors.blackAndWhite.black500,
-      }}>
-        {['Mar 2024', 'May 2024', 'Jul 2024', 'Sep 2024', 'Nov 2024', 'Jan 2025'].map((label, index) => (
-          <div key={index}>{label}</div>
-        ))}
-      </div>
-
-      {/* Bottom label */}
-      <div style={{
-        textAlign: 'center',
-        padding: '10px',
-        ...typography.styles.captionS,
-        color: colors.blackAndWhite.black500,
-      }}>
-        Evaluation Date
+            <Tooltip content={<ChartTooltip />} cursor={false} />
+          </ComposedChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
@@ -574,11 +551,10 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
           </div>
           <Button
             variant="primary"
-            color="white"
-            icon={<SettingsMedium color={colors.blackAndWhite.black900} />}
+            color="black"
+            icon={<SettingsMedium color={colors.blackAndWhite.white} />}
             onClick={() => onNavigateToPage('analytics-valuation-configuration', { programName: data.programName })}
             style={{
-              border: `1px solid ${colors.theme.primary400}`,
               minWidth: '200px',
               whiteSpace: 'nowrap',
               flexShrink: 0,
@@ -784,14 +760,14 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               <div style={{
                 width: '107px',
                 ...typography.styles.bodyM,
-                color: colors.theme.primary450,
+                color: colors.blackAndWhite.black500,
               }}>
                 Evaluation Date
               </div>
               <div style={{
                 flex: 1,
                 ...typography.styles.bodyM,
-                color: colors.theme.primary450,
+                color: colors.blackAndWhite.black500,
                 textAlign: 'center',
                 marginLeft: '-10px',
               }}>
@@ -800,15 +776,16 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
               <div style={{
                 width: '120px',
                 ...typography.styles.bodyM,
-                color: colors.theme.primary450,
+                color: colors.blackAndWhite.black500,
                 textAlign: 'left',
+                marginRight: '40px',
               }}>
                 official valuation
               </div>
               <div style={{
                 width: '70px',
                 ...typography.styles.bodyM,
-                color: colors.theme.primary450,
+                color: colors.blackAndWhite.black500,
                 textAlign: 'right',
               }}>
                 Cashflow file
@@ -830,7 +807,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             {/* Add New Button */}
             <div style={{ padding: '20px 30px 26px 30px' }}>
               <Button
-                variant="primary"
+                variant="tertiary"
                 color="white"
                 icon={<AddMedium color={colors.blackAndWhite.black900} />}
                 onClick={() => setIsUploadModalOpen(true)}

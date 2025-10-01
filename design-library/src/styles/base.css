@@ -271,3 +271,16 @@ p, h1, h2, h3, h4, h5, h6 {
     transform: rotate(360deg);
   }
 }
+
+/* Remove focus outline from charts */
+.recharts-wrapper,
+.recharts-surface,
+svg[class*="recharts"] {
+  outline: none !important;
+}
+
+.recharts-wrapper:focus,
+.recharts-surface:focus,
+svg[class*="recharts"]:focus {
+  outline: none !important;
+}

@@ -48,5 +48,8 @@
   "peerDependencies": {
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0"
+  },
+  "dependencies": {
+    "recharts": "^3.2.1"
   }
 }
