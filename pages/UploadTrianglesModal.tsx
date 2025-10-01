@@ -172,6 +172,11 @@ export const UploadTrianglesModal: React.FC<UploadTrianglesModalProps> = ({
 
     // If this is a direct triangle addition (from dashboard), call the callback
     if (directTriangleType && onTriangleAdded) {
+      // Reset modal state BEFORE calling the callback to prevent flash
+      setSelectedTriangle(null);
+      setUploadMode('upload');
+      setSelectedFile('');
+      setSelectedExisting('');
       onTriangleAdded();
       return;
     }
