@@ -8,6 +8,7 @@ import {
   DocumentCell,
   Modal,
   Button,
+  ButtonSelector,
   colors,
   typography,
   borderRadius,
@@ -48,6 +49,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addModalContext, setAddModalContext] = useState<{ month: string; type: string } | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [documentType, setDocumentType] = useState<'policy' | 'claim'>('policy');
   const [uploadedFiles, setUploadedFiles] = useState<Set<string>>(new Set());
   const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -121,6 +123,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
   const handleAddClick = (month: string, type: string) => {
     setAddModalContext({ month, type });
     setSelectedFile(null); // Reset file when opening modal
+    setDocumentType('policy'); // Reset document type when opening modal
     setIsAddModalOpen(true);
   };
 
@@ -363,9 +366,6 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
 
     const yearCellStyles = {
       ...cellStyles,
-      writingMode: 'vertical-rl' as const,
-      textOrientation: 'mixed' as const,
-      transform: 'rotate(180deg)',
       width: '80px',
       fontSize: typography.styles.captionM.fontSize,
       fontFamily: typography.styles.captionM.fontFamily.join(', '),
@@ -803,6 +803,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
             onClose={() => {
               setIsAddModalOpen(false);
               setSelectedFile(null);
+              setDocumentType('policy');
             }}
             title={
               <div>
@@ -829,20 +830,8 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
             footer={
               <div style={{
                 display: 'flex',
-                gap: '12px',
-                justifyContent: 'space-between'
+                justifyContent: 'flex-end'
               }}>
-                <Button
-                  variant="primary"
-                  color="white"
-                  showIcon={false}
-                  onClick={() => {
-                    setIsAddModalOpen(false);
-                    setSelectedFile(null);
-                  }}
-                >
-                  Cancel
-                </Button>
                 <Button
                   variant="primary"
                   color="black"
@@ -885,8 +874,32 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
                 backgroundColor: semanticColors.theme.primary200,
                 padding: '20px',
                 borderRadius: borderRadius[8],
-                marginBottom: '24px'
+                marginBottom: '12px'
               }}>
+                {/* Document Type Selectors */}
+                <div style={{
+                  display: 'flex',
+                  gap: '10px',
+                  marginBottom: '24px',
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <ButtonSelector
+                      selectorType="radio"
+                      label="New Policy"
+                      checked={documentType === 'policy'}
+                      onChange={() => setDocumentType('policy')}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <ButtonSelector
+                      selectorType="radio"
+                      label="New Claim"
+                      checked={documentType === 'claim'}
+                      onChange={() => setDocumentType('claim')}
+                    />
+                  </div>
+                </div>
+
                 {/* Document Name Input */}
                 <div style={{ marginBottom: '24px' }}>
                   <label style={{
@@ -1044,7 +1057,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
               {/* File Requirements */}
               <div style={{
                 backgroundColor: semanticColors.warning.fillLight,
-                padding: '16px',
+                padding: '10px',
                 borderRadius: borderRadius[8],
                 marginBottom: '24px'
               }}>

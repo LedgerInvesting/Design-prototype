@@ -161,7 +161,7 @@ export const Chart: React.FC<ChartProps> = ({
             <XAxis
               dataKey={xAxisKey}
               stroke={colors.theme.primary450}
-              axisLine={xAxisInside ? false : { stroke: colors.blackAndWhite.black900 }}
+              axisLine={xAxisInside ? false : { stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
               orientation={xAxisInside ? 'top' : 'bottom'}
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
@@ -178,7 +178,7 @@ export const Chart: React.FC<ChartProps> = ({
                 xAxisId="baseline"
                 dataKey={xAxisKey}
                 stroke={colors.theme.primary450}
-                axisLine={{ stroke: colors.blackAndWhite.black900 }}
+                axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
                 orientation="bottom"
                 tick={false}
                 tickLine={false}
@@ -186,7 +186,7 @@ export const Chart: React.FC<ChartProps> = ({
             )}
             <YAxis
               stroke={colors.theme.primary450}
-              axisLine={{ stroke: colors.theme.primary450 }}
+              axisLine={false}
               orientation="left"
               mirror={yAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={false} />}
@@ -228,7 +228,7 @@ export const Chart: React.FC<ChartProps> = ({
             <XAxis
               dataKey={xAxisKey}
               stroke={colors.theme.primary450}
-              axisLine={xAxisInside ? false : { stroke: colors.blackAndWhite.black900 }}
+              axisLine={xAxisInside ? false : { stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
               orientation={xAxisInside ? 'top' : 'bottom'}
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
@@ -245,7 +245,7 @@ export const Chart: React.FC<ChartProps> = ({
                 xAxisId="baseline"
                 dataKey={xAxisKey}
                 stroke={colors.theme.primary450}
-                axisLine={{ stroke: colors.blackAndWhite.black900 }}
+                axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
                 orientation="bottom"
                 tick={false}
                 tickLine={false}
@@ -253,7 +253,7 @@ export const Chart: React.FC<ChartProps> = ({
             )}
             <YAxis
               stroke={colors.theme.primary450}
-              axisLine={{ stroke: colors.theme.primary450 }}
+              axisLine={false}
               orientation="left"
               mirror={yAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={false} />}
@@ -293,7 +293,7 @@ export const Chart: React.FC<ChartProps> = ({
             <XAxis
               dataKey={xAxisKey}
               stroke={colors.theme.primary450}
-              axisLine={xAxisInside ? false : { stroke: colors.blackAndWhite.black900 }}
+              axisLine={xAxisInside ? false : { stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
               orientation={xAxisInside ? 'top' : 'bottom'}
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
@@ -310,7 +310,7 @@ export const Chart: React.FC<ChartProps> = ({
                 xAxisId="baseline"
                 dataKey={xAxisKey}
                 stroke={colors.theme.primary450}
-                axisLine={{ stroke: colors.blackAndWhite.black900 }}
+                axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
                 orientation="bottom"
                 tick={false}
                 tickLine={false}
@@ -318,7 +318,7 @@ export const Chart: React.FC<ChartProps> = ({
             )}
             <YAxis
               stroke={colors.theme.primary450}
-              axisLine={{ stroke: colors.theme.primary450 }}
+              axisLine={false}
               orientation="left"
               mirror={yAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={false} />}

@@ -398,7 +398,7 @@ const ChartComponent: React.FC = () => {
             <XAxis
               dataKey="month"
               stroke={colors.theme.primary450}
-              axisLine={{ stroke: colors.blackAndWhite.black900 }}
+              axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
               tickLine={false}
               tick={{ fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }}
               label={{
@@ -410,7 +410,7 @@ const ChartComponent: React.FC = () => {
             />
             <YAxis
               stroke={colors.theme.primary450}
-              axisLine={{ stroke: colors.theme.primary450 }}
+              axisLine={false}
               tickLine={false}
               tick={{ fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }}
               tickFormatter={(value) => `${value}%`}
