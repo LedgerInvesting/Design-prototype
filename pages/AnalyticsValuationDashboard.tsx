@@ -390,7 +390,7 @@ const ChartComponent: React.FC = () => {
       </div>
 
       {/* Chart */}
-      <div style={{ height: '468px', overflow: 'visible', outline: 'none' }}>
+      <div style={{ height: '421px', overflow: 'visible', outline: 'none' }}>
         <ResponsiveContainer width="100%" height="100%" style={{ overflow: 'visible', outline: 'none' }}>
           <ComposedChart data={chartData} margin={{ top: 50, right: 50, left: 15, bottom: 30 }} style={{ overflow: 'visible', outline: 'none' }}>
             <CartesianGrid strokeDasharray="3 3" stroke={colors.theme.primary450} />
@@ -431,6 +431,8 @@ const ChartComponent: React.FC = () => {
               stroke="none"
               fill="transparent"
               stackId="outer"
+              isAnimationActive={false}
+              activeDot={false}
             />
             <Area
               type="monotone"
@@ -439,6 +441,8 @@ const ChartComponent: React.FC = () => {
               fill="#64EF99"
               fillOpacity={0.3}
               stackId="outer"
+              isAnimationActive={false}
+              activeDot={false}
             />
 
             {/* Inner uncertainty band (±5%, darker) */}
@@ -448,6 +452,8 @@ const ChartComponent: React.FC = () => {
               stroke="none"
               fill="transparent"
               stackId="inner"
+              isAnimationActive={false}
+              activeDot={false}
             />
             <Area
               type="monotone"
@@ -456,6 +462,8 @@ const ChartComponent: React.FC = () => {
               fill="#64EF99"
               fillOpacity={0.6}
               stackId="inner"
+              isAnimationActive={false}
+              activeDot={false}
             />
 
             {/* Lines */}
@@ -464,8 +472,8 @@ const ChartComponent: React.FC = () => {
               dataKey="mean"
               stroke="#0f9342"
               strokeWidth={2}
-              dot={{ fill: '#0f9342', r: 4 }}
-              activeDot={{ r: 6, fill: '#0f9342', stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              dot={{ fill: '#0f9342', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#0f9342', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
             />
             <Line
               type="monotone"
@@ -473,16 +481,16 @@ const ChartComponent: React.FC = () => {
               stroke="#ffd028"
               strokeWidth={2}
               strokeDasharray="5 5"
-              dot={{ fill: '#ffd028', r: 4 }}
-              activeDot={{ r: 6, fill: '#ffd028', stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              dot={{ fill: '#ffd028', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#ffd028', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
             />
             <Line
               type="monotone"
               dataKey="paid"
               stroke="#8b68f5"
               strokeWidth={2}
-              dot={{ fill: '#8b68f5', r: 4 }}
-              activeDot={{ r: 6, fill: '#8b68f5', stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              dot={{ fill: '#8b68f5', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#8b68f5', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
             />
 
             <Tooltip content={<ChartTooltip />} cursor={false} />
