@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Input, Modal, ButtonSelector } from '@design-library/components';
-import { colors, typography, borderRadius } from '@design-library/tokens';
+import { typography, borderRadius } from '@design-library/tokens';
 import { useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { AddMedium, StatusWarning, DownloadMedium, CloseMedium } from '@design-library/icons';
 

@@ -119,7 +119,11 @@ export const Chart: React.FC<ChartProps> = ({
           y={y + offset.dy}
           fill={colors.blackAndWhite.black700}
           style={{
-            ...typography.styles.dataXS,
+            fontFamily: typography.styles.dataXS.fontFamily.join(', '),
+            fontSize: typography.styles.dataXS.fontSize,
+            fontWeight: typography.styles.dataXS.fontWeight,
+            lineHeight: typography.styles.dataXS.lineHeight,
+            letterSpacing: typography.styles.dataXS.letterSpacing,
             pointerEvents: 'none',
           }}
           textAnchor={textAnchor}
@@ -201,7 +205,13 @@ export const Chart: React.FC<ChartProps> = ({
               fill={colors.theme.primary200}
             />
             {showTooltip && <Tooltip content={<ChartTooltip />} cursor={false} />}
-            {showLegend && <Legend wrapperStyle={typography.styles.bodyS} />}
+            {showLegend && <Legend wrapperStyle={{
+              fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+              fontSize: typography.styles.bodyS.fontSize,
+              fontWeight: typography.styles.bodyS.fontWeight,
+              lineHeight: typography.styles.bodyS.lineHeight,
+              letterSpacing: typography.styles.bodyS.letterSpacing,
+            }} />}
           </AreaChart>
         );
 
@@ -259,7 +269,13 @@ export const Chart: React.FC<ChartProps> = ({
               fill={colors.theme.main}
             />
             {showTooltip && <Tooltip content={<ChartTooltip />} cursor={false} />}
-            {showLegend && <Legend wrapperStyle={typography.styles.bodyS} />}
+            {showLegend && <Legend wrapperStyle={{
+              fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+              fontSize: typography.styles.bodyS.fontSize,
+              fontWeight: typography.styles.bodyS.fontWeight,
+              lineHeight: typography.styles.bodyS.lineHeight,
+              letterSpacing: typography.styles.bodyS.letterSpacing,
+            }} />}
           </BarChart>
         );
 
@@ -321,7 +337,13 @@ export const Chart: React.FC<ChartProps> = ({
               activeDot={{ r: 6, fill: colors.theme.primary200, stroke: colors.theme.main, strokeWidth: 2 }}
             />
             {showTooltip && <Tooltip content={<ChartTooltip />} cursor={false} />}
-            {showLegend && <Legend wrapperStyle={typography.styles.bodyS} />}
+            {showLegend && <Legend wrapperStyle={{
+              fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+              fontSize: typography.styles.bodyS.fontSize,
+              fontWeight: typography.styles.bodyS.fontWeight,
+              lineHeight: typography.styles.bodyS.lineHeight,
+              letterSpacing: typography.styles.bodyS.letterSpacing,
+            }} />}
           </LineChart>
         );
     }

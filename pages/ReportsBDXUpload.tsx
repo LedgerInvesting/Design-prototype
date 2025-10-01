@@ -415,9 +415,9 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
               width: '80px',
               borderLeft: 'none',
               borderTop: 'none',
+              borderRight: `1px solid ${semanticColors.theme.primary400}`,
               borderTopLeftRadius: borderRadius[8]
             }}></th>
-            <th style={{ ...headerStyles, width: '180px', borderTop: 'none' }}></th>
             {months.map((month, index) => (
               <th key={month} style={{
                 ...headerStyles,
@@ -434,52 +434,24 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
         <tbody>
           {/* Policy row */}
           <tr>
-            <td rowSpan={2} style={{
+            <td style={{
               ...yearCellStyles,
               borderLeft: 'none',
               borderBottom: 'none',
-              borderRight: 'none', // Remove right border as well
+              borderRight: `1px solid ${semanticColors.theme.primary400}`,
               borderBottomLeftRadius: borderRadius[8]
             }}>
               2025
             </td>
-            <td style={{ ...documentCellStyles, borderLeft: `1px solid ${semanticColors.theme.primary400}` }}>
-              <DocumentCell
-                filename="Policy"
-                onDownload={(filename) => console.log('Download:', filename)}
-                align="left"
-              />
-            </td>
             {months.map((month) => (
               <td key={`policy-${month}`} style={{
                 ...cellStyles,
-                borderRight: month === 'Dec' ? 'none' : cellStyles.borderRight // Remove right border for last column
+                borderBottom: 'none',
+                borderRight: month === 'Dec' ? 'none' : cellStyles.borderRight,
+                borderBottomRightRadius: month === 'Dec' ? borderRadius[8] : 0
               }}>
                 <CustomCell
                   elements={createStatusCell(uploadData.policy[month.toLowerCase() as keyof typeof uploadData.policy], month, 'Policy')}
-                  alignment="center"
-                />
-              </td>
-            ))}
-          </tr>
-          {/* Claims row */}
-          <tr>
-            <td style={{ ...documentCellStyles, borderLeft: `1px solid ${semanticColors.theme.primary400}`, borderBottom: 'none' }}>
-              <DocumentCell
-                filename="Claims"
-                onDownload={(filename) => console.log('Download:', filename)}
-                align="left"
-              />
-            </td>
-            {months.map((month) => (
-              <td key={`claims-${month}`} style={{
-                ...cellStyles,
-                borderBottom: 'none', // Remove bottom border for last row
-                borderRight: month === 'Dec' ? 'none' : cellStyles.borderRight, // Remove right border for last column
-                borderBottomRightRadius: month === 'Dec' ? borderRadius[8] : 0 // Round bottom-right corner for December
-              }}>
-                <CustomCell
-                  elements={createStatusCell(uploadData.claims[month.toLowerCase() as keyof typeof uploadData.claims], month, 'Claims')}
                   alignment="center"
                 />
               </td>

@@ -932,7 +932,7 @@ export const MarketplaceOfferings: React.FC<MarketplaceOfferingsProps> = ({ onNa
       }}>
           <PageBanner
             title="Marketplace"
-            subtitle="Explore opportunities to invest in casualty insurance risk and find offerings that align with your investment goals."
+            subtitle="Explore opportunities to invest in casualty insurance risk. Gain insights into cash flows, historical performance, expertise of underwriting teams and more. Find the offerings that best align with your investment goals."
             illustrationSrc="/marketplace_illustration.png"
             patternSrc="/pattern_marketplace.svg"
             buttonText="Start Investing"

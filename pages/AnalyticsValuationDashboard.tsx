@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
-import { Button, DashboardCard, Chart, ChartCustomTick, ChartTooltip } from '@design-library/components';
-import { colors, typography, borderRadius, shadows } from '@design-library/tokens';
+import { Button, DashboardCard, ChartTooltip } from '@design-library/components';
+import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
