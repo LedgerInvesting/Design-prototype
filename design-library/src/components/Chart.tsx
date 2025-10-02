@@ -17,6 +17,18 @@ import { typography, useSemanticColors } from '../tokens';
 import { ChartTooltip } from './ChartTooltip';
 
 /**
+ * Line configuration for multi-line charts
+ */
+export interface LineConfig {
+  /** Key for the data values to display */
+  dataKey: string;
+  /** Color for this line (if not provided, uses theme colors) */
+  color?: string;
+  /** Label for the line in legend */
+  label?: string;
+}
+
+/**
  * Chart component props interface
  */
 export interface ChartProps {
@@ -24,8 +36,10 @@ export interface ChartProps {
   data: any[];
   /** Type of chart to render */
   type?: 'line' | 'area' | 'bar';
-  /** Key for the data values to display */
-  dataKey: string;
+  /** Key for the data values to display (single line mode) */
+  dataKey?: string;
+  /** Array of line configurations (multi-line mode) */
+  lines?: LineConfig[];
   /** Key for the x-axis labels */
   xAxisKey?: string;
   /** Height of the chart in pixels */
@@ -73,6 +87,7 @@ export const Chart: React.FC<ChartProps> = ({
   data,
   type = 'line',
   dataKey,
+  lines,
   xAxisKey = 'name',
   height = 300,
   showGrid = true,
@@ -85,20 +100,24 @@ export const Chart: React.FC<ChartProps> = ({
 }) => {
   const colors = useSemanticColors();
 
+  // Use lines mode if lines array is provided, otherwise single line mode
+  const isMultiLine = lines && lines.length > 0;
+  const lineConfigs = isMultiLine ? lines : (dataKey ? [{ dataKey, color: colors.theme.main }] : []);
+
   /**
    * Custom tick component with background for inside axes
    */
-  const CustomTick = ({ x, y, payload, isXAxis, index, visibleTicksCount }: any) => {
+  const CustomTick = ({ x, y, payload, isXAxis, index, visibleTicksCount, dx: propDx }: any) => {
     // Check if this is the last item for X-axis
     const isLastXItem = isXAxis && index === data.length - 1;
     // Check if this is the last item for Y-axis (bottom of chart)
     const isLastYItem = !isXAxis && visibleTicksCount && index === visibleTicksCount - 1;
 
     const offset = isXAxis
-      ? { dx: xAxisInside ? (isLastXItem ? -15 : 15) : 0, dy: xAxisInside ? 5 : 0 }
-      : { dx: yAxisInside ? 0 : 0, dy: yAxisInside ? (isLastYItem ? 10 : -10) : 0 };
+      ? { dx: xAxisInside ? (isLastXItem ? -15 : 15) : 0, dy: xAxisInside ? 5 : 5 }
+      : { dx: propDx !== undefined ? propDx : (yAxisInside ? 0 : 0), dy: yAxisInside ? (isLastYItem ? 10 : -10) : 0 };
 
-    const textAnchor = isXAxis ? 'middle' : 'start';
+    const textAnchor = isXAxis ? 'middle' : 'end';
     const dominantBaseline = isXAxis ? 'hanging' : 'middle';
 
     return (
@@ -135,15 +154,15 @@ export const Chart: React.FC<ChartProps> = ({
     );
   };
 
-  // Optimal margins to achieve ~50px visual spacing accounting for Recharts' auto spacing
-  // Left and bottom are smaller because Recharts adds space for tick labels automatically
+  // 50px padding around the graph from the graph lines to the border
+  // Left and bottom margins are smaller to account for axis labels and values space
   const commonProps = {
     data,
     margin: {
-      top: 50,
+      top: 40,
       right: 50,
-      left: xAxisLabel || yAxisLabel ? 15 : 5,  // More space if we have axis labels
-      bottom: xAxisLabel || yAxisLabel ? 30 : 20  // More space if we have axis labels
+      left: 5,
+      bottom: 35
     },
   };
 
@@ -166,12 +185,17 @@ export const Chart: React.FC<ChartProps> = ({
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
               tickLine={false}
-              label={xAxisLabel ? {
+              label={xAxisLabel && xAxisInside ? {
                 value: xAxisLabel,
                 position: 'insideBottom',
-                offset: -35,
+                offset: -10,
                 style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
-              } : undefined}
+              } : (xAxisLabel ? {
+                value: xAxisLabel,
+                position: 'bottom',
+                offset: 8,
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
+              } : undefined)}
             />
             {xAxisInside && (
               <XAxis
@@ -189,13 +213,13 @@ export const Chart: React.FC<ChartProps> = ({
               axisLine={false}
               orientation="left"
               mirror={yAxisInside}
-              tick={(props) => <CustomTick {...props} isXAxis={false} />}
+              tick={(props) => <CustomTick {...props} isXAxis={false} dx={0} />}
               tickLine={false}
               label={yAxisLabel ? {
                 value: yAxisLabel,
                 angle: -90,
-                position: 'insideLeft',
-                offset: -35,
+                position: yAxisInside ? 'insideRight' : 'insideLeft',
+                offset: yAxisInside ? 10 : 20,
                 style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
@@ -233,12 +257,17 @@ export const Chart: React.FC<ChartProps> = ({
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
               tickLine={false}
-              label={xAxisLabel ? {
+              label={xAxisLabel && xAxisInside ? {
                 value: xAxisLabel,
                 position: 'insideBottom',
-                offset: -35,
+                offset: -10,
                 style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
-              } : undefined}
+              } : (xAxisLabel ? {
+                value: xAxisLabel,
+                position: 'bottom',
+                offset: 8,
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
+              } : undefined)}
             />
             {xAxisInside && (
               <XAxis
@@ -256,13 +285,13 @@ export const Chart: React.FC<ChartProps> = ({
               axisLine={false}
               orientation="left"
               mirror={yAxisInside}
-              tick={(props) => <CustomTick {...props} isXAxis={false} />}
+              tick={(props) => <CustomTick {...props} isXAxis={false} dx={0} />}
               tickLine={false}
               label={yAxisLabel ? {
                 value: yAxisLabel,
                 angle: -90,
-                position: 'insideLeft',
-                offset: -35,
+                position: yAxisInside ? 'insideRight' : 'insideLeft',
+                offset: yAxisInside ? 10 : 20,
                 style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
@@ -298,12 +327,17 @@ export const Chart: React.FC<ChartProps> = ({
               mirror={xAxisInside}
               tick={(props) => <CustomTick {...props} isXAxis={true} />}
               tickLine={false}
-              label={xAxisLabel ? {
+              label={xAxisLabel && xAxisInside ? {
                 value: xAxisLabel,
                 position: 'insideBottom',
-                offset: -35,
+                offset: -10,
                 style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
-              } : undefined}
+              } : (xAxisLabel ? {
+                value: xAxisLabel,
+                position: 'bottom',
+                offset: 8,
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
+              } : undefined)}
             />
             {xAxisInside && (
               <XAxis
@@ -321,24 +355,29 @@ export const Chart: React.FC<ChartProps> = ({
               axisLine={false}
               orientation="left"
               mirror={yAxisInside}
-              tick={(props) => <CustomTick {...props} isXAxis={false} />}
+              tick={(props) => <CustomTick {...props} isXAxis={false} dx={0} />}
               tickLine={false}
               label={yAxisLabel ? {
                 value: yAxisLabel,
                 angle: -90,
-                position: 'insideLeft',
-                offset: -35,
+                position: yAxisInside ? 'insideRight' : 'insideLeft',
+                offset: yAxisInside ? 10 : 20,
                 style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               } : undefined}
             />
-            <Line
-              type="monotone"
-              dataKey={dataKey}
-              stroke={colors.theme.main}
-              strokeWidth={2}
-              dot={{ fill: colors.theme.main, r: 4 }}
-              activeDot={{ r: 6, fill: colors.theme.primary200, stroke: colors.theme.main, strokeWidth: 2 }}
-            />
+            {/* Render multiple lines */}
+            {lineConfigs.map((lineConfig, index) => (
+              <Line
+                key={lineConfig.dataKey}
+                type="monotone"
+                dataKey={lineConfig.dataKey}
+                stroke={lineConfig.color || colors.theme.main}
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 6, fill: colors.theme.primary200, stroke: lineConfig.color || colors.theme.main, strokeWidth: 2 }}
+                name={lineConfig.label || lineConfig.dataKey}
+              />
+            ))}
             {showTooltip && <Tooltip content={<ChartTooltip />} cursor={false} />}
             {showLegend && <Legend wrapperStyle={{
               fontFamily: typography.styles.bodyS.fontFamily.join(', '),

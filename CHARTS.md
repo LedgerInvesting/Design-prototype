@@ -45,21 +45,22 @@ All text elements use design tokens:
 All charts should have **~50px of visual space** on all sides between the chart border and the card/container border.
 
 ### Chart Margins
-The Chart component uses smart default margins that account for Recharts' automatic spacing for tick labels:
+The Chart component uses optimized default margins that account for axis labels and tick values:
 
 ```typescript
 margin: {
-  top: 50,
-  right: 50,
-  left: xAxisLabel || yAxisLabel ? 15 : 5,   // Smaller because Recharts adds auto spacing
-  bottom: xAxisLabel || yAxisLabel ? 30 : 20  // Smaller because Recharts adds auto spacing
+  top: 40,    // Top spacing
+  right: 50,  // Right spacing (full 50px)
+  left: 5,    // Left spacing (smaller to account for Y-axis labels and values)
+  bottom: 35  // Bottom spacing (smaller to account for X-axis labels and values)
 }
 ```
 
 **Why left and bottom are smaller:**
-- Recharts automatically reserves space for tick labels (e.g., "0%", "Mar 2024")
-- This auto spacing adds ~30-40px on left and bottom sides
-- We use smaller margins to compensate and achieve the target 50px visual spacing
+- Y-axis labels and tick values take up space on the left (~45px)
+- X-axis labels and tick values take up space on the bottom (~15px)
+- We use smaller margins to compensate and achieve the target ~50px total visual spacing
+- Total visual spacing = margin + axis elements space ≈ 50px
 
 ### Container Requirements
 Charts must be wrapped in a container with `overflow: 'visible'`:

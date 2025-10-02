@@ -4,7 +4,7 @@ import { Layout } from '@design-library/pages';
 import type { BreadcrumbItem } from '@design-library/pages';
 
 // Import base components
-import { Card, Button, Stack, Grid, Container, DashboardCard } from '@design-library/components';
+import { Card, Button, Stack, Grid, Container, DashboardCard, Chart } from '@design-library/components';
 
 // Import design tokens
 import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
@@ -474,11 +474,13 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
 interface ProgramRelationshipProps {
   primaryProgram: string;
   additionalPrograms: string[];
+  onProgramClick?: (program: string) => void;
 }
 
 const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
   primaryProgram,
-  additionalPrograms
+  additionalPrograms,
+  onProgramClick
 }) => {
   const colors = useSemanticColors();
   const containerStyles: React.CSSProperties = {
@@ -506,18 +508,45 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
     fontWeight: 500,
     lineHeight: 1.3,
     color: colors.blackAndWhite.black900,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease',
+    border: 'none',
+    outline: 'none',
   };
 
   return (
     <div style={containerStyles}>
       <span style={labelStyles}>Part of</span>
-      <div style={pillStyles}>{primaryProgram}</div>
-      
+      <button
+        style={pillStyles}
+        onClick={() => onProgramClick?.(primaryProgram)}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = colors.theme.primary300;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = colors.theme.primary200;
+        }}
+      >
+        {primaryProgram}
+      </button>
+
       {additionalPrograms.length > 0 && (
         <>
           <span style={labelStyles}>Also included in</span>
           {additionalPrograms.map((program, index) => (
-            <div key={index} style={pillStyles}>{program}</div>
+            <button
+              key={index}
+              style={pillStyles}
+              onClick={() => onProgramClick?.(program)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.theme.primary300;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = colors.theme.primary200;
+              }}
+            >
+              {program}
+            </button>
           ))}
         </>
       )}
@@ -544,10 +573,157 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
     primaryProgram: "Appalachian.wc-companionTY21",
     additionalPrograms: [
       "Appalachian.wc-companionTY20",
-      "Appalachian.wc-companionTY19", 
+      "Appalachian.wc-companionTY19",
       "Appalachian.wc-companionTY18"
     ]
   };
+
+  // Chart data for Insights section - varies by program
+  const chartDataByProgram: Record<string, any[]> = {
+    "Property Cat Treaty": [
+      { "date": "2025-01", "lineA": 80, "lineB": 10, "lineC": 0, "lineD": 2 },
+      { "date": "2025-02", "lineA": 75, "lineB": 35, "lineC": 3, "lineD": 6 },
+      { "date": "2025-03", "lineA": 77, "lineB": 20, "lineC": 6, "lineD": 12 },
+      { "date": "2025-04", "lineA": 65, "lineB": 22, "lineC": 10, "lineD": 15 },
+      { "date": "2025-05", "lineA": 62, "lineB": 25, "lineC": 15, "lineD": 18 },
+      { "date": "2025-06", "lineA": 60, "lineB": 28, "lineC": 18, "lineD": 20 },
+      { "date": "2025-07", "lineA": 58, "lineB": 30, "lineC": 22, "lineD": 25 },
+      { "date": "2025-08", "lineA": 50, "lineB": 32, "lineC": 27, "lineD": 28 },
+      { "date": "2025-09", "lineA": 70, "lineB": 40, "lineC": 35, "lineD": 33 },
+      { "date": "2025-10", "lineA": 78, "lineB": 45, "lineC": 42, "lineD": 37 },
+      { "date": "2025-11", "lineA": 82, "lineB": 50, "lineC": 48, "lineD": 42 },
+      { "date": "2025-12", "lineA": 85, "lineB": 52, "lineC": 55, "lineD": 46 }
+    ],
+    "Appalachian.wc-companionTY21": [
+      { "date": "2025-01", "lineA": 45, "lineB": 25, "lineC": 15, "lineD": 8 },
+      { "date": "2025-02", "lineA": 50, "lineB": 30, "lineC": 20, "lineD": 12 },
+      { "date": "2025-03", "lineA": 48, "lineB": 28, "lineC": 18, "lineD": 10 },
+      { "date": "2025-04", "lineA": 55, "lineB": 35, "lineC": 25, "lineD": 15 },
+      { "date": "2025-05", "lineA": 52, "lineB": 32, "lineC": 22, "lineD": 13 },
+      { "date": "2025-06", "lineA": 58, "lineB": 38, "lineC": 28, "lineD": 18 },
+      { "date": "2025-07", "lineA": 60, "lineB": 40, "lineC": 30, "lineD": 20 },
+      { "date": "2025-08", "lineA": 62, "lineB": 42, "lineC": 32, "lineD": 22 },
+      { "date": "2025-09", "lineA": 65, "lineB": 45, "lineC": 35, "lineD": 25 },
+      { "date": "2025-10", "lineA": 68, "lineB": 48, "lineC": 38, "lineD": 28 },
+      { "date": "2025-11", "lineA": 70, "lineB": 50, "lineC": 40, "lineD": 30 },
+      { "date": "2025-12", "lineA": 72, "lineB": 52, "lineC": 42, "lineD": 32 }
+    ],
+    "Appalachian.wc-companionTY20": [
+      { "date": "2025-01", "lineA": 35, "lineB": 45, "lineC": 25, "lineD": 15 },
+      { "date": "2025-02", "lineA": 38, "lineB": 48, "lineC": 28, "lineD": 18 },
+      { "date": "2025-03", "lineA": 40, "lineB": 50, "lineC": 30, "lineD": 20 },
+      { "date": "2025-04", "lineA": 42, "lineB": 52, "lineC": 32, "lineD": 22 },
+      { "date": "2025-05", "lineA": 45, "lineB": 55, "lineC": 35, "lineD": 25 },
+      { "date": "2025-06", "lineA": 47, "lineB": 57, "lineC": 37, "lineD": 27 },
+      { "date": "2025-07", "lineA": 50, "lineB": 60, "lineC": 40, "lineD": 30 },
+      { "date": "2025-08", "lineA": 52, "lineB": 62, "lineC": 42, "lineD": 32 },
+      { "date": "2025-09", "lineA": 55, "lineB": 65, "lineC": 45, "lineD": 35 },
+      { "date": "2025-10", "lineA": 58, "lineB": 68, "lineC": 48, "lineD": 38 },
+      { "date": "2025-11", "lineA": 60, "lineB": 70, "lineC": 50, "lineD": 40 },
+      { "date": "2025-12", "lineA": 63, "lineB": 73, "lineC": 53, "lineD": 43 }
+    ],
+    "Appalachian.wc-companionTY19": [
+      { "date": "2025-01", "lineA": 25, "lineB": 55, "lineC": 35, "lineD": 20 },
+      { "date": "2025-02", "lineA": 28, "lineB": 58, "lineC": 38, "lineD": 23 },
+      { "date": "2025-03", "lineA": 30, "lineB": 60, "lineC": 40, "lineD": 25 },
+      { "date": "2025-04", "lineA": 32, "lineB": 62, "lineC": 42, "lineD": 27 },
+      { "date": "2025-05", "lineA": 35, "lineB": 65, "lineC": 45, "lineD": 30 },
+      { "date": "2025-06", "lineA": 37, "lineB": 67, "lineC": 47, "lineD": 32 },
+      { "date": "2025-07", "lineA": 40, "lineB": 70, "lineC": 50, "lineD": 35 },
+      { "date": "2025-08", "lineA": 42, "lineB": 72, "lineC": 52, "lineD": 37 },
+      { "date": "2025-09", "lineA": 45, "lineB": 75, "lineC": 55, "lineD": 40 },
+      { "date": "2025-10", "lineA": 48, "lineB": 78, "lineC": 58, "lineD": 43 },
+      { "date": "2025-11", "lineA": 50, "lineB": 80, "lineC": 60, "lineD": 45 },
+      { "date": "2025-12", "lineA": 53, "lineB": 83, "lineC": 63, "lineD": 48 }
+    ],
+    "Appalachian.wc-companionTY18": [
+      { "date": "2025-01", "lineA": 70, "lineB": 20, "lineC": 5, "lineD": 3 },
+      { "date": "2025-02", "lineA": 68, "lineB": 22, "lineC": 7, "lineD": 5 },
+      { "date": "2025-03", "lineA": 65, "lineB": 25, "lineC": 10, "lineD": 8 },
+      { "date": "2025-04", "lineA": 63, "lineB": 27, "lineC": 12, "lineD": 10 },
+      { "date": "2025-05", "lineA": 60, "lineB": 30, "lineC": 15, "lineD": 12 },
+      { "date": "2025-06", "lineA": 58, "lineB": 32, "lineC": 17, "lineD": 14 },
+      { "date": "2025-07", "lineA": 55, "lineB": 35, "lineC": 20, "lineD": 17 },
+      { "date": "2025-08", "lineA": 53, "lineB": 37, "lineC": 22, "lineD": 19 },
+      { "date": "2025-09", "lineA": 50, "lineB": 40, "lineC": 25, "lineD": 22 },
+      { "date": "2025-10", "lineA": 48, "lineB": 42, "lineC": 27, "lineD": 24 },
+      { "date": "2025-11", "lineA": 45, "lineB": 45, "lineC": 30, "lineD": 27 },
+      { "date": "2025-12", "lineA": 43, "lineB": 47, "lineC": 32, "lineD": 29 }
+    ]
+  };
+
+  const chartData = chartDataByProgram[currentProgram.name] || chartDataByProgram["Property Cat Treaty"];
+
+  // Metric data by program
+  const metricsByProgram: Record<string, any> = {
+    "Property Cat Treaty": {
+      cession: {
+        premium: { value: "$32,156,789", growth: "7.8%", direction: "up" as const },
+        remittance: { value: "$19,794,232", growth: "7.8%", direction: "up" as const },
+        collateral: { value: "$7,468,987", growth: "2.4%", direction: "down" as const }
+      },
+      validation: {
+        policies: { count: 12, percent: "+0.38%", level: "excellent" as const },
+        premium: { value: "$34,156", percent: "+0.38%", level: "excellent" as const },
+        claims: { count: 13, percent: "+0.38%", level: "marginal" as const },
+        losses: { value: "$56,789", percent: "+0.38%", level: "excellent" as const }
+      }
+    },
+    "Appalachian.wc-companionTY21": {
+      cession: {
+        premium: { value: "$45,234,567", growth: "5.2%", direction: "up" as const },
+        remittance: { value: "$28,456,123", growth: "4.8%", direction: "up" as const },
+        collateral: { value: "$9,876,543", growth: "1.2%", direction: "up" as const }
+      },
+      validation: {
+        policies: { count: 8, percent: "+0.15%", level: "excellent" as const },
+        premium: { value: "$28,450", percent: "+0.22%", level: "excellent" as const },
+        claims: { count: 5, percent: "-0.10%", level: "excellent" as const },
+        losses: { value: "$42,350", percent: "+0.18%", level: "excellent" as const }
+      }
+    },
+    "Appalachian.wc-companionTY20": {
+      cession: {
+        premium: { value: "$38,987,654", growth: "3.5%", direction: "up" as const },
+        remittance: { value: "$24,123,456", growth: "3.2%", direction: "up" as const },
+        collateral: { value: "$8,234,567", growth: "0.8%", direction: "down" as const }
+      },
+      validation: {
+        policies: { count: 18, percent: "+0.52%", level: "marginal" as const },
+        premium: { value: "$48,920", percent: "+0.45%", level: "marginal" as const },
+        claims: { count: 22, percent: "+0.68%", level: "concerning" as const },
+        losses: { value: "$78,450", percent: "+0.55%", level: "marginal" as const }
+      }
+    },
+    "Appalachian.wc-companionTY19": {
+      cession: {
+        premium: { value: "$28,456,123", growth: "2.1%", direction: "up" as const },
+        remittance: { value: "$17,890,234", growth: "1.8%", direction: "up" as const },
+        collateral: { value: "$6,123,456", growth: "0.5%", direction: "down" as const }
+      },
+      validation: {
+        policies: { count: 25, percent: "+0.78%", level: "concerning" as const },
+        premium: { value: "$62,340", percent: "+0.82%", level: "concerning" as const },
+        claims: { count: 28, percent: "+0.95%", level: "concerning" as const },
+        losses: { value: "$94,560", percent: "+0.88%", level: "concerning" as const }
+      }
+    },
+    "Appalachian.wc-companionTY18": {
+      cession: {
+        premium: { value: "$52,345,678", growth: "8.9%", direction: "up" as const },
+        remittance: { value: "$32,567,890", growth: "9.2%", direction: "up" as const },
+        collateral: { value: "$11,234,567", growth: "3.5%", direction: "up" as const }
+      },
+      validation: {
+        policies: { count: 6, percent: "+0.12%", level: "excellent" as const },
+        premium: { value: "$21,340", percent: "+0.08%", level: "excellent" as const },
+        claims: { count: 4, percent: "-0.05%", level: "excellent" as const },
+        losses: { value: "$35,670", percent: "+0.10%", level: "excellent" as const }
+      }
+    }
+  };
+
+  const currentMetrics = metricsByProgram[currentProgram.name] || metricsByProgram["Property Cat Treaty"];
 
   return (
     <Layout
@@ -575,6 +751,12 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
           <ProgramRelationship
             primaryProgram={relatedPrograms.primaryProgram}
             additionalPrograms={relatedPrograms.additionalPrograms}
+            onProgramClick={(program) => {
+              setCurrentProgram({
+                name: program,
+                account: 'Appalachian Workers Compensation'
+              });
+            }}
           />
 
           {/* Metric Cards */}
@@ -607,7 +789,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   }}>
                     Quota Share Written Premium
                   </div>
-                  <GrowthIndicator direction="up" percentage="7.8%" period="3m" />
+                  <GrowthIndicator direction={currentMetrics.cession.premium.direction} percentage={currentMetrics.cession.premium.growth} period="3m" />
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -621,9 +803,9 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       fontSize: '26px',
                       fontWeight: 400
                     }}>
-                      $32,156,789
+                      {currentMetrics.cession.premium.value}
                     </div>
-                    <SmallChart trend="up" />
+                    <SmallChart trend={currentMetrics.cession.premium.direction} />
                   </div>
                 </div>
 
@@ -647,7 +829,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   }}>
                     Total Remittance
                   </div>
-                  <GrowthIndicator direction="up" percentage="7.8%" period="3m" />
+                  <GrowthIndicator direction={currentMetrics.cession.remittance.direction} percentage={currentMetrics.cession.remittance.growth} period="3m" />
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -661,9 +843,9 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       fontSize: '26px',
                       fontWeight: 400
                     }}>
-                      $19,794,232
+                      {currentMetrics.cession.remittance.value}
                     </div>
-                    <SmallChart trend="up" />
+                    <SmallChart trend={currentMetrics.cession.remittance.direction} />
                   </div>
                 </div>
 
@@ -687,7 +869,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   }}>
                     Collateral Required
                   </div>
-                  <GrowthIndicator direction="down" percentage="2.4%" period="3m" />
+                  <GrowthIndicator direction={currentMetrics.cession.collateral.direction} percentage={currentMetrics.cession.collateral.growth} period="3m" />
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -701,9 +883,9 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       fontSize: '26px',
                       fontWeight: 400
                     }}>
-                      $7,468,987
+                      {currentMetrics.cession.collateral.value}
                     </div>
-                    <SmallChart trend="down" />
+                    <SmallChart trend={currentMetrics.cession.collateral.direction} />
                   </div>
                 </div>
               </div>
@@ -746,16 +928,16 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       fontSize: '26px',
                       fontWeight: 400
                     }}>
-                      12
+                      {currentMetrics.validation.policies.count}
                     </div>
                     <div style={{
                       fontSize: '10px',
                       color: colors.blackAndWhite.black500
                     }}>
-                      +0.38%
+                      {currentMetrics.validation.policies.percent}
                     </div>
                   </div>
-                  <DataValidationChart level="excellent" />
+                  <DataValidationChart level={currentMetrics.validation.policies.level} />
                 </div>
               </div>
 
@@ -793,16 +975,16 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       fontSize: '26px',
                       fontWeight: 400
                     }}>
-                      $34,156
+                      {currentMetrics.validation.premium.value}
                     </div>
                     <div style={{
                       fontSize: '10px',
                       color: colors.blackAndWhite.black500
                     }}>
-                      +0.38%
+                      {currentMetrics.validation.premium.percent}
                     </div>
                   </div>
-                  <DataValidationChart level="excellent" />
+                  <DataValidationChart level={currentMetrics.validation.premium.level} />
                 </div>
               </div>
 
@@ -839,16 +1021,16 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       fontSize: '26px',
                       fontWeight: 400
                     }}>
-                      13
+                      {currentMetrics.validation.claims.count}
                     </div>
                     <div style={{
                       fontSize: '10px',
                       color: colors.blackAndWhite.black500
                     }}>
-                      +0.38%
+                      {currentMetrics.validation.claims.percent}
                     </div>
                   </div>
-                  <DataValidationChart level="marginal" />
+                  <DataValidationChart level={currentMetrics.validation.claims.level} />
                 </div>
               </div>
 
@@ -886,16 +1068,16 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       fontSize: '26px',
                       fontWeight: 400
                     }}>
-                      $56,789
+                      {currentMetrics.validation.losses.value}
                     </div>
                     <div style={{
                       fontSize: '10px',
                       color: colors.blackAndWhite.black500
                     }}>
-                      +0.38%
+                      {currentMetrics.validation.losses.percent}
                     </div>
                   </div>
-                  <DataValidationChart level="excellent" />
+                  <DataValidationChart level={currentMetrics.validation.losses.level} />
                 </div>
               </div>
               </div>
@@ -949,176 +1131,25 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
             }} />
 
             {/* Card Content - Loss Ratio Chart */}
-            <div style={{ 
-              position: 'relative'
-            }}>
-              {/* Chart Container with proper margins */}
-              <div style={{
-                position: 'relative',
-                width: '100%',
-                height: '300px',
-                padding: '50px 50px 50px 50px', // top, right, bottom, left margins
-                boxSizing: 'border-box'
-              }}>
-                {/* X-axis Labels - Top margin (20px) */}
-                <div style={{
-                  position: 'absolute',
-                  top: '0px',
-                  left: '90px', // 50px left margin + 40px for Y-axis labels
-                  right: '50px', // 50px right margin
-                  ...typography.styles.dataXS,
-                  color: colors.blackAndWhite.black500,
-                  height: '50px',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  <div style={{ position: 'absolute', left: '0%', whiteSpace: 'nowrap' }}>01-2025</div>
-                  <div style={{ position: 'absolute', left: '25%', whiteSpace: 'nowrap' }}>02-2025</div>
-                  <div style={{ position: 'absolute', left: '50%', whiteSpace: 'nowrap' }}>03-2025</div>
-                  <div style={{ position: 'absolute', left: '75%', whiteSpace: 'nowrap' }}>04-2025</div>
-                </div>
-
-                {/* Y-axis Labels - In left margin */}
-                <div style={{
-                  position: 'absolute',
-                  left: '0px',
-                  top: '50px', // Align with chart body
-                  width: '40px',
-                  ...typography.styles.dataXS,
-                  color: colors.blackAndWhite.black500,
-                  textAlign: 'right',
-                  height: '200px' // Match chart body height
-                }}>
-                  <div style={{ position: 'absolute', top: '0px', right: '5px' }}>80%</div>
-                  <div style={{ position: 'absolute', top: '50px', right: '5px' }}>60%</div>
-                  <div style={{ position: 'absolute', top: '100px', right: '5px' }}>40%</div>
-                  <div style={{ position: 'absolute', top: '150px', right: '5px' }}>20%</div>
-                  <div style={{ position: 'absolute', bottom: '0px', right: '5px' }}>0%</div>
-                </div>
-
-                {/* Chart Body - Center area */}
-                <div style={{
-                  position: 'absolute',
-                  left: '50px', // Left margin
-                  top: '50px', // Top margin  
-                  right: '50px', // Right margin
-                  bottom: '50px', // Bottom margin
-                  border: `1px solid ${colors.blackAndWhite.black100}`,
-                  borderRadius: '4px'
-                }}>
-                  {/* Background Grid Lines */}
-                  <div style={{
-                    position: 'absolute',
-                    left: '0',
-                    top: '0',
-                    right: '0',
-                    bottom: '0',
-                    backgroundImage: `
-                      linear-gradient(to right, ${colors.blackAndWhite.black100} 1px, transparent 1px),
-                      linear-gradient(to bottom, ${colors.blackAndWhite.black100} 1px, transparent 1px)
-                    `,
-                    backgroundSize: '25% 25%',
-                    opacity: 0.3
-                  }} />
-
-                  {/* Bottom line (0% line) - Black 900 */}
-                  <div style={{
-                    position: 'absolute',
-                    left: '0',
-                    bottom: '0',
-                    right: '0',
-                    height: '2px',
-                    backgroundColor: colors.blackAndWhite.black900
-                  }} />
-
-                  {/* Chart Lines */}
-                  <svg 
-                    style={{
-                      position: 'absolute',
-                      left: '0',
-                      top: '0',
-                      width: '100%',
-                      height: '100%'
-                    }}
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="none"
-                  >
-                    {/* Blue line (main trend) */}
-                    <path 
-                      d="M0,30 Q15,25 25,35 Q40,50 50,15 Q60,10 75,12 Q85,18 100,20"
-                      stroke={colors.theme.primary700}
-                      strokeWidth="2"
-                      fill="none"
-                      strokeLinecap="round"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    {/* Purple line */}
-                    <path 
-                      d="M0,70 Q15,65 25,63 Q40,60 50,55 Q60,53 75,50"
-                      stroke={colors.marketplace.violet700}
-                      strokeWidth="2"
-                      fill="none"
-                      strokeLinecap="round"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    {/* Green line */}
-                    <path 
-                      d="M0,85 Q15,83 25,81 Q40,79 50,77 Q60,75 75,73"
-                      stroke={colors.success.textAndStrokes}
-                      strokeWidth="2"
-                      fill="none"
-                      strokeLinecap="round"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </svg>
-
-                  {/* Alert Indicator */}
-                  <div style={{
-                    position: 'absolute',
-                    left: '35%',
-                    top: '40%',
-                    width: '18px',
-                    height: '18px',
-                    backgroundColor: colors.error.fill,
-                    borderRadius: '50%',
-                    border: `2px solid ${colors.blackAndWhite.white}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    ...typography.styles.dataXS,
-                    color: colors.blackAndWhite.black900,
-                    transform: 'translate(-50%, -50%)'
-                  }}>
-                    1
-                  </div>
-                </div>
-
-                {/* Loss Ratio Text - Right margin */}
-                <div style={{
-                  position: 'absolute',
-                  right: '10px', // Inside the 50px right margin
-                  top: '50%',
-                  transform: 'translateY(-50%) rotate(90deg)',
-                  transformOrigin: 'center',
-                  ...typography.styles.dataXS,
-                  color: colors.blackAndWhite.black500,
-                  whiteSpace: 'nowrap'
-                }}>
-                  Loss Ratio
-                </div>
-
-                {/* Evaluation Date - Bottom margin */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '15px', // Inside the 50px bottom margin
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  ...typography.styles.dataXS,
-                  color: colors.blackAndWhite.black500
-                }}>
-                  Evaluation Date
-                </div>
-              </div>
+            <div>
+              <Chart
+                data={chartData}
+                type="line"
+                lines={[
+                  { dataKey: 'lineA', color: colors.theme.primary700, label: 'Line A' },
+                  { dataKey: 'lineB', color: colors.marketplace.violet700, label: 'Line B' },
+                  { dataKey: 'lineC', color: colors.success.textAndStrokes, label: 'Line C' },
+                  { dataKey: 'lineD', color: colors.analytics.green700, label: 'Line D' }
+                ]}
+                xAxisKey="date"
+                height={325}
+                showGrid={true}
+                showTooltip={true}
+                xAxisInside={false}
+                yAxisInside={false}
+                xAxisLabel="Evaluation Date"
+                yAxisLabel="Loss Ratio"
+              />
             </div>
           </div>
 
