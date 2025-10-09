@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { TopNav, Sidebar, FormTopNav } from './';
-import type { BreadcrumbItem } from './TopNav';
-import { colors } from '../tokens';
+import { TopNav, TopNav2, Sidebar, SideNav2, FormTopNav } from './';
+import type { BreadcrumbItem, AppActionConfig } from './TopNav';
+import { colors, typography } from '../tokens';
+import { useSettings } from '../contexts';
+import { Modal } from '../components/Modal';
+import { Selector } from '../components/Selector';
+import { Button } from '../components/Button';
+import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
 
 /**
  * Unified layout component that supports both navigation and form modes
@@ -51,6 +56,7 @@ export interface LayoutProps {
   onUserMenuClick?: () => void;
   onManageAccountClick?: () => void;
   onSettingsClick?: () => void;
+  appAction?: AppActionConfig; // Optional context-aware app action button
 
   // Form mode props (FormTopNav)
   formMode?: boolean;
@@ -83,6 +89,7 @@ export const Layout: React.FC<LayoutProps> = ({
   onUserMenuClick,
   onManageAccountClick,
   onSettingsClick,
+  appAction,
 
   // Form mode props
   formMode = false,
@@ -94,6 +101,22 @@ export const Layout: React.FC<LayoutProps> = ({
   progress,
   onBackClick,
 }) => {
+  // Get prototype settings
+  const settings = useSettings();
+  const useSideNav2 = settings.uiExperiments.sidenavTest;
+
+  // Prototype settings modal state
+  const { settings: prototypeSettings, updateSetting, resetSettings } = usePrototypeSettings();
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  // Handle settings click - open modal and call parent callback
+  const handleSettingsClick = () => {
+    setIsSettingsModalOpen(true);
+    if (onSettingsClick) {
+      onSettingsClick();
+    }
+  };
+
   // Initialize sidebar state from localStorage
   const [isCompact, setIsCompact] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -102,6 +125,15 @@ export const Layout: React.FC<LayoutProps> = ({
     }
     return false;
   });
+
+  // When SideNav test is enabled, ensure sidebar is expanded (only on initial enable)
+  useEffect(() => {
+    if (useSideNav2 && isCompact) {
+      setIsCompact(false);
+      localStorage.setItem('sidebarCompact', JSON.stringify(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useSideNav2]); // Only run when useSideNav2 changes, not when isCompact changes
   const [isSidebarHovered, setIsSidebarHovered] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [contentKey, setContentKey] = useState<string>('initial');
@@ -154,7 +186,6 @@ export const Layout: React.FC<LayoutProps> = ({
     marginLeft: sidebarWidth,
     backgroundColor: colors.blackAndWhite.white,
     transition: 'margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-    width: `calc(100vw - ${sidebarWidth})`, // Full width minus sidebar
     overflow: 'hidden', // Contain any overflow
   };
 
@@ -163,35 +194,57 @@ export const Layout: React.FC<LayoutProps> = ({
     minHeight: 'calc(100vh - 60px)',
     width: '100%', // Fill available width
     margin: formMode ? '60px 0 0 0' : '0', // Form mode: 60px top offset, nav mode: no margins
-    padding: formMode ? '40px 50px 60px 50px' : '50px 50px 60px 50px', // Form mode: less top padding
+    padding: formMode ? '40px 60px 60px 60px' : '40px 60px 60px 60px', // Standard padding (will be overridden by inline marginTop)
     overflow: 'hidden', // Prevent any content from overflowing
     boxSizing: 'border-box', // Include padding in width calculation
-    // Page transition animation - start small and fade in (only in nav mode)
-    opacity: (!formMode && isAnimating) ? 0.95 : 1,
-    transform: (!formMode && isAnimating) ? 'scale(0.98)' : 'scale(1)',
+    // Page transition animation - start slightly larger and zoom in (only in nav mode)
+    opacity: (!formMode && isAnimating) ? 1 : 0.95,
+    transform: (!formMode && isAnimating) ? 'scale(1)' : 'scale(1.02)',
     transition: !formMode ? 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none',
   };
 
   return (
     <div style={pageStyles} className={className}>
       {/* Fixed Sidebar */}
-      <div style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        height: '100vh', 
-        width: sidebarWidth, 
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        height: '100vh',
+        width: sidebarWidth,
         zIndex: 1000,
         transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
       }}>
-        <Sidebar
-          onNavigate={onNavigate || (() => {})}
-          onInboxClick={onInboxClick || (() => {})}
-          selectedItem={selectedSidebarItem}
-          selectedSubitem={selectedSidebarSubitem}
-          onHoverChange={setIsSidebarHovered}
-          isCompact={isCompact}
-        />
+        {useSideNav2 ? (
+          <SideNav2
+            onNavigate={onNavigate || (() => {})}
+            onInboxClick={onInboxClick || (() => {})}
+            onHomeClick={() => {
+              // Navigate to home when Home is clicked
+              if (onNavigate) {
+                onNavigate('home');
+              }
+            }}
+            selectedItem={selectedSidebarItem}
+            selectedSubitem={selectedSidebarSubitem}
+            onHoverChange={setIsSidebarHovered}
+            isCompact={isCompact}
+            userName={userName}
+            userInitials={userInitials}
+            profileColor={profileColor}
+            onManageAccountClick={onManageAccountClick}
+            onSettingsClick={handleSettingsClick}
+          />
+        ) : (
+          <Sidebar
+            onNavigate={onNavigate || (() => {})}
+            onInboxClick={onInboxClick || (() => {})}
+            selectedItem={selectedSidebarItem}
+            selectedSubitem={selectedSidebarSubitem}
+            onHoverChange={setIsSidebarHovered}
+            isCompact={isCompact}
+          />
+        )}
       </div>
 
       <div style={mainContentStyles}>
@@ -218,6 +271,16 @@ export const Layout: React.FC<LayoutProps> = ({
               onSidebarToggle={handleSidebarToggle}
               isSidebarCompact={isCompact}
             />
+          ) : useSideNav2 ? (
+            <TopNav2
+              breadcrumbs={breadcrumbs || []}
+              showShare={showShare}
+              onShareClick={onShareClick || (() => alert('Share clicked'))}
+              onSidebarToggle={handleSidebarToggle}
+              onNavigate={onNavigate}
+              appAction={appAction}
+              isSidebarCompact={isCompact}
+            />
           ) : (
             <TopNav
               breadcrumbs={breadcrumbs || []}
@@ -228,8 +291,10 @@ export const Layout: React.FC<LayoutProps> = ({
               onShareClick={onShareClick || (() => alert('Share clicked'))}
               onUserMenuClick={onUserMenuClick}
               onManageAccountClick={onManageAccountClick}
-              onSettingsClick={onSettingsClick}
+              onSettingsClick={handleSettingsClick}
               onSidebarToggle={handleSidebarToggle}
+              onNavigate={onNavigate}
+              appAction={appAction}
               isSidebarCompact={isCompact}
             />
           )}
@@ -253,11 +318,94 @@ export const Layout: React.FC<LayoutProps> = ({
         {/* Main Content Area */}
         <div style={{
           ...contentAreaStyles,
-          marginTop: tabs ? '90px' : '60px', // Adjust top margin when tabs are present (60px TopNav + 30px tabs)
+          marginTop: tabs ? '150px' : '120px', // TopNav (60px) + desired gap (60px) = 120px total
+          padding: '0 60px 60px 60px', // Remove top padding since marginTop handles the gap
         }}>
           {children}
         </div>
       </div>
+
+      {/* Settings Modal - Shared between TopNav and SideNav2 */}
+      <Modal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        title="Prototype Settings"
+        width="520px"
+        showCloseButton={true}
+        showBackdrop={true}
+        backdropColor="white"
+        backdropOpacity={0.8}
+      >
+        <div style={{ padding: '0 0 20px 0' }}>
+          {/* UI Experiments Section */}
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{
+              ...typography.styles.subheadingM,
+              color: colors.blackAndWhite.black900,
+              marginBottom: '16px',
+              paddingBottom: '8px',
+              borderBottom: `1px solid ${colors.blackAndWhite.black100}`,
+            }}>
+              UI Experiments
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <Selector
+                variant="checkbox"
+                label="Show apps integration buttons"
+                checked={prototypeSettings.appIntegration.showExtraCardButtons}
+                onChange={(checked) => updateSetting('appIntegration', 'showExtraCardButtons', checked)}
+              />
+
+              <Selector
+                variant="checkbox"
+                label="Alt Nav Layout (Home + Products)"
+                checked={prototypeSettings.uiExperiments.sidenavTest}
+                onChange={(checked) => {
+                  updateSetting('uiExperiments', 'sidenavTest', checked);
+                  // Navigate and close modal when toggling
+                  if (onNavigate) {
+                    setIsSettingsModalOpen(false);
+                    if (checked) {
+                      // When enabling SideNav test, navigate to home
+                      onNavigate('home');
+                    } else {
+                      // When disabling SideNav test, navigate to offerings
+                      onNavigate('marketplace', 'offerings');
+                    }
+                  }
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{
+            paddingTop: '16px',
+            borderTop: `1px solid ${colors.blackAndWhite.black100}`,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+            <Button
+              variant="primary"
+              color="white"
+              onClick={resetSettings}
+              showIcon={false}
+            >
+              Reset All Settings
+            </Button>
+            <Button
+              variant="primary"
+              color="black"
+              onClick={() => setIsSettingsModalOpen(false)}
+              showIcon={false}
+            >
+              Apply
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

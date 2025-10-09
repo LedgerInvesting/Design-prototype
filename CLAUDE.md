@@ -7,11 +7,69 @@ cd "E:\Ledger design library\design-library" && npm run storybook
 ```
 This ensures you can view components and changes in real-time at http://localhost:6006/
 
+---
+
+## 📖 READ FIRST - Task-Specific Documentation
+
+**CRITICAL: Before starting ANY task, read the relevant documentation files:**
+
+### 🎨 **Using Any Component or Token**
+**→ READ: `LIBRARY_USAGE.md`**
+- Exact color token paths (e.g., `colors.reports.dynamic.blue300`)
+- Component prop names (e.g., `isOpen` not `open`, `showIcon` not `hideIcon`)
+- Typography, spacing, icons reference
+- Common mistakes to avoid
+- **CHECK THIS FILE FIRST before using any design system element!**
+
+### 📄 **Creating a New Page**
+**→ READ: `NEW_PAGE_GUIDE.md` + `LIBRARY_USAGE.md`**
+- Layout component usage patterns
+- Navigation integration
+- Theme system setup
+- Breadcrumb creation
+- Page naming conventions
+
+### 📚 **Working with Storybook**
+**→ READ: `STORYBOOK_STANDARDS.md` + `LIBRARY_USAGE.md`**
+- Story naming conventions
+- Documentation patterns
+- Interactive controls
+- Best practices
+
+### 🧩 **Understanding Components**
+**→ READ: `COMPONENTS.md` + `LIBRARY_USAGE.md`**
+- Detailed component documentation
+- Usage examples
+- Props and variants
+- **Note: `LIBRARY_USAGE.md` has the quick reference, `COMPONENTS.md` has full details**
+
+### 📊 **Adding Charts**
+**→ READ: `CHARTS.md` + `LIBRARY_USAGE.md`**
+- Chart library integration (Recharts)
+- Styling patterns
+- Data visualization best practices
+- Theme-aware chart colors
+
+### 🏗️ **Understanding Pages**
+**→ READ: `PAGES.md` + `LIBRARY_USAGE.md`**
+- Complete pages documentation
+- External testing environment
+- Navigation patterns
+- Page structure examples
+
+### 🔄 **Understanding Recent Work**
+**→ READ: `RECENT_WORK.md`**
+- Latest updates and changes
+- Work history
+- Current status
+
+---
+
 ## 🚨 CRITICAL: Page Creation Rules
 **SUPER IMPORTANT - WHEN CREATING ANY NEW PAGE:**
 
 ### **📖 ALWAYS READ NEW_PAGE_GUIDE.md FIRST**
-**MANDATORY**: Before creating ANY new page or major component, you MUST read and follow `NEW_PAGE_GUIDE.md`. This file contains critical patterns, rules, and examples that ensure consistency with the existing design system.
+**MANDATORY**: Before creating ANY new page or major component, you MUST read and follow `NEW_PAGE_GUIDE.md` AND `LIBRARY_USAGE.md`. These files contain critical patterns, rules, and examples that ensure consistency with the existing design system.
 
 **Key requirements from NEW_PAGE_GUIDE.md:**
 - **Layout Component Usage**: Always use `<Layout>` from `@design-library/pages` without extra padding containers
@@ -127,10 +185,12 @@ This is a React design library built with TypeScript and Storybook, containing d
 - **Components**: Button, InfoTooltip, Input, DatePicker, Dropdown, Selector, ButtonSelector, Status, Table, Card, FormTabs, Modal
 - **Modal System**: Comprehensive unified modal component with flexible positioning and theme-aware styling
 - **Page Components**:
-  - **Unified Layout System**: Single Layout component with conditional TopNav/FormTopNav rendering
+  - **Unified Layout System**: Single Layout component with conditional TopNav/TopNav2/FormTopNav rendering
+  - **Alternative Navigation**: TopNav2 component (without user profile) for "Alt Nav Layout" prototype setting
   - **Legacy FormLayout**: Backward-compatible wrapper (deprecated, use `Layout` with `formMode=true`)
-  - **Responsive Sidebar**: Hover expansion with localStorage state persistence
+  - **Responsive Sidebar**: SideNav2 with product icons in compact mode, localStorage state persistence
   - **Enhanced Form Integration**: Connect Bank API modal with success states and theme-aware styling
+  - **Cross-App Navigation**: AppActionButton component for context-aware navigation between apps
 - **Icons**: Complete 6-tier icon system with 115+ total icons across extraSmall, small, medium, table, cards, logos
 - **Enhanced Table System**: Action buttons, document cells, intelligent column sizing, dual pagination options
 - **Global Styling**: Custom text selection color using design system's blue700 (#9ad5f7)
@@ -238,6 +298,7 @@ The `/pages` folder contains a complete React development environment for testin
 - `MarketplaceOfferings.tsx` → `MarketplaceOfferings`
 
 **Current Pages:**
+- **HomeTest.tsx**: Home dashboard page with catch-up carousel (3-card view with pagination dots), Popular Deals chart, and Activity feed
 - **ReportsTransactionManagement.tsx**: Complete transaction management interface with animated header, transaction stats, and advanced data table
 - **ReportsNewTransactionForm.tsx**: Comprehensive multi-tab transaction creation form with accordion-based Structure & Key Terms
 - **ReportsExplorer.tsx** (Default): Advanced report navigation interface with program selector and insights visualization
@@ -270,7 +331,34 @@ npm run dev  # Start on http://localhost:5173
 
 ## Recent Major Updates Summary
 
-### ✅ Latest Completed (September 2025)
+### ✅ Latest Completed (October 2025)
+- **TopNav2 Component**: Created alternative navigation without user profile
+  - Duplicate of TopNav with all profile/menu functionality removed
+  - Used when "Alt Nav Layout (Home + Products)" is enabled in prototype settings
+  - Conditional rendering integrated in Layout component
+  - Maintains breadcrumbs, share button, app action button, and sidebar toggle
+- **Layout System Refinement**: Enhanced padding consistency and alignment across all pages
+  - Updated all pages to 60px left and right padding (from 50px)
+  - Added `boxSizing: 'border-box'` to all TopNav components for proper padding calculation
+  - Fixed scrollbar width discrepancy by removing explicit width from mainContentStyles
+  - Improved page transition animation: starts at 102% scale and zooms to 100% (prevents misalignment)
+- **AppActionButton Integration**: Context-aware cross-app navigation system
+  - Test component for navigating between apps (Marketplace, Reports, Analytics, Contracts)
+  - Theme-aware borders with app-specific icon colors
+  - Integrated into TopNav with configurable `appAction` prop per page
+  - Example implementation in AnalyticsValuationDashboard ("Explore contract" button)
+- **HomeTest Dashboard Page**: Complete home dashboard implementation
+  - Catch-up carousel with 7 cards showing 3 at a time
+  - Horizontal scroll with CSS transform transitions
+  - Pagination dots with 25px × 8px rounded rectangle for active state
+  - Popular Deals and Activity cards in 50/50 grid layout
+  - Proper Layout integration without extra padding wrappers
+  - bodyL typography for card titles, 30px card padding
+- **SideNav2 Navigation Fixes**: Eliminated sidebar flashing during page transitions
+  - Changed `expandedApp` from state to derived value
+  - Fixed render cycle issues that caused brief collapsed state visibility
+  - Removed opacity-based transitions that caused layout spacing issues
+  - Improved navigation stability when switching between pages within same app
 - **Descriptive Page Naming System**: Comprehensive page organization with business section prefixes
   - Implemented naming convention: `[BusinessSection][PageName].tsx`
   - All pages renamed for clarity: Reports, Analytics, Contracts, Marketplace prefixes
@@ -290,7 +378,7 @@ npm run dev  # Start on http://localhost:5173
 - **Enhanced Table UX**: Fixed drag cursor behavior - only shows drag cursor when tables actually need horizontal scrolling
 - **BDX Upload Navigation**: Added navigation buttons from Reports Explorer ("3 months (Need review)" and "EXPLORE" buttons)
 - **BDX Table Border Optimization**: Fixed thick border issues, perfect rounded corners, and clean grid structure
-- **Responsive Layout System**: Full-width responsive design with 50px margins, enhanced modal framework
+- **Responsive Layout System**: Full-width responsive design with 60px margins, enhanced modal framework
 - **Complete Accordion Implementation**: NewTransactionForm accordion system with 5 collapsible sections
 - **Comprehensive Token Consolidation**: Eliminated redundant tokens, universal semantic theme system
 - **Comprehensive Codebase Cleanup**: Shared utilities, custom hooks, optimized components

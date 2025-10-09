@@ -2,7 +2,10 @@
 // This file contains all navigation logic to avoid updating pages individually
 
 export type PageType =
+  | 'home'
   | 'reports-explorer'
+  | 'reports-insights-explorer'
+  | 'reports-insights-program-details'
   | 'reports-transaction-management'
   | 'reports-new-transaction-form'
   | 'reports-renewal-transaction'
@@ -29,8 +32,12 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
   return (itemId: string, subitemId?: string) => {
     console.log('Navigate to:', itemId, subitemId);
 
+    // Handle Home navigation
+    if (itemId === 'home') {
+      onNavigateToPage('home');
+    }
     // Handle Analytics navigation
-    if (itemId === 'analytics') {
+    else if (itemId === 'analytics') {
       if (subitemId === 'valuation') {
         onNavigateToPage('analytics-valuation');
       }
@@ -41,13 +48,17 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
         onNavigateToPage('reports-transaction-management');
       } else if (subitemId === 'reports-explorer') {
         onNavigateToPage('reports-explorer');
+      } else if (subitemId === 'insights-explorer') {
+        onNavigateToPage('reports-insights-explorer');
       } else if (subitemId === 'bdx-upload') {
         onNavigateToPage('reports-bdx-upload');
       }
     }
     // Handle Contracts navigation
     else if (itemId === 'contracts') {
-      if (subitemId === 'contracts') {
+      if (subitemId === 'ai-extraction') {
+        onNavigateToPage('contracts-ai-extraction');
+      } else if (subitemId === 'contracts') {
         onNavigateToPage('contracts-ai-extraction');
       } else if (subitemId === 'start') {
         onNavigateToPage('contracts-ai-extraction');
@@ -81,8 +92,16 @@ export const createPageNavigationHandler = (
   return (itemId: string, subitemId?: string) => {
     console.log('Navigate to:', itemId, subitemId);
 
+    // Handle Home navigation
+    if (itemId === 'home') {
+      if (currentPage === 'home') {
+        console.log('Already on home page');
+      } else {
+        onNavigateToPage('home');
+      }
+    }
     // Handle Analytics navigation
-    if (itemId === 'analytics') {
+    else if (itemId === 'analytics') {
       if (subitemId === 'valuation') {
         if (currentPage === 'analytics-valuation') {
           console.log('Already on analytics valuation page');
@@ -105,6 +124,12 @@ export const createPageNavigationHandler = (
         } else {
           onNavigateToPage('reports-explorer');
         }
+      } else if (subitemId === 'insights-explorer') {
+        if (currentPage === 'reports-insights-explorer') {
+          console.log('Already on insights explorer page');
+        } else {
+          onNavigateToPage('reports-insights-explorer');
+        }
       } else if (subitemId === 'bdx-upload') {
         if (currentPage === 'reports-bdx-upload') {
           console.log('Already on BDX upload page');
@@ -115,7 +140,9 @@ export const createPageNavigationHandler = (
     }
     // Handle Contracts navigation
     else if (itemId === 'contracts') {
-      if (subitemId === 'contracts') {
+      if (subitemId === 'ai-extraction') {
+        onNavigateToPage('contracts-ai-extraction');
+      } else if (subitemId === 'contracts') {
         onNavigateToPage('contracts-ai-extraction');
       } else if (subitemId === 'start') {
         onNavigateToPage('contracts-ai-extraction');
@@ -162,16 +189,24 @@ export const createBreadcrumbs = {
     ]
   },
   reports: {
-    transactions: () => [{ label: 'Transaction Management', isActive: true }],
-    explorer: () => [{ label: 'Reports Explorer', isActive: true }],
-    bdxUpload: () => [{ label: 'BDX UPLOAD', isActive: true }],
+    transactions: () => [{ label: 'Reports', isActive: false }, { label: 'Transaction Management', isActive: true }],
+    explorer: () => [{ label: 'Reports', isActive: false }, { label: 'Reports Explorer', isActive: true }],
+    insightsExplorer: () => [{ label: 'Reports', isActive: false }, { label: 'Insights Explorer', isActive: true }],
+    insightsProgramDetails: (programName: string, onNavigateToPage: NavigationHandler) => [
+      { label: 'Reports', isActive: false },
+      { label: 'Insights Explorer', onClick: () => onNavigateToPage('reports-insights-explorer'), isActive: false },
+      { label: programName, isActive: true }
+    ],
+    bdxUpload: () => [{ label: 'Reports', isActive: false }, { label: 'BDX UPLOAD', isActive: true }],
     cashSettlement: (onNavigateToPage: NavigationHandler) => [
+      { label: 'Reports', isActive: false },
       { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('reports-explorer'), isActive: false },
       { label: 'CESSION AND COLLATERAL', isActive: true }
     ]
   },
   contracts: {
     start: () => [{ label: 'Contracts', isActive: true }],
+    aiExtraction: () => [{ label: 'Contracts', isActive: false }, { label: 'AI Extraction', isActive: true }],
     explorer: (onNavigateToPage: NavigationHandler) => [
       { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('reports-explorer'), isActive: false },
       { label: 'Contracts', isActive: true }

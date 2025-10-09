@@ -69,7 +69,13 @@
       "Bash(git restore:*)",
       "Bash(git remote set-url:*)",
       "Bash(npm run:*)",
-      "Bash(copy:*)"
+      "Bash(copy:*)",
+      "Bash(npm uninstall:*)",
+      "Read(//e//**)",
+      "Bash(npx eslint:*)",
+      "Bash(awk:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

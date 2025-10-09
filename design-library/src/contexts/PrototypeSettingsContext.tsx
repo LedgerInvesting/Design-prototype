@@ -12,6 +12,11 @@ export interface PrototypeSettings {
     showIntegrationBadges: boolean;
     useEnhancedNavigation: boolean;
   };
+
+  // UI Experiments Category
+  uiExperiments: {
+    sidenavTest: boolean;
+  };
 }
 
 /**
@@ -23,6 +28,9 @@ const defaultSettings: PrototypeSettings = {
     enableAdvancedFilters: false,
     showIntegrationBadges: false,
     useEnhancedNavigation: false,
+  },
+  uiExperiments: {
+    sidenavTest: false,
   },
 };
 

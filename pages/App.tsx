@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { HomeTest } from './HomeTest';
 import { ReportsCashSettlement } from './ReportsCashSettlement';
 import { ReportNavigation } from './ReportsExplorer';
+import { ReportsInsightsExplorer } from './ReportsInsightsExplorer';
 import { ReportsTransactionManagement } from './ReportsTransactionManagement';
 import { ReportsNewTransactionForm } from './ReportsNewTransactionForm';
 import { ReportsRenewalTransaction } from './ReportsRenewalTransaction';
@@ -12,22 +14,32 @@ import { AnalyticsValuationConfiguration } from './AnalyticsValuationConfigurati
 import { AnalyticsValuationStatus } from './AnalyticsValuationStatus';
 import { ReportsBDXUpload } from './ReportsBDXUpload';
 import { MarketplaceOfferings } from './MarketplaceOfferings';
+import ReportsInsightsProgramDetails from './ReportsInsightsProgramDetails';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
-import { PrototypeSettingsProvider } from '@design-library/contexts';
+import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'reports-cash-settlement' | 'reports-explorer' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-ai-extraction' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'reports-bdx-upload' | 'marketplace-offerings';
+type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-ai-extraction' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'reports-bdx-upload' | 'marketplace-offerings';
 
-function App() {
+// Inner component that uses settings
+function AppContent() {
+  const settings = useSettings();
+  const useSideNavTest = settings.uiExperiments.sidenavTest;
+
   const [currentPage, setCurrentPage] = useState<PageType>(() => {
     // Initialize from URL hash or default
     const hash = window.location.hash.slice(1) as PageType;
+    // If sidenavTest is enabled and no hash, default to home
+    if (!hash && useSideNavTest) {
+      return 'home';
+    }
     return hash || 'marketplace-offerings';
   });
   const [valuationData, setValuationData] = useState<any>(null);
   const [renewalData, setRenewalData] = useState<any>(null);
+  const [programDetailsData, setProgramDetailsData] = useState<any>(null);
 
   // Listen to browser back/forward buttons
   useEffect(() => {
@@ -51,6 +63,8 @@ function App() {
     if (data) {
       if (page === 'new-transaction-form') {
         setRenewalData(data);
+      } else if (page === 'reports-insights-program-details') {
+        setProgramDetailsData(data);
       } else {
         setValuationData(data);
       }
@@ -59,10 +73,16 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'home':
+        return <HomeTest onNavigateToPage={setPage} />;
       case 'reports-cash-settlement':
         return <ReportsCashSettlement onNavigateToPage={setPage} />;
       case 'reports-explorer':
         return <ReportNavigation onNavigateToPage={setPage} />;
+      case 'reports-insights-explorer':
+        return <ReportsInsightsExplorer onNavigateToPage={setPage} />;
+      case 'reports-insights-program-details':
+        return <ReportsInsightsProgramDetails programData={programDetailsData} onNavigateToPage={setPage} />;
       case 'reports-transaction-management':
         return <ReportsTransactionManagement onNavigateToPage={setPage} />;
       case 'reports-new-transaction-form':
@@ -86,7 +106,7 @@ function App() {
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:
-        return <MarketplaceOfferings onNavigateToPage={setPage} />;
+        return useSideNavTest ? <HomeTest onNavigateToPage={setPage} /> : <MarketplaceOfferings onNavigateToPage={setPage} />;
     }
   };
 
@@ -106,12 +126,19 @@ function App() {
   };
 
   return (
+    <ThemeProvider initialTheme={getThemeForPage(currentPage)}>
+      <div>
+        {renderPage()}
+      </div>
+    </ThemeProvider>
+  );
+}
+
+// Main App wrapper with Provider
+function App() {
+  return (
     <PrototypeSettingsProvider>
-      <ThemeProvider initialTheme={getThemeForPage(currentPage)}>
-        <div>
-          {renderPage()}
-        </div>
-      </ThemeProvider>
+      <AppContent />
     </PrototypeSettingsProvider>
   );
 }

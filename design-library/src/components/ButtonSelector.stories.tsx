@@ -3,7 +3,7 @@ import { ButtonSelector } from './ButtonSelector';
 import { useState } from 'react';
 
 const meta: Meta<typeof ButtonSelector> = {
-  title: 'Components/ButtonSelector',
+  title: 'Forms/ButtonSelector',
   component: ButtonSelector,
   parameters: {
     layout: 'centered',

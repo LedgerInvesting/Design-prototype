@@ -11,21 +11,33 @@ const meta: Meta<typeof PageHeader> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Standardized header layout for pages that need title + action button(s). Provides consistent spacing, typography, and responsive behavior with flexible content organization.',
+        component: `Standardized header layout for pages that need title + action button(s). Provides consistent spacing, typography, and responsive behavior.
+
+**Features:**
+- Two-color title pattern (important/not important text)
+- Built-in primary and secondary button support
+- Custom action elements support
+- Theme-aware button styling
+        `,
       },
     },
   },
   argTypes: {
     title: {
-      description: 'Main title content - can be string or JSX for complex titles',
-      control: 'text',
+      description: 'Main title content - can be string, array of TitlePart objects, or JSX',
     },
     subtitle: {
       description: 'Optional subtitle text below the title',
       control: 'text',
     },
+    primaryAction: {
+      description: 'Primary action button (black variant)',
+    },
+    secondaryAction: {
+      description: 'Secondary action button (white no-border variant)',
+    },
     actions: {
-      description: 'Array of action elements (buttons, etc.) displayed on the right',
+      description: 'Array of custom action elements (buttons, etc.)',
     },
     spacing: {
       description: 'Spacing variant for bottom margin',
@@ -38,7 +50,86 @@ const meta: Meta<typeof PageHeader> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Simple header with single action
+// Two-color title with primary and secondary buttons (NEW PATTERN)
+export const TwoColorTitle: Story = {
+  render: () => (
+    <ThemeProvider initialTheme="reports">
+      <div style={{ width: '800px', padding: '20px', backgroundColor: '#f8fafc' }}>
+        <PageHeader
+          title={[
+            { text: 'You are now viewing the ', important: false },
+            { text: 'Atlas.wc-ilsTY23 insights', important: true },
+            { text: ' from Firmat Capital Markets', important: false }
+          ]}
+          primaryAction={{ label: 'Edit Configuration', onClick: () => alert('Primary action') }}
+          secondaryAction={{ label: 'Export', onClick: () => alert('Secondary action') }}
+        />
+        <div style={{ height: '200px', backgroundColor: '#e5e7eb', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
+          Page Content Area
+        </div>
+      </div>
+    </ThemeProvider>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Two-color title pattern with important text in black900 and descriptive text in black500. Primary button is black variant, secondary is white no-border variant.',
+      },
+    },
+  },
+};
+
+// Primary button only (common pattern)
+export const WithPrimaryButton: Story = {
+  render: () => (
+    <ThemeProvider initialTheme="analytics">
+      <div style={{ width: '800px', padding: '20px', backgroundColor: '#f8fafc' }}>
+        <PageHeader
+          title="Valuation Dashboard"
+          primaryAction={{ label: 'Edit Configuration', onClick: () => alert('Edit clicked') }}
+        />
+        <div style={{ height: '200px', backgroundColor: '#e5e7eb', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
+          Page Content Area
+        </div>
+      </div>
+    </ThemeProvider>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Simple title with primary button (black variant)',
+      },
+    },
+  },
+};
+
+// Primary and secondary buttons
+export const WithBothButtons: Story = {
+  render: () => (
+    <ThemeProvider initialTheme="marketplace">
+      <div style={{ width: '800px', padding: '20px', backgroundColor: '#f8fafc' }}>
+        <PageHeader
+          title="Configuration Settings"
+          subtitle="Manage your preferences"
+          primaryAction={{ label: 'Save Changes', onClick: () => alert('Save clicked') }}
+          secondaryAction={{ label: 'Cancel', onClick: () => alert('Cancel clicked') }}
+        />
+        <div style={{ height: '200px', backgroundColor: '#e5e7eb', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
+          Page Content Area
+        </div>
+      </div>
+    </ThemeProvider>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Both primary (black) and secondary (white no-border) button variants',
+      },
+    },
+  },
+};
+
+// Simple header with single action (LEGACY)
 export const SimpleHeader: Story = {
   args: {
     title: 'Valuation Dashboard',

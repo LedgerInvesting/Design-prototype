@@ -42,7 +42,7 @@ export const ChartCustomTick: React.FC<ChartCustomTickProps> = ({
   const colors = useSemanticColors();
 
   // Check if this is the last item for X-axis
-  const isLastXItem = isXAxis && dataLength > 0 && index === dataLength - 1;
+  const isLastXItem = isXAxis && visibleTicksCount && index === visibleTicksCount - 1;
   // Check if this is the last item for Y-axis (bottom of chart)
   const isLastYItem = !isXAxis && visibleTicksCount && index === visibleTicksCount - 1;
 
@@ -50,7 +50,7 @@ export const ChartCustomTick: React.FC<ChartCustomTickProps> = ({
     ? { dx: xAxisInside ? (isLastXItem ? -25 : 25) : 0, dy: xAxisInside ? 15 : 0 }
     : { dx: yAxisInside ? 10 : 0, dy: yAxisInside ? (isLastYItem ? 15 : -15) : 0 };
 
-  const textAnchor = isXAxis ? 'middle' : 'start';
+  const textAnchor = isXAxis ? (xAxisInside && isLastXItem ? 'end' : 'middle') : 'start';
   const dominantBaseline = isXAxis ? 'hanging' : 'middle';
 
   return (

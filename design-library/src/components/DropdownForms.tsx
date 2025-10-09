@@ -2,21 +2,15 @@ import React, { forwardRef, useState, useEffect, useRef } from 'react';
 import { borderRadius, spacing, shadows, typography, useSemanticColors } from '../tokens';
 import { icons } from '../icons';
 import { InfoTooltip, InfoTooltipSection } from './InfoTooltip';
+import { commonStyles } from '../utils/styleInjection';
 import { commonTypographyStyles } from '../utils/typography';
 import { useOutsideClick } from '../hooks/useOutsideClick';
 import { CustomScroll } from './CustomScroll';
+import type { DropdownOption } from './Dropdown';
 
-export interface DropdownOption {
-  value: string;
-  label: string;
-  disabled?: boolean;
-}
-
-export interface DropdownProps {
+export interface DropdownFormsProps {
   /** Dropdown label */
   label?: string;
-  /** Show label (default: true) */
-  showLabel?: boolean;
   /** Placeholder text when no option is selected */
   placeholder?: string;
   /** Selected value */
@@ -43,17 +37,10 @@ export interface DropdownProps {
   className?: string;
   /** Disabled state */
   disabled?: boolean;
-  /** Custom trigger background color */
-  triggerBackgroundColor?: string;
-  /** Show border (default: true) */
-  showBorder?: boolean;
-  /** Selected value prefix (default: 'Option') */
-  selectedPrefix?: string;
 }
 
-export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
+export const DropdownForms = forwardRef<HTMLDivElement, DropdownFormsProps>(({
   label = 'Label',
-  showLabel = false,
   placeholder = 'Select an option...',
   value = '',
   options = [],
@@ -67,18 +54,20 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   onBlur,
   className,
   disabled = false,
-  triggerBackgroundColor,
-  showBorder = false,
-  selectedPrefix = 'Option',
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const colors = useSemanticColors();
 
+  // Initialize scrollbar styles
+  useEffect(() => {
+    commonStyles.customScrollbar('dropdown');
+  }, []);
+
   // Determine actual state - prioritize error/warning, then check if filled, then use internal state
-  const actualState = disabled ? 'disabled' : 
-    (state === 'error' || state === 'warning') ? state : 
+  const actualState = disabled ? 'disabled' :
+    (state === 'error' || state === 'warning') ? state :
     (value && internalState !== 'active') ? 'filled' : internalState;
 
   const isError = state === 'error';
@@ -99,29 +88,18 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   // Get styles based on state
   const getDropdownContainerStyles = () => {
     const baseStyles = {
-      display: 'inline-flex',
+      display: 'flex',
       alignItems: 'center',
       height: '34px',
-      padding: '10px 15px 10px 15px',
-      borderRadius: borderRadius.absolute,
-      backgroundColor: triggerBackgroundColor || colors.theme.primary200,
-      border: showBorder ? '1px solid' : 'none',
+      padding: '8px 10px 10px 12px',
+      borderRadius: borderRadius[4],
+      backgroundColor: colors.blackAndWhite.white,
+      border: '1px solid',
       gap: spacing[2],
       position: 'relative' as const,
       cursor: disabled ? 'default' : 'pointer',
-      minWidth: 'fit-content',
-      width: 'fit-content',
     };
 
-    // If custom background is provided, use simple styling
-    if (triggerBackgroundColor) {
-      return {
-        ...baseStyles,
-        borderColor: showBorder ? colors.theme.primary400 : 'transparent',
-      };
-    }
-
-    // Default state-based styling
     switch (actualState) {
       case 'error':
         return {
@@ -162,9 +140,12 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
 
   const getDisplayTextStyles = () => {
     return {
+      flex: 1,
       ...commonTypographyStyles.field(),
+      color: value
+        ? (actualState === 'disabled' ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900)
+        : colors.blackAndWhite.black500,
       userSelect: 'none' as const,
-      whiteSpace: 'nowrap' as const,
     };
   };
 
@@ -174,14 +155,14 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
       top: '100%',
       left: 0,
       right: 0,
-      minWidth: '100%',
-      width: 'fit-content',
       backgroundColor: colors.blackAndWhite.white,
-      border: 'none',
+      border: `1px solid ${colors.theme.primary400}`,
       borderRadius: borderRadius[8],
       marginTop: spacing[1],
+      maxHeight: '200px',
+      overflowY: 'auto' as const,
       zIndex: 1000,
-      boxShadow: shadows.medium,
+      boxShadow: shadows.md,
       padding: '10px',
     };
   };
@@ -223,10 +204,11 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   const helperTextStyles = getHelperTextStyles();
 
   const selectedOption = options.find(option => option.value === value);
+  const displayText = selectedOption ? selectedOption.label : placeholder;
 
   const handleDropdownClick = () => {
     if (disabled) return;
-    
+
     if (!isOpen) {
       setIsOpen(true);
       if (state !== 'error' && state !== 'warning') {
@@ -238,7 +220,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
 
   const handleOptionClick = (optionValue: string) => {
     if (disabled) return;
-    
+
     const option = options.find(opt => opt.value === optionValue);
     if (option && !option.disabled) {
       onChange?.(optionValue);
@@ -252,66 +234,47 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   return (
     <div className={className} style={{ display: 'flex', flexDirection: 'column' }}>
       {/* Label with optional tooltip */}
-      {showLabel && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: spacing[2],
-          marginBottom: spacing[1],
-          height: '20px'
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing[2],
+        marginBottom: spacing[1],
+        height: '20px'
+      }}>
+        <label style={{
+          ...commonTypographyStyles.label(),
+          color: colors.blackAndWhite.black900,
         }}>
-          <label style={{
-            ...commonTypographyStyles.label(),
-            color: colors.blackAndWhite.black900,
-          }}>
-            {label}
-          </label>
-          {showTooltip && (
-            <InfoTooltip
-              text={tooltipText}
-              sections={tooltipSections}
-              position="bottom-right"
-              size="small"
-            />
-          )}
-        </div>
-      )}
+          {label}
+        </label>
+        {showTooltip && (
+          <InfoTooltip
+            text={tooltipText}
+            sections={tooltipSections}
+            position="bottom-right"
+            size="small"
+          />
+        )}
+      </div>
 
       {/* Dropdown container */}
       <div ref={dropdownRef} style={{ position: 'relative' }}>
-        <div 
+        <div
           ref={ref}
           style={containerStyles}
           onClick={handleDropdownClick}
         >
           {/* Display text */}
           <div style={displayTextStyles}>
-            {selectedOption ? (
-              <>
-                <span style={{ color: colors.blackAndWhite.black500 }}>
-                  {selectedPrefix}:{' '}
-                </span>
-                <span style={{
-                  color: actualState === 'disabled'
-                    ? colors.blackAndWhite.black500
-                    : colors.blackAndWhite.black900
-                }}>
-                  {selectedOption.label}
-                </span>
-              </>
-            ) : (
-              <span style={{ color: colors.blackAndWhite.black500 }}>
-                {placeholder}
-              </span>
-            )}
+            {displayText}
           </div>
 
           {/* Chevron icon */}
-          <div style={{ 
-            width: '8px', 
-            height: '8px', 
-            display: 'flex', 
-            alignItems: 'center', 
+          <div style={{
+            width: '8px',
+            height: '8px',
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
             transition: 'transform 0.2s ease',
@@ -324,7 +287,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
         {isOpen && !disabled && (
           <div style={dropdownListStyles} className="dropdown-list">
             {options.length > 5 ? (
-              <CustomScroll maxHeight="200px" scrollClassName="dropdown-scroll">
+              <CustomScroll maxHeight="200px" scrollClassName="dropdown-forms-scroll">
                 {options.map((option, index) => (
                   <div
                     key={option.value}
@@ -378,6 +341,6 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({
   );
 });
 
-Dropdown.displayName = 'Dropdown';
+DropdownForms.displayName = 'DropdownForms';
 
-export default Dropdown;
+export default DropdownForms;

@@ -5,7 +5,7 @@ import { Button, Card, Tabs } from '@design-library/components';
 import type { Tab } from '@design-library/components';
 import { typography, spacing, borderRadius, shadows, useSemanticColors, ThemeProvider } from '@design-library/tokens';
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
-import { TextTable, DocumentSmall } from '@design-library/icons';
+import { TextTable, DocumentSmall, KLogo } from '@design-library/icons';
 
 interface ContractsAIExtractionProps {
   onNavigateToPage?: (page: string, data?: any) => void;
@@ -20,7 +20,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
     { id: 'secondary', label: 'SECONDARY MARKET' }
   ];
 
-  const breadcrumbs = createBreadcrumbs.contracts.start();
+  const breadcrumbs = createBreadcrumbs.contracts.aiExtraction();
 
   const PageContent: React.FC = () => {
     const colors = useSemanticColors();
@@ -49,12 +49,12 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
       gap: spacing[8],
       alignItems: 'flex-start',
       marginTop: spacing[6],
+      width: '100%',
     };
 
     // PDF viewer styles
     const pdfViewerStyles: React.CSSProperties = {
-      flex: '1',
-      maxWidth: '512px',
+      flex: '1 1 512px',
       backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[16],
       padding: spacing[3],
@@ -87,8 +87,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
 
     // Terms sections styles
     const termsSectionStyles: React.CSSProperties = {
-      flex: '1',
-      maxWidth: '569px',
+      flex: '1 1 569px',
       display: 'flex',
       flexDirection: 'column',
       gap: spacing[6],
@@ -239,14 +238,6 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
       );
     };
 
-    // Ask Anything button
-    const askAnythingButtonStyles: React.CSSProperties = {
-      position: 'absolute',
-      top: spacing[12],
-      right: spacing[12],
-      zIndex: 10,
-    };
-
     // Sample data
     const partiesData = [
       { label: 'Ceding Insurer', value: 'ACME Insurance Company' },
@@ -265,15 +256,25 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
     ];
 
     return (
-      <div style={{ position: 'relative' }}>
-        {/* Ask Anything Button */}
-        <div style={askAnythingButtonStyles}>
-          <Button
-            variant="primary"
-            color="black"
+      <div>
+        {/* Page Title and Button */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: spacing[8]
+        }}>
+          <div>
+            <span style={titleStyles}>Extracted terms </span>
+            <span style={subtitleStyles}>from</span>
+            <span style={{ ...subtitleStyles, fontStyle: 'normal' }}> Demo Reinsurance Contract</span>
+          </div>
+
+          {/* Ask Anything Button */}
+          <button
             onClick={() => console.log('Ask Anything clicked')}
             style={{
-              padding: '8px 24px',
+              padding: '10px 20px',
               borderRadius: borderRadius[8],
               boxShadow: shadows.medium,
               display: 'flex',
@@ -281,31 +282,27 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
               gap: spacing[3],
               backgroundColor: colors.blackAndWhite.black900,
               color: colors.blackAndWhite.white,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              ...typography.styles.bodyM,
+              fontWeight: typography.fontWeight.medium,
             }}
           >
             <div style={{
               width: '24px',
               height: '24px',
               backgroundColor: colors.theme.primary700,
-              borderRadius: '50%',
+              borderRadius: borderRadius[4],
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              color: colors.blackAndWhite.black900,
+              flexShrink: 0,
             }}>
-              K
+              <KLogo color={colors.blackAndWhite.black900} />
             </div>
             ASK ANYTHING
-          </Button>
-        </div>
-
-        {/* Page Title */}
-        <div style={{ marginBottom: spacing[8] }}>
-          <span style={titleStyles}>Extracted terms </span>
-          <span style={subtitleStyles}>from</span>
-          <span style={{ ...subtitleStyles, fontStyle: 'normal' }}> Demo Reinsurance Contract</span>
+          </button>
         </div>
 
         {/* Tabs */}
@@ -407,7 +404,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
     <ThemeProvider initialTheme="contracts">
       <Layout
         selectedSidebarItem="contracts"
-        selectedSidebarSubitem="contracts"
+        selectedSidebarSubitem="ai-extraction"
         onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-ai-extraction')}
         breadcrumbs={breadcrumbs}
       >

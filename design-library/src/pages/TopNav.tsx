@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { colors, typography, spacing, borderRadius, shadows, useSemanticColors } from '../tokens';
 import { ChevronRightExtraSmall, ChevronDownExtraSmall, ExternalLinkSmall, HideShowSidebarMedium, UserSmall, SettingsMedium } from '../icons';
 import { Button } from '../components/Button';
+import { AppActionButton } from '../components/AppActionButton';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 import { Modal } from '../components/Modal';
 import { Selector } from '../components/Selector';
 import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
@@ -11,6 +13,12 @@ export interface BreadcrumbItem {
   href?: string;
   isActive?: boolean;
   onClick?: () => void;
+}
+
+export interface AppActionConfig {
+  app: 'marketplace' | 'reports' | 'analytics' | 'contracts';
+  actionText: string;
+  onClick: () => void;
 }
 
 export interface TopNavProps {
@@ -24,6 +32,8 @@ export interface TopNavProps {
   onManageAccountClick?: () => void;
   onSettingsClick?: () => void;
   onSidebarToggle?: () => void;
+  onNavigate?: (itemId: string, subitemId?: string) => void;
+  appAction?: AppActionConfig; // Optional context-aware app action button
   isSidebarCompact?: boolean; // Track sidebar state for icon color
   className?: string;
   style?: React.CSSProperties;
@@ -40,14 +50,15 @@ export const TopNav: React.FC<TopNavProps> = ({
   onManageAccountClick,
   onSettingsClick,
   onSidebarToggle,
+  onNavigate,
+  appAction,
   isSidebarCompact = false,
   className,
   style,
 }) => {
   const semanticColors = useSemanticColors();
-  const { settings, updateSetting, resetSettings } = usePrototypeSettings();
+  const { settings: prototypeSettings } = usePrototypeSettings();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const containerStyles: React.CSSProperties = {
@@ -57,12 +68,13 @@ export const TopNav: React.FC<TopNavProps> = ({
     width: '100%',
     height: '60px',
     backgroundColor: colors.blackAndWhite.white,
-    padding: '0 50px',
+    padding: '0 60px',
     borderTopLeftRadius: '10px',
     boxShadow: shadows.base,
     position: 'sticky',
     top: 0,
     zIndex: 100,
+    boxSizing: 'border-box',
     ...style,
   };
 
@@ -247,7 +259,6 @@ export const TopNav: React.FC<TopNavProps> = ({
 
   const handleSettingsClick = () => {
     setIsUserMenuOpen(false);
-    setIsSettingsModalOpen(true);
     if (onSettingsClick) {
       onSettingsClick();
     }
@@ -288,44 +299,16 @@ export const TopNav: React.FC<TopNavProps> = ({
           </>
         )}
 
-        <div style={breadcrumbsStyles}>
-          {breadcrumbs.map((item, index) => (
-            <React.Fragment key={index}>
-              {(item.href || item.onClick) && !item.isActive ? (
-                <a
-                  href={item.href || '#'}
-                  onClick={(e) => {
-                    if (item.onClick) {
-                      e.preventDefault();
-                      item.onClick();
-                    }
-                  }}
-                  style={breadcrumbItemStyles}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = colors.blackAndWhite.black900;
-                    e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = colors.blackAndWhite.black600;
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <span style={item.isActive ? activeBreadcrumbStyles : breadcrumbItemStyles}>
-                  {item.label}
-                </span>
-              )}
-              {index < breadcrumbs.length - 1 && (
-                <ChevronRightExtraSmall color={colors.blackAndWhite.black300} />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+        <Breadcrumbs
+          items={breadcrumbs.map(item => ({
+            label: item.label,
+            path: item.href,
+            onClick: item.onClick
+          }))}
+        />
       </div>
 
-      {/* Right Section - Share Button + Profile */}
+      {/* Right Section - Share Button + App Action Button + Profile */}
       <div style={rightSectionStyles}>
         {/* Share Button */}
         {showShare && (
@@ -337,6 +320,15 @@ export const TopNav: React.FC<TopNavProps> = ({
           >
             share
           </Button>
+        )}
+
+        {/* App Action Button - Context-aware cross-app navigation */}
+        {prototypeSettings.appIntegration.showExtraCardButtons && appAction && (
+          <AppActionButton
+            app={appAction.app}
+            actionText={appAction.actionText}
+            onClick={appAction.onClick}
+          />
         )}
 
         {/* Separator - Always visible to separate page content from account */}
@@ -425,89 +417,6 @@ export const TopNav: React.FC<TopNavProps> = ({
           )}
         </div>
       </div>
-
-      {/* Settings Modal */}
-      <Modal
-        isOpen={isSettingsModalOpen}
-        onClose={() => setIsSettingsModalOpen(false)}
-        title="Prototype Settings"
-        width="520px"
-        showCloseButton={true}
-        showBackdrop={true}
-        backdropColor="white"
-        backdropOpacity={0.8}
-      >
-        <div style={{ padding: '0 0 20px 0' }}>
-          {/* App Integration Section */}
-          <div style={{ marginBottom: '24px' }}>
-            <div style={{
-              ...typography.styles.subheadingM,
-              color: colors.blackAndWhite.black900,
-              marginBottom: '16px',
-              paddingBottom: '8px',
-              borderBottom: `1px solid ${colors.blackAndWhite.black100}`,
-            }}>
-              App Integration
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <Selector
-                variant="checkbox"
-                label="Show extra card buttons"
-                checked={settings.appIntegration.showExtraCardButtons}
-                onChange={(checked) => updateSetting('appIntegration', 'showExtraCardButtons', checked)}
-              />
-
-              <Selector
-                variant="checkbox"
-                label="Enable advanced filters"
-                checked={settings.appIntegration.enableAdvancedFilters}
-                onChange={(checked) => updateSetting('appIntegration', 'enableAdvancedFilters', checked)}
-              />
-
-              <Selector
-                variant="checkbox"
-                label="Show integration badges"
-                checked={settings.appIntegration.showIntegrationBadges}
-                onChange={(checked) => updateSetting('appIntegration', 'showIntegrationBadges', checked)}
-              />
-
-              <Selector
-                variant="checkbox"
-                label="Use enhanced navigation"
-                checked={settings.appIntegration.useEnhancedNavigation}
-                onChange={(checked) => updateSetting('appIntegration', 'useEnhancedNavigation', checked)}
-              />
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div style={{
-            paddingTop: '16px',
-            borderTop: `1px solid ${colors.blackAndWhite.black100}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-            <Button
-              variant="primary"
-              color="white"
-              onClick={resetSettings}
-              showIcon={false}
-            >
-              Reset All Settings
-            </Button>
-            <Button
-              variant="primary"
-              color="black"
-              onClick={() => setIsSettingsModalOpen(false)}
-              showIcon={false}
-            >
-              Apply
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </nav>
   );
 };

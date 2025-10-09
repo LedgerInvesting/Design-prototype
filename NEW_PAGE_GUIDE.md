@@ -78,19 +78,34 @@ import { AddSmall, ChevronRightSmall, DocumentTable } from '@design-library/icon
 ### **Page Component Structure**
 ```tsx
 // Example: ReportsYourPageName.tsx
+import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
+
 interface ReportsYourPageNameProps {
-  onNavigateToPage?: (page: string, data?: any) => void;
+  onNavigateToPage?: NavigationHandler;
 }
 
 export const ReportsYourPageName: React.FC<ReportsYourPageNameProps> = ({ onNavigateToPage }) => {
   const [activeState, setActiveState] = useState('default');
 
+  // Create navigation handler
+  const navigationHandler = onNavigateToPage
+    ? createPageNavigationHandler(onNavigateToPage, 'reports-your-page-name')
+    : undefined;
+
+  // Create breadcrumbs - ALWAYS include app name as first item (automatically hidden)
+  const breadcrumbs = onNavigateToPage
+    ? createBreadcrumbs.reports.yourPageName(onNavigateToPage)
+    : [
+        { label: 'Reports' },         // App name - hidden automatically
+        { label: 'Your Page Name' }   // Main page - SHOWN
+      ];
+  // Result: "Your Page Name" displays in breadcrumbs
+
   return (
     <Layout
-      selectedSidebarItem="reports"               // reports, analytics, contracts, marketplace
-      selectedSidebarSubitem="your-page"          // transactions, valuation, offerings
-      onNavigate={createPageNavigationHandler(onNavigateToPage, 'reports-your-page-name')}
-      breadcrumbs={createBreadcrumbs.reports.yourPageName()}
+      breadcrumbs={breadcrumbs}
+      pageType="reports"                          // reports, analytics, contracts, marketplace
+      onNavigate={navigationHandler}
     >
       {/* Page content goes directly here - NO wrapper with padding */}
       <YourPageContent />
@@ -196,35 +211,162 @@ const DashboardPage = () => (
 
 ## 🔧 Navigation Integration
 
-### **1. Add Page to Navigation Utils**
+### **CRITICAL: Navigation & Breadcrumb Setup**
+
+**Every new page MUST follow these steps:**
+
+### **1. Add Page Type to Navigation Utils**
 Update `E:\Ledger design library\design-library\src\utils\navigation.ts`:
 
 ```tsx
+// Step 1: Add your page type to PageType union
 export type PageType =
   | 'existing-pages'
-  | 'your-new-page'; // Add your page type here
+  | 'reports-your-page-name'  // Add your page type here (follows naming convention)
+  | 'analytics-your-page';
 
-// Add breadcrumb creator
+// Step 2: Add breadcrumb creator - ALWAYS include app name as first item
 export const createBreadcrumbs = {
-  yourSection: {
-    yourPage: (): BreadcrumbItem[] => [
-      { label: 'YOUR SECTION', href: '/your-section' },
-      { label: 'YOUR PAGE', isActive: true }
+  reports: {
+    yourPageName: (onNavigateToPage: NavigationHandler) => [
+      { label: 'Reports', isActive: false },  // REQUIRED: App name (first item)
+      { label: 'Your Page Name', isActive: true }
+    ],
+    // For detail pages with navigation back
+    yourDetailPage: (itemName: string, onNavigateToPage: NavigationHandler) => [
+      { label: 'Reports', isActive: false },  // REQUIRED: App name
+      { label: 'Parent Page', onClick: () => onNavigateToPage('reports-parent'), isActive: false },
+      { label: itemName, isActive: true }  // Current page
+    ]
+  },
+  analytics: {
+    yourPageName: () => [
+      { label: 'Analytics', isActive: false },  // REQUIRED: App name
+      { label: 'Your Page Name', isActive: true }
     ]
   }
 };
 ```
 
-### **2. Update Sidebar Configuration**
-Ensure your sidebar items exist in the Layout component's navigation structure.
+**Breadcrumb Rules:**
+- ✅ **ALWAYS include app name** (Reports, Analytics, Contracts, Marketplace) as first item
+- ✅ **App names are automatically hidden** by Breadcrumbs component
+- ✅ **Main page names are SHOWN** (e.g., "Insights Explorer", "Transaction Management")
+- ✅ **Last item has `isActive: true`** (current page, not clickable, black500)
+- ✅ **Intermediate items use `onClick`** for navigation
+- ✅ **Chevron separators** automatically added between items
+- ✅ **Use `onNavigateToPage` parameter** for type-safe navigation
+
+**Example - Simple Page:**
+```tsx
+reports: {
+  explorer: () => [
+    { label: 'Reports', isActive: false },          // App name - hidden automatically
+    { label: 'Reports Explorer', isActive: true }   // Main page - SHOWN
+  ]
+}
+// Result: "Reports Explorer" (only)
+```
+
+**Example - Two-Level Navigation:**
+```tsx
+reports: {
+  insightsExplorer: () => [
+    { label: 'Reports', isActive: false },           // App name - hidden
+    { label: 'Insights Explorer', isActive: true }   // Main page - SHOWN
+  ]
+}
+// Result: "Insights Explorer" (only)
+```
+
+**Example - Detail Page with Back Navigation:**
+```tsx
+reports: {
+  insightsProgramDetails: (programName: string, onNavigateToPage: NavigationHandler) => [
+    { label: 'Reports', isActive: false },  // App name - hidden
+    { label: 'Insights Explorer', onClick: () => onNavigateToPage('reports-insights-explorer'), isActive: false },  // Main page - SHOWN & clickable
+    { label: programName, isActive: true }  // Current page - SHOWN, not clickable
+  ]
+}
+// Result: "Insights Explorer > Program Name"
+```
+
+### **2. Implement Navigation in Your Page Component**
+
+**Template Pattern:**
+```tsx
+import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
+
+interface ReportsYourPageProps {
+  onNavigateToPage?: NavigationHandler;
+}
+
+export const ReportsYourPage: React.FC<ReportsYourPageProps> = ({ onNavigateToPage }) => {
+  // Create navigation handler
+  const navigationHandler = onNavigateToPage
+    ? createPageNavigationHandler(onNavigateToPage, 'reports-your-page')
+    : undefined;
+
+  // Create breadcrumbs using utility
+  const breadcrumbs = onNavigateToPage
+    ? createBreadcrumbs.reports.yourPage(onNavigateToPage)
+    : [
+        { label: 'Reports' },          // App name (will be hidden)
+        { label: 'Your Page Name' }     // Current page
+      ];
+
+  return (
+    <Layout
+      breadcrumbs={breadcrumbs}
+      pageType="reports"
+      onNavigate={navigationHandler}
+    >
+      <YourContent />
+    </Layout>
+  );
+};
+```
+
+**For Detail Pages (with dynamic data):**
+```tsx
+const ReportsDetailPage: React.FC<Props> = ({ itemData, onNavigateToPage }) => {
+  const itemName = itemData?.name || 'Default Name';
+
+  const navigationHandler = onNavigateToPage
+    ? createPageNavigationHandler(onNavigateToPage, 'reports-detail-page')
+    : undefined;
+
+  const breadcrumbs = onNavigateToPage
+    ? createBreadcrumbs.reports.detailPage(itemName, onNavigateToPage)
+    : [
+        { label: 'Reports' },
+        { label: 'Parent Page' },
+        { label: itemName }
+      ];
+
+  return (
+    <Layout
+      breadcrumbs={breadcrumbs}
+      pageType="reports"
+      onNavigate={navigationHandler}
+    >
+      <YourDetailContent />
+    </Layout>
+  );
+};
+```
 
 ### **3. Update App.tsx**
-Add your page to the main App routing if needed:
+Add your page to the main App routing:
 
 ```tsx
 // In App.tsx
-case 'your-page':
-  return <YourPage onNavigateToPage={setCurrentPage} />;
+case 'reports-your-page':
+  return <ReportsYourPage onNavigateToPage={setPage} />;
+
+// For detail pages with data
+case 'reports-detail-page':
+  return <ReportsDetailPage itemData={detailData} onNavigateToPage={setPage} />;
 ```
 
 ## 📐 Layout Standards

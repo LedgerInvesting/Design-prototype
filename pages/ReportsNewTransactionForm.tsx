@@ -36,11 +36,11 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
     rampUpPeriodEnd: renewalData?.rampUpPeriodEnd || '',
   });
 
-  const [requirements, setRequirements] = useState([{ id: 1 }]);
+  const [requirements, setRequirements] = useState<Array<{ id: number }>>([]);
   const [frequencyValue, setFrequencyValue] = useState<string>('');
-  const [additionalFieldSets, setAdditionalFieldSets] = useState<Array<{ id: number }>>([]);
+  const [coverageLayers, setCoverageLayers] = useState<Array<{ id: number }>>([]);
   const [profitCommissionTiers, setProfitCommissionTiers] = useState<Array<{ id: number }>>([]);
-  const [policyLimitsTerms, setPolicyLimitsTerms] = useState<Array<{ id: number }>>([]);
+  const [policyLimits, setPolicyLimits] = useState<Array<{ id: number }>>([]);
   const [brokerInfo, setBrokerInfo] = useState<Array<{ id: number }>>([]);
 
   // Bank API Modal state
@@ -68,25 +68,39 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
     setRequirements([...requirements, { id: newId }]);
   };
 
-  const addAdditionalFieldSet = () => {
-    const newId = additionalFieldSets.length + 1;
-    setAdditionalFieldSets([...additionalFieldSets, { id: newId }]);
+  const removeRequirement = (id: number) => {
+    setRequirements(requirements.filter(req => req.id !== id));
   };
 
-  const removeAdditionalFieldSet = (id: number) => {
-    setAdditionalFieldSets(additionalFieldSets.filter(fieldSet => fieldSet.id !== id));
+  // Coverage Layers functions
+  const addCoverageLayer = () => {
+    const newId = coverageLayers.length + 1;
+    setCoverageLayers([...coverageLayers, { id: newId }]);
   };
 
+  const removeCoverageLayer = (id: number) => {
+    setCoverageLayers(coverageLayers.filter(layer => layer.id !== id));
+  };
+
+  // Profit Commission Tiers functions
   const addProfitCommissionTier = () => {
     const newId = profitCommissionTiers.length + 1;
     setProfitCommissionTiers([...profitCommissionTiers, { id: newId }]);
   };
 
-  const addPolicyLimitsTerm = () => {
-    const newId = policyLimitsTerms.length + 1;
-    setPolicyLimitsTerms([...policyLimitsTerms, { id: newId }]);
+  const removeProfitCommissionTier = (id: number) => {
+    setProfitCommissionTiers(profitCommissionTiers.filter(tier => tier.id !== id));
   };
 
+  // Policy Limits functions
+  const addPolicyLimit = () => {
+    const newId = policyLimits.length + 1;
+    setPolicyLimits([...policyLimits, { id: newId }]);
+  };
+
+  const removePolicyLimit = (id: number) => {
+    setPolicyLimits(policyLimits.filter(limit => limit.id !== id));
+  };
 
   const addBrokerInfo = () => {
     const newId = brokerInfo.length + 1;
@@ -794,99 +808,189 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
         }}></div>
 
         {/* Requirements Section */}
-        <h3 style={requirementHeaderStyles}>Requirements</h3>
-        
-        {/* Dynamic Requirements Boxes */}
-        {requirements.map((requirement) => (
-          <div key={requirement.id} style={{
-            backgroundColor: colors.blackAndWhite.white,
-            border: `1px solid ${colors.theme.primary400}`,
-            borderRadius: borderRadius[8],
-            padding: '24px',
-            marginBottom: '24px',
+        <h3 style={requirementHeaderStyles}>Data Level</h3>
+
+        {/* First Data Level */}
+        <h4 style={{
+          ...typography.styles.bodyM,
+          color: colors.blackAndWhite.black900,
+          marginBottom: spacing[1],
+          marginTop: '0',
+        }}>Data Level 1</h4>
+
+        <div style={{
+          backgroundColor: colors.blackAndWhite.white,
+          border: `1px solid ${colors.theme.primary400}`,
+          borderRadius: borderRadius[8],
+          padding: '24px',
+          marginBottom: '24px',
+          position: 'relative',
+        }}>
+          {/* Requirement Name & Expected Files Per Period */}
+          <div style={formGridStyles}>
+            <Input
+              label="Requirement Name"
+              placeholder="Type your name"
+              value=""
+              onChange={(e) => console.log('Requirement 1 Name:', e.target.value)}
+            />
+            <Dropdown
+              label="Expected Files Per Period"
+              placeholder="Select Form"
+              value=""
+              options={[
+                { value: '1', label: '1 File' },
+                { value: '2-5', label: '2-5 Files' },
+                { value: '5+', label: '5+ Files' },
+              ]}
+              onChange={(value) => console.log('Requirement 1 Expected Files:', value)}
+            />
+          </div>
+
+          {/* Content Types Expected */}
+          <div style={{
+            marginBottom: '0',
           }}>
+            <label style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black900,
+              display: 'block',
+              marginBottom: '12px',
+            }}>
+              Content Types Expected
+            </label>
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              marginTop: '12px',
+              width: '100%',
+            }}>
+              <ButtonSelector
+                selectorType="checkbox"
+                label="Premium"
+                onChange={(checked) => console.log('Requirement 1 Premium:', checked)}
+                className="full-width-button-selector"
+              />
+              <ButtonSelector
+                selectorType="checkbox"
+                label="Claims"
+                onChange={(checked) => console.log('Requirement 1 Claims:', checked)}
+                className="full-width-button-selector"
+              />
+              <ButtonSelector
+                selectorType="checkbox"
+                label="Exposure"
+                onChange={(checked) => console.log('Requirement 1 Exposure:', checked)}
+                className="full-width-button-selector"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Requirements */}
+        {requirements.map((requirement) => (
+          <div key={requirement.id}>
             <h4 style={{
               ...typography.styles.bodyM,
               color: colors.blackAndWhite.black900,
-              marginBottom: '24px',
+              marginBottom: spacing[1],
               marginTop: '0',
-            }}>Requirement #{requirement.id}</h4>
-
-            {/* Requirement Name & Expected Files Per Period */}
-            <div style={formGridStyles}>
-              <Input
-                label="Requirement Name"
-                placeholder="Type your name"
-                value=""
-                onChange={(e) => console.log(`Requirement ${requirement.id} Name:`, e.target.value)}
-              />
-              <Dropdown
-                label="Expected Files Per Period"
-                placeholder="Select Form"
-                value=""
-                options={[
-                  { value: '1', label: '1 File' },
-                  { value: '2-5', label: '2-5 Files' },
-                  { value: '5+', label: '5+ Files' },
-                ]}
-                onChange={(value) => console.log(`Requirement ${requirement.id} Expected Files:`, value)}
-              />
-            </div>
-
-            {/* Content Types Expected */}
+            }}>Data Level {requirement.id + 1}</h4>
             <div style={{
+              backgroundColor: colors.blackAndWhite.white,
+              border: `1px solid ${colors.theme.primary400}`,
+              borderRadius: borderRadius[8],
+              padding: '24px',
               marginBottom: '24px',
+              position: 'relative',
             }}>
-              <label style={{
-                ...typography.styles.bodyM,
-                color: colors.blackAndWhite.black900,
-                display: 'block',
-                marginBottom: '12px',
-              }}>
-                Content Types Expected
-              </label>
+              <Button
+                variant="icon"
+                color="white"
+                shape="square"
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                }}
+                onClick={() => removeRequirement(requirement.id)}
+                icon={<icons.small.close color={colors.blackAndWhite.black900} />}
+              />
+
+              {/* Requirement Name & Expected Files Per Period */}
+              <div style={formGridStyles}>
+                <Input
+                  label="Requirement Name"
+                  placeholder="Type your name"
+                  value=""
+                  onChange={(e) => console.log(`Requirement ${requirement.id + 1} Name:`, e.target.value)}
+                />
+                <Dropdown
+                  label="Expected Files Per Period"
+                  placeholder="Select Form"
+                  value=""
+                  options={[
+                    { value: '1', label: '1 File' },
+                    { value: '2-5', label: '2-5 Files' },
+                    { value: '5+', label: '5+ Files' },
+                  ]}
+                  onChange={(value) => console.log(`Requirement ${requirement.id + 1} Expected Files:`, value)}
+                />
+              </div>
+
+              {/* Content Types Expected */}
               <div style={{
-                display: 'flex',
-                gap: '12px',
-                marginTop: '12px',
-                width: '100%',
+                marginBottom: '0',
               }}>
-                <ButtonSelector
-                  selectorType="checkbox"
-                  label="Premium"
-                  onChange={(checked) => console.log(`Requirement ${requirement.id} Premium:`, checked)}
-                  className="full-width-button-selector"
-                />
-                <ButtonSelector
-                  selectorType="checkbox"
-                  label="Claims"
-                  onChange={(checked) => console.log(`Requirement ${requirement.id} Claims:`, checked)}
-                  className="full-width-button-selector"
-                />
-                <ButtonSelector
-                  selectorType="checkbox"
-                  label="Exposure"
-                  onChange={(checked) => console.log(`Requirement ${requirement.id} Exposure:`, checked)}
-                  className="full-width-button-selector"
-                />
+                <label style={{
+                  ...typography.styles.bodyM,
+                  color: colors.blackAndWhite.black900,
+                  display: 'block',
+                  marginBottom: '12px',
+                }}>
+                  Content Types Expected
+                </label>
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  marginTop: '12px',
+                  width: '100%',
+                }}>
+                  <ButtonSelector
+                    selectorType="checkbox"
+                    label="Premium"
+                    onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Premium:`, checked)}
+                    className="full-width-button-selector"
+                  />
+                  <ButtonSelector
+                    selectorType="checkbox"
+                    label="Claims"
+                    onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Claims:`, checked)}
+                    className="full-width-button-selector"
+                  />
+                  <ButtonSelector
+                    selectorType="checkbox"
+                    label="Exposure"
+                    onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Exposure:`, checked)}
+                    className="full-width-button-selector"
+                  />
+                </div>
               </div>
             </div>
           </div>
         ))}
 
-        {/* Add Requirement Button */}
-        <div style={addButtonContainerStyles}>
-          <Button
-            variant="small"
-            color="main"
-            onClick={addRequirement}
-            showIcon={true}
-            iconPosition="left"
-            icon={<PlusExtraSmall />}
-          >
-            Add Requirement
-          </Button>
-        </div>
+        {/* Add Data Level Button */}
+        <Button
+          variant="tertiary"
+          style={{
+            width: '100%',
+            marginTop: '16px',
+          }}
+          onClick={addRequirement}
+        >
+          Add Data Level
+        </Button>
       </div>
     );
   };
@@ -1097,41 +1201,41 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               </div>
 
               {/* Additional Coverage Layers */}
-              {additionalFieldSets.map((fieldSet) => (
-                <div key={fieldSet.id}>
+              {coverageLayers.map((layer) => (
+                <div key={layer.id}>
                   <h4 style={{
                     ...typography.styles.bodyM,
                     color: colors.blackAndWhite.black900,
                     marginBottom: spacing[1],
                     marginTop: '0',
-                  }}>Coverage Layer {fieldSet.id + 1}</h4>
+                  }}>Coverage Layer {layer.id + 1}</h4>
                   <div style={coverageLayerContainerStyles}>
                     <Button
                       variant="icon"
                       color="white"
                       shape="square"
                       style={closeButtonStyles}
-                      onClick={() => removeAdditionalFieldSet(fieldSet.id)}
-                      icon={<icons.small.close color={colors.theme.primary700} />}
+                      onClick={() => removeCoverageLayer(layer.id)}
+                      icon={<icons.small.close color={colors.blackAndWhite.black900} />}
                     />
                     <div style={coverageLayerGridStyles}>
                       <Input
                         label="Attachment Point"
                         placeholder="Enter attachment point"
                         value=""
-                        onChange={(e) => console.log(`Attachment Point ${fieldSet.id + 1}:`, e.target.value)}
+                        onChange={(e) => console.log(`Attachment Point ${layer.id + 1}:`, e.target.value)}
                       />
                       <Input
                         label="Exhaustion Point"
                         placeholder="Enter exhaustion point"
                         value=""
-                        onChange={(e) => console.log(`Exhaustion Point ${fieldSet.id + 1}:`, e.target.value)}
+                        onChange={(e) => console.log(`Exhaustion Point ${layer.id + 1}:`, e.target.value)}
                       />
                       <Input
                         label="Placement %"
                         placeholder="Enter placement percentage"
                         value=""
-                        onChange={(e) => console.log(`Placement % ${fieldSet.id + 1}:`, e.target.value)}
+                        onChange={(e) => console.log(`Placement % ${layer.id + 1}:`, e.target.value)}
                       />
                     </div>
                   </div>
@@ -1142,7 +1246,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               <Button
                 variant="tertiary"
                 style={addButtonStyles}
-                onClick={addAdditionalFieldSet}
+                onClick={addCoverageLayer}
               >
                 Add Coverage Layer
               </Button>
@@ -1310,41 +1414,41 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               </div>
 
               {/* Additional Profit Commission Tiers */}
-              {additionalFieldSets.map((fieldSet) => (
-                <div key={fieldSet.id}>
+              {profitCommissionTiers.map((tier) => (
+                <div key={tier.id}>
                   <h4 style={{
                     ...typography.styles.bodyM,
                     color: colors.blackAndWhite.black900,
                     marginBottom: spacing[1],
                     marginTop: '0',
-                  }}>Profit Commission Tier {fieldSet.id + 1}</h4>
+                  }}>Profit Commission Tier {tier.id + 1}</h4>
                   <div style={coverageLayerContainerStyles}>
                     <Button
                       variant="icon"
                       color="white"
                       shape="square"
                       style={closeButtonStyles}
-                      onClick={() => removeAdditionalFieldSet(fieldSet.id)}
-                      icon={<icons.small.close color={colors.theme.primary700} />}
+                      onClick={() => removeProfitCommissionTier(tier.id)}
+                      icon={<icons.small.close color={colors.blackAndWhite.black900} />}
                     />
                     <div style={coverageLayerGridStyles}>
                       <Input
                         label="Attachment"
                         placeholder="Enter attachment"
                         value=""
-                        onChange={(e) => console.log(`Attachment ${fieldSet.id + 1}:`, e.target.value)}
+                        onChange={(e) => console.log(`Attachment ${tier.id + 1}:`, e.target.value)}
                       />
                       <Input
                         label="Exhaustion"
                         placeholder="Enter exhaustion"
                         value=""
-                        onChange={(e) => console.log(`Exhaustion ${fieldSet.id + 1}:`, e.target.value)}
+                        onChange={(e) => console.log(`Exhaustion ${tier.id + 1}:`, e.target.value)}
                       />
                       <Input
                         label="Profit %"
                         placeholder="Enter profit %"
                         value=""
-                        onChange={(e) => console.log(`Profit % ${fieldSet.id + 1}:`, e.target.value)}
+                        onChange={(e) => console.log(`Profit % ${tier.id + 1}:`, e.target.value)}
                       />
                     </div>
                   </div>
@@ -1355,7 +1459,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               <Button
                 variant="tertiary"
                 style={addButtonStyles}
-                onClick={addAdditionalFieldSet}
+                onClick={addProfitCommissionTier}
               >
                 Add Profit Commission Tier
               </Button>
@@ -1473,22 +1577,22 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           </div>
 
           {/* Additional Policy Limits */}
-          {additionalFieldSets.map((fieldSet) => (
-            <div key={fieldSet.id}>
+          {policyLimits.map((limit) => (
+            <div key={limit.id}>
               <h4 style={{
                 ...typography.styles.bodyM,
                 color: colors.blackAndWhite.black900,
                 marginBottom: spacing[1],
                 marginTop: '0',
-              }}>Policy Limit {fieldSet.id + 1}</h4>
+              }}>Policy Limit {limit.id + 1}</h4>
               <div style={coverageLayerContainerStyles}>
                 <Button
                   variant="icon"
                   color="white"
                   shape="square"
                   style={closeButtonStyles}
-                  onClick={() => removeAdditionalFieldSet(fieldSet.id)}
-                  icon={<icons.small.close color={colors.theme.primary700} />}
+                  onClick={() => removePolicyLimit(limit.id)}
+                  icon={<icons.small.close color={colors.blackAndWhite.black900} />}
                 />
                 <div style={formGridStyles}>
                   <Dropdown
@@ -1501,13 +1605,13 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                       { value: 'per-claim', label: 'Per Claim Limit' },
                       { value: 'annual', label: 'Annual Limit' },
                     ]}
-                    onChange={(value) => console.log(`Type ${fieldSet.id + 1}:`, value)}
+                    onChange={(value) => console.log(`Type ${limit.id + 1}:`, value)}
                   />
                   <Input
                     label="Amount"
                     placeholder="Enter amount"
                     value=""
-                    onChange={(e) => console.log(`Amount ${fieldSet.id + 1}:`, e.target.value)}
+                    onChange={(e) => console.log(`Amount ${limit.id + 1}:`, e.target.value)}
                   />
                 </div>
               </div>
@@ -1518,7 +1622,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           <Button
             variant="tertiary"
             style={addButtonStyles}
-            onClick={addAdditionalFieldSet}
+            onClick={addPolicyLimit}
           >
             Add Policy Limit
           </Button>

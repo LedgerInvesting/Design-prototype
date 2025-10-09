@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FormTabs, FormTab } from './FormTabs';
 
 const meta = {
-  title: 'Components/FormTabs',
+  title: 'Forms/FormTabs',
   component: FormTabs,
   parameters: {
     layout: 'centered',

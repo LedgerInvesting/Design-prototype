@@ -12,7 +12,11 @@ The **Layout** component is the unified page wrapper that combines TopNav and Si
 - Responsive behavior with configurable `maxWidth` (default: 1200px)
 - Automatic import of base styles including custom selection colors
 - Fixed positioning for sidebar (220px width) and top navigation
-- White background content area with proper spacing
+- White background content area with standardized spacing:
+  - **Top margin:** 120px (60px TopNav + 60px gap)
+  - **Left/Right padding:** 60px
+  - **Bottom padding:** 60px
+  - With tabs: 150px top margin (60px TopNav + 30px tabs + 60px gap)
 
 **Usage:**
 ```tsx
@@ -39,7 +43,41 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 ## Current Pages
 
-### 1. TransactionManagement.tsx
+### 1. HomeTest.tsx
+**Purpose:** Home dashboard page providing personalized catch-up updates, popular deals, and activity feed.
+
+**Key Features:**
+- **Welcome Section:** Personalized greeting with catch-up card count
+- **Catch-Up Carousel:** Horizontal scrolling carousel showing 3 cards at a time
+  - 7 total cards across Analytics, Reports, Contract, and Marketplace categories
+  - CSS transform-based horizontal scrolling with smooth transitions
+  - Pagination dots: 25px × 8px rounded rectangle for active state, 8px circles for inactive
+  - Color-coded category cards (green, blue, violet) with timestamps
+- **Popular Deals Card:** 50% width card with purple background and chart visualization
+- **Activity Feed Card:** 50% width card with 4 activity items and view links
+- **Grid Layout:** 2-column 50/50 layout for Popular Deals and Activity sections
+
+**Layout Configuration:**
+- MaxWidth: 1400px
+- Breadcrumb: "HOME"
+- Navigation: Default home page when SideNav2 experiment enabled
+- Selected sidebar item: "home"
+
+**Components Used:**
+- Layout component with proper breadcrumb integration
+- S3ArrowRightMedium icons for card navigation
+- Design tokens: colors, typography (bodyL, bodyM, bodyS, subheadingL), borderRadius, spacing
+
+**Implementation Details:**
+- No extra padding wrappers (follows NEW_PAGE_GUIDE.md)
+- Layout component provides padding automatically
+- Typography tokens used without font overrides
+- overflow: hidden on carousel container
+- Responsive card sizing with calc((100% - 40px) / 3) for 3-card view
+
+---
+
+### 2. TransactionManagement.tsx
 **Purpose:** Complete transaction management interface with advanced table functionality and modal system.
 
 **Key Features:**

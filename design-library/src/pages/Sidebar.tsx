@@ -43,9 +43,10 @@ const sidebarItems: SidebarItem[] = [
     label: 'Reports',
     icon: ReportsLogo,
     subitems: [
-      { id: 'reports-explorer', label: 'Reports Explorer' },
       { id: 'transactions', label: 'Transactions' },
-      { id: 'bdx-upload', label: 'BDX Upload' }
+      { id: 'bdx-upload', label: 'BDX Upload' },
+      { id: 'insights-explorer', label: 'Insights' },
+      { id: 'reports-explorer', label: 'Reports Explorer' }
     ]
   },
   {

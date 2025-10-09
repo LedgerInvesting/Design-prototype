@@ -11,10 +11,10 @@ export interface PageBannerProps {
   illustrationSrc: string;
   /** Source path for the background pattern image */
   patternSrc: string;
-  /** Text for the action button */
-  buttonText: string;
-  /** Click handler for the action button */
-  onButtonClick: () => void;
+  /** Text for the action button (optional - if not provided, button won't be shown) */
+  buttonText?: string;
+  /** Click handler for the action button (optional - if not provided, button won't be shown) */
+  onButtonClick?: () => void;
   /** Optional icon for the button */
   buttonIcon?: React.ReactNode;
   /** Maximum width for text content (e.g., '450px') */
@@ -152,17 +152,19 @@ export const PageBanner: React.FC<PageBannerProps> = ({
         </div>
       </div>
 
-      <div style={buttonContainerStyles}>
-        <Button
-          variant={buttonVariant}
-          color={buttonColor}
-          onClick={onButtonClick}
-          icon={buttonIcon}
-          style={{ width: '100%' }}
-        >
-          {buttonText}
-        </Button>
-      </div>
+      {buttonText && onButtonClick && (
+        <div style={buttonContainerStyles}>
+          <Button
+            variant={buttonVariant}
+            color={buttonColor}
+            onClick={onButtonClick}
+            icon={buttonIcon}
+            style={{ width: '100%' }}
+          >
+            {buttonText}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

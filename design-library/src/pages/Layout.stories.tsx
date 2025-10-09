@@ -2,15 +2,23 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Layout } from './Layout';
 import type { LayoutProps } from './Layout';
 import { colors, typography } from '../tokens';
+import { PrototypeSettingsProvider } from '../contexts/PrototypeSettingsContext';
 
 const meta: Meta<typeof Layout> = {
   title: 'Pages/Layout',
   component: Layout,
+  decorators: [
+    (Story) => (
+      <PrototypeSettingsProvider>
+        <Story />
+      </PrototypeSettingsProvider>
+    ),
+  ],
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Layout component that provides consistent page structure with Sidebar, TopNav, and main content area with standardized margins (60px left/right, 40px top).',
+        component: 'Layout component that provides consistent page structure with Sidebar, TopNav, and main content area with standardized spacing: 120px top margin (60px TopNav + 60px gap), 60px left/right padding, 60px bottom padding.',
       },
     },
   },

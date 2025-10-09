@@ -4,7 +4,7 @@ import { icons } from '../icons';
 import { colors } from '../tokens';
 
 const meta: Meta<typeof Input> = {
-  title: 'Components/Input',
+  title: 'Forms/Input',
   component: Input,
   parameters: {
     layout: 'centered',

@@ -2,6 +2,9 @@
 export { Button } from './Button';
 export type { ButtonProps, ButtonVariant, ButtonColor, PrimaryColor, SmallColor, IconColor, ButtonShape, IconPosition } from './Button';
 
+export { AppActionButton } from './AppActionButton';
+export type { AppActionButtonProps } from './AppActionButton';
+
 export { InfoTooltip } from './InfoTooltip';
 export type { InfoTooltipProps, InfoTooltipSection } from './InfoTooltip';
 
@@ -20,6 +23,9 @@ export type { SearchBarProps } from './SearchBar';
 
 export { Dropdown } from './Dropdown';
 export type { DropdownProps, DropdownOption } from './Dropdown';
+
+export { DropdownForms } from './DropdownForms';
+export type { DropdownFormsProps } from './DropdownForms';
 
 export { Selector } from './Selector';
 export type { SelectorProps, SelectorVariant } from './Selector';
@@ -54,6 +60,9 @@ export type { TabsProps, Tab } from './Tabs';
 export { FormTabs } from './FormTabs';
 export type { FormTabsProps, FormTab } from './FormTabs';
 
+export { Breadcrumbs } from './Breadcrumbs';
+export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumbs';
+
 // Status Components (Chips is legacy alias for Status)
 export { Status, Chips } from './Chips';
 export type { StatusProps, ChipsProps } from './Chips';
@@ -67,6 +76,9 @@ export type { DocumentCellProps } from './DocumentCell';
 
 export { CustomCell } from './CustomCell';
 export type { CustomCellProps, CustomCellElement, TextElement, IconElement, ButtonElement, BadgeElement, StatusElement, CustomCellContentType, TextStyle, TextWeight, TextColor, BadgeVariant, StatusType, CellAlignment, CellDirection } from './CustomCell';
+
+export { CustomScroll } from './CustomScroll';
+export type { CustomScrollProps } from './CustomScroll';
 
 // Chart Components
 export { Chart } from './Chart';

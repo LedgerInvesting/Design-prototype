@@ -161,6 +161,12 @@ Use for design system documentation:
 - Typography
 - Spacing
 
+### Test Components/
+Use for experimental and test components:
+- AppActionButton
+- SideNav2
+- Other components under development or testing
+
 ## Advanced Interactive Controls
 
 ### Cell Type Selector Pattern (Table Component)

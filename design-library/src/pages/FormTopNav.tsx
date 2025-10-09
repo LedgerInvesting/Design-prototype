@@ -38,12 +38,13 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
     width: '100%',
     height: '60px',
     backgroundColor: colors.blackAndWhite.white,
-    padding: '0 50px', // Same as default TopNav
+    padding: '0 60px', // Same as default TopNav
     borderTopLeftRadius: '10px', // Same as default TopNav
     boxShadow: shadows.base, // Same as default TopNav
     position: 'sticky',
     top: 0,
     zIndex: 100,
+    boxSizing: 'border-box',
     ...style,
   };
 

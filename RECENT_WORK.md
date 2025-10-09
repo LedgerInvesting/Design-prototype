@@ -2,6 +2,251 @@
 
 This document contains a detailed changelog of all recent work completed on the Ledger Design Library.
 
+## 📊 Insights Explorer Enhancements & Dropdown Improvements - October 8, 2025
+
+### Dropdown Component Feature Expansion
+
+**Enhanced Dropdown Flexibility:**
+1. **Dynamic Width Adaptation**:
+   - Changed container from fixed width to `width: 'fit-content'`
+   - Uses `display: 'inline-flex'` for content-based sizing
+   - Dropdowns now shrink to match content size automatically
+
+2. **Two-Color Selected Value Display**:
+   - Implemented split-color pattern for selected values
+   - Prefix text: black500 color for subtle labeling
+   - Value text: black900 color for emphasis
+   - Pattern: `"Option: Selected Value"` with different colors
+
+3. **Customizable Prefix System**:
+   - Added `selectedPrefix` prop (default: "Option")
+   - Context-aware prefixes: "Year:", "Metric:", "Filter:", etc.
+   - Maintains consistent format while adapting to use case
+
+4. **Enhanced Scrollbar Spacing**:
+   - Added 10px margin-right when scrollbar is visible (>5 options)
+   - Prevents hover state overlap with scrollbar
+   - Applies to both Dropdown and DropdownForms components
+   - Uses `hasScrollbar` parameter in `getOptionStyles` function
+
+### Reports Insights Program Details Page Updates
+
+**Chart Standardization:**
+- Updated all 5 chart container heights from 400px to 320px
+- Consistent visual hierarchy across all visualizations
+- Better page balance and content density
+
+**Large Losses Chart Fixes:**
+- Fixed label visibility issue (0D and 1WK now visible)
+- Changed from logarithmic to linear time scale for even spacing
+- Updated time labels: ['0D', '1WK', '1MO', '3MOS', '6MOS', '1YR', '2YRS', '3YRS']
+- Added container padding (20px) to prevent label clipping
+- Fixed Y-axis label positioning (`left: '-15px'`) for optimal spacing
+
+**Year Dropdown Integration:**
+- Replaced HTML `<select>` with design library Dropdown component
+- Applied `selectedPrefix="Year"` for contextual labeling
+- Maintains theme-aware styling and consistent design patterns
+
+**AppActionButton Integration:**
+- Added "Explore contract" button matching Valuation Dashboard
+- Proper app action configuration for Contracts navigation
+- Consistent cross-app navigation UX
+
+### Reports Insights Explorer Page Enhancements
+
+**Advanced Scatter Chart Tooltip System:**
+- Implemented custom modal tooltip replacing default Recharts tooltip
+- Shows program details on dot hover: name, stats, "View program" button
+- Smart positioning algorithm with boundary detection:
+  - Calculates available space in all 4 directions
+  - Determines optimal vertical placement (top/bottom)
+  - Determines optimal horizontal placement (left/center/right)
+  - Clamps position within chart boundaries with 20px padding
+- Modal persistence when hovering over tooltip content
+- 100ms delay before hiding when leaving dot (smooth UX)
+- Fade-in/out animations (0.2s ease with scale effect)
+- Fixed positioning relative to chart container (not viewport)
+
+**Dropdown Component Integration:**
+- Replaced X-axis HTML select with Dropdown component (`selectedPrefix="X Axis"`)
+- Replaced Y-axis HTML select with Dropdown component (`selectedPrefix="Y Axis"`)
+- Consistent design system integration across all form controls
+
+### Navigation System Updates
+
+**Sidebar Menu Reordering:**
+- Updated Reports section order in both SideNav2 and Sidebar:
+  1. Transactions
+  2. BDX Upload
+  3. Insights (was Reports Explorer position)
+  4. Reports Explorer (moved to last)
+- Better information architecture and workflow alignment
+
+### Code Quality Improvements
+
+**File Cleanup:**
+- Deleted unused `NavHelper.tsx` from pages folder
+- Removed `nul` error output file
+- Eliminated orphaned code and improved codebase organization
+
+**Code Optimization:**
+- Removed unused imports (Input, Chart) from ReportsInsightsExplorer
+- Removed console.log statements from ReportsInsightsProgramDetails
+- Added comprehensive comments for tooltip positioning algorithm
+- Clean, maintainable implementation across all modified files
+
+### Technical Implementation Highlights
+
+**Dropdown Component (`Dropdown.tsx`):**
+```tsx
+// New selectedPrefix prop
+selectedPrefix?: string;  // Default: 'Option'
+
+// Two-color display
+<span style={{ color: colors.blackAndWhite.black500 }}>
+  {selectedPrefix}:{' '}
+</span>
+<span style={{ color: colors.blackAndWhite.black900 }}>
+  {selectedOption.label}
+</span>
+
+// Scrollbar spacing
+const getOptionStyles = (option: DropdownOption, isHovered: boolean, hasScrollbar: boolean) => ({
+  marginRight: hasScrollbar ? '10px' : '0',
+  // ... other styles
+});
+```
+
+**Smart Tooltip Positioning (`ReportsInsightsExplorer.tsx`):**
+```tsx
+/**
+ * Smart tooltip positioning algorithm
+ * Ensures tooltip stays within chart boundaries with 20px padding
+ */
+const tooltipWidth = 230;
+const tooltipHeight = 400;
+const offset = 15;
+
+// Calculate available space in all directions
+const spaceTop = dotRect.top - chartRect.top;
+const spaceBottom = chartRect.bottom - dotRect.bottom;
+const spaceLeft = dotRect.left - chartRect.left;
+const spaceRight = chartRect.right - dotRect.right;
+
+// Determine optimal placement
+let verticalPlacement = spaceTop >= tooltipHeight + offset ? 'top' : 'bottom';
+let horizontalPlacement = spaceRight >= tooltipWidth / 2 ? 'center' :
+                          spaceRight < tooltipWidth / 2 ? 'right' : 'left';
+
+// Clamp to boundaries
+finalX = Math.max(padding, Math.min(finalX, chartRect.width - tooltipWidth - padding));
+finalY = Math.max(padding, Math.min(finalY, chartRect.height - tooltipHeight - padding));
+```
+
+**Files Modified:**
+- `design-library/src/components/Dropdown.tsx` - Enhanced with new features
+- `design-library/src/components/DropdownForms.tsx` - Added scrollbar spacing
+- `pages/ReportsInsightsProgramDetails.tsx` - Chart updates and integration
+- `pages/ReportsInsightsExplorer.tsx` - Tooltip system and dropdown integration
+- `design-library/src/pages/SideNav2.tsx` - Menu reordering
+- `design-library/src/pages/Sidebar.tsx` - Menu reordering
+
+**Design System Compliance:**
+- All changes follow design token system
+- Consistent color usage via `useSemanticColors()`
+- Typography tokens properly applied
+- Spacing and shadow tokens maintained throughout
+
+---
+
+## 🏠 Home Dashboard & Navigation Improvements - October 2, 2025
+
+### HomeTest.tsx - Complete Dashboard Implementation
+
+**Purpose:** Create personalized home dashboard with catch-up updates, popular deals, and activity feed.
+
+**Key Features Implemented:**
+1. **Catch-Up Carousel System:**
+   - Horizontal scrolling carousel showing 3 cards at a time
+   - 7 total cards across Analytics, Reports, Contract, and Marketplace categories
+   - CSS transform-based animation: `transform: translateX(-${currentSlide * 100}%)`
+   - Color-coded category cards: Analytics (#7FE9B2), Reports (#9AD5F7), Contract (#9AD5F7), Marketplace (#D4BFFF)
+   - Timestamps for each update: "Today", "Yesterday", "2 days ago"
+
+2. **Pagination Dot System:**
+   - 3 pagination dots (7 cards ÷ 3 per view = 3 pages)
+   - Active state: 25px × 8px rounded rectangle (black900)
+   - Inactive state: 8px × 8px circles (black300)
+   - Smooth morphing transitions with `transition: 'all 0.2s ease'`
+   - Used `borderRadius.absolute` for fully rounded corners
+
+3. **Card Layout Structure:**
+   - Main carousel card: white background, 16px border radius, 30px padding, overflow hidden
+   - Popular Deals card: 50% width, purple background (#D4BFFF) with mini bar chart
+   - Activity card: 50% width with 4 activity items and "View Document" links
+   - Grid layout: `display: grid, gridTemplateColumns: '1fr 1fr'` for equal 50/50 split
+
+4. **Typography & Styling:**
+   - Card titles: `typography.styles.bodyL` (no font overrides)
+   - Welcome heading: `typography.styles.headlineH1`
+   - Card content: `typography.styles.bodyS`, `typography.styles.bodyM`
+   - All cards: 30px padding, `borderRadius[16]` for rounded corners
+   - No extra padding wrappers (follows NEW_PAGE_GUIDE.md)
+
+**Layout Configuration:**
+- MaxWidth: 1400px (wider than standard pages)
+- Breadcrumb: "HOME"
+- Selected sidebar item: "home"
+- Proper navigation integration with `createNavigationHandler`
+
+**Files Modified:**
+- `E:\Ledger design library\pages\HomeTest.tsx` (lines 13-451)
+
+---
+
+### SideNav2.tsx - Navigation Flash Elimination
+
+**Problem Identified:** Sidebar was flashing/blinking when navigating between pages within the same app (e.g., Reports Explorer → Transactions). The sidebar briefly showed collapsed state (logo, home, inbox) during page transitions.
+
+**Root Cause:** The `expandedApp` state was managed via `useState` and `useEffect`, creating render cycles where `expandedApp` would be `null` before being set to the correct value:
+```
+expandedApp: null → expandedApp: reports (flash visible here)
+```
+
+**Solution Implemented:**
+Changed `expandedApp` from state to a derived value computed directly from `selectedItem`:
+
+```tsx
+// BEFORE (caused flashing):
+const [expandedApp, setExpandedApp] = useState<string | null>(null);
+useEffect(() => {
+  if (selectedItem && selectedItem !== 'home') {
+    setExpandedApp(selectedItem);
+  }
+}, [selectedItem]);
+
+// AFTER (fixed flashing):
+const expandedApp = selectedItem && selectedItem !== 'home' ? selectedItem : null;
+```
+
+**Key Changes:**
+1. Removed `expandedApp` state declaration
+2. Removed all `setExpandedApp()` calls from `handleMainItemClick` and `handleCloseApp`
+3. Removed `useEffect` that was updating `expandedApp` based on `selectedItem`
+4. Added derived value that always reflects current `selectedItem` without re-render cycles
+
+**Attempted Solutions (didn't work):**
+- Opacity-based transitions: Caused layout spacing issues with invisible elements taking up space
+- Display delays: Didn't solve root cause of state update cycles
+
+**Files Modified:**
+- `E:\Ledger design library\design-library\src\pages\SideNav2.tsx` (line 141, removed lines from 97, 155-166)
+
+**Result:** Navigation is now smooth and stable with no visual flashing when switching between pages within the same app.
+
+---
+
 ## 🧹 Code Cleanup - September 25, 2025
 
 ### Completed Cleanup Tasks

@@ -1,13 +1,30 @@
 import React from 'react';
 import { typography, useSemanticColors } from '../tokens';
+import { Button } from '../components/Button';
+
+export interface TitlePart {
+  text: string;
+  /** If true, renders in black900 (important). If false, renders in black500 (not important) */
+  important?: boolean;
+}
 
 export interface PageHeaderProps {
-  /** Main title content - can be string or JSX for complex titles */
-  title: string | React.ReactNode;
+  /** Main title content - can be string, array of TitlePart objects, or JSX for complex titles */
+  title: string | TitlePart[] | React.ReactNode;
   /** Optional subtitle text below the title */
   subtitle?: string;
   /** Array of action elements (buttons, etc.) displayed on the right */
-  actions: React.ReactNode[];
+  actions?: React.ReactNode[];
+  /** Primary action button text - renders as black variant */
+  primaryAction?: {
+    label: string;
+    onClick: () => void;
+  } | false;
+  /** Secondary action button text - renders as white no-border variant */
+  secondaryAction?: {
+    label: string;
+    onClick: () => void;
+  } | false;
   /** Spacing variant for bottom margin */
   spacing?: 'normal' | 'compact';
   /** Custom styles for the header container */
@@ -31,17 +48,24 @@ export interface PageHeaderProps {
  *
  * @example
  * ```tsx
- * // Simple title with single action
+ * // Simple title with primary action
  * <PageHeader
  *   title="Valuation Dashboard"
- *   actions={[
- *     <Button variant="primary" color="white" onClick={handleEdit}>
- *       Edit Configuration
- *     </Button>
- *   ]}
+ *   primaryAction={{ label: 'Edit Configuration', onClick: handleEdit }}
  * />
  *
- * // Complex title with multiple actions
+ * // Two-color title pattern (important/not important)
+ * <PageHeader
+ *   title={[
+ *     { text: 'You are now viewing the ', important: false },
+ *     { text: 'Program ABC', important: true },
+ *     { text: ' valuation dashboard', important: false }
+ *   ]}
+ *   primaryAction={{ label: 'Save', onClick: handleSave }}
+ *   secondaryAction={{ label: 'Cancel', onClick: handleCancel }}
+ * />
+ *
+ * // Custom JSX title
  * <PageHeader
  *   title={
  *     <span>
@@ -52,7 +76,7 @@ export interface PageHeaderProps {
  *   }
  *   actions={[
  *     <Button variant="small" color="white" onClick={handleCancel}>Cancel</Button>,
- *     <Button variant="primary" color="main" onClick={handleSave}>Save</Button>
+ *     <Button variant="primary" color="black" onClick={handleSave}>Save</Button>
  *   ]}
  * />
  * ```
@@ -61,6 +85,8 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   title,
   subtitle,
   actions,
+  primaryAction,
+  secondaryAction,
   spacing = 'normal',
   style,
   titleStyle,
@@ -82,7 +108,6 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
-    flex: 1,
     minWidth: 0, // Allow text to truncate if needed
     ...titleStyle,
   };
@@ -108,28 +133,96 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     ...actionsStyle,
   };
 
+  // Render title based on type
+  const renderTitle = () => {
+    if (typeof title === 'string') {
+      return <h1 style={titleStyles}>{title}</h1>;
+    } else if (Array.isArray(title)) {
+      // Two-color title pattern
+      return (
+        <h1 style={titleStyles}>
+          {title.map((part, index) => (
+            <span
+              key={index}
+              style={{
+                color: part.important !== false ? colors.blackAndWhite.black900 : colors.blackAndWhite.black500
+              }}
+            >
+              {part.text}
+            </span>
+          ))}
+        </h1>
+      );
+    } else {
+      // JSX title
+      return <h1 style={titleStyles}>{title}</h1>;
+    }
+  };
+
+  // Render actions (either custom actions or primary/secondary buttons)
+  const renderActions = () => {
+    const hasCustomActions = actions && actions.length > 0;
+    const hasButtonActions = (primaryAction && primaryAction !== false) || (secondaryAction && secondaryAction !== false);
+
+    if (!hasCustomActions && !hasButtonActions) {
+      return null;
+    }
+
+    return (
+      <div style={actionsContainerStyles}>
+        {/* Secondary button comes first (left) */}
+        {secondaryAction && secondaryAction !== false && (
+          <Button
+            variant="primary"
+            color="white"
+            onClick={secondaryAction.onClick}
+            showIcon={false}
+            style={{ border: 'none', height: '44px' }}
+          >
+            {secondaryAction.label}
+          </Button>
+        )}
+
+        {/* Primary button comes second (right) */}
+        {primaryAction && primaryAction !== false && (
+          <Button
+            variant="primary"
+            color="black"
+            onClick={primaryAction.onClick}
+            style={{ height: '44px' }}
+          >
+            {primaryAction.label}
+          </Button>
+        )}
+
+        {/* Custom actions */}
+        {hasCustomActions && actions!.map((action, index) => (
+          <React.Fragment key={index}>
+            {action}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  };
+
+  // Check if we have any actions
+  const hasCustomActions = actions && actions.length > 0;
+  const hasButtonActions = (primaryAction && primaryAction !== false) || (secondaryAction && secondaryAction !== false);
+  const hasActions = hasCustomActions || hasButtonActions;
+
   return (
     <div style={headerStyles}>
-      <div style={titleSectionStyles}>
-        {typeof title === 'string' ? (
-          <h1 style={titleStyles}>{title}</h1>
-        ) : (
-          <h1 style={titleStyles}>{title}</h1>
-        )}
+      <div style={{
+        ...titleSectionStyles,
+        width: hasActions ? undefined : '80%'
+      }}>
+        {renderTitle()}
         {subtitle && (
           <p style={subtitleStyles}>{subtitle}</p>
         )}
       </div>
 
-      {actions.length > 0 && (
-        <div style={actionsContainerStyles}>
-          {actions.map((action, index) => (
-            <React.Fragment key={index}>
-              {action}
-            </React.Fragment>
-          ))}
-        </div>
-      )}
+      {renderActions()}
     </div>
   );
 };

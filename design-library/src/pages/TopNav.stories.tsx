@@ -1,10 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TopNav } from './TopNav';
 import { colors } from '../tokens';
+import { PrototypeSettingsProvider } from '../contexts/PrototypeSettingsContext';
 
 const meta: Meta<typeof TopNav> = {
   title: 'Pages/TopNav',
   component: TopNav,
+  decorators: [
+    (Story) => (
+      <PrototypeSettingsProvider>
+        <Story />
+      </PrototypeSettingsProvider>
+    ),
+  ],
   parameters: {
     layout: 'fullscreen',
     docs: {
