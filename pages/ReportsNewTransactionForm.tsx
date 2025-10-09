@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FormLayout } from '@design-library/pages';
-import { FormTabs, FormTab, Input, Dropdown, DatePicker, Button, ButtonSelector, Selector } from '@design-library/components';
+import { FormTabs, FormTab, Input, FormDropdown, DatePicker, Button, ButtonSelector, Selector } from '@design-library/components';
 import { typography, spacing, borderRadius, useSemanticColors } from '@design-library/tokens';
 import { PlusExtraSmall, icons } from '@design-library/icons';
 import { ConnectBankAPIModal } from './ConnectBankAPIModal';
@@ -199,7 +199,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
 
         {/* Second Row: Ceding (Re) Insurer & Reinsurer */}
         <div style={formGridStyles}>
-          <Dropdown
+          <FormDropdown
             label="Ceding (Re) Insurer"
             placeholder="Select ceding (re) insurer"
             value={formData.cedingReinsurer}
@@ -240,7 +240,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
             ]}
             onChange={(value) => handleInputChange('cedingReinsurer', value)}
           />
-          <Dropdown
+          <FormDropdown
             label="Reinsurer"
             placeholder="Select reinsurer"
             value={formData.subjectBusiness}
@@ -488,7 +488,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
             value=""
             onChange={(e) => console.log('Originator Name:', e.target.value)}
           />
-          <Dropdown
+          <FormDropdown
             label="Statutory Product Lines"
             placeholder="Select statutory product lines"
             value=""
@@ -639,7 +639,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               </div>
             </div>
           </div>
-          <Dropdown
+          <FormDropdown
             label="Admitted Status"
             placeholder="Select admitted status"
             value=""
@@ -653,7 +653,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
 
         {/* Geography Row */}
         <div style={geographyRowStyles}>
-          <Dropdown
+          <FormDropdown
             label="Geography"
             placeholder="Select Geography"
             value=""
@@ -751,7 +751,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
         
         {/* First Row: Reporting Frequency & Business Scope */}
         <div style={formGridStyles}>
-          <Dropdown
+          <FormDropdown
             label="Reporting Frequency"
             placeholder="Select frequency"
             value=""
@@ -761,7 +761,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
             ]}
             onChange={(value) => console.log('Reporting Frequency:', value)}
           />
-          <Dropdown
+          <FormDropdown
             label="Business Scope"
             placeholder="Select scope"
             value=""
@@ -775,7 +775,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
 
         {/* Second Row: Data Format & Data Level */}
         <div style={formGridStyles}>
-          <Dropdown
+          <FormDropdown
             label="Data Format"
             placeholder="Select format"
             value=""
@@ -786,7 +786,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
             ]}
             onChange={(value) => console.log('Data Format:', value)}
           />
-          <Dropdown
+          <FormDropdown
             label="Data Level"
             placeholder="Select level"
             value=""
@@ -834,7 +834,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               value=""
               onChange={(e) => console.log('Requirement 1 Name:', e.target.value)}
             />
-            <Dropdown
+            <FormDropdown
               label="Expected Files Per Period"
               placeholder="Select Form"
               value=""
@@ -925,7 +925,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   value=""
                   onChange={(e) => console.log(`Requirement ${requirement.id + 1} Name:`, e.target.value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="Expected Files Per Period"
                   placeholder="Select Form"
                   value=""
@@ -1104,7 +1104,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           {sectionExpanded.reinsuranceStructure && (
             <>
               <div style={formGridStyles}>
-                <Dropdown
+                <FormDropdown
                   label="Reinsurance Type"
                   placeholder="Select reinsurance type"
                   value=""
@@ -1116,7 +1116,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   ]}
                   onChange={(value) => console.log('Reinsurance Type:', value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="Reinsurance Form"
                   placeholder="Select reinsurance form"
                   value=""
@@ -1127,7 +1127,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   ]}
                   onChange={(value) => console.log('Reinsurance Form:', value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="Policy Coverage Type"
                   placeholder="Select coverage type"
                   value=""
@@ -1138,7 +1138,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   ]}
                   onChange={(value) => console.log('Policy Coverage Type:', value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="Coverage Layer Basis"
                   placeholder="Select layer basis"
                   value=""
@@ -1276,7 +1276,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           {sectionExpanded.premiumCommission && (
             <>
               <div style={formGridStyles}>
-                <Dropdown
+                <FormDropdown
                   label="Reinsurance Premium Basis"
                   placeholder="Select Basis"
                   value=""
@@ -1306,7 +1306,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   value=""
                   onChange={(e) => console.log('Maximum Premium:', e.target.value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="Premium Commission Basis"
                   placeholder="Select Basis"
                   value=""
@@ -1317,7 +1317,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   ]}
                   onChange={(value) => console.log('Premium Commission Basis:', value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="FET Rate"
                   placeholder="Enter FET rate"
                   value=""
@@ -1329,7 +1329,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   ]}
                   onChange={(value) => console.log('FET Rate:', value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="Ceding Commission Basis"
                   placeholder="Select Basis"
                   value=""
@@ -1346,7 +1346,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   value=""
                   onChange={(e) => console.log('Minimum Ceding Commission:', e.target.value)}
                 />
-                <Dropdown
+                <FormDropdown
                   label="Profit Commission Basis"
                   placeholder="Select Basis"
                   value=""
@@ -1490,7 +1490,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           {sectionExpanded.policyLimitsClaims && (
             <>
             <div style={formGridStyles}>
-            <Dropdown
+            <FormDropdown
               label="Aggregate Limit Basis"
               placeholder="Select Basis"
               value=""
@@ -1508,7 +1508,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               value=""
               onChange={(e) => console.log('Aggregate Limit:', e.target.value)}
             />
-            <Dropdown
+            <FormDropdown
               label="Occurrence Limit Basis"
               placeholder="Select Basis"
               value=""
@@ -1555,7 +1555,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           {/* First Policy Limit */}
           <div style={coverageLayerContainerStyles}>
             <div style={formGridStyles}>
-              <Dropdown
+              <FormDropdown
                 label="Type"
                 placeholder="Select type"
                 value=""
@@ -1595,7 +1595,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   icon={<icons.small.close color={colors.blackAndWhite.black900} />}
                 />
                 <div style={formGridStyles}>
-                  <Dropdown
+                  <FormDropdown
                     label="Type"
                     placeholder="Select type"
                     value=""
@@ -1700,7 +1700,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           {sectionExpanded.operationalBrokerage && (
             <>
             <div style={formGridStyles}>
-            <Dropdown
+            <FormDropdown
               label="Currency"
               placeholder="USD - US Dollar"
               value=""
@@ -1718,7 +1718,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               value=""
               onChange={(e) => console.log('BDX Reporting Period:', e.target.value)}
             />
-            <Dropdown
+            <FormDropdown
               label="Borderaux Reporting Lag (days)"
               placeholder="Enter lag in days"
               value=""
@@ -1748,7 +1748,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               value=""
               onChange={(e) => console.log('Collateral Reporting Lag:', e.target.value)}
             />
-            <Dropdown
+            <FormDropdown
               label="Collateral Deposit Lag (Days)"
               placeholder="Enter lag in days"
               value=""
@@ -1803,7 +1803,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               value=""
               onChange={(e) => console.log('Brokerage Fee:', e.target.value)}
             />
-            <Dropdown
+            <FormDropdown
               label="Brokerage Fee Basis"
               placeholder="Select basis"
               value=""
@@ -1820,7 +1820,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               value=""
               onChange={(e) => console.log('% Brokerage Fee Paid at Closing:', e.target.value)}
             />
-            <Dropdown
+            <FormDropdown
               label="Brokerage Payment Timing Scheme"
               placeholder="Select timing scheme"
               value=""
@@ -1976,7 +1976,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           <div style={{ marginTop: '24px' }}>
             {/* Trust Account Provider */}
             <div style={{ marginBottom: '20px' }}>
-              <Dropdown
+              <FormDropdown
                 label="Trust Account Provider"
                 placeholder="Select provider"
                 value=""
@@ -2009,7 +2009,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                 value=""
                 onChange={(e) => console.log('Trust/Principal Account Number:', e.target.value)}
               />
-              <Dropdown
+              <FormDropdown
                 label="Currency"
                 placeholder="USD"
                 value=""
@@ -2052,7 +2052,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                       value=""
                       onChange={(e) => console.log('Reserve Account:', e.target.value)}
                     />
-                    <Dropdown
+                    <FormDropdown
                       label="Currency"
                       placeholder="USD"
                       value=""
@@ -2080,7 +2080,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                       value=""
                       onChange={(e) => console.log('Capital Account:', e.target.value)}
                     />
-                    <Dropdown
+                    <FormDropdown
                       label="Currency"
                       placeholder="USD"
                       value=""
@@ -2113,7 +2113,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                 value=""
                 onChange={(e) => console.log('Income Account:', e.target.value)}
               />
-              <Dropdown
+              <FormDropdown
                 label="Currency"
                 placeholder="USD"
                 value=""

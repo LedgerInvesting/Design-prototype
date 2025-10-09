@@ -1,6 +1,6 @@
 import React from 'react'
 import { Layout, PageHeader } from '@design-library/pages'
-import { Card, Dropdown } from '@design-library/components'
+import { Card, MenuDropdown } from '@design-library/components'
 import { colors, typography, borderRadius, shadows } from '@design-library/tokens'
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation'
 import { ExpandMedium } from '@design-library/icons'
@@ -321,7 +321,7 @@ const ReportsInsightsProgramDetails: React.FC<ReportsInsightsProgramDetailsProps
               paddingRight: '20px'
             }}>
               <div style={{ flex: 1 }} />
-              <Dropdown
+              <MenuDropdown
                 selectedPrefix="Year"
                 value={selectedYear}
                 options={yearOptions}

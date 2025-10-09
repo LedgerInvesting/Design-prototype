@@ -343,33 +343,25 @@ type?: string
 
 ---
 
-### Dropdown
+### Dropdowns
+
+**Two dropdown variants: MenuDropdown (inline/menu) and FormDropdown (form fields)**
+
+#### MenuDropdown (Inline/Menu Style)
 
 ```tsx
-import { Dropdown } from '@design-library/components';
+import { MenuDropdown } from '@design-library/components';
 
-// Basic usage
-<Dropdown
-  label="Select Option"
-  options={[
-    { value: 'opt1', label: 'Option 1' },
-    { value: 'opt2', label: 'Option 2' }
-  ]}
-  value={selectedOption}
-  onChange={(value) => setSelectedOption(value)}
-  state="default"
-/>
-
-// Customizable prefix (context-aware)
-<Dropdown
+// For inline placement in filters, toolbars, menus
+<MenuDropdown
   selectedPrefix="Year"
   options={yearOptions}
   value={selectedYear}
   onChange={setSelectedYear}
 />
 
-// Without border (for inline placement)
-<Dropdown
+// Without border (clean inline look)
+<MenuDropdown
   selectedPrefix="Metric"
   options={metricOptions}
   value={selectedMetric}
@@ -397,6 +389,40 @@ showBorder?: boolean             // Default: false
 - **Customizable Prefix**: Context-aware labels like "Year:", "Metric:", "Filter:"
 - **Scrollbar Spacing**: 10px margin when >5 options to prevent overlap
 - **Theme-Aware**: Adapts to current product theme
+- **Use Cases**: Insights Explorer filters, chart controls, inline menus
+
+#### FormDropdown (Form Field Style)
+
+```tsx
+import { FormDropdown } from '@design-library/components';
+
+// For forms and modals (matches Input field styling)
+<FormDropdown
+  label="Select Option"
+  options={[
+    { value: 'opt1', label: 'Option 1' },
+    { value: 'opt2', label: 'Option 2' }
+  ]}
+  value={selectedOption}
+  onChange={(value) => setSelectedOption(value)}
+  state="default"
+/>
+
+// Props
+label?: string
+options: DropdownOption[]
+value: string
+onChange: (value: string) => void
+state?: 'default' | 'hover' | 'active' | 'filled' | 'error' | 'disabled'
+placeholder?: string
+disabled?: boolean
+```
+
+**Key Features:**
+- **Form Field Design**: White background, border, consistent with Input component
+- **Full Width**: Fits standard form layouts
+- **Validation States**: Error, warning, filled states with helper text
+- **Use Cases**: Transaction forms, modal dialogs, settings pages
 
 ---
 

@@ -21,11 +21,11 @@ export type { InputProps } from './Input';
 export { SearchBar } from './SearchBar';
 export type { SearchBarProps } from './SearchBar';
 
-export { Dropdown } from './Dropdown';
-export type { DropdownProps, DropdownOption } from './Dropdown';
+export { MenuDropdown } from './MenuDropdown';
+export type { MenuDropdownProps, DropdownOption } from './MenuDropdown';
 
-export { DropdownForms } from './DropdownForms';
-export type { DropdownFormsProps } from './DropdownForms';
+export { FormDropdown } from './FormDropdown';
+export type { FormDropdownProps } from './FormDropdown';
 
 export { Selector } from './Selector';
 export type { SelectorProps, SelectorVariant } from './Selector';

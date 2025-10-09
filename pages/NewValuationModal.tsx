@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Dropdown, DropdownOption, Modal } from '@design-library/components';
+import { Button, Input, FormDropdown, DropdownOption, Modal } from '@design-library/components';
 import { borderRadius } from '@design-library/tokens';
 import { useSemanticColors } from '@design-library/tokens/ThemeProvider';
 
@@ -145,7 +145,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
               {/* Left Column */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Policy Group */}
-                <Dropdown
+                <FormDropdown
                   label="Policy group"
                   value={formData.policyGroup}
                   onChange={(value) => handleInputChange('policyGroup', value)}
@@ -175,7 +175,7 @@ export const NewValuationModal: React.FC<NewValuationModalProps> = ({
               {/* Right Column */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Risk Period */}
-                <Dropdown
+                <FormDropdown
                   label="Risk Period"
                   value={formData.riskPeriod}
                   onChange={(value) => handleInputChange('riskPeriod', value)}

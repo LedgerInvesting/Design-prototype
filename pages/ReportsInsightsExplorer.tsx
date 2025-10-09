@@ -45,7 +45,7 @@ if (typeof document !== 'undefined') {
 import { Layout, PageBanner } from '@design-library/pages';
 
 // Import components
-import { Dropdown, Button } from '@design-library/components';
+import { MenuDropdown, Button } from '@design-library/components';
 
 // Import design tokens
 import { useSemanticColors, typography, spacing, borderRadius, colors as staticColors, shadows } from '@design-library/tokens';
@@ -424,7 +424,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
             paddingBottom: spacing[3],
             borderBottom: `1px solid ${staticColors.reports.dynamic.blue400}`
           }}>
-            <Dropdown
+            <MenuDropdown
               selectedPrefix="Y-axis"
               value={yAxisMetric}
               options={axisOptions}
@@ -433,7 +433,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
               showBorder={false}
             />
 
-            <Dropdown
+            <MenuDropdown
               selectedPrefix="X-axis"
               value={xAxisMetric}
               options={axisOptions}
