@@ -57,6 +57,7 @@ function AppContent() {
 
   // Function to handle page navigation with optional data
   const setPage = (page: PageType, data?: any) => {
+    console.log('setPage called:', page, 'with data:', data);
     setCurrentPage(page);
     // Update URL hash without triggering page reload
     window.history.pushState(null, '', `#${page}`);
@@ -65,10 +66,13 @@ function AppContent() {
       if (page === 'new-transaction-form') {
         setRenewalData(data);
       } else if (page === 'reports-insights-program-details') {
+        console.log('Setting programDetailsData:', data);
         setProgramDetailsData(data);
       } else {
         setValuationData(data);
       }
+    } else {
+      console.log('No data provided for navigation to:', page);
     }
   };
 
@@ -83,7 +87,7 @@ function AppContent() {
       case 'reports-insights-explorer':
         return <ReportsInsightsExplorer onNavigateToPage={setPage} />;
       case 'reports-insights-program-details':
-        return <ReportsInsightsProgramDetails programData={programDetailsData} onNavigateToPage={setPage} />;
+        return <ReportsInsightsProgramDetails key={programDetailsData?.id} programData={programDetailsData} onNavigateToPage={setPage} />;
       case 'reports-transaction-management':
         return <ReportsTransactionManagement onNavigateToPage={setPage} />;
       case 'reports-new-transaction-form':

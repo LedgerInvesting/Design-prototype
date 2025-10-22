@@ -135,6 +135,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
   const [isHoveringTooltip, setIsHoveringTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number; placement: string } | null>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isHoveringDotRef = useRef<boolean>(false);
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Filter programs based on search
@@ -193,10 +194,13 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
           filter: shouldShowShadow ? 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' : 'none'
         }}
         onClick={() => {
+          const programData = programsData.find(p => p.id === payload.id);
+          console.log('Dot clicked for:', programData?.name, programData);
           setSelectedProgram(payload.id);
-          // Navigate to program details page
+          // Navigate to program details page with program data
           if (onNavigateToPage) {
-            onNavigateToPage('reports-insights-program-details');
+            console.log('Navigating from dot click with data:', programData);
+            onNavigateToPage('reports-insights-program-details', programData);
           }
         }}
         onMouseEnter={(e: any) => {
@@ -205,6 +209,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
             clearTimeout(hoverTimeoutRef.current);
             hoverTimeoutRef.current = null;
           }
+          isHoveringDotRef.current = true;
           setHoveredProgram(payload.id);
 
           /**
@@ -277,13 +282,14 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
           });
         }}
         onMouseLeave={() => {
-          // Delay hiding to allow moving to tooltip
+          isHoveringDotRef.current = false;
+          // Delay hiding to allow moving to tooltip (increased to 300ms for better UX)
           hoverTimeoutRef.current = setTimeout(() => {
-            if (!isHoveringTooltip) {
+            if (!isHoveringTooltip && !isHoveringDotRef.current) {
               setHoveredProgram(null);
               setTooltipPosition(null);
             }
-          }, 100);
+          }, 300);
         }}
       />
     );
@@ -686,10 +692,17 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                     variant="small"
                     color="black"
                     showIcon={false}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('View program clicked for:', hoveredData.name, hoveredData);
                       setSelectedProgram(hoveredData.id);
+                      // Hide tooltip
+                      setHoveredProgram(null);
+                      setTooltipPosition(null);
+                      setIsHoveringTooltip(false);
                       if (onNavigateToPage) {
-                        onNavigateToPage('reports-insights-program-details');
+                        console.log('Navigating to program details with data:', hoveredData);
+                        onNavigateToPage('reports-insights-program-details', hoveredData);
                       }
                     }}
                     style={{ width: '100%' }}

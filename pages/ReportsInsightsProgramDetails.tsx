@@ -120,7 +120,7 @@ const ReportsInsightsProgramDetails: React.FC<ReportsInsightsProgramDetailsProps
   programData,
   onNavigateToPage
 }) => {
-  const programName = programData?.programName || 'Atlas.wc-ilsTY23 insights'
+  const programName = programData?.name || programData?.programName || 'Atlas.wc-ilsTY23 insights'
   const owner = programData?.owner || 'John.'
   const lastUpdate = programData?.lastUpdate || 'Feb 1st, 2025'
 
