@@ -3,9 +3,9 @@ import { typography, borderRadius, useSemanticColors, useTheme } from '../tokens
 import { icons } from '../icons';
 
 export type ButtonVariant = 'primary' | 'small' | 'icon' | 'tertiary' | 'secondary';
-export type PrimaryColor = 'black' | 'white' | 'whiteNoBorder' | 'main' | 'light' | 'green';
-export type SmallColor = 'black' | 'white' | 'whiteNoBorder' | 'main' | 'light' | 'green';
-export type IconColor = 'black' | 'main' | 'light' | 'green' | 'white' | 'whiteNoBorder';
+export type PrimaryColor = 'black' | 'white' | 'invisible' | 'main' | 'light' | 'green';
+export type SmallColor = 'black' | 'white' | 'invisible' | 'main' | 'light' | 'green';
+export type IconColor = 'black' | 'main' | 'light' | 'green' | 'white' | 'invisible';
 export type TertiaryColor = 'white';
 export type SecondaryColor = 'primary200';
 export type ButtonShape = 'circle' | 'square';
@@ -93,7 +93,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity
       case 'white':
         return colors.theme.primary200; // Primary200 solid color
-      case 'whiteNoBorder':
+      case 'invisible':
         return colors.theme.primary200; // Primary200 solid color
       case 'primary200':
         return colors.theme.primary300; // Theme 300 solid color for secondary buttons
@@ -110,8 +110,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 
     if (isHovered) {
       const hoverColor = getHoverColor(colorKey);
-      // For white, whiteNoBorder, and primary200 buttons, use solid hover color
-      if (colorKey === 'white' || colorKey === 'whiteNoBorder' || colorKey === 'primary200') {
+      // For white, invisible, and primary200 buttons, use solid hover color
+      if (colorKey === 'white' || colorKey === 'invisible' || colorKey === 'primary200') {
         return { backgroundColor: hoverColor };
       }
       // For others, blend the colors
@@ -180,10 +180,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
           border: `1px solid ${disabled ? '#dfdfdf' : colors.theme.primary400}`,
         };
-      case 'whiteNoBorder':
+      case 'invisible':
         return {
           ...baseStyles,
-          ...getSimpleBackground(colors.blackAndWhite.white, 'whiteNoBorder'),
+          ...getSimpleBackground(colors.blackAndWhite.white, 'invisible'),
           color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
         };
       default:
@@ -245,10 +245,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
           border: `1px solid ${disabled ? colors.blackAndWhite.black100 : colors.theme.primary400}`,
         };
-      case 'whiteNoBorder':
+      case 'invisible':
         return {
           ...baseStyles,
-          ...getSimpleBackground(colors.blackAndWhite.white, 'whiteNoBorder'),
+          ...getSimpleBackground(colors.blackAndWhite.white, 'invisible'),
           color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
         };
       default:
@@ -360,11 +360,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           ...getSimpleBackground(colors.blackAndWhite.white, 'white'),
           border: `1px solid ${colors.theme.primary400}`,
         };
-      case 'whiteNoBorder':
+      case 'invisible':
         return {
           ...baseStyles,
           ...shapeStyles,
-          ...getSimpleBackground(colors.blackAndWhite.white, 'whiteNoBorder'),
+          ...getSimpleBackground(colors.blackAndWhite.white, 'invisible'),
         };
       default:
         return {
@@ -389,7 +389,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           return colors.blackAndWhite.black900;
         case 'white':
           return colors.blackAndWhite.black500;
-        case 'whiteNoBorder':
+        case 'invisible':
           return colors.blackAndWhite.black500;
         default:
           return 'currentColor';
@@ -408,7 +408,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'white':
         // Use green900 for analytics theme to ensure proper contrast
         return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
-      case 'whiteNoBorder':
+      case 'invisible':
         // Use green900 for analytics theme to ensure proper contrast
         return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
       default:
@@ -424,7 +424,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'white':
         // Use green900 for analytics theme to ensure proper contrast
         return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
-      case 'whiteNoBorder':
+      case 'invisible':
         // Use green900 for analytics theme to ensure proper contrast
         return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
       default:
@@ -446,7 +446,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           return colors.blackAndWhite.black900;
         case 'white':
           return colors.blackAndWhite.black500;
-        case 'whiteNoBorder':
+        case 'invisible':
           return colors.blackAndWhite.black500;
         default:
           return colors.theme.primary400;
@@ -465,7 +465,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'white':
         // Use green900 for analytics theme to ensure proper contrast
         return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
-      case 'whiteNoBorder':
+      case 'invisible':
         // Use green900 for analytics theme to ensure proper contrast
         return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
       default:

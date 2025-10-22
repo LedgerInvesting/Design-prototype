@@ -108,7 +108,7 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
         }}>
           <Button
             variant="primary"
-            color="whiteNoBorder"
+            color="invisible"
             showIcon={false}
             onClick={handleCancel}
             style={{

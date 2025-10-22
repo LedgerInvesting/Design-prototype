@@ -13,6 +13,7 @@ export type PageType =
   | 'reports-bdx-upload'
   | 'reports-contracts-explorer'
   | 'contracts-ai-extraction'
+  | 'contracts-transactions'
   | 'analytics-valuation'
   | 'analytics-valuation-dashboard'
   | 'analytics-valuation-configuration'
@@ -58,6 +59,8 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
     else if (itemId === 'contracts') {
       if (subitemId === 'ai-extraction') {
         onNavigateToPage('contracts-ai-extraction');
+      } else if (subitemId === 'transactions') {
+        onNavigateToPage('contracts-transactions');
       } else if (subitemId === 'contracts') {
         onNavigateToPage('contracts-ai-extraction');
       } else if (subitemId === 'start') {
@@ -141,7 +144,17 @@ export const createPageNavigationHandler = (
     // Handle Contracts navigation
     else if (itemId === 'contracts') {
       if (subitemId === 'ai-extraction') {
-        onNavigateToPage('contracts-ai-extraction');
+        if (currentPage === 'contracts-ai-extraction') {
+          console.log('Already on contracts AI extraction page');
+        } else {
+          onNavigateToPage('contracts-ai-extraction');
+        }
+      } else if (subitemId === 'transactions') {
+        if (currentPage === 'contracts-transactions') {
+          console.log('Already on contracts transactions page');
+        } else {
+          onNavigateToPage('contracts-transactions');
+        }
       } else if (subitemId === 'contracts') {
         onNavigateToPage('contracts-ai-extraction');
       } else if (subitemId === 'start') {

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Layout } from '@design-library/pages';
 import type { BreadcrumbItem } from '@design-library/pages';
-import { Button, Card, Tabs } from '@design-library/components';
-import type { Tab } from '@design-library/components';
+import { Button, Card } from '@design-library/components';
 import { typography, spacing, borderRadius, shadows, useSemanticColors, ThemeProvider } from '@design-library/tokens';
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
 import { TextTable, DocumentSmall, KLogo } from '@design-library/icons';
@@ -12,14 +11,6 @@ interface ContractsAIExtractionProps {
 }
 
 export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ onNavigateToPage }) => {
-  const [activeTab, setActiveTab] = useState('primary');
-
-  // Define tabs for the component
-  const tabs: Tab[] = [
-    { id: 'primary', label: 'PRIMARY MARKET' },
-    { id: 'secondary', label: 'SECONDARY MARKET' }
-  ];
-
   const breadcrumbs = createBreadcrumbs.contracts.aiExtraction();
 
   const PageContent: React.FC = () => {
@@ -36,11 +27,6 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
       ...typography.styles.headlineH2,
       color: colors.blackAndWhite.black500,
       fontStyle: 'italic',
-    };
-
-    // Tabs container style
-    const tabsContainerStyles: React.CSSProperties = {
-      marginBottom: spacing[8],
     };
 
     // Main layout styles
@@ -303,15 +289,6 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
             </div>
             ASK ANYTHING
           </button>
-        </div>
-
-        {/* Tabs */}
-        <div style={tabsContainerStyles}>
-          <Tabs
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
         </div>
 
         {/* Main Content */}

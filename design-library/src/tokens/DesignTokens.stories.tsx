@@ -816,55 +816,55 @@ const DesignTokensShowcase: React.FC = () => {
           />
         </div>
 
-        <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Table Icons (24x24px)</h3>
+        <h3 style={{ fontSize: '24px', marginBottom: '16px', color: '#374151' }}>Table Icons (16x16px, Arrange: 12x12px)</h3>
         <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', fontStyle: 'italic' }}>
           These icons are specifically designed for use in table headers
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          <IconExample 
-            IconComponent={icons.table.ammount} 
-            name="Amount" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.ammount}
+            name="Amount"
+            size="16x16px"
           />
-          <IconExample 
-            IconComponent={icons.table.arrange} 
-            name="Arrange" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.arrange}
+            name="Arrange"
+            size="12x12px"
           />
-          <IconExample 
-            IconComponent={icons.table.calendar} 
-            name="Calendar" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.calendar}
+            name="Calendar"
+            size="16x16px"
           />
-          <IconExample 
-            IconComponent={icons.table.document} 
-            name="Document" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.document}
+            name="Document"
+            size="16x16px"
           />
-          <IconExample 
-            IconComponent={icons.table.file} 
-            name="File" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.file}
+            name="File"
+            size="16x16px"
           />
-          <IconExample 
-            IconComponent={icons.table.status} 
-            name="Status" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.status}
+            name="Status"
+            size="16x16px"
           />
-          <IconExample 
-            IconComponent={icons.table.text} 
-            name="Text" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.text}
+            name="Text"
+            size="16x16px"
           />
-          <IconExample 
-            IconComponent={icons.table.warning} 
-            name="Warning" 
-            size="24x24px" 
+          <IconExample
+            IconComponent={icons.table.warning}
+            name="Warning"
+            size="16x16px"
           />
           <IconExample
             IconComponent={icons.table.tick}
             name="Tick"
-            size="24x24px"
+            size="16x16px"
           />
           <IconExample
             IconComponent={icons.table.statusCheck}

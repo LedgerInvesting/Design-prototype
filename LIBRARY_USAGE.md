@@ -2,6 +2,8 @@
 
 **Quick reference for using the Ledger Design Library components, tokens, and patterns.**
 
+> 📘 **Note:** This is the quick reference guide with practical examples and common patterns. For detailed component architecture, complete prop APIs, and design decisions, see [COMPONENTS.md](./COMPONENTS.md).
+
 ---
 
 ## 🎨 Design Tokens
@@ -221,7 +223,11 @@ shadows.large   // 0 10px 15px rgba(0, 0, 0, 0.1)
 
 ## 🧩 Components
 
+> 💡 **Quick examples below.** For complete feature lists, all variants, and integration details, see [COMPONENTS.md](./COMPONENTS.md).
+
 ### Button
+
+> 📖 [Detailed Button documentation in COMPONENTS.md](./COMPONENTS.md#button)
 
 ```tsx
 import { Button } from '@design-library/components';
@@ -261,6 +267,8 @@ disabled?: boolean
 
 ### Modal
 
+> 📖 [Detailed Modal documentation in COMPONENTS.md](./COMPONENTS.md#modal)
+
 ```tsx
 import { Modal } from '@design-library/components';
 
@@ -292,6 +300,8 @@ position?: 'center' | 'top'  // Default: 'center'
 ---
 
 ### Status
+
+> 📖 [Detailed Status documentation in COMPONENTS.md](./COMPONENTS.md#status)
 
 ```tsx
 import { Status } from '@design-library/components';
@@ -458,6 +468,8 @@ disabled?: boolean
 ---
 
 ### Table
+
+> 📖 [Detailed Table documentation in COMPONENTS.md](./COMPONENTS.md#table)
 
 ```tsx
 import { Table } from '@design-library/components';

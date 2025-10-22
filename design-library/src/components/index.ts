@@ -74,6 +74,12 @@ export type { TableProps, TableHeaderProps, TableColumnHeaderProps, TableBodyPro
 export { DocumentCell } from './DocumentCell';
 export type { DocumentCellProps } from './DocumentCell';
 
+export { ActionCell } from './ActionCell';
+export type { ActionCellProps, ActionType } from './ActionCell';
+
+export { StatusCell } from './StatusCell';
+export type { StatusCellProps, StatusType as StatusCellType } from './StatusCell';
+
 export { CustomCell } from './CustomCell';
 export type { CustomCellProps, CustomCellElement, TextElement, IconElement, ButtonElement, BadgeElement, StatusElement, CustomCellContentType, TextStyle, TextWeight, TextColor, BadgeVariant, StatusType, CellAlignment, CellDirection } from './CustomCell';
 

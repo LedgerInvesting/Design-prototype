@@ -63,6 +63,7 @@ const sidebarItems: SidebarItem[] = [
     label: 'Contracts',
     icon: ContractsLogo,
     subitems: [
+      { id: 'transactions', label: 'Transactions' },
       { id: 'contracts', label: 'Contracts' }
     ]
   }

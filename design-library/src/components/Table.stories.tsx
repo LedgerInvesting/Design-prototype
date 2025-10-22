@@ -639,7 +639,7 @@ export const WithDocumentCells: Story = {
   },
 };
 
-// Cell types showcase - demonstrates all 3 cell types
+// Cell types showcase - demonstrates all cell types
 export const CellTypesShowcase: Story = {
   args: {
     columns: [
@@ -649,6 +649,16 @@ export const CellTypesShowcase: Story = {
         sortable: true,
         width: '200px',
         cellType: 'simple', // Simple text cells
+      },
+      {
+        key: 'status',
+        title: 'Status',
+        icon: <StatusTable color={colors.reports.blue450} />,
+        sortable: false,
+        width: '180px',
+        cellType: 'status', // Status cells with colored circles
+        align: 'left' as const,
+        headerAlign: 'left' as const,
       },
       {
         key: 'document',
@@ -707,6 +717,7 @@ export const CellTypesShowcase: Story = {
     data: [
       {
         simple: 'Policy Alpha',
+        status: 'Active',
         document: 'policy_alpha_contract.pdf',
         documentConfig: 'policy_alpha_config.json',
         documentOpen: 'policy_alpha_details.pdf',
@@ -732,6 +743,7 @@ export const CellTypesShowcase: Story = {
       },
       {
         simple: 'Policy Beta',
+        status: 'Pending',
         document: 'policy_beta_terms.docx',
         documentConfig: 'policy_beta_config.json',
         documentOpen: 'policy_beta_details.docx',
@@ -758,6 +770,7 @@ export const CellTypesShowcase: Story = {
       },
       {
         simple: 'Policy Gamma',
+        status: 'Cancelled',
         document: 'policy_gamma_summary.xlsx',
         documentConfig: 'policy_gamma_config.json',
         documentOpen: 'policy_gamma_details.xlsx',
@@ -783,6 +796,28 @@ export const CellTypesShowcase: Story = {
         ),
         action: 'Review',
       },
+      {
+        simple: 'Policy Delta',
+        status: 'Draft',
+        document: 'policy_delta_report.pdf',
+        documentConfig: 'policy_delta_config.json',
+        documentOpen: 'policy_delta_details.pdf',
+        custom: (
+          <CustomCell
+            elements={[
+              {
+                type: 'text',
+                content: 'Ready',
+                style: 'bodyM',
+                weight: 'medium',
+                color: 'default',
+              }
+            ]}
+            alignment="left"
+          />
+        ),
+        action: 'Setup',
+      },
     ],
     title: 'Cell Types Demo',
     showHeader: true,
@@ -793,7 +828,7 @@ export const CellTypesShowcase: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates all cell types in the Table component: simple text cells, document cells with download/config/open icons, custom cells with status indicators and mixed content using the CustomCell component, and action button cells (click to trigger actions). The Custom Cells column shows examples of status + badge combinations, icon + text combinations, and status + button combinations.',
+        story: 'Demonstrates all cell types in the Table component: simple text cells, **status cells with colored circle indicators** (Active/Pending/Cancelled/Draft mapped to done/processing/error/ready), document cells with download/config/open icons, custom cells with status indicators and mixed content using the CustomCell component, and action button cells (click to trigger actions). The Status column shows automatic color-coded status indicators with 6px circles and 6px outer strokes. The Custom Cells column shows examples of status + badge combinations, icon + text combinations, and status + button combinations.',
       },
     },
   },

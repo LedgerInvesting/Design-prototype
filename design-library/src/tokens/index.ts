@@ -249,8 +249,8 @@ export const colors = {
     yellow500: '#ffefb0',
     // Dynamic colors (correct from Figma)
     dynamic: {
-      yellow400: '#e5ded2', // E5DED2
-      yellow300: '#f0ebe1', // F0EBE1
+      yellow400: '#f0ebe1', // F0EBE1
+      yellow300: '#f5f0e8', // F5F0E8
       yellow200: '#f9f6f0', // F9F6F0
     },
   },

@@ -2,273 +2,213 @@ import React, { useState } from 'react';
 // Import page components
 import { Layout, PageBanner } from '@design-library/pages';
 
-// Import base components  
+// Import base components
 import { Button, Table } from '@design-library/components';
 
 // Import design tokens
-import { typography, borderRadius, useSemanticColors } from '@design-library/tokens';
+import { typography, borderRadius, spacing, useSemanticColors } from '@design-library/tokens';
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
 
-// Import prototype settings
-import { useSettings } from '@design-library/contexts';
-
-// Import table icons
-import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } from '@design-library/icons';
+// Import icons
+import { SearchMedium, ChevronLeftSmall, ChevronRightSmall, DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable, PlayTable } from '@design-library/icons';
 
 // Import modal
 import { NewTransactionModal } from './NewTransactionModal';
 import { BrandNewTransactionModal } from './BrandNewTransactionModal';
 
-
-// Transaction icon component
-const TransactionIcon: React.FC = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <rect x="2" y="3" width="16" height="12" rx="2" stroke={colors.blackAndWhite.black700} strokeWidth="1.5" fill="none"/>
-    <line x1="2" y1="7" x2="18" y2="7" stroke={colors.blackAndWhite.black700} strokeWidth="1.5"/>
-    <line x1="5" y1="10" x2="8" y2="10" stroke={colors.blackAndWhite.black700} strokeWidth="1.5"/>
-  </svg>
-);
-
-/**
- * Props for the MetricCard component displaying transaction statistics
- * @interface MetricCardProps
- */
-interface MetricCardProps {
+// Custom Table Header Component for Contracts Transactions
+interface ContractsTableHeaderProps {
   title: string;
-  value: string;
-  subtitle?: string;
-  hasUnderline?: boolean;
-  tags?: Array<{
-    text: string;
-    type: 'percentage' | 'connector' | 'reference' | 'operator';
-    color?: string;
-  }>;
-  icon?: React.ReactNode;
-  fullWidth?: boolean;
-  customContent?: React.ReactNode;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  currentPage?: number;
+  totalPages?: number;
+  totalItems?: number;
+  itemsPerPage?: number;
+  onPageChange?: (page: number) => void;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({
+const ContractsTableHeader: React.FC<ContractsTableHeaderProps> = ({
   title,
-  value,
-  subtitle,
-  hasUnderline,
-  tags,
-  icon,
-  fullWidth = false,
-  customContent
+  searchValue = '',
+  onSearchChange,
+  currentPage = 1,
+  totalPages = 1,
+  totalItems = 0,
+  itemsPerPage = 10,
+  onPageChange,
 }) => {
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const colors = useSemanticColors();
-  const cardStyles: React.CSSProperties = {
-    backgroundColor: colors.blackAndWhite.white,
-    border: `1px solid ${colors.theme.primary400}`,
-    borderRadius: borderRadius[16],
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    minHeight: '180px', // Allow card to expand beyond 180px if needed
-  };
 
   const headerStyles: React.CSSProperties = {
-    padding: '20px 30px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0 16px',
+    height: '80px',
+    backgroundColor: colors.blackAndWhite.white,
+    borderTopLeftRadius: borderRadius[8],
+    borderTopRightRadius: borderRadius[8],
+    borderTop: `1px solid ${colors.theme.primary400}`,
+    borderLeft: `1px solid ${colors.theme.primary400}`,
+    borderRight: `1px solid ${colors.theme.primary400}`,
+    borderBottom: 'none', // No bottom border to avoid double border with column headers
+    boxSizing: 'border-box',
+  };
+
+  const leftSectionStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '7px',
-    flexShrink: 0,
-    width: '100%',
+    gap: '12px',
   };
 
-  const separatorStyles: React.CSSProperties = {
-    width: '100%',
-    height: '1px',
-    backgroundColor: colors.theme.primary400,
-    flexShrink: 0,
-  };
-
-  const contentStyles: React.CSSProperties = {
-    padding: '25px 30px 30px 30px',
+  const rightSectionStyles: React.CSSProperties = {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    flex: 1,
-    width: '100%',
-    overflow: 'hidden',
     alignItems: 'center',
-    textAlign: 'center',
+    gap: '12px',
   };
 
-  const valueStyles: React.CSSProperties = {
-    ...typography.styles.dataXXL,
-    letterSpacing: '0.5px',
+  const titleStyles: React.CSSProperties = {
+    ...typography.styles.subheadingM,
     color: colors.blackAndWhite.black900,
     margin: 0,
-    height: '50px',
+  };
+
+  const searchContainerStyles: React.CSSProperties = {
+    position: 'relative',
     display: 'flex',
     alignItems: 'center',
+    backgroundColor: colors.theme.primary200,
+    borderRadius: borderRadius.absolute,
+    height: '30px',
+    width: isSearchExpanded ? '200px' : '58px',
+    padding: isSearchExpanded ? '4px 12px 4px 12px' : '4px 18px',
+    justifyContent: isSearchExpanded ? 'space-between' : 'flex-end',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
   };
 
-  const subtitleStyles: React.CSSProperties = {
+  const searchInputStyles: React.CSSProperties = {
+    border: 'none',
+    backgroundColor: 'transparent',
+    outline: 'none',
     ...typography.styles.bodyM,
-    lineHeight: 1.3,
-    color: colors.blackAndWhite.black700,
-    margin: 0,
+    color: colors.blackAndWhite.black900,
+    width: isSearchExpanded ? '140px' : '0px',
+    padding: '0',
+    opacity: isSearchExpanded ? 1 : 0,
+    transition: 'all 0.3s ease',
+    cursor: 'text',
   };
 
+  const searchIconStyles: React.CSSProperties = {
+    flexShrink: 0,
+    pointerEvents: 'none' as const,
+    transition: 'all 0.3s ease',
+  };
+
+  const documentsCountStyles: React.CSSProperties = {
+    ...typography.styles.captionS,
+    color: colors.blackAndWhite.black500,
+  };
+
+  const navButtonStyles: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '24px',
+    height: '24px',
+    border: 'none',
+    backgroundColor: 'transparent',
+    cursor: 'pointer',
+    padding: 0,
+    transition: 'opacity 0.2s ease',
+  };
+
+  const disabledNavButtonStyles: React.CSSProperties = {
+    ...navButtonStyles,
+    opacity: 0.3,
+    cursor: 'not-allowed',
+  };
+
+  const startItem = Math.min((currentPage - 1) * itemsPerPage + 1, totalItems);
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
   return (
-    <div style={cardStyles}>
-      {/* Header */}
+    <>
+      <style>
+        {`
+          .contracts-search-input::placeholder {
+            color: ${colors.blackAndWhite.black500};
+            opacity: 1;
+          }
+        `}
+      </style>
       <div style={headerStyles}>
-        <div style={{ width: '14px', height: '18px', flexShrink: 0 }}>{icon}</div>
-        <div style={{ 
-          ...typography.styles.bodyL,
-          color: colors.blackAndWhite.black900,
-          flexShrink: 0,
-        }}>
-          {title}
-        </div>
-      </div>
-      
-      {/* Separator */}
-      <div style={separatorStyles} />
-      
-      {/* Content */}
-      <div style={contentStyles}>
-        {customContent || (
-          <>
-            <div style={valueStyles}>{value}</div>
-            
-            {subtitle && (
-              <div style={subtitleStyles}>
-                {hasUnderline ? (
-                  <>
-                    Reported as of{' '}
-                    <span style={{ 
-                      textDecoration: 'underline',
-                      textDecorationSkipInk: 'none',
-                      textDecorationStyle: 'solid',
-                      textUnderlinePosition: 'from-font',
-                      color: colors.blackAndWhite.black800 
-                    }}>
-                      2025-01-31BDX
-                    </span>
-                  </>
-                ) : (
-                  subtitle
-                )}
-              </div>
+        {/* Left Section: Title + Search */}
+        <div style={leftSectionStyles}>
+          <div style={titleStyles}>{title}</div>
+          <div
+            style={searchContainerStyles}
+            onClick={() => {
+              if (!isSearchExpanded) {
+                setIsSearchExpanded(true);
+                setTimeout(() => {
+                  const input = document.querySelector('.contracts-search-input') as HTMLInputElement;
+                  if (input) input.focus();
+                }, 300);
+              }
+            }}
+          >
+            {isSearchExpanded && (
+              <input
+                className="contracts-search-input"
+                style={searchInputStyles}
+                type="text"
+                placeholder="Type to search…"
+                value={searchValue}
+                onChange={(e) => onSearchChange?.(e.target.value)}
+                onBlur={() => {
+                  if (!searchValue) {
+                    setIsSearchExpanded(false);
+                  }
+                }}
+                onClick={(e) => e.stopPropagation()}
+              />
             )}
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// Stats section component
-const TransactionStats: React.FC = () => {
-  const colors = useSemanticColors();
-  const statsContainerStyles: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '30px',
-    marginTop: '40px',
-    width: '100%',
-  };
-
-  // Custom content for transactions card
-  const transactionContent = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-      {/* Line 1: "You currently have" */}
-      <div style={{
-        ...typography.styles.subheadingM,
-        color: colors.blackAndWhite.black900,
-        margin: 0,
-      }}>
-        You currently have
-      </div>
-      
-      {/* Line 2: "(icon) 25 transactions (icon) of which 11 are active" - wraps to 3 lines on small screens */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-        {/* First group: transactions info */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <img 
-            src="/transactions_icon.png" 
-            alt="transactions" 
-            style={{}} 
-          />
-          <span style={{ 
-            ...typography.styles.subheadingM,
-            color: colors.theme.primary800,
-            fontWeight: 600,
-            margin: 0
-          }}>25</span>
-          <span style={{ 
-            ...typography.styles.subheadingM,
-            color: colors.blackAndWhite.black900,
-            margin: 0
-          }}>transactions</span>
-        </div>
-        
-        {/* Second group: active info - keeps together when wrapping */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap', flexShrink: 0 }}>
-          <div style={{
-            width: '24px',
-            height: '24px',
-            backgroundColor: '#C6FFC1',
-            borderRadius: borderRadius.absolute,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <div style={{
-              width: '8px',
-              height: '8px',
-              backgroundColor: colors.success.textAndStrokes,
-              borderRadius: borderRadius.absolute,
-            }}></div>
+            <div style={searchIconStyles}>
+              <SearchMedium color={colors.blackAndWhite.black900} />
+            </div>
           </div>
-          <span style={{ 
-            ...typography.styles.subheadingM,
-            color: colors.blackAndWhite.black500,
-            margin: 0
-          }}>of which</span>
-          <span style={{ 
-            ...typography.styles.subheadingM,
-            color: colors.success.textAndStrokes,
-            fontWeight: 600,
-            margin: 0
-          }}>11</span>
-          <span style={{ 
-            ...typography.styles.subheadingM,
-            color: colors.blackAndWhite.black900,
-            margin: 0
-          }}>are active</span>
+        </div>
+
+        {/* Right Section: Documents Count + Pagination */}
+        <div style={rightSectionStyles}>
+          <span style={documentsCountStyles}>
+            {startItem}-{endItem} of {totalItems} documents
+          </span>
+          <button
+            style={currentPage === 1 ? disabledNavButtonStyles : navButtonStyles}
+            onClick={() => currentPage > 1 && onPageChange?.(currentPage - 1)}
+            disabled={currentPage === 1}
+            type="button"
+            aria-label="Previous page"
+          >
+            <ChevronLeftSmall color={currentPage === 1 ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
+          </button>
+          <button
+            style={currentPage === totalPages ? disabledNavButtonStyles : navButtonStyles}
+            onClick={() => currentPage < totalPages && onPageChange?.(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            type="button"
+            aria-label="Next page"
+          >
+            <ChevronRightSmall color={currentPage === totalPages ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
+          </button>
         </div>
       </div>
-    </div>
-  );
-
-  return (
-    <div style={statsContainerStyles}>
-      <MetricCard
-        title="Transactions"
-        value="" // Not used since we have custom content
-        customContent={transactionContent}
-      />
-      
-      <MetricCard
-        title="Total Premium"
-        value="$272,216,134"
-        subtitle={
-          <span>
-            <span style={{ color: colors.success.textAndStrokes }}>+$3,900</span>
-            <span style={{ color: colors.blackAndWhite.black700 }}> since last month</span>
-          </span>
-        }
-      />
-    </div>
+    </>
   );
 };
 
@@ -278,7 +218,7 @@ const getOptimizedColumnWidth = (data: any[], columnKey: string, baseWidth: stri
   if (columnKey === 'actions' || columnKey === 'transactionName') {
     return columnKey === 'actions' ? '130px' : '300px';
   }
-  
+
   // Check if all values in this column have less than 11 characters
   const allValuesShort = data.every(row => {
     const value = row[columnKey];
@@ -287,7 +227,7 @@ const getOptimizedColumnWidth = (data: any[], columnKey: string, baseWidth: stri
     }
     return String(value).length < 11;
   });
-  
+
   // Return 150px if all values are short, otherwise use base width
   return allValuesShort ? '150px' : baseWidth;
 };
@@ -299,9 +239,10 @@ interface TransactionTableProps {
 
 const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
-  const [activeTab, setActiveTab] = React.useState('All Transactions');
+  const [searchValue, setSearchValue] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Sample data (moved before columns to enable dynamic sizing)
+  // Sample data
   const sampleData = [
     {
       transactionName: 'Blue Commercial Auto 2020',
@@ -610,88 +551,60 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     {
       key: 'transactionName',
       title: 'Transaction Name',
-      icon: <DocumentTable color={colors.theme.primary450} />,
+      icon: <DocumentTable color={colors.theme.primary400} />,
       sortable: true,
       width: getOptimizedColumnWidth(sampleData, 'transactionName'),
       cellType: 'document' as const,
-      align: 'left', // First column left-aligned
-      headerAlign: 'left',
+      align: 'left' as const,
+      headerAlign: 'left' as const,
       hoverIcon: 'config' as const,
       onDownload: (filename: string) => {
-        // Navigate to new transaction workflow when config is clicked
-        onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
+        onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
       },
-    },
-    {
-      key: 'cedingCompany',
-      title: 'Ceding Company',
-      icon: <TextTable color={colors.theme.primary450} />,
-      sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'cedingCompany'),
-      align: 'left', // Left-aligned cells
-      headerAlign: 'left', // Left-aligned headers
-    },
-    {
-      key: 'reinsurerName',
-      title: 'Reinsurer Name',
-      icon: <TextTable color={colors.theme.primary450} />,
-      sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'reinsurerName'),
-      align: 'left', // Left-aligned cells
-      headerAlign: 'left', // Left-aligned headers
-    },
-    {
-      key: 'effectiveDate',
-      title: 'Effective Date',
-      icon: <CalendarTable color={colors.theme.primary450} />,
-      sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'effectiveDate'),
-      align: 'left', // Left-aligned cells
-      headerAlign: 'left', // Left-aligned headers
-    },
-    {
-      key: 'expiryDate',
-      title: 'Expiry Date',
-      icon: <CalendarTable color={colors.theme.primary450} />,
-      sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'expiryDate'),
-      align: 'left', // Left-aligned cells
-      headerAlign: 'left', // Left-aligned headers
-    },
-    {
-      key: 'premium',
-      title: 'Premium',
-      icon: <AmmountTable color={colors.theme.primary450} />,
-      sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'premium'),
-      align: 'left', // Left-aligned cells
-      headerAlign: 'left', // Left-aligned headers
     },
     {
       key: 'status',
       title: 'Status',
-      icon: <StatusTable color={colors.theme.primary450} />,
+      icon: <StatusTable color={colors.theme.primary400} />,
       sortable: false,
       width: getOptimizedColumnWidth(sampleData, 'status'),
-      align: 'left', // Left-aligned cells
-      headerAlign: 'left', // Left-aligned headers
+      cellType: 'status' as const,
+      align: 'left' as const,
+      headerAlign: 'left' as const,
+    },
+    {
+      key: 'cedingCompany',
+      title: 'Ceding Insurer',
+      icon: <TextTable color={colors.theme.primary400} />,
+      sortable: true,
+      width: getOptimizedColumnWidth(sampleData, 'cedingCompany'),
+      align: 'left' as const,
+      headerAlign: 'left' as const,
+    },
+    {
+      key: 'reinsurerName',
+      title: 'Reinsurer',
+      icon: <TextTable color={colors.theme.primary400} />,
+      sortable: true,
+      width: getOptimizedColumnWidth(sampleData, 'reinsurerName'),
+      align: 'left' as const,
+      headerAlign: 'left' as const,
     },
     {
       key: 'actions',
       title: 'Actions',
-      icon: <StatusTable color={colors.theme.primary450} />,
+      icon: <PlayTable color={colors.theme.primary400} />,
       sortable: false,
       width: getOptimizedColumnWidth(sampleData, 'actions'),
-      align: 'center' as const, // Keep actions centered
-      headerAlign: 'right', // Right-aligned header
+      align: 'center' as const,
+      headerAlign: 'left' as const,
       cellType: 'action' as const,
       actionType: 'upload' as const,
       onAction: (actionType: string, text: string) => {
         if (actionType === 'upload') {
-          onNavigateToPage && onNavigateToPage('reports-bdx-upload');
+          onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
         } else if (actionType === 'setup') {
-          onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
-        } else {
+          onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
         }
       },
     },
@@ -700,34 +613,39 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
   const tableContainerStyles: React.CSSProperties = {
     marginTop: '40px',
     width: '100%',
-    maxWidth: '100%', // Ensure container doesn't exceed parent
-    overflowX: 'auto',
-    overflowY: 'visible',
+    maxWidth: '100%',
   };
 
   return (
-    <div style={{
-      ...tableContainerStyles,
-      minWidth: 0, // Allow container to shrink
-      display: 'block', // Ensure block display
-    }}>
-      <Table
-        columns={tableColumns}
-        data={sampleData}
-        showHeader={true}
-        showSearch={true}
-        showTabs={true}
-        tabs={['All Transactions', 'By Ceding Insurer', 'By Transaction Name', 'By Year']}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        showPagination={true}
-        showFooterPagination={true}
-        currentPage={1}
+    <div style={tableContainerStyles}>
+      {/* Custom Table Header */}
+      <ContractsTableHeader
+        title="Transactions"
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        currentPage={currentPage}
         totalPages={3}
-        totalItems={25}
+        totalItems={30}
         itemsPerPage={10}
-        onPageChange={(page) => {}}
+        onPageChange={setCurrentPage}
       />
+
+      {/* Table without default header */}
+      <div style={{
+        width: '100%',
+        overflowX: 'auto',
+        overflowY: 'visible',
+      }}>
+        <Table
+          columns={tableColumns}
+          data={sampleData}
+          showHeader={false}
+          showSearch={false}
+          showTabs={false}
+          showPagination={false}
+          showFooterPagination={false}
+        />
+      </div>
     </div>
   );
 };
@@ -737,9 +655,8 @@ interface TransactionManagementProps {
   onNavigateToPage?: (page: string) => void;
 }
 
-export const ReportsTransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
+export const ContractsTransactions: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
-  const settings = useSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
   const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -749,9 +666,9 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
       breadcrumbs={[
         { label: 'TRANSACTION MANAGEMENT', isActive: true }
       ]}
-      selectedSidebarItem="reports"
+      selectedSidebarItem="contracts"
       selectedSidebarSubitem="transactions"
-      onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'reports-transaction-management')}
+      onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-transactions')}
       onInboxClick={() => {
       }}
       onManageAccountClick={undefined}
@@ -761,20 +678,17 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
       <PageBanner
         title="Transaction Management"
         subtitle="Manage your reinsurance transactions and workflow progress"
-        illustrationSrc="/transaction header icon.png"
-        patternSrc="/pattern_reports.svg"
-        buttonText="New Transaction"
+        illustrationSrc="/Contracts_illustration.png"
+        patternSrc="/pattern_contracts.svg"
+        buttonText="New Extraction"
         buttonIcon={<span style={{ color: colors.theme.primary700 }}>+</span>}
-        onButtonClick={() => setIsModalOpen(true)}
+        onButtonClick={() => onNavigateToPage && onNavigateToPage('contracts-ai-extraction')}
         illustrationAlt="transaction management"
       />
 
-      {/* Stats Section */}
-      <TransactionStats />
-
       {/* Table Section */}
       <TransactionTable onNavigateToPage={onNavigateToPage} />
-      
+
       {/* New Transaction Modal */}
       <NewTransactionModal
         isOpen={isModalOpen}
@@ -786,11 +700,11 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
             setIsBrandNewModalOpen(true);
           } else if (transactionType === 'renewal') {
             setIsModalOpen(false);
-            onNavigateToPage && onNavigateToPage('reports-renewal-transaction');
+            onNavigateToPage && onNavigateToPage('contracts-renewal-transaction');
           }
         }}
       />
-      
+
       {/* Brand New Transaction Modal */}
       <BrandNewTransactionModal
         isOpen={isBrandNewModalOpen}
@@ -802,9 +716,9 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
         }}
         onContinue={(inputMethod) => {
           if (inputMethod === 'enter-manually') {
-            onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
+            onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
           } else if (inputMethod === 'upload-pdf') {
-            // TODO: Handle PDF upload flow
+            onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
           }
         }}
       />
@@ -812,4 +726,4 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
   );
 };
 
-export default ReportsTransactionManagement;
+export default ContractsTransactions;

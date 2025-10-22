@@ -359,19 +359,19 @@ export const Layout: React.FC<LayoutProps> = ({
 
               <Selector
                 variant="checkbox"
-                label="Alt Nav Layout (Home + Products)"
-                checked={prototypeSettings.uiExperiments.sidenavTest}
+                label="Navigation v1 (Legacy)"
+                checked={!prototypeSettings.uiExperiments.sidenavTest}
                 onChange={(checked) => {
-                  updateSetting('uiExperiments', 'sidenavTest', checked);
+                  updateSetting('uiExperiments', 'sidenavTest', !checked);
                   // Navigate and close modal when toggling
                   if (onNavigate) {
                     setIsSettingsModalOpen(false);
                     if (checked) {
-                      // When enabling SideNav test, navigate to home
-                      onNavigate('home');
-                    } else {
-                      // When disabling SideNav test, navigate to offerings
+                      // When enabling Navigation v1, navigate to offerings
                       onNavigate('marketplace', 'offerings');
+                    } else {
+                      // When disabling Navigation v1, navigate to home
+                      onNavigate('home');
                     }
                   }
                 }}

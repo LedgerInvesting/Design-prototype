@@ -4,9 +4,10 @@ import { SearchMedium, ChevronLeftSmall, ChevronRightSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
 import { ActionCell, ActionType } from './ActionCell';
 import { CustomCell, CustomCellElement } from './CustomCell';
+import { StatusCell, StatusType } from './StatusCell';
 
 // Base interfaces
-export type CellType = 'simple' | 'document' | 'action' | 'custom';
+export type CellType = 'simple' | 'document' | 'action' | 'custom' | 'status';
 
 export interface TableColumn {
   key: string;
@@ -315,6 +316,7 @@ export interface TableColumnHeaderProps {
   sortState: SortState;
   onSort?: (column: string) => void;
   isLastColumn?: boolean;
+  isFirstColumn?: boolean;
 }
 
 export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
@@ -322,6 +324,7 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
   sortState,
   onSort,
   isLastColumn = false,
+  isFirstColumn = false,
 }) => {
   const colors = useSemanticColors();
   const isActive = sortState.column === column.key;
@@ -338,6 +341,8 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
     borderTop: `1px solid ${colors.theme.primary400}`,
     borderBottom: `1px solid ${colors.theme.primary400}`,
     borderLeft: 'none', // Explicitly set no left border for non-action columns
+    borderTopLeftRadius: '0px', // Remove rounded corners
+    borderTopRightRadius: '0px', // Remove rounded corners
     position: 'relative' as const,
     textAlign: 'left' as const,
     verticalAlign: 'middle' as const,
@@ -362,9 +367,11 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
   const headerContentStyles = {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: headerAlignment === 'right' ? 'flex-end' :
-                   headerAlignment === 'center' ? 'center' :
-                   'flex-start',
+    justifyContent: canSort ? 'space-between' : ( // When sortable, use space-between to push arrows right
+      headerAlignment === 'right' ? 'flex-end' :
+      headerAlignment === 'center' ? 'center' :
+      'flex-start'
+    ),
     width: '100%',
     gap: '8px', // Gap between elements
   };
@@ -541,12 +548,50 @@ export const TableBody: React.FC<TableBodyProps> = ({
         }
         // Fallback to simple if value is not an array
         return value;
+      case 'status':
+        // For status cells, expect the value to be a StatusType string or map common statuses
+        if (typeof value === 'string') {
+          // Map common status strings to StatusType
+          const statusMap: Record<string, StatusType> = {
+            'active': 'done',
+            'pending': 'processing',
+            'cancelled': 'error',
+            'draft': 'ready',
+            'done': 'done',
+            'ready': 'ready',
+            'processing': 'processing',
+            'error': 'error',
+          };
+          const statusType = statusMap[value.toLowerCase()] || 'ready';
+          const alignment = column.align || 'left'; // Default to left alignment for status cells
+          const justifyContent = alignment === 'center' ? 'center' : alignment === 'right' ? 'flex-end' : 'flex-start';
+
+          return (
+            <div
+              data-cell-type="status"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent,
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              <StatusCell
+                status={statusType}
+                text={value}
+              />
+            </div>
+          );
+        }
+        // Fallback to simple if value is not a string
+        return value;
       case 'simple':
       default:
         // For simple cells, wrap text content in a div with ellipsis styles and tooltip
         if (typeof value === 'string' || typeof value === 'number') {
           const textValue = String(value);
-          const alignment = column.align || 'right'; // Default to right alignment for simple text cells
+          const alignment = column.align || 'left'; // Default to left alignment for simple text cells
           return (
             <div
               style={{
@@ -565,9 +610,9 @@ export const TableBody: React.FC<TableBodyProps> = ({
         }
         // For React components, wrap in alignment container based on column alignment
         if (React.isValidElement(value)) {
-          const alignment = column.align || 'right'; // Default to right alignment for simple cells
+          const alignment = column.align || 'left'; // Default to left alignment for simple cells
           const justifyContent = alignment === 'center' ? 'center' : alignment === 'right' ? 'flex-end' : 'flex-start';
-          
+
           return (
             <div
               style={{
@@ -1128,10 +1173,10 @@ export const Table: React.FC<TableProps> = ({
     width: '100%',
     overflowX: needsScroll ? 'auto' as const : 'hidden' as const, // Only enable horizontal scroll when needed
     overflowY: 'visible' as const, // Allow vertical borders to be visible
-    borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : borderRadius[8],
+    borderRadius: showHeader && showFooterPagination ? '0' : showHeader ? '0 0 8px 8px' : showFooterPagination ? '8px 8px 0 0' : '0', // No rounded corners when showHeader is false
     borderLeft: `1px solid ${colors.theme.primary400}`,
     borderRight: `1px solid ${colors.theme.primary400}`,
-    borderTop: showHeader ? 'none' : `1px solid ${colors.theme.primary400}`,
+    borderTop: 'none', // Always none - either TableHeader or custom header will have the top border
     borderBottom: showFooterPagination ? 'none' : `1px solid ${colors.theme.primary400}`,
     // Force container to be constrained and show scrollbar
     maxWidth: '100%',
@@ -1198,6 +1243,7 @@ export const Table: React.FC<TableProps> = ({
                   column={column}
                   sortState={currentSortState}
                   onSort={handleSort}
+                  isFirstColumn={columnIndex === 0}
                   isLastColumn={columnIndex === adjustedColumns.length - 1}
                 />
               ))}

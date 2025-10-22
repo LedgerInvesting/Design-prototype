@@ -81,6 +81,7 @@ const sidebarItems: SidebarItem[] = [
     label: 'Contracts',
     icon: ContractsLogo,
     subitems: [
+      { id: 'transactions', label: 'Transactions' },
       { id: 'ai-extraction', label: 'AI Extraction' }
     ]
   }
@@ -138,6 +139,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
         'triangle': GraphArrowMedium
       },
       contracts: {
+        'transactions': ReplaceMedium,
         'ai-extraction': DocumentMedium
       }
     };
@@ -242,15 +244,26 @@ export const SideNav2: React.FC<SideNav2Props> = ({
   };
 
   const handleMainItemClick = (item: SidebarItem) => {
-    // Navigate to first subitem if it exists
-    const firstSubitem = item.subitems?.[0];
-    if (firstSubitem) {
+    // Check localStorage for last visited page in this app
+    const lastVisitedKey = `lastVisited_${item.id}`;
+    const lastVisitedSubitem = typeof window !== 'undefined'
+      ? localStorage.getItem(lastVisitedKey)
+      : null;
+
+    // Use last visited subitem if it exists and is valid, otherwise use first subitem
+    let targetSubitem = item.subitems?.[0];
+
+    if (lastVisitedSubitem && item.subitems?.some(s => s.id === lastVisitedSubitem)) {
+      targetSubitem = item.subitems.find(s => s.id === lastVisitedSubitem);
+    }
+
+    if (targetSubitem) {
       // Only update internal state if not controlled
       if (propSelectedItem === undefined) {
         setInternalSelectedItem(item.id);
-        setInternalSelectedSubitem(firstSubitem.id);
+        setInternalSelectedSubitem(targetSubitem.id);
       }
-      onNavigate?.(item.id, firstSubitem.id);
+      onNavigate?.(item.id, targetSubitem.id);
     } else {
       // Only update internal state if not controlled
       if (propSelectedItem === undefined) {
@@ -269,6 +282,12 @@ export const SideNav2: React.FC<SideNav2Props> = ({
   };
 
   const handleSubitemClick = (parentId: string, subitemId: string) => {
+    // Save the last visited page for this app in localStorage
+    if (typeof window !== 'undefined') {
+      const lastVisitedKey = `lastVisited_${parentId}`;
+      localStorage.setItem(lastVisitedKey, subitemId);
+    }
+
     // Only update internal state if not controlled
     if (propSelectedItem === undefined) {
       setInternalSelectedItem(parentId);

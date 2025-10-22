@@ -2,6 +2,8 @@
 
 This document contains detailed documentation for all components in the Ledger Design Library.
 
+> 📘 **Note:** This is the detailed architectural documentation. For quick usage examples, code snippets, and common patterns, see [LIBRARY_USAGE.md](./LIBRARY_USAGE.md).
+
 ## 🎨 Unified Semantic Theme System
 
 ### Overview
@@ -88,7 +90,11 @@ const staticData = [
 
 ## Component Features Summary
 
+> 💡 **Detailed features below.** For quick usage examples and code snippets, see [LIBRARY_USAGE.md](./LIBRARY_USAGE.md).
+
 ### Button
+
+> 📖 [Quick Button examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#button)
 - Unified component with 4 variants: primary, small, icon, tertiary
 - **Primary variant**: Full-featured buttons with text, icons, 5 colors (black, white, main, light, green)
 - **Small variant**: Compact buttons for secondary actions, 5 colors (black, white, main, light, green)
@@ -110,6 +116,8 @@ const staticData = [
 - **Updated icon colors**: Black and white button variants now use blue700 (#9ad5f7) for proper design system compliance
 
 ### Status
+
+> 📖 [Quick Status examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#status)
 - Interactive status component with dropdown menu functionality (evolved from Chips component)
 - **5 semantic variants**: warning (yellow), success (green), error (red/pink), info (blue), inactive (gray)
 - **3 sizes**: small, medium, large with consistent design token integration
@@ -234,6 +242,8 @@ const staticData = [
 - Uses design tokens: `colors.*`, `borderRadius.*`, `typography.styles.*`
 
 ### Modal
+
+> 📖 [Quick Modal examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#modal)
 - **Unified Modal Component**: Comprehensive modal system replacing inconsistent implementations across valuation and transaction sections
 - **Flexible Positioning System**:
   - **Button-relative**: Positions modal below trigger button with smart viewport calculations
@@ -271,6 +281,8 @@ const staticData = [
 - Comprehensive examples including binary choice forms and radio groups
 
 ### Table
+
+> 📖 [Quick Table examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#table)
 - Advanced responsive data table component with tab selector, horizontal scrolling, and specialized cell types
 - **Enhanced Header Features**: Tab selector replacing filter functionality, search input, dual pagination options (header/footer) with Figma-based design
 - **Tab Selector**: Interactive tab switching with blue400 dividers, smooth transitions, and proper state management

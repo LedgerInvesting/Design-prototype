@@ -20,7 +20,7 @@ export interface PrototypeSettings {
 }
 
 /**
- * Default settings - all features disabled by default
+ * Default settings - AltNav is now the default
  */
 const defaultSettings: PrototypeSettings = {
   appIntegration: {
@@ -30,7 +30,7 @@ const defaultSettings: PrototypeSettings = {
     useEnhancedNavigation: false,
   },
   uiExperiments: {
-    sidenavTest: false,
+    sidenavTest: true, // True = AltNav (default), False = Navigation v1 (legacy)
   },
 };
 

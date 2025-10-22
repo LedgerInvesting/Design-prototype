@@ -8,6 +8,7 @@ import { ReportsNewTransactionForm } from './ReportsNewTransactionForm';
 import { ReportsRenewalTransaction } from './ReportsRenewalTransaction';
 import { ReportsContractsExplorer } from './ReportsContractsExplorer';
 import { ContractsAIExtraction } from './ContractsAIExtraction';
+import { ContractsTransactions } from './ContractsTransactions';
 import { AnalyticsValuation } from './AnalyticsValuation';
 import { AnalyticsValuationDashboard } from './AnalyticsValuationDashboard';
 import { AnalyticsValuationConfiguration } from './AnalyticsValuationConfiguration';
@@ -21,7 +22,7 @@ import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-ai-extraction' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'reports-bdx-upload' | 'marketplace-offerings';
+type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-ai-extraction' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'reports-bdx-upload' | 'marketplace-offerings';
 
 // Inner component that uses settings
 function AppContent() {
@@ -93,6 +94,8 @@ function AppContent() {
         return <ReportsContractsExplorer onNavigateToPage={setPage} />;
       case 'contracts-ai-extraction':
         return <ContractsAIExtraction onNavigateToPage={setPage} />;
+      case 'contracts-transactions':
+        return <ContractsTransactions onNavigateToPage={setPage} />;
       case 'analytics-valuation':
         return <AnalyticsValuation onNavigateToPage={setPage} />;
       case 'analytics-valuation-dashboard':
@@ -118,7 +121,7 @@ function AppContent() {
     if (page === 'marketplace-offerings') {
       return 'marketplace';
     }
-    if (page === 'reports-contracts-explorer' || page === 'contracts-ai-extraction') {
+    if (page === 'reports-contracts-explorer' || page === 'contracts-ai-extraction' || page === 'contracts-transactions') {
       return 'contracts';
     }
     // Default to reports theme for all other pages

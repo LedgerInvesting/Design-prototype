@@ -28,7 +28,7 @@ const meta: Meta<typeof Button> = {
     color: {
       description: 'Button color variant (options vary by variant)',
       control: 'radio',
-      options: ['black', 'white', 'whiteNoBorder', 'main', 'light', 'green', 'primary200'],
+      options: ['black', 'white', 'invisible', 'main', 'light', 'green', 'primary200'],
     },
     disabled: {
       description: 'Disabled state',
@@ -82,7 +82,7 @@ export const AllVariants: Story = {
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <Button variant="primary" color="black">Black</Button>
           <Button variant="primary" color="white">White</Button>
-          <Button variant="primary" color="whiteNoBorder">White No Border</Button>
+          <Button variant="primary" color="invisible">White No Border</Button>
           <Button variant="primary" color="main">Main</Button>
           <Button variant="primary" color="light">Light</Button>
           <Button variant="primary" color="green">Green</Button>
@@ -95,7 +95,7 @@ export const AllVariants: Story = {
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <Button variant="small" color="black">Black</Button>
           <Button variant="small" color="white">White</Button>
-          <Button variant="small" color="whiteNoBorder">White No Border</Button>
+          <Button variant="small" color="invisible">White No Border</Button>
           <Button variant="small" color="main">Main</Button>
           <Button variant="small" color="light">Light</Button>
           <Button variant="small" color="green">Green</Button>
@@ -111,7 +111,7 @@ export const AllVariants: Story = {
           <Button variant="icon" color="light" icon={<icons.small.open />} />
           <Button variant="icon" color="green" icon={<icons.small.check />} />
           <Button variant="icon" color="white" icon={<icons.small.edit />} />
-          <Button variant="icon" color="whiteNoBorder" icon={<icons.small.edit />} />
+          <Button variant="icon" color="invisible" icon={<icons.small.edit />} />
           <Button variant="icon" color="main" shape="square" icon={<icons.small.plus />} />
           <Button variant="icon" color="black" disabled icon={<icons.small.s1ArrowRight />} />
         </div>
@@ -137,7 +137,7 @@ export const AllVariants: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'All button variants with their available color options: Primary (black, white, whiteNoBorder, main, light, green), Small (black, white, whiteNoBorder, main, light, green), Icon (black, main, light, green, white, whiteNoBorder), and Secondary (primary200 background with uppercase text).',
+        story: 'All button variants with their available color options: Primary (black, white, invisible, main, light, green), Small (black, white, invisible, main, light, green), Icon (black, main, light, green, white, invisible), and Secondary (primary200 background with uppercase text).',
       },
     },
   },
