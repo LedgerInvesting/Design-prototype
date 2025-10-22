@@ -220,7 +220,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
           const dotRect = e.target.getBoundingClientRect();
           const tooltipWidth = 230;
           const tooltipHeight = 400; // Approximate height
-          const offset = 15; // Distance from dot
+          const offset = 25; // Distance from dot (increased to prevent overlap)
 
           // Get chart container boundaries
           const chartRect = chartContainerRef.current?.getBoundingClientRect();
@@ -514,6 +514,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
 
               const tooltipWidth = 230;
               const tooltipHeight = 400; // Approximate
+              const tooltipOffset = 25; // Distance from dot (must match offset in onMouseEnter)
               const [vertical, horizontal] = tooltipPosition.placement.split('-');
 
               // Calculate position relative to chart container
@@ -534,9 +535,9 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
 
               // Apply vertical offset based on alignment
               if (vertical === 'top') {
-                finalY = relativeY - tooltipHeight - 15;
+                finalY = relativeY - tooltipHeight - tooltipOffset;
               } else {
-                finalY = relativeY + 15;
+                finalY = relativeY + tooltipOffset;
               }
 
               // Clamp to chart boundaries
@@ -575,9 +576,13 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                   }}
                   onMouseLeave={() => {
                     setIsHoveringTooltip(false);
-                    // Hide tooltip when leaving
-                    setHoveredProgram(null);
-                    setTooltipPosition(null);
+                    // Delay hiding to prevent accidental closures
+                    hoverTimeoutRef.current = setTimeout(() => {
+                      if (!isHoveringTooltip && !isHoveringDotRef.current) {
+                        setHoveredProgram(null);
+                        setTooltipPosition(null);
+                      }
+                    }, 150);
                   }}
                 >
                   {/* Header with program name */}
