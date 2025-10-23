@@ -94,8 +94,11 @@ export const PageBanner: React.FC<PageBannerProps> = ({
   };
 
   const illustrationContainerStyles: React.CSSProperties = {
-    width: '150px',
-    height: '150px',
+    width: '160px',
+    height: '160px',
+    minWidth: '160px',
+    minHeight: '160px',
+    flexShrink: 0,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -105,6 +108,9 @@ export const PageBanner: React.FC<PageBannerProps> = ({
     display: 'flex',
     flexDirection: 'column',
     gap: spacing[2],  // 0.5rem (8px)
+    flexShrink: 1,
+    flexGrow: 1,
+    minWidth: 0,
     ...(maxTextWidth && { maxWidth: maxTextWidth }),
   };
 
@@ -113,6 +119,8 @@ export const PageBanner: React.FC<PageBannerProps> = ({
     fontSize: '2.25rem',  // 36px
     color: colors.blackAndWhite.black900,
     margin: 0,
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
   };
 
   const subtitleStyles: React.CSSProperties = {
@@ -120,6 +128,9 @@ export const PageBanner: React.FC<PageBannerProps> = ({
     color: colors.blackAndWhite.black900,
     margin: 0,
     opacity: 0.9,
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    whiteSpace: 'pre-line',
   };
 
   const buttonContainerStyles: React.CSSProperties = {
@@ -128,6 +139,8 @@ export const PageBanner: React.FC<PageBannerProps> = ({
     borderRadius: borderRadius[8], // Changed from 16 to 8px
     boxShadow: shadows.base,
     width: '260px',
+    minWidth: '260px',
+    flexShrink: 0,
     display: 'flex',
     gap: '0',
   };

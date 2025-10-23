@@ -68,6 +68,11 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
         transform: scale(1.3);
       }
 
+      /* Watch Videos button hover scale */
+      .explore-products-card:hover .button-background {
+        transform: scale(1.1);
+      }
+
       /* Transaction preview cards hover scale */
       .transaction-preview-card {
         transition: transform 0.4s ease;
@@ -128,8 +133,8 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
     {
       icon: AddMedium,
       iconColor: colors.reports.blue900,
-      backgroundColor: colors.reports.blue700,
-      label: 'Create transaction',
+      backgroundColor: colors.reports.blue500,
+      label: 'Source a new deal',
       onClick: () => onNavigateToPage?.('reports-new-transaction-form')
     },
     {
@@ -152,11 +157,26 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
       backgroundColor: '#F59E77', // Orange from design
       label: 'Set up Bordereau',
       onClick: () => console.log('Set up Bordereau clicked')
+    },
+    {
+      icon: AddMedium,
+      iconColor: colors.reports.blue900,
+      backgroundColor: colors.reports.blue500,
+      label: 'Source a new deal',
+      onClick: () => onNavigateToPage?.('reports-new-transaction-form')
+    },
+    {
+      icon: DocumentMedium,
+      iconColor: '#C5950B', // Yellow 900
+      backgroundColor: '#FBDB6B', // Yellow from design
+      label: 'Extract Key Terms',
+      onClick: () => onNavigateToPage?.('contracts-ai-extraction')
     }
   ];
 
   return (
     <Layout
+      pageType="home"
       breadcrumbs={breadcrumbs}
       selectedSidebarItem="home"
       onNavigate={navigationHandler}
@@ -179,10 +199,433 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
         </h1>
       </div>
 
+      {/* Quick Actions Section */}
+      <div style={{ marginBottom: '60px' }}>
+        {/* Cards Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '60% 40%',
+          gap: '20px'
+        }}>
+          {/* Transactions Card */}
+          <div
+            className="quick-action-card"
+            style={{
+              position: 'relative',
+              boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.06)',
+              height: '390px',
+              borderRadius: borderRadius[16]
+            }}
+          >
+            {/* Background Layer */}
+            <div
+              className="card-background-layer"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: colors.reports.blue700,
+                borderRadius: borderRadius[16],
+                zIndex: 0
+              }}
+            />
+
+            {/* Content Layer */}
+            <div style={{
+              position: 'relative',
+              zIndex: 1,
+              padding: '16px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              {/* Card Header */}
+              <div style={{
+                padding: '20px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start'
+              }}>
+                <div>
+                  <h3 style={{
+                    ...typography.styles.subheadingM,
+                    color: colors.blackAndWhite.black900,
+                    margin: 0
+                  }}>
+                    Next Steps
+                  </h3>
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    opacity: 0.5,
+                    margin: '3px 0 0 0'
+                  }}>
+                    You have 2 transaction peding
+                  </p>
+                </div>
+                <div
+                  onClick={() => onNavigateToPage?.('reports-transaction-management')}
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    flexShrink: 0
+                  }}
+                >
+                  {/* Steps Complete Indicator */}
+                  <div style={{ position: 'relative', width: '50px', height: '50px' }}>
+                    {/* White Background Circle - 10px bigger */}
+                    <svg width="50" height="50" viewBox="0 0 50 50" style={{ position: 'absolute', top: 0, left: 0 }}>
+                      <circle
+                        cx="25"
+                        cy="25"
+                        r="25"
+                        fill={colors.blackAndWhite.white}
+                      />
+                    </svg>
+                    {/* Background Circle */}
+                    <svg width="50" height="50" viewBox="0 0 50 50" style={{ position: 'absolute', top: 0, left: 0 }}>
+                      <circle
+                        cx="25"
+                        cy="25"
+                        r="18"
+                        fill="none"
+                        stroke="#F4EFE6"
+                        strokeWidth="3"
+                      />
+                    </svg>
+                    {/* Progress Arc (1/6 = 16.67% = 60 degrees) */}
+                    <svg width="50" height="50" viewBox="0 0 50 50" style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}>
+                      <circle
+                        cx="25"
+                        cy="25"
+                        r="18"
+                        fill="none"
+                        stroke="#15BF53"
+                        strokeWidth="3"
+                        strokeDasharray="113.1" /* 2 * PI * 18 = 113.1 */
+                        strokeDashoffset="94.25" /* 113.1 - (113.1 * 0.167) = 94.25 */
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    {/* Center Text */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1px'
+                    }}>
+                      <span style={{
+                        ...typography.styles.dataXS,
+                        fontWeight: 600,
+                        color: colors.blackAndWhite.black900
+                      }}>1</span>
+                      <span style={{
+                        ...typography.styles.dataXS,
+                        color: colors.blackAndWhite.black300
+                      }}>/6</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transaction Preview Cards */}
+              <div style={{
+                display: 'flex',
+                gap: '6px',
+                height: '230px'
+              }}>
+              {/* Card 1 */}
+              <div
+                className="transaction-preview-card"
+                style={{
+                  flex: 1,
+                  backgroundColor: colors.blackAndWhite.white,
+                  borderRadius: '10px',
+                  padding: '20px',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}>
+                {/* Text - Top Left */}
+                <div>
+                  <div style={{
+                    ...typography.styles.bodyL,
+                    color: colors.blackAndWhite.black900,
+                    marginBottom: '4px'
+                  }}>
+                    Create a Transaction Manually
+                  </div>
+                  <div style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    opacity: 0.5
+                  }}>
+                    Create a Transaction Manually
+                  </div>
+                </div>
+                {/* Bottom Row: Document Preview Box + Button */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '10px' }}>
+                  {/* Document Preview Box */}
+                  <div style={{
+                    backgroundColor: colors.contracts.dynamic.yellow200,
+                    borderRadius: '6px',
+                    padding: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '130px',
+                    height: '130px',
+                    flexShrink: 0
+                  }}>
+                    {/* Document Image */}
+                    <img
+                      src="/document.png"
+                      alt="Document"
+                      style={{
+                        height: '100%',
+                        width: 'auto'
+                      }}
+                    />
+                  </div>
+                  {/* Button - Bottom Right */}
+                  <div
+                    onClick={() => onNavigateToPage?.('reports-new-transaction-form')}
+                    style={{
+                      backgroundColor: colors.blackAndWhite.black900,
+                      border: 'none',
+                      borderRadius: '400px',
+                      padding: '6px 15px',
+                      fontSize: '10px',
+                      fontFamily: 'Söhne Mono',
+                      fontWeight: 600,
+                      letterSpacing: '1.2px',
+                      textTransform: 'uppercase',
+                      color: colors.blackAndWhite.white,
+                      cursor: 'pointer',
+                      flexShrink: 0
+                    }}>
+                    START
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2 */}
+              <div
+                className="transaction-preview-card"
+                style={{
+                  flex: 1,
+                  backgroundColor: colors.blackAndWhite.white,
+                  borderRadius: '10px',
+                  padding: '20px',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}>
+                {/* Text - Top Left */}
+                <div>
+                  <div style={{
+                    ...typography.styles.bodyL,
+                    color: colors.blackAndWhite.black900,
+                    marginBottom: '4px'
+                  }}>
+                    Extract Key Terms
+                  </div>
+                  <div style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    opacity: 0.5
+                  }}>
+                    Extract Key Terms
+                  </div>
+                </div>
+                {/* Bottom Row: Document Preview Box + Button */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '10px' }}>
+                  {/* Document Preview Box */}
+                  <div style={{
+                    backgroundColor: colors.contracts.dynamic.yellow200,
+                    borderRadius: '6px',
+                    padding: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '130px',
+                    height: '130px',
+                    flexShrink: 0
+                  }}>
+                    {/* Document Image */}
+                    <img
+                      src="/document.png"
+                      alt="Document"
+                      style={{
+                        height: '100%',
+                        width: 'auto'
+                      }}
+                    />
+                  </div>
+                  {/* Button - Bottom Right */}
+                  <div
+                    onClick={() => onNavigateToPage?.('reports-new-transaction-form')}
+                    style={{
+                      backgroundColor: colors.blackAndWhite.black900,
+                      border: 'none',
+                      borderRadius: '400px',
+                      padding: '6px 15px',
+                      fontSize: '10px',
+                      fontFamily: 'Söhne Mono',
+                      fontWeight: 600,
+                      letterSpacing: '1.2px',
+                      textTransform: 'uppercase',
+                      color: colors.blackAndWhite.white,
+                      cursor: 'pointer',
+                      flexShrink: 0
+                    }}>
+                    START
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+
+          {/* Explore Products Card - NEW */}
+          <div
+            className="quick-action-card explore-products-card"
+            style={{
+              position: 'relative',
+              boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.06)',
+              height: '390px',
+              borderRadius: borderRadius[16],
+              overflow: 'hidden',
+              cursor: 'pointer'
+            }}
+          >
+            {/* Video Background */}
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                zIndex: 0
+              }}
+            >
+              <source src="https://korra-ldgr.vercel.app/contact/contact-video.mp4" type="video/mp4" />
+            </video>
+
+            {/* Gradient Overlay - Black 900 starting from 50% height */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: `linear-gradient(to bottom, rgba(23, 33, 27, 0) 0%, rgba(23, 33, 27, 0) 50%, ${colors.blackAndWhite.black900} 100%)`,
+                zIndex: 1
+              }}
+            />
+
+            {/* Content Layer */}
+            <div style={{
+              position: 'relative',
+              zIndex: 2,
+              padding: '30px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start'
+            }}>
+              {/* Centered Watch Videos Button */}
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <button
+                  className="watch-videos-button"
+                  style={{
+                    position: 'relative',
+                    border: 'none',
+                    borderRadius: '300px',
+                    padding: '12px 24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    cursor: 'pointer',
+                    backgroundColor: 'transparent'
+                  }}>
+                  {/* Background that scales */}
+                  <div
+                    className="button-background"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: colors.blackAndWhite.white,
+                      borderRadius: '300px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      transition: 'transform 0.3s ease',
+                      zIndex: 0
+                    }}
+                  />
+                  {/* Content that stays same size */}
+                  <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <PlaySmall color={colors.marketplace.violet700} />
+                    <span style={{
+                      ...typography.styles.navS,
+                      color: colors.blackAndWhite.black900
+                    }}>
+                      WATCH VIDEOS
+                    </span>
+                  </div>
+                </button>
+              </div>
+
+              {/* Bottom Text - Left Aligned */}
+              <div style={{ textAlign: 'left', width: '100%' }}>
+                <h3 style={{
+                  ...typography.styles.subheadingM,
+                  color: colors.blackAndWhite.white,
+                  margin: '0 0 8px 0'
+                }}>
+                  Explore Products
+                </h3>
+                <p style={{
+                  ...typography.styles.bodyM,
+                  color: colors.blackAndWhite.white,
+                  opacity: 0.8,
+                  margin: 0
+                }}>
+                  Learn more about each apps
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Action Buttons */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
+        gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '20px',
         marginBottom: '60px'
       }}>
@@ -241,557 +684,8 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
         ))}
       </div>
 
-      {/* Quick Actions Section */}
-      <div style={{ marginBottom: spacing[48] }}>
-        {/* Section Label */}
-        <p style={{
-          fontFamily: 'Bradford LL',
-          fontSize: '12px',
-          fontWeight: 700,
-          fontStyle: 'italic',
-          lineHeight: 1.3,
-          letterSpacing: '-0.24px',
-          color: '#838985',
-          marginBottom: '16px'
-        }}>
-          Quick Actions
-        </p>
-
-        {/* Cards Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '20px'
-        }}>
-          {/* Transactions Card */}
-          <div
-            className="quick-action-card"
-            style={{
-              position: 'relative',
-              boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.06)',
-              height: '390px',
-              borderRadius: borderRadius[16]
-            }}
-          >
-            {/* Background Layer */}
-            <div
-              className="card-background-layer"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: colors.reports.blue700,
-                borderRadius: borderRadius[16],
-                zIndex: 0
-              }}
-            />
-
-            {/* Content Layer */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              padding: '16px',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              {/* Card Header */}
-              <div style={{
-                padding: '20px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start'
-              }}>
-                <div>
-                  <h3 style={{
-                    fontFamily: 'Bradford LL',
-                    fontSize: '33px',
-                    fontWeight: 500,
-                    lineHeight: 1.2,
-                    letterSpacing: '-1px',
-                    color: colors.blackAndWhite.black900,
-                    margin: 0
-                  }}>
-                    Transactions
-                  </h3>
-                  <p style={{
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    opacity: 0.5,
-                    margin: '3px 0 0 0'
-                  }}>
-                    You have 2 transaction peding
-                  </p>
-                </div>
-                <div
-                  onClick={() => onNavigateToPage?.('reports-transaction-management')}
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    flexShrink: 0
-                  }}
-                >
-                  {/* Background circle that scales */}
-                  <div
-                    className="arrow-button-background"
-                    style={{
-                      position: 'absolute',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      backgroundColor: colors.blackAndWhite.white,
-                      zIndex: 0
-                    }}
-                  />
-                  {/* Icon that stays the same size */}
-                  <div style={{ position: 'relative', zIndex: 1 }}>
-                    <S1ArrowRightMedium color={colors.blackAndWhite.black900} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Transaction Preview Cards */}
-              <div style={{
-                display: 'flex',
-                gap: '6px',
-                height: '230px'
-              }}>
-              {/* Card 1 */}
-              <div
-                className="transaction-preview-card"
-                style={{
-                  flex: 1,
-                  backgroundColor: colors.blackAndWhite.white,
-                  borderRadius: '10px',
-                  padding: '20px',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between'
-                }}>
-                <div
-                  onClick={() => onNavigateToPage?.('reports-new-transaction-form')}
-                  style={{
-                    position: 'absolute',
-                    top: '17px',
-                    right: '20px',
-                    border: `1px solid ${colors.blackAndWhite.black100}`,
-                    borderRadius: '400px',
-                    padding: '6px 15px',
-                    fontSize: '10px',
-                    fontFamily: 'Söhne Mono',
-                    fontWeight: 600,
-                    letterSpacing: '1.2px',
-                    textTransform: 'uppercase',
-                    color: colors.blackAndWhite.black900,
-                    cursor: 'pointer'
-                  }}>
-                  VIEW
-                </div>
-                <div style={{
-                  fontSize: '22px',
-                  fontFamily: 'Söhne',
-                  fontWeight: 400,
-                  lineHeight: 1.3,
-                  color: colors.blackAndWhite.black900,
-                  marginTop: '0px'
-                }}>
-                  15%
-                </div>
-                <div>
-                  <div style={{
-                    ...typography.styles.bodyL,
-                    color: colors.blackAndWhite.black900,
-                    marginBottom: '4px'
-                  }}>
-                    Blue Commercial Auto 2020
-                  </div>
-                  <div style={{
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    opacity: 0.5
-                  }}>
-                    Premium: $1,245,000
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2 */}
-              <div
-                className="transaction-preview-card"
-                style={{
-                  flex: 1,
-                  backgroundColor: colors.blackAndWhite.white,
-                  borderRadius: '10px',
-                  padding: '20px',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between'
-                }}>
-                <div
-                  onClick={() => onNavigateToPage?.('reports-new-transaction-form')}
-                  style={{
-                    position: 'absolute',
-                    top: '17px',
-                    right: '20px',
-                    border: `1px solid ${colors.blackAndWhite.black100}`,
-                    borderRadius: '400px',
-                    padding: '6px 15px',
-                    fontSize: '10px',
-                    fontFamily: 'Söhne Mono',
-                    fontWeight: 600,
-                    letterSpacing: '1.2px',
-                    textTransform: 'uppercase',
-                    color: colors.blackAndWhite.black900,
-                    cursor: 'pointer'
-                  }}>
-                  VIEW
-                </div>
-                <div style={{
-                  fontSize: '22px',
-                  fontFamily: 'Söhne',
-                  fontWeight: 400,
-                  lineHeight: 1.3,
-                  color: colors.blackAndWhite.black900,
-                  marginTop: '0px'
-                }}>
-                  28%
-                </div>
-                <div>
-                  <div style={{
-                    ...typography.styles.bodyL,
-                    color: colors.blackAndWhite.black900,
-                    marginBottom: '4px'
-                  }}>
-                    Green General Liability 2022
-                  </div>
-                  <div style={{
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    opacity: 0.5
-                  }}>
-                    Premium: $890,500
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
-          </div>
-
-          {/* Terms Extracted Card */}
-          <div
-            className="quick-action-card"
-            style={{
-              position: 'relative',
-              boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.06)',
-              height: '390px',
-              borderRadius: borderRadius[16]
-            }}
-          >
-            {/* Background Layer */}
-            <div
-              className="card-background-layer"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: '#FBDB6B',
-                borderRadius: borderRadius[16],
-                zIndex: 0
-              }}
-            />
-
-            {/* Content Layer */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              padding: '16px',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              {/* Card Header */}
-              <div style={{
-                padding: '20px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start'
-              }}>
-                <div>
-                  <h3 style={{
-                    fontFamily: 'Bradford LL',
-                    fontSize: '33px',
-                    fontWeight: 500,
-                    lineHeight: 1.2,
-                    letterSpacing: '-1px',
-                    color: colors.blackAndWhite.black900,
-                    margin: 0
-                  }}>
-                    Terms Extracted
-                  </h3>
-                  <p style={{
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    opacity: 0.5,
-                    margin: '3px 0 0 0'
-                  }}>
-                    You have 2 transaction peding
-                  </p>
-                </div>
-                <div
-                  onClick={() => onNavigateToPage?.('contracts-ai-extraction')}
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    flexShrink: 0
-                  }}
-                >
-                  {/* Background circle that scales */}
-                  <div
-                    className="arrow-button-background"
-                    style={{
-                      position: 'absolute',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      backgroundColor: colors.blackAndWhite.white,
-                      zIndex: 0
-                    }}
-                  />
-                  {/* Icon that stays the same size */}
-                  <div style={{ position: 'relative', zIndex: 1 }}>
-                    <S1ArrowRightMedium color={colors.blackAndWhite.black900} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Terms Preview */}
-              <div
-                className="document-preview"
-                style={{
-                  backgroundColor: colors.blackAndWhite.white,
-                  borderRadius: '10px',
-                  height: '230px',
-                  padding: '8px',
-                  display: 'flex',
-                  gap: '6px'
-                }}
-              >
-              {/* Document Preview */}
-              <div
-                style={{
-                  flex: '0 0 194px',
-                  backgroundColor: colors.contracts.dynamic.yellow200,
-                  borderRadius: '6px',
-                  padding: '17px',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                {/* Document Icon */}
-                <img
-                  src="/document.png"
-                  alt="Document"
-                  style={{
-                    width: '130px',
-                    height: '132px'
-                  }}
-                />
-              </div>
-
-              {/* Extracted Terms */}
-              <div style={{
-                flex: 1,
-                backgroundColor: colors.contracts.dynamic.yellow200,
-                borderRadius: '6px',
-                padding: '17px',
-                fontSize: '10px',
-                fontFamily: 'Söhne',
-                lineHeight: 1.3,
-                color: colors.blackAndWhite.black900
-              }}>
-                <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 600 }}>Ceding Insurer</span>
-                  <span style={{ textAlign: 'right' }}>Lofty nation Car</span>
-                </div>
-                <div style={{ borderTop: `1px solid ${colors.contracts.dynamic.yellow400}`, marginBottom: '10px' }} />
-                <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 600 }}>Product Line</span>
-                  <span style={{ textAlign: 'right' }}>Private Passenger Auto</span>
-                </div>
-                <div style={{ borderTop: `1px solid ${colors.contracts.dynamic.yellow400}`, marginBottom: '10px' }} />
-                <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 600 }}>Reinsurance Type</span>
-                  <span>Treaty</span>
-                </div>
-                <div style={{ borderTop: `1px solid ${colors.contracts.dynamic.yellow400}`, marginBottom: '10px' }} />
-                <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 600 }}>Quota Share Percent</span>
-                  <span>100%</span>
-                </div>
-                <div style={{ borderTop: `1px solid ${colors.contracts.dynamic.yellow400}`, marginBottom: '10px' }} />
-                <div>
-                  <div style={{ fontWeight: 600, marginBottom: '8px' }}>Subject Business</div>
-                  <div style={{ opacity: 0.7 }}>
-                    This Agreement is to indemnify the Company in respect of the liability that may accrue to the Company as a result...
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Watch Product Demos Section */}
-      <div style={{ marginBottom: spacing[48], marginTop: '60px' }}>
-        {/* Section Label */}
-        <p style={{
-          fontFamily: 'Bradford LL',
-          fontSize: '12px',
-          fontWeight: 700,
-          fontStyle: 'italic',
-          lineHeight: 1.3,
-          letterSpacing: '-0.24px',
-          color: '#838985',
-          marginBottom: '16px'
-        }}>
-          Watch Product Demos
-        </p>
-
-        {/* Video Cards Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '20px'
-        }}>
-          {[
-            { image: 'Contracts.png', label: 'Contracts', color: '#FBDB6B', iconColor: '#C5950B' },
-            { image: 'Marketplace.png', label: 'Marketplace', color: colors.marketplace.violet800, iconColor: colors.marketplace.violet800 },
-            { image: 'Reports.png', label: 'Reports', color: colors.reports.blue800, iconColor: colors.reports.blue800 },
-            { image: 'analytics.png', label: 'Analytics', color: colors.analytics.green800, iconColor: colors.analytics.green800 }
-          ].map((video, index) => (
-            <div key={index}>
-              {/* Video Thumbnail */}
-              <div
-                className={`video-thumbnail-${index}`}
-                style={{
-                  position: 'relative',
-                  height: '144px',
-                  borderRadius: borderRadius[8],
-                  overflow: 'hidden',
-                  cursor: 'pointer',
-                  backgroundColor: video.color
-                }}
-              >
-                {/* Background Image */}
-                <img
-                  src={`/${video.image}`}
-                  alt={video.label}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
-                  }}
-                />
-
-                {/* Dark Overlay */}
-                <div
-                  className="dark-overlay"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(23, 33, 27, 0.2)',
-                    transition: 'opacity 0.3s ease',
-                    pointerEvents: 'none'
-                  }}
-                />
-
-                {/* Play Button Overlay */}
-                <div style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '44px',
-                  height: '29px',
-                  backgroundColor: colors.blackAndWhite.white,
-                  borderRadius: borderRadius[8],
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                  zIndex: 1
-                }}>
-                  <PlaySmall color={video.iconColor} />
-                </div>
-              </div>
-
-              {/* Label and Duration */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginTop: '12px'
-              }}>
-                <span style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black900
-                }}>
-                  {video.label}
-                </span>
-                <span style={{
-                  ...typography.styles.bodyM,
-                  color: '#838985',
-                  textAlign: 'right'
-                }}>
-                  2:30
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Ask Korra AI Section */}
       <div style={{ marginTop: '60px' }}>
-        {/* Section Label */}
-        <p style={{
-          fontFamily: 'Bradford LL',
-          fontSize: '12px',
-          fontWeight: 700,
-          fontStyle: 'italic',
-          lineHeight: 1.3,
-          letterSpacing: '-0.24px',
-          color: '#838985',
-          marginBottom: '16px'
-        }}>
-          Ask Korra AI
-        </p>
-
         {/* Chat Section */}
         <div style={{
           backgroundColor: colors.contracts.dynamic.yellow200,
@@ -857,7 +751,7 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
         }}>
           {/* Upload Button */}
           <button style={{
-            backgroundColor: colors.contracts.dynamic.yellow300,
+            backgroundColor: colors.blackAndWhite.white,
             border: 'none',
             borderRadius: '300px',
             padding: '10px 20px',
@@ -868,7 +762,7 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
           }}>
             <span style={{
               ...typography.styles.bodyM,
-              color: '#838985'
+              color: colors.blackAndWhite.black900
             }}>
               Upload
             </span>

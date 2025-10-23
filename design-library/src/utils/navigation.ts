@@ -18,6 +18,7 @@ export type PageType =
   | 'analytics-valuation-dashboard'
   | 'analytics-valuation-configuration'
   | 'analytics-valuation-status'
+  | 'analytics-triangle'
   | 'marketplace-offerings';
 
 export interface NavigationHandler {
@@ -41,6 +42,8 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
     else if (itemId === 'analytics') {
       if (subitemId === 'valuation') {
         onNavigateToPage('analytics-valuation');
+      } else if (subitemId === 'triangle') {
+        onNavigateToPage('analytics-triangle');
       }
     }
     // Handle Reports navigation
@@ -110,6 +113,12 @@ export const createPageNavigationHandler = (
           console.log('Already on analytics valuation page');
         } else {
           onNavigateToPage('analytics-valuation');
+        }
+      } else if (subitemId === 'triangle') {
+        if (currentPage === 'analytics-triangle') {
+          console.log('Already on analytics triangle page');
+        } else {
+          onNavigateToPage('analytics-triangle');
         }
       }
     }
@@ -186,6 +195,7 @@ export const createPageNavigationHandler = (
 export const createBreadcrumbs = {
   analytics: {
     valuation: () => [{ label: 'Valuation', isActive: true }],
+    triangle: () => [{ label: 'Triangle', isActive: true }],
     dashboard: (programName: string, onNavigateToPage: NavigationHandler) => [
       { label: 'Valuation', onClick: () => onNavigateToPage('analytics-valuation'), isActive: false },
       { label: programName, isActive: true }

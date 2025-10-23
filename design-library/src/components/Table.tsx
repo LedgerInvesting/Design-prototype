@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { typography, borderRadius, shadows, useSemanticColors } from '../tokens';
+import { typography, borderRadius, shadows, useSemanticColors, colors } from '../tokens';
 import { SearchMedium, ChevronLeftSmall, ChevronRightSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
 import { ActionCell, ActionType } from './ActionCell';
@@ -37,8 +37,21 @@ export interface TableColumn {
   render?: (value: any, row: any) => React.ReactNode; // Custom render function
 }
 
+/**
+ * Table row data interface
+ * Supports both regular rows and grouped/collapsible rows
+ */
 export interface TableRow {
+  /** Dynamic data fields matching column keys */
   [key: string]: React.ReactNode;
+  /** Indicates this is a group header row (displays with chevron) */
+  isGroup?: boolean;
+  /** Name of the group (displayed in the group header row) */
+  groupName?: string;
+  /** Indicates this row belongs to a group (adds 22px left padding) */
+  isGroupChild?: boolean;
+  /** Whether the group is expanded (controls child row visibility) */
+  isExpanded?: boolean;
 }
 
 export type SortDirection = 'asc' | 'desc' | null;
@@ -47,6 +60,208 @@ export interface SortState {
   column: string | null;
   direction: SortDirection;
 }
+
+// Compact Table Header Component (Contracts/Transactions style)
+export interface CompactTableHeaderProps {
+  title?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  showSearch?: boolean;
+  currentPage?: number;
+  totalPages?: number;
+  totalItems?: number;
+  itemsPerPage?: number;
+  onPageChange?: (page: number) => void;
+  className?: string;
+}
+
+export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
+  title,
+  searchValue = '',
+  onSearchChange,
+  showSearch = true,
+  currentPage = 1,
+  totalPages = 1,
+  totalItems = 0,
+  itemsPerPage = 10,
+  onPageChange,
+  className = '',
+}) => {
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const colors = useSemanticColors();
+
+  const headerStyles: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0 16px',
+    height: '80px',
+    backgroundColor: colors.blackAndWhite.white,
+    borderTopLeftRadius: borderRadius[8],
+    borderTopRightRadius: borderRadius[8],
+    borderTop: `1px solid ${colors.theme.primary400}`,
+    borderLeft: `1px solid ${colors.theme.primary400}`,
+    borderRight: `1px solid ${colors.theme.primary400}`,
+    borderBottom: 'none',
+    boxSizing: 'border-box',
+  };
+
+  const leftSectionStyles: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  };
+
+  const rightSectionStyles: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+  };
+
+  const titleStyles: React.CSSProperties = {
+    ...typography.styles.subheadingM,
+    color: colors.blackAndWhite.black900,
+    margin: 0,
+  };
+
+  const searchContainerStyles: React.CSSProperties = {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: colors.theme.primary200,
+    borderRadius: borderRadius.absolute,
+    height: '30px',
+    width: isSearchExpanded ? '200px' : '58px',
+    padding: isSearchExpanded ? '4px 12px 4px 12px' : '4px 18px',
+    justifyContent: isSearchExpanded ? 'space-between' : 'flex-end',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+  };
+
+  const searchInputStyles: React.CSSProperties = {
+    border: 'none',
+    backgroundColor: 'transparent',
+    outline: 'none',
+    ...typography.styles.bodyM,
+    color: colors.blackAndWhite.black900,
+    width: isSearchExpanded ? '140px' : '0px',
+    padding: '0',
+    opacity: isSearchExpanded ? 1 : 0,
+    transition: 'all 0.3s ease',
+    cursor: 'text',
+  };
+
+  const searchIconStyles: React.CSSProperties = {
+    flexShrink: 0,
+    pointerEvents: 'none' as const,
+    transition: 'all 0.3s ease',
+  };
+
+  const documentsCountStyles: React.CSSProperties = {
+    ...typography.styles.captionS,
+    color: colors.blackAndWhite.black500,
+  };
+
+  const navButtonStyles: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '24px',
+    height: '24px',
+    border: 'none',
+    backgroundColor: 'transparent',
+    cursor: 'pointer',
+    padding: 0,
+    transition: 'opacity 0.2s ease',
+  };
+
+  const disabledNavButtonStyles: React.CSSProperties = {
+    ...navButtonStyles,
+    opacity: 0.3,
+    cursor: 'not-allowed',
+  };
+
+  const startItem = Math.min((currentPage - 1) * itemsPerPage + 1, totalItems);
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+  return (
+    <>
+      <style>
+        {`
+          .compact-search-input::placeholder {
+            color: ${colors.blackAndWhite.black500};
+            opacity: 1;
+          }
+        `}
+      </style>
+      <div style={headerStyles} className={className}>
+        {/* Left Section: Title + Search */}
+        <div style={leftSectionStyles}>
+          {title && <div style={titleStyles}>{title}</div>}
+          {showSearch && (
+            <div
+              style={searchContainerStyles}
+              onClick={() => {
+                if (!isSearchExpanded) {
+                  setIsSearchExpanded(true);
+                  setTimeout(() => {
+                    const input = document.querySelector('.compact-search-input') as HTMLInputElement;
+                    if (input) input.focus();
+                  }, 300);
+                }
+              }}
+            >
+              {isSearchExpanded && (
+                <input
+                  className="compact-search-input"
+                  style={searchInputStyles}
+                  type="text"
+                  placeholder="Type to search…"
+                  value={searchValue}
+                  onChange={(e) => onSearchChange?.(e.target.value)}
+                  onBlur={() => {
+                    if (!searchValue) {
+                      setIsSearchExpanded(false);
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              )}
+              <div style={searchIconStyles}>
+                <SearchMedium color={colors.blackAndWhite.black900} />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Section: Documents Count + Pagination */}
+        <div style={rightSectionStyles}>
+          <span style={documentsCountStyles}>
+            {startItem}-{endItem} of {totalItems} documents
+          </span>
+          <button
+            style={currentPage === 1 ? disabledNavButtonStyles : navButtonStyles}
+            onClick={() => currentPage > 1 && onPageChange?.(currentPage - 1)}
+            disabled={currentPage === 1}
+            type="button"
+            aria-label="Previous page"
+          >
+            <ChevronLeftSmall color={currentPage === 1 ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
+          </button>
+          <button
+            style={currentPage === totalPages ? disabledNavButtonStyles : navButtonStyles}
+            onClick={() => currentPage < totalPages && onPageChange?.(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            type="button"
+            aria-label="Next page"
+          >
+            <ChevronRightSmall color={currentPage === totalPages ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
 
 // Table Header Component
 export interface TableHeaderProps {
@@ -472,20 +687,46 @@ export const TableColumnHeader: React.FC<TableColumnHeaderProps> = ({
 };
 
 // Table Body Component
+/**
+ * Props for the TableBody component
+ */
 export interface TableBodyProps {
+  /** Array of column definitions */
   columns: TableColumn[];
+  /** Array of row data (can include group headers and children) */
   data: TableRow[];
+  /** Message to display when no data is available */
   emptyMessage?: string;
+  /** Callback when a group header is clicked (receives visible row index) */
+  onGroupToggle?: (rowIndex: number) => void;
 }
 
+/**
+ * TableBody Component
+ *
+ * Renders the table body with support for:
+ * - Multiple cell types (simple, document, action, status, custom)
+ * - Grouped and collapsible rows
+ * - Custom cell rendering
+ * - Empty state messaging
+ *
+ * @component
+ */
 export const TableBody: React.FC<TableBodyProps> = ({
   columns,
   data,
   emptyMessage = 'No data available',
+  onGroupToggle,
 }) => {
   const colors = useSemanticColors();
-  
-  // Function to render cell content based on cell type
+
+  /**
+   * Renders cell content based on column cell type
+   * @param column - Column configuration
+   * @param value - Cell value
+   * @param row - Full row data
+   * @returns Rendered cell content
+   */
   const renderCellContent = (column: TableColumn, value: React.ReactNode, row: any) => {
     // Check if column has a custom render function
     if (column.render) {
@@ -666,47 +907,103 @@ export const TableBody: React.FC<TableBodyProps> = ({
     );
   }
 
+  // Group header row styles (extracted for clarity)
+  const groupHeaderStyle: React.CSSProperties = {
+    height: '46px',
+    borderTop: `1px solid ${colors.theme.primary400}`,
+    borderBottom: `1px solid ${colors.theme.primary400}`,
+    cursor: 'pointer',
+  };
+
+  const groupCellStyle: React.CSSProperties = {
+    padding: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '7px',
+  };
+
+  const groupNameStyle: React.CSSProperties = {
+    ...typography.styles.bodyM,
+    color: colors.blackAndWhite.black700,
+    margin: 0,
+  };
+
   return (
     <tbody>
-      {data.map((row, rowIndex) => (
-        <tr key={rowIndex}>
-          {columns.map((column, columnIndex) => {
-            const isActionColumn = column.cellType === 'action';
-            
-            const isDocumentColumn = column.cellType === 'document';
+      {data.map((row, rowIndex) => {
+        // Render group header row with collapsible chevron
+        if (row.isGroup) {
+          const chevronStyle: React.CSSProperties = {
+            width: '12px',
+            height: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transform: row.isExpanded !== false ? 'rotate(90deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+          };
 
-            const baseCellStyle = {
-              ...cellStyles,
-              // Remove padding for document cells so DocumentCell can control its own padding
-              padding: isDocumentColumn ? '0' : cellStyles.padding,
-              textAlign: column.align || 'left',
-              width: column.width,
-              // Remove right border from last column to avoid double border
-              borderRight: columnIndex === columns.length - 1 ? 'none' : cellStyles.borderRight,
-              // Remove bottom border from last row to avoid double border
-              borderBottom: rowIndex === data.length - 1 ? 'none' : cellStyles.borderBottom,
-            };
-
-            const actionCellStyle = isActionColumn ? {
-              ...baseCellStyle,
-              position: 'sticky' as const,
-              right: 0,
-              zIndex: 10,
-              backgroundColor: colors.blackAndWhite.white, // Force white background
-              borderRight: `1px solid ${colors.theme.primary400}`, // Maintain right border
-              borderTop: rowIndex === 0 ? `1px solid ${colors.theme.primary400}` : 'none', // Top border only for first row
-              borderBottom: rowIndex === data.length - 1 ? 'none' : `1px solid ${colors.theme.primary400}`, // Bottom border except last row
-              boxShadow: `inset 1px 0 0 0 ${colors.theme.primary400}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
-            } : baseCellStyle;
-
-            return (
-              <td key={column.key} style={actionCellStyle}>
-                {renderCellContent(column, row[column.key], row)}
+          return (
+            <tr
+              key={rowIndex}
+              style={groupHeaderStyle}
+              onClick={() => onGroupToggle?.(rowIndex)}
+            >
+              <td colSpan={columns.length} style={groupCellStyle}>
+                <div style={chevronStyle}>
+                  <ChevronRightSmall color={colors.analytics.green900} />
+                </div>
+                <p style={groupNameStyle}>{row.groupName}</p>
               </td>
-            );
-          })}
-        </tr>
-      ))}
+            </tr>
+          );
+        }
+
+        // Calculate left padding for grouped child rows (22px indent)
+        const rowPaddingLeft = row.isGroupChild ? '22px' : '0';
+
+        return (
+          <tr key={rowIndex}>
+            {columns.map((column, columnIndex) => {
+              const isActionColumn = column.cellType === 'action';
+
+              const isDocumentColumn = column.cellType === 'document';
+
+              const baseCellStyle = {
+                ...cellStyles,
+                // Remove padding for document cells so DocumentCell can control its own padding
+                padding: isDocumentColumn ? '0' : cellStyles.padding,
+                // Add left padding for first column of grouped rows
+                paddingLeft: columnIndex === 0 && row.isGroupChild ? rowPaddingLeft : (isDocumentColumn ? '0' : cellStyles.padding),
+                textAlign: column.align || 'left',
+                width: column.width,
+                // Remove right border from last column to avoid double border
+                borderRight: columnIndex === columns.length - 1 ? 'none' : cellStyles.borderRight,
+                // Remove bottom border from last row to avoid double border
+                borderBottom: rowIndex === data.length - 1 ? 'none' : cellStyles.borderBottom,
+              };
+
+              const actionCellStyle = isActionColumn ? {
+                ...baseCellStyle,
+                position: 'sticky' as const,
+                right: 0,
+                zIndex: 10,
+                backgroundColor: colors.blackAndWhite.white, // Force white background
+                borderRight: `1px solid ${colors.theme.primary400}`, // Maintain right border
+                borderTop: rowIndex === 0 ? `1px solid ${colors.theme.primary400}` : 'none', // Top border only for first row
+                borderBottom: rowIndex === data.length - 1 ? 'none' : `1px solid ${colors.theme.primary400}`, // Bottom border except last row
+                boxShadow: `inset 1px 0 0 0 ${colors.theme.primary400}, ${shadows.base}`, // Use inset shadow for 1px left border + base shadow for elevation
+              } : baseCellStyle;
+
+              return (
+                <td key={column.key} style={actionCellStyle}>
+                  {renderCellContent(column, row[column.key], row)}
+                </td>
+              );
+            })}
+          </tr>
+        );
+      })}
     </tbody>
   );
 };
@@ -883,14 +1180,9 @@ export interface TableProps {
   data: TableRow[];
   title?: string;
   showHeader?: boolean;
-  showSearch?: boolean;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
-  showTabs?: boolean;
-  tabs?: string[];
-  activeTab?: string;
-  onTabChange?: (tab: string) => void;
-  showPagination?: boolean;
+  showSearch?: boolean;
   showFooterPagination?: boolean;
   currentPage?: number;
   totalPages?: number;
@@ -899,6 +1191,7 @@ export interface TableProps {
   onPageChange?: (page: number) => void;
   sortState?: SortState;
   onSort?: (column: string) => void;
+  onGroupToggle?: (rowIndex: number) => void;
   emptyMessage?: string;
   className?: string;
 }
@@ -908,14 +1201,9 @@ export const Table: React.FC<TableProps> = ({
   data,
   title,
   showHeader = true,
-  showSearch = true,
   searchValue = '',
   onSearchChange,
-  showTabs = true,
-  tabs = ['All', 'By Ceding Insurers', 'By Transaction name', 'By Year'],
-  activeTab = 'All',
-  onTabChange,
-  showPagination = true,
+  showSearch = true,
   showFooterPagination = false,
   currentPage = 1,
   totalPages = 1,
@@ -924,6 +1212,7 @@ export const Table: React.FC<TableProps> = ({
   onPageChange,
   sortState = { column: null, direction: null },
   onSort,
+  onGroupToggle,
   emptyMessage = 'No data available',
   className = '',
 }) => {
@@ -1207,16 +1496,11 @@ export const Table: React.FC<TableProps> = ({
   return (
     <div className={className} style={mainContainerStyles}>
       {showHeader && (
-        <TableHeader
+        <CompactTableHeader
           title={title}
-          showSearch={showSearch}
           searchValue={searchValue}
           onSearchChange={onSearchChange}
-          showTabs={showTabs}
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={onTabChange}
-          showPagination={showPagination}
+          showSearch={showSearch}
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalItems}
@@ -1254,6 +1538,7 @@ export const Table: React.FC<TableProps> = ({
             columns={adjustedColumns}
             data={sortedData}
             emptyMessage={emptyMessage}
+            onGroupToggle={onGroupToggle}
           />
         </table>
       </div>

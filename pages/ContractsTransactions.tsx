@@ -10,207 +10,11 @@ import { typography, borderRadius, spacing, useSemanticColors } from '@design-li
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
 
 // Import icons
-import { SearchMedium, ChevronLeftSmall, ChevronRightSmall, DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable, PlayTable } from '@design-library/icons';
+import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable, PlayTable } from '@design-library/icons';
 
 // Import modal
 import { NewTransactionModal } from './NewTransactionModal';
 import { BrandNewTransactionModal } from './BrandNewTransactionModal';
-
-// Custom Table Header Component for Contracts Transactions
-interface ContractsTableHeaderProps {
-  title: string;
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  currentPage?: number;
-  totalPages?: number;
-  totalItems?: number;
-  itemsPerPage?: number;
-  onPageChange?: (page: number) => void;
-}
-
-const ContractsTableHeader: React.FC<ContractsTableHeaderProps> = ({
-  title,
-  searchValue = '',
-  onSearchChange,
-  currentPage = 1,
-  totalPages = 1,
-  totalItems = 0,
-  itemsPerPage = 10,
-  onPageChange,
-}) => {
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const colors = useSemanticColors();
-
-  const headerStyles: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0 16px',
-    height: '80px',
-    backgroundColor: colors.blackAndWhite.white,
-    borderTopLeftRadius: borderRadius[8],
-    borderTopRightRadius: borderRadius[8],
-    borderTop: `1px solid ${colors.theme.primary400}`,
-    borderLeft: `1px solid ${colors.theme.primary400}`,
-    borderRight: `1px solid ${colors.theme.primary400}`,
-    borderBottom: 'none', // No bottom border to avoid double border with column headers
-    boxSizing: 'border-box',
-  };
-
-  const leftSectionStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-  };
-
-  const rightSectionStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-  };
-
-  const titleStyles: React.CSSProperties = {
-    ...typography.styles.subheadingM,
-    color: colors.blackAndWhite.black900,
-    margin: 0,
-  };
-
-  const searchContainerStyles: React.CSSProperties = {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: colors.theme.primary200,
-    borderRadius: borderRadius.absolute,
-    height: '30px',
-    width: isSearchExpanded ? '200px' : '58px',
-    padding: isSearchExpanded ? '4px 12px 4px 12px' : '4px 18px',
-    justifyContent: isSearchExpanded ? 'space-between' : 'flex-end',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer',
-  };
-
-  const searchInputStyles: React.CSSProperties = {
-    border: 'none',
-    backgroundColor: 'transparent',
-    outline: 'none',
-    ...typography.styles.bodyM,
-    color: colors.blackAndWhite.black900,
-    width: isSearchExpanded ? '140px' : '0px',
-    padding: '0',
-    opacity: isSearchExpanded ? 1 : 0,
-    transition: 'all 0.3s ease',
-    cursor: 'text',
-  };
-
-  const searchIconStyles: React.CSSProperties = {
-    flexShrink: 0,
-    pointerEvents: 'none' as const,
-    transition: 'all 0.3s ease',
-  };
-
-  const documentsCountStyles: React.CSSProperties = {
-    ...typography.styles.captionS,
-    color: colors.blackAndWhite.black500,
-  };
-
-  const navButtonStyles: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '24px',
-    height: '24px',
-    border: 'none',
-    backgroundColor: 'transparent',
-    cursor: 'pointer',
-    padding: 0,
-    transition: 'opacity 0.2s ease',
-  };
-
-  const disabledNavButtonStyles: React.CSSProperties = {
-    ...navButtonStyles,
-    opacity: 0.3,
-    cursor: 'not-allowed',
-  };
-
-  const startItem = Math.min((currentPage - 1) * itemsPerPage + 1, totalItems);
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
-
-  return (
-    <>
-      <style>
-        {`
-          .contracts-search-input::placeholder {
-            color: ${colors.blackAndWhite.black500};
-            opacity: 1;
-          }
-        `}
-      </style>
-      <div style={headerStyles}>
-        {/* Left Section: Title + Search */}
-        <div style={leftSectionStyles}>
-          <div style={titleStyles}>{title}</div>
-          <div
-            style={searchContainerStyles}
-            onClick={() => {
-              if (!isSearchExpanded) {
-                setIsSearchExpanded(true);
-                setTimeout(() => {
-                  const input = document.querySelector('.contracts-search-input') as HTMLInputElement;
-                  if (input) input.focus();
-                }, 300);
-              }
-            }}
-          >
-            {isSearchExpanded && (
-              <input
-                className="contracts-search-input"
-                style={searchInputStyles}
-                type="text"
-                placeholder="Type to search…"
-                value={searchValue}
-                onChange={(e) => onSearchChange?.(e.target.value)}
-                onBlur={() => {
-                  if (!searchValue) {
-                    setIsSearchExpanded(false);
-                  }
-                }}
-                onClick={(e) => e.stopPropagation()}
-              />
-            )}
-            <div style={searchIconStyles}>
-              <SearchMedium color={colors.blackAndWhite.black900} />
-            </div>
-          </div>
-        </div>
-
-        {/* Right Section: Documents Count + Pagination */}
-        <div style={rightSectionStyles}>
-          <span style={documentsCountStyles}>
-            {startItem}-{endItem} of {totalItems} documents
-          </span>
-          <button
-            style={currentPage === 1 ? disabledNavButtonStyles : navButtonStyles}
-            onClick={() => currentPage > 1 && onPageChange?.(currentPage - 1)}
-            disabled={currentPage === 1}
-            type="button"
-            aria-label="Previous page"
-          >
-            <ChevronLeftSmall color={currentPage === 1 ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
-          </button>
-          <button
-            style={currentPage === totalPages ? disabledNavButtonStyles : navButtonStyles}
-            onClick={() => currentPage < totalPages && onPageChange?.(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            type="button"
-            aria-label="Next page"
-          >
-            <ChevronRightSmall color={currentPage === totalPages ? colors.blackAndWhite.black400 : colors.blackAndWhite.black900} />
-          </button>
-        </div>
-      </div>
-    </>
-  );
-};
 
 // Utility function to automatically size columns based on content length
 const getOptimizedColumnWidth = (data: any[], columnKey: string, baseWidth: string = '200px'): string => {
@@ -618,8 +422,11 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
 
   return (
     <div style={tableContainerStyles}>
-      {/* Custom Table Header */}
-      <ContractsTableHeader
+      {/* Table with compact header variant */}
+      <Table
+        columns={tableColumns}
+        data={sampleData}
+        showHeader={true}
         title="Transactions"
         searchValue={searchValue}
         onSearchChange={setSearchValue}
@@ -628,24 +435,8 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
         totalItems={30}
         itemsPerPage={10}
         onPageChange={setCurrentPage}
+        showFooterPagination={false}
       />
-
-      {/* Table without default header */}
-      <div style={{
-        width: '100%',
-        overflowX: 'auto',
-        overflowY: 'visible',
-      }}>
-        <Table
-          columns={tableColumns}
-          data={sampleData}
-          showHeader={false}
-          showSearch={false}
-          showTabs={false}
-          showPagination={false}
-          showFooterPagination={false}
-        />
-      </div>
     </div>
   );
 };

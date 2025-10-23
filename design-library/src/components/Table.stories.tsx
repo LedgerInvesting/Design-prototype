@@ -475,43 +475,40 @@ export const HeaderShowcase: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Header with All Features</h3>
+        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header with Title and Pagination</h3>
         <Table
           columns={sampleColumns.slice(0, 3)}
           data={[]}
-          title="Policy Management"
+          title="Transactions"
           showHeader={true}
-          showSearch={true}
-          showFilter={true}
-          showPagination={true}
           currentPage={3}
           totalPages={10}
           totalItems={95}
           itemsPerPage={10}
         />
       </div>
-      
+
       <div>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Header with Search Only</h3>
+        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header with Title Only</h3>
         <Table
           columns={sampleColumns.slice(0, 3)}
           data={[]}
-          showHeader={true}
-          showSearch={true}
-          showFilter={false}
-          showPagination={false}
-        />
-      </div>
-      
-      <div>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Header with Pagination Only</h3>
-        <Table
-          columns={sampleColumns.slice(0, 3)}
-          data={[]}
+          title="Documents"
           showHeader={true}
           showSearch={false}
-          showFilter={false}
-          showPagination={true}
+          currentPage={1}
+          totalPages={5}
+          totalItems={47}
+          itemsPerPage={10}
+        />
+      </div>
+
+      <div>
+        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header Without Title</h3>
+        <Table
+          columns={sampleColumns.slice(0, 3)}
+          data={[]}
+          showHeader={true}
           currentPage={1}
           totalPages={5}
           totalItems={47}
@@ -523,7 +520,7 @@ export const HeaderShowcase: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Different header configurations showing various combinations of search, filter, and pagination controls.',
+        story: 'Compact table header with expandable search pill, title on the left, and simplified pagination with document count on the right. Features: 80px height, theme-aware borders, expandable search (collapses to icon-only), and left/right pagination arrows.',
       },
     },
   },
@@ -1546,6 +1543,242 @@ export const ColumnAlignment: Story = {
     docs: {
       description: {
         story: 'Demonstrates both `headerAlign` and `align` properties for comprehensive column alignment control. **headerAlign** controls the alignment of column header text and icons, while **align** controls the alignment of cell content. The first column uses left alignment for both headers and cells, while all other columns use right alignment. This creates a clean, professional layout where the primary identification column is left-aligned and data columns are right-aligned for better number readability.',
+      },
+    },
+  },
+};
+
+/**
+ * Grouped Rows Story
+ * Demonstrates the Table component's ability to display grouped/collapsible rows with hierarchical structure.
+ */
+export const GroupedRows: StoryObj<typeof Table> = {
+  render: (args) => {
+    const [tableData, setTableData] = useState<TableRow[]>([
+      // Ungrouped rows
+      {
+        id: 'standalone-1',
+        triangle: 'cd12345e-6789-012b-345c-6d7cd12345e-6789-01...',
+        lossReserve: '£8,542,190',
+        numberOfCells: '412',
+        portfolioVolume: '13.45%',
+      },
+      {
+        id: 'standalone-2',
+        triangle: 'ef56789a-bcde-f012-3456-789ef56789a-bcde-f0...',
+        lossReserve: '£6,321,450',
+        numberOfCells: '287',
+        portfolioVolume: '9.87%',
+      },
+      // Group 1: Aviation Treaty 2024
+      {
+        isGroup: true,
+        groupName: 'Aviation Treaty 2024',
+        isExpanded: true,
+      },
+      {
+        id: 'av-1',
+        triangle: 'ab09272d-8923-472b-925e-9c5ab09272d-8923-47...',
+        lossReserve: '£14,235,825',
+        numberOfCells: '356',
+        portfolioVolume: '21.34%',
+        isGroupChild: true,
+      },
+      {
+        id: 'av-2',
+        triangle: 'ab45678e-1234-567b-890c-1ab45678e-1234-56...',
+        lossReserve: '£12,150,320',
+        numberOfCells: '298',
+        portfolioVolume: '18.72%',
+        isGroupChild: true,
+      },
+      {
+        id: 'av-3',
+        triangle: 'ab78901f-2345-678c-901d-2ab78901f-2345-67...',
+        lossReserve: '£10,987,654',
+        numberOfCells: '321',
+        portfolioVolume: '16.89%',
+        isGroupChild: true,
+      },
+      // Group 2: Marine Treaty 2023
+      {
+        isGroup: true,
+        groupName: 'Marine Treaty 2023',
+        isExpanded: true,
+      },
+      {
+        id: 'mar-1',
+        triangle: 'cd12345g-3456-789d-012e-3cd12345g-3456-78...',
+        lossReserve: '£9,876,543',
+        numberOfCells: '342',
+        portfolioVolume: '15.67%',
+        isGroupChild: true,
+      },
+      {
+        id: 'mar-2',
+        triangle: 'cd45678h-4567-890e-123f-4cd45678h-4567-89...',
+        lossReserve: '£11,234,567',
+        numberOfCells: '389',
+        portfolioVolume: '17.23%',
+        isGroupChild: true,
+      },
+      // More ungrouped rows
+      {
+        id: 'standalone-3',
+        triangle: 'gh78901b-cdef-0123-4567-89gh78901b-cdef-01...',
+        lossReserve: '£7,654,321',
+        numberOfCells: '298',
+        portfolioVolume: '11.78%',
+      },
+      {
+        id: 'standalone-4',
+        triangle: 'kl56789d-0123-4567-89ab-cdkl56789d-0123-45...',
+        lossReserve: '£9,123,456',
+        numberOfCells: '367',
+        portfolioVolume: '14.56%',
+      },
+    ]);
+
+    const handleGroupToggle = (rowIndex: number) => {
+      setTableData(prevData => {
+        const newData = [...prevData];
+        const groupRow = newData[rowIndex];
+
+        if (groupRow.isGroup) {
+          groupRow.isExpanded = !groupRow.isExpanded;
+        }
+
+        return newData;
+      });
+    };
+
+    // Filter out collapsed group children
+    const visibleData = tableData.filter((row, index) => {
+      if (!row.isGroupChild) return true;
+
+      // Find the parent group
+      let groupIndex = index - 1;
+      while (groupIndex >= 0 && !tableData[groupIndex].isGroup) {
+        groupIndex--;
+      }
+
+      if (groupIndex >= 0 && tableData[groupIndex].isGroup) {
+        return tableData[groupIndex].isExpanded !== false;
+      }
+
+      return true;
+    });
+
+    return (
+      <Table
+        {...args}
+        data={visibleData}
+        onGroupToggle={handleGroupToggle}
+      />
+    );
+  },
+  args: {
+    columns: [
+      {
+        key: 'triangle',
+        title: 'Triangle',
+        icon: <DocumentTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '300px',
+        cellType: 'simple' as const,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        key: 'lossReserve',
+        title: 'Loss Reserve',
+        icon: <AmmountTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '150px',
+        align: 'right',
+        headerAlign: 'right',
+        cellType: 'simple' as const,
+      },
+      {
+        key: 'numberOfCells',
+        title: 'Number of Cells',
+        icon: <TextTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '150px',
+        align: 'right',
+        headerAlign: 'right',
+        cellType: 'simple' as const,
+      },
+      {
+        key: 'portfolioVolume',
+        title: 'Portfolio Volume',
+        icon: <TextTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '150px',
+        align: 'right',
+        headerAlign: 'right',
+        cellType: 'simple' as const,
+      },
+    ],
+    title: 'Grouped Triangles',
+    showHeader: true,
+    showSearch: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `Demonstrates grouped and collapsible rows in the Table component.
+
+**Key Features:**
+- **Group Header Rows**: Display folder-like group headers with chevron icons
+- **Collapsible Groups**: Click the chevron to expand/collapse grouped rows
+- **Visual Hierarchy**: Child rows have 39px extra left padding to show they belong to a group
+- **Mixed Structure**: Supports both grouped and ungrouped rows in the same table
+- **Analytics Theme**: Chevron uses analytics green900 color for brand consistency
+
+**Implementation:**
+\`\`\`tsx
+const [tableData, setTableData] = useState([
+  // Ungrouped row
+  { id: '1', triangle: 'abc...', lossReserve: '£8,542,190' },
+
+  // Group header
+  { isGroup: true, groupName: 'Aviation Treaty 2024', isExpanded: true },
+
+  // Grouped children
+  { id: '2', triangle: 'def...', lossReserve: '£14,235,825', isGroupChild: true },
+  { id: '3', triangle: 'ghi...', lossReserve: '£12,150,320', isGroupChild: true },
+]);
+
+const handleGroupToggle = (rowIndex: number) => {
+  setTableData(prevData => {
+    const newData = [...prevData];
+    if (newData[rowIndex].isGroup) {
+      newData[rowIndex].isExpanded = !newData[rowIndex].isExpanded;
+    }
+    return newData;
+  });
+};
+
+// Filter collapsed children
+const visibleData = tableData.filter((row, index) => {
+  if (!row.isGroupChild) return true;
+  // Find parent group and check if expanded
+  let groupIndex = index - 1;
+  while (groupIndex >= 0 && !tableData[groupIndex].isGroup) {
+    groupIndex--;
+  }
+  return tableData[groupIndex]?.isExpanded !== false;
+});
+
+<Table data={visibleData} onGroupToggle={handleGroupToggle} />
+\`\`\`
+
+**Row Properties:**
+- \`isGroup: true\` - Marks a row as a group header
+- \`groupName: string\` - Name displayed in the group header
+- \`isExpanded: boolean\` - Controls whether the group is expanded
+- \`isGroupChild: true\` - Marks a row as belonging to a group (adds left padding)`,
       },
     },
   },

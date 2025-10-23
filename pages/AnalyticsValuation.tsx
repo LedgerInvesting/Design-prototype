@@ -190,11 +190,11 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
               premium: '€15,600,000'
             }
           ]}
-          showSearch={true}
-          searchPlaceholder="Search configurations..."
-          showTabs={false}
+          showHeader={true}
+          title="Valuations"
           itemsPerPage={10}
           totalItems={80}
+          totalPages={8}
           currentPage={1}
           onPageChange={(page) => console.log('Page changed to:', page)}
         />
