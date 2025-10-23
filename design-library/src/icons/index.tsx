@@ -396,9 +396,19 @@ export const EraserSmall: React.FC<SmallIconProps> = ({
     </svg>
 );
 
-export const ExpandSmall: React.FC<SmallIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const CollapseSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M10.6295 1.35485L7.38388 4.60046M7.38388 4.60046L7.38388 0.367154M7.38388 4.60046L11.6172 4.60046" stroke={color} strokeWidth="1.4"/>
+    <path d="M1.51301 10.5192L4.68058 7.35164M4.68058 7.35164L4.68058 11.5849M4.68058 7.35164L0.447266 7.35164" stroke={color} strokeWidth="1.4"/>
+  </svg>
+);
+
+export const ExpandSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M7.28359 5.49562L10.5292 2.25M10.5292 2.25V6.48331M10.5292 2.25H6.2959" stroke={color} strokeWidth="1.4"/>
@@ -1657,6 +1667,7 @@ export const icons = {
     circledCheck: CircledCheckSmall,
     circledX: CircledXSmall,
     close: CloseSmall,
+    collapse: CollapseSmall,
     config: ConfigSmall,
     document: DocumentSmall,
     download: DownloadSmall,

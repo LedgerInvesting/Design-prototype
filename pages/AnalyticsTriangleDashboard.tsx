@@ -4,7 +4,7 @@ import { Button, DashboardCard } from '@design-library/components';
 import { typography, borderRadius, useSemanticColors } from '@design-library/tokens';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
-import { ChevronRightSmall, AddMedium, CardsGraph, DownloadMedium } from '@design-library/icons';
+import { ChevronRightSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall } from '@design-library/icons';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -52,6 +52,8 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const colors = useSemanticColors();
   const [selectedChart1, setSelectedChart1] = useState('data-completeness');
   const [selectedChart2, setSelectedChart2] = useState('right-edge');
+  const [isCard1Collapsed, setIsCard1Collapsed] = useState(false);
+  const [isCard2Collapsed, setIsCard2Collapsed] = useState(false);
 
   // Data Completeness chart data - triangular pattern
   // Y-axis: 07-23 (index 0, top) to 04-24 (index 9, bottom)
@@ -419,7 +421,13 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           actions={[
             {
               type: 'icon',
-              icon: <DownloadMedium />,
+              icon: <ConfigSmall />,
+              onClick: () => console.log(`Configuring ${selectedChart1} chart parameters...`),
+              color: 'primary200'
+            },
+            {
+              type: 'icon',
+              icon: <DownloadSmall />,
               onClick: () => console.log(`Downloading ${selectedChart1} chart...`),
               color: 'primary200'
             }
@@ -446,7 +454,13 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           actions={[
             {
               type: 'icon',
-              icon: <DownloadMedium />,
+              icon: <ConfigSmall />,
+              onClick: () => console.log(`Configuring ${selectedChart2} chart parameters...`),
+              color: 'primary200'
+            },
+            {
+              type: 'icon',
+              icon: <DownloadSmall />,
               onClick: () => console.log(`Downloading ${selectedChart2} chart...`),
               color: 'primary200'
             }
@@ -455,6 +469,18 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         >
           {renderChart(selectedChart2)}
         </DashboardCard>
+
+        {/* Add Another Graph Button */}
+        <Button
+          variant="tertiary"
+          onClick={() => console.log('Add another graph clicked')}
+          style={{
+            width: '100%',
+            height: '44px'
+          }}
+        >
+          Add another Graph
+        </Button>
       </div>
     </Layout>
   );
