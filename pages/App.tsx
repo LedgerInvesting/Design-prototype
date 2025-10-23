@@ -14,6 +14,7 @@ import { AnalyticsValuationDashboard } from './AnalyticsValuationDashboard';
 import { AnalyticsValuationConfiguration } from './AnalyticsValuationConfiguration';
 import { AnalyticsValuationStatus } from './AnalyticsValuationStatus';
 import { AnalyticsTriangle } from './AnalyticsTriangle';
+import { AnalyticsTriangleDashboard } from './AnalyticsTriangleDashboard';
 import { ReportsBDXUpload } from './ReportsBDXUpload';
 import { MarketplaceOfferings } from './MarketplaceOfferings';
 import ReportsInsightsProgramDetails from './ReportsInsightsProgramDetails';
@@ -23,7 +24,7 @@ import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-ai-extraction' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-triangle' | 'reports-bdx-upload' | 'marketplace-offerings';
+type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-ai-extraction' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'marketplace-offerings';
 
 // Inner component that uses settings
 function AppContent() {
@@ -42,6 +43,7 @@ function AppContent() {
   const [valuationData, setValuationData] = useState<any>(null);
   const [renewalData, setRenewalData] = useState<any>(null);
   const [programDetailsData, setProgramDetailsData] = useState<any>(null);
+  const [triangleData, setTriangleData] = useState<any>(null);
 
   // Listen to browser back/forward buttons
   useEffect(() => {
@@ -69,6 +71,9 @@ function AppContent() {
       } else if (page === 'reports-insights-program-details') {
         console.log('Setting programDetailsData:', data);
         setProgramDetailsData(data);
+      } else if (page === 'analytics-triangle-dashboard') {
+        console.log('Setting triangleData:', data);
+        setTriangleData(data);
       } else {
         setValuationData(data);
       }
@@ -111,6 +116,8 @@ function AppContent() {
         return <AnalyticsValuationStatus onNavigateToPage={setPage} />;
       case 'analytics-triangle':
         return <AnalyticsTriangle onNavigateToPage={setPage} />;
+      case 'analytics-triangle-dashboard':
+        return <AnalyticsTriangleDashboard onNavigateToPage={setPage} triangleName={triangleData?.triangleName} />;
       case 'reports-bdx-upload':
         return <ReportsBDXUpload onNavigateToPage={setPage} onInboxClick={() => console.log('Inbox clicked')} />;
       case 'marketplace-offerings':
@@ -122,7 +129,7 @@ function AppContent() {
 
   // Determine theme based on current page
   const getThemeForPage = (page: PageType): 'reports' | 'analytics' | 'marketplace' | 'contracts' => {
-    if (page === 'analytics-valuation' || page === 'analytics-valuation-dashboard' || page === 'analytics-valuation-configuration' || page === 'analytics-valuation-status' || page === 'analytics-triangle') {
+    if (page === 'analytics-valuation' || page === 'analytics-valuation-dashboard' || page === 'analytics-valuation-configuration' || page === 'analytics-valuation-status' || page === 'analytics-triangle' || page === 'analytics-triangle-dashboard') {
       return 'analytics';
     }
     if (page === 'marketplace-offerings') {

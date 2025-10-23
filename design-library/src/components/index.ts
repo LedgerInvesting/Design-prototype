@@ -12,7 +12,7 @@ export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
 
 export { DashboardCard } from './DashboardCard';
-export type { DashboardCardProps } from './DashboardCard';
+export type { DashboardCardProps, DashboardCardAction, DashboardCardDropdown } from './DashboardCard';
 
 // Form Components
 export { Input } from './Input';

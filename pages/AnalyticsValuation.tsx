@@ -19,6 +19,14 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
   const [isModalOpen, setIsModalOpen] = useState(false);
   const newValuationButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Customize columns state - start with all data columns visible (excluding first column)
+  const [visibleColumns, setVisibleColumns] = useState([
+    'treatyYear',
+    'insuranceLossRatio',
+    'lineOfBusiness',
+    'premium'
+  ]);
+
   const handleNewValuationClick = () => {
     setIsModalOpen(true);
   };
@@ -31,6 +39,14 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
     console.log('Creating valuation with data:', formData);
     // Handle valuation creation logic here
     setIsModalOpen(false);
+  };
+
+  const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+    if (visible) {
+      setVisibleColumns([...visibleColumns, columnKey]);
+    } else {
+      setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+    }
   };
 
   return (
@@ -192,6 +208,9 @@ export const AnalyticsValuation: React.FC<AnalyticsValuationProps> = ({ onNaviga
           ]}
           showHeader={true}
           title="Valuations"
+          showCustomizeColumns={true}
+          visibleColumns={visibleColumns}
+          onColumnVisibilityChange={handleColumnVisibilityChange}
           itemsPerPage={10}
           totalItems={80}
           totalPages={8}

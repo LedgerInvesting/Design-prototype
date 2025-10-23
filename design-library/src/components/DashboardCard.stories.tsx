@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
 import { DashboardCard } from './DashboardCard';
-import { CardsText, CardsGraph } from '../icons';
+import { CardsText, CardsGraph, DownloadMedium, SettingsMedium, ReloadMedium, ListMedium } from '../icons';
 
 const meta: Meta<typeof DashboardCard> = {
   title: 'Components/DashboardCard',
@@ -223,6 +224,247 @@ export const SideBySideLayout: Story = {
     docs: {
       description: {
         story: 'Demonstrates how cards with different content heights automatically match each other when displayed side by side.'
+      }
+    }
+  }
+};
+
+// Custom Button Icons - showing the new actions prop with icon buttons
+export const CustomButtonIcons: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* Single Icon Button */}
+      <DashboardCard
+        title="Single Icon Button"
+        icon={<CardsGraph />}
+        actions={[
+          {
+            type: 'icon',
+            icon: <DownloadMedium />,
+            onClick: () => alert('Download clicked!'),
+            color: 'primary200'
+          }
+        ]}
+        width="100%"
+      >
+        <div style={{ padding: '20px 30px' }}>
+          <div style={{ fontSize: '32px', fontWeight: 700 }}>$1,234,567</div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>Card with single icon button</div>
+        </div>
+      </DashboardCard>
+
+      {/* Two Icon Buttons */}
+      <DashboardCard
+        title="Two Icon Buttons"
+        icon={<CardsText />}
+        actions={[
+          {
+            type: 'icon',
+            icon: <ReloadMedium />,
+            onClick: () => alert('Reload clicked!'),
+            color: 'primary200'
+          },
+          {
+            type: 'icon',
+            icon: <SettingsMedium />,
+            onClick: () => alert('Settings clicked!'),
+            color: 'primary200'
+          }
+        ]}
+        width="100%"
+      >
+        <div style={{ padding: '20px 30px' }}>
+          <div style={{ fontSize: '32px', fontWeight: 700 }}>42</div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>Card with two icon buttons</div>
+        </div>
+      </DashboardCard>
+
+      {/* Three Icon Buttons */}
+      <DashboardCard
+        title="Three Icon Buttons"
+        icon={<CardsGraph />}
+        actions={[
+          {
+            type: 'icon',
+            icon: <DownloadMedium />,
+            onClick: () => alert('Download clicked!'),
+            color: 'primary200'
+          },
+          {
+            type: 'icon',
+            icon: <SettingsMedium />,
+            onClick: () => alert('Settings clicked!'),
+            color: 'primary200'
+          },
+          {
+            type: 'icon',
+            icon: <ListMedium />,
+            onClick: () => alert('More options clicked!'),
+            color: 'primary200'
+          }
+        ]}
+        width="100%"
+      >
+        <div style={{ padding: '20px 30px' }}>
+          <div style={{ fontSize: '32px', fontWeight: 700 }}>+12.5%</div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>Card with three icon buttons</div>
+        </div>
+      </DashboardCard>
+
+      {/* Mixed: Text + Icon Button */}
+      <DashboardCard
+        title="Mixed Buttons"
+        icon={<CardsText />}
+        actions={[
+          {
+            type: 'text',
+            label: 'Export',
+            onClick: () => alert('Export clicked!'),
+            variant: 'secondary'
+          },
+          {
+            type: 'icon',
+            icon: <ReloadMedium />,
+            onClick: () => alert('Reload clicked!'),
+            color: 'primary200'
+          }
+        ]}
+        width="100%"
+      >
+        <div style={{ padding: '20px 30px' }}>
+          <div style={{ fontSize: '32px', fontWeight: 700 }}>$856,234</div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>Card with mixed button types</div>
+        </div>
+      </DashboardCard>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the new actions prop that allows 1-3 buttons (icon or text) in the card header.'
+      }
+    }
+  }
+};
+
+// Chart Version - showing dropdown variant for switching charts
+export const ChartVersion: Story = {
+  render: () => {
+    const ChartCard = () => {
+      const [selectedChart, setSelectedChart] = useState('revenue');
+
+      const chartOptions = [
+        { value: 'revenue', label: 'Revenue Chart' },
+        { value: 'profit', label: 'Profit Chart' },
+        { value: 'expenses', label: 'Expenses Chart' },
+        { value: 'growth', label: 'Growth Chart' }
+      ];
+
+      const renderChart = () => {
+        switch (selectedChart) {
+          case 'revenue':
+            return (
+              <div style={{ padding: '20px 30px' }}>
+                <div style={{ height: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: '48px', fontWeight: 700, color: '#3b82f6' }}>$1,234,567</div>
+                  <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Revenue</div>
+                  <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+                    <div>
+                      <div style={{ fontSize: '20px', fontWeight: 600 }}>$856,234</div>
+                      <div style={{ fontSize: '12px', color: '#6b7280' }}>Q1 2024</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '20px', fontWeight: 600 }}>$378,333</div>
+                      <div style={{ fontSize: '12px', color: '#6b7280' }}>Q2 2024</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          case 'profit':
+            return (
+              <div style={{ padding: '20px 30px' }}>
+                <div style={{ height: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: '48px', fontWeight: 700, color: '#10b981' }}>$456,789</div>
+                  <div style={{ fontSize: '14px', color: '#6b7280' }}>Net Profit</div>
+                  <div style={{ fontSize: '16px', fontWeight: 500, color: '#10b981', marginTop: '20px' }}>
+                    +18.2% margin increase
+                  </div>
+                </div>
+              </div>
+            );
+          case 'expenses':
+            return (
+              <div style={{ padding: '20px 30px' }}>
+                <div style={{ height: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: '48px', fontWeight: 700, color: '#ef4444' }}>$777,778</div>
+                  <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Expenses</div>
+                  <div style={{ fontSize: '16px', fontWeight: 500, color: '#6b7280', marginTop: '20px' }}>
+                    Operating costs breakdown available
+                  </div>
+                </div>
+              </div>
+            );
+          case 'growth':
+            return (
+              <div style={{ padding: '20px 30px' }}>
+                <div style={{ height: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: '48px', fontWeight: 700, color: '#8b5cf6' }}>+23.5%</div>
+                  <div style={{ fontSize: '14px', color: '#6b7280' }}>Year over Year Growth</div>
+                  <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+                    <div>
+                      <div style={{ fontSize: '20px', fontWeight: 600, color: '#10b981' }}>+15%</div>
+                      <div style={{ fontSize: '12px', color: '#6b7280' }}>Customer Growth</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '20px', fontWeight: 600, color: '#3b82f6' }}>+32%</div>
+                      <div style={{ fontSize: '12px', color: '#6b7280' }}>Revenue Growth</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          default:
+            return null;
+        }
+      };
+
+      return (
+        <DashboardCard
+          titleDropdown={{
+            options: chartOptions,
+            value: selectedChart,
+            onChange: (value) => setSelectedChart(value),
+            placeholder: 'Select a chart'
+          }}
+          icon={<CardsGraph />}
+          actions={[
+            {
+              type: 'icon',
+              icon: <DownloadMedium />,
+              onClick: () => alert(`Downloading ${selectedChart} chart...`),
+              color: 'primary200'
+            },
+            {
+              type: 'icon',
+              icon: <ReloadMedium />,
+              onClick: () => alert(`Reloading ${selectedChart} data...`),
+              color: 'primary200'
+            }
+          ]}
+          width="100%"
+        >
+          {renderChart()}
+        </DashboardCard>
+      );
+    };
+
+    return <ChartCard />;
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the dropdown title variant that allows users to switch between different views/charts dynamically.'
       }
     }
   }

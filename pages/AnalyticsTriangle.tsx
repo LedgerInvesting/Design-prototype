@@ -54,6 +54,17 @@ const filterVisibleRows = (tableData: any[]) => {
 export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
 
+  // Customize columns state - start with all data columns visible (excluding first column)
+  const [visibleColumns, setVisibleColumns] = useState([
+    'lossReserve',
+    'numberOfCells',
+    'portfolioVolume',
+    'expectedPeriods',
+    'evaluationDates',
+    'developmentLags',
+    'sourceNotes'
+  ]);
+
   // Table data with grouped and ungrouped rows
   const [tableData, setTableData] = useState([
     // Ungrouped triangle rows (normal padding)
@@ -243,6 +254,14 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
     },
   ]);
 
+  const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+    if (visible) {
+      setVisibleColumns([...visibleColumns, columnKey]);
+    } else {
+      setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+    }
+  };
+
   /**
    * Handle group toggle (expand/collapse)
    * Finds the actual group in tableData using the visible row index and groupName
@@ -310,6 +329,9 @@ Import and export triangles in a variety of formats."
           <Table
             showHeader={true}
             title="Triangles"
+            showCustomizeColumns={true}
+            visibleColumns={visibleColumns}
+            onColumnVisibilityChange={handleColumnVisibilityChange}
             currentPage={1}
             totalPages={3}
             totalItems={15}
@@ -328,6 +350,10 @@ Import and export triangles in a variety of formats."
                 hoverIcon: 'open',
                 onDownload: (triangleId: string) => {
                   console.log('Opening triangle:', triangleId);
+                  // Navigate to triangle dashboard with triangle data
+                  if (onNavigateToPage) {
+                    onNavigateToPage('analytics-triangle-dashboard', { triangleName: triangleId });
+                  }
                 }
               },
               {

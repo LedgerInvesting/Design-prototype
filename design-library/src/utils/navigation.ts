@@ -19,6 +19,7 @@ export type PageType =
   | 'analytics-valuation-configuration'
   | 'analytics-valuation-status'
   | 'analytics-triangle'
+  | 'analytics-triangle-dashboard'
   | 'marketplace-offerings';
 
 export interface NavigationHandler {
@@ -196,6 +197,10 @@ export const createBreadcrumbs = {
   analytics: {
     valuation: () => [{ label: 'Valuation', isActive: true }],
     triangle: () => [{ label: 'Triangle', isActive: true }],
+    triangleDashboard: (triangleName: string, onNavigateToPage: NavigationHandler) => [
+      { label: 'Triangle', onClick: () => onNavigateToPage('analytics-triangle'), isActive: false },
+      { label: triangleName, isActive: true }
+    ],
     dashboard: (programName: string, onNavigateToPage: NavigationHandler) => [
       { label: 'Valuation', onClick: () => onNavigateToPage('analytics-valuation'), isActive: false },
       { label: programName, isActive: true }

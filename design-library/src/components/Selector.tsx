@@ -24,6 +24,8 @@ export interface SelectorProps {
   id?: string;
   /** Value for the selector (used in radio groups) */
   value?: string;
+  /** Size of the checkbox/radio (default: 18) */
+  size?: number;
 }
 
 export const Selector: React.FC<SelectorProps> = ({
@@ -37,6 +39,7 @@ export const Selector: React.FC<SelectorProps> = ({
   name,
   id,
   value,
+  size = 18,
 }) => {
   const [internalChecked, setInternalChecked] = useState(defaultChecked);
   const colors = useSemanticColors();
@@ -66,8 +69,8 @@ export const Selector: React.FC<SelectorProps> = ({
   // Selector visual styles based on variant and state
   const getSelectorStyles = () => {
     const baseStyles = {
-      width: '18px',
-      height: '18px',
+      width: `${size}px`,
+      height: `${size}px`,
       borderRadius: variant === 'radio' ? borderRadius.absolute : borderRadius[4],
       border: '1px solid',
       display: 'flex',
@@ -106,10 +109,11 @@ export const Selector: React.FC<SelectorProps> = ({
   };
 
   // Checkmark icon (used for both checkbox and radio when selected)
+  const checkmarkSize = Math.round(size * 0.67); // 67% of the selector size
   const CheckmarkIcon = () => (
     <svg
-      width="12"
-      height="12"
+      width={checkmarkSize}
+      height={checkmarkSize}
       viewBox="0 0 12 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

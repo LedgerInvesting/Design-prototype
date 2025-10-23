@@ -112,6 +112,12 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
   const [currentRowId, setCurrentRowId] = useState<string | null>(null);
   const [currentTriangleIndex, setCurrentTriangleIndex] = useState<number | null>(null);
 
+  // Customize columns state - start with all data columns visible (excluding first column)
+  const [visibleColumns, setVisibleColumns] = useState([
+    'triangles',
+    'officialStatus',
+  ]);
+
   // Sample data for the table
   const [tableData, setTableData] = useState([
     {
@@ -367,6 +373,14 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
     setCurrentTriangleIndex(null);
   };
 
+  const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+    if (visible) {
+      setVisibleColumns([...visibleColumns, columnKey]);
+    } else {
+      setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+    }
+  };
+
   const columns = [
     {
       key: 'evaluationDate',
@@ -617,7 +631,11 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         columns={columns}
         data={tableData}
         showHeader={true}
+        title="Valuation Status"
         showTabs={false}
+        showCustomizeColumns={true}
+        visibleColumns={visibleColumns}
+        onColumnVisibilityChange={handleColumnVisibilityChange}
         showPagination={true}
         showFooterPagination={true}
         currentPage={1}

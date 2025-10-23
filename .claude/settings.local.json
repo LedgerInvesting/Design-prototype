@@ -77,7 +77,8 @@
       "Bash(netstat:*)",
       "Bash(findstr:*)",
       "WebFetch(domain:korra-ldgr.vercel.app)",
-      "mcp__figma-dev-mode-mcp-server__get_design_context"
+      "mcp__figma-dev-mode-mcp-server__get_design_context",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

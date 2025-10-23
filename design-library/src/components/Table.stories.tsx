@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Table, TableColumn, TableRow } from './Table';
 import { StatusWarning, StatusError, StatusSuccess } from '../icons';
 import { Chips, Status, CustomCell } from './';
@@ -472,55 +472,94 @@ export const EmptyTable: Story = {
 
 // Header only showcase
 export const HeaderShowcase: Story = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header with Title and Pagination</h3>
-        <Table
-          columns={sampleColumns.slice(0, 3)}
-          data={[]}
-          title="Transactions"
-          showHeader={true}
-          currentPage={3}
-          totalPages={10}
-          totalItems={95}
-          itemsPerPage={10}
-        />
-      </div>
+  render: () => {
+    const [visibleColumns1, setVisibleColumns1] = React.useState(['name', 'date', 'amount']);
+    const [visibleColumns2, setVisibleColumns2] = React.useState(['name', 'date', 'amount']);
+    const [visibleColumns3, setVisibleColumns3] = React.useState(['name', 'date', 'amount']);
 
-      <div>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header with Title Only</h3>
-        <Table
-          columns={sampleColumns.slice(0, 3)}
-          data={[]}
-          title="Documents"
-          showHeader={true}
-          showSearch={false}
-          currentPage={1}
-          totalPages={5}
-          totalItems={47}
-          itemsPerPage={10}
-        />
-      </div>
+    const headerColumns = [
+      { key: 'name', title: 'Name', width: '200px', cellType: 'simple' as const },
+      { key: 'date', title: 'Date', width: '150px', cellType: 'simple' as const },
+      { key: 'amount', title: 'Amount', width: '150px', cellType: 'simple' as const },
+    ];
 
-      <div>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header Without Title</h3>
-        <Table
-          columns={sampleColumns.slice(0, 3)}
-          data={[]}
-          showHeader={true}
-          currentPage={1}
-          totalPages={5}
-          totalItems={47}
-          itemsPerPage={10}
-        />
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div>
+          <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header with Title, Search, and Customize Columns</h3>
+          <Table
+            columns={headerColumns}
+            data={[]}
+            title="Transactions"
+            showHeader={true}
+            showCustomizeColumns={true}
+            visibleColumns={visibleColumns1}
+            onColumnVisibilityChange={(key, visible) => {
+              if (visible) {
+                setVisibleColumns1([...visibleColumns1, key]);
+              } else {
+                setVisibleColumns1(visibleColumns1.filter(k => k !== key));
+              }
+            }}
+            currentPage={3}
+            totalPages={10}
+            totalItems={95}
+            itemsPerPage={10}
+          />
+        </div>
+
+        <div>
+          <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header with Customize Columns (No Title)</h3>
+          <Table
+            columns={headerColumns}
+            data={[]}
+            title="Documents"
+            showHeader={true}
+            showSearch={false}
+            showCustomizeColumns={true}
+            visibleColumns={visibleColumns2}
+            onColumnVisibilityChange={(key, visible) => {
+              if (visible) {
+                setVisibleColumns2([...visibleColumns2, key]);
+              } else {
+                setVisibleColumns2(visibleColumns2.filter(k => k !== key));
+              }
+            }}
+            currentPage={1}
+            totalPages={5}
+            totalItems={47}
+            itemsPerPage={10}
+          />
+        </div>
+
+        <div>
+          <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Table Header with Search and Customize Columns</h3>
+          <Table
+            columns={headerColumns}
+            data={[]}
+            showHeader={true}
+            showCustomizeColumns={true}
+            visibleColumns={visibleColumns3}
+            onColumnVisibilityChange={(key, visible) => {
+              if (visible) {
+                setVisibleColumns3([...visibleColumns3, key]);
+              } else {
+                setVisibleColumns3(visibleColumns3.filter(k => k !== key));
+              }
+            }}
+            currentPage={1}
+            totalPages={5}
+            totalItems={47}
+            itemsPerPage={10}
+          />
+        </div>
       </div>
-    </div>
-  ),
+    );
+  },
   parameters: {
     docs: {
       description: {
-        story: 'Compact table header with expandable search pill, title on the left, and simplified pagination with document count on the right. Features: 80px height, theme-aware borders, expandable search (collapses to icon-only), and left/right pagination arrows.',
+        story: 'Compact table header with expandable search pill, title on the left, customize columns dropdown, and simplified pagination with document count on the right. Features: 80px height, theme-aware borders, expandable search (collapses to icon-only), customize columns with 16px checkboxes, and left/right pagination arrows.',
       },
     },
   },
@@ -1779,6 +1818,185 @@ const visibleData = tableData.filter((row, index) => {
 - \`groupName: string\` - Name displayed in the group header
 - \`isExpanded: boolean\` - Controls whether the group is expanded
 - \`isGroupChild: true\` - Marks a row as belonging to a group (adds left padding)`,
+      },
+    },
+  },
+};
+
+/**
+ * Customize Columns Story
+ * Demonstrates the table's ability to show/hide columns dynamically using the Customize Columns dropdown.
+ */
+export const CustomizeColumns: StoryObj<typeof Table> = {
+  render: (args) => {
+    const [visibleColumns, setVisibleColumns] = useState([
+      'programTag',
+      'treatyYear',
+      'insuranceLossRatio',
+      'lineOfBusiness',
+      'premium',
+    ]);
+
+    const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+      if (visible) {
+        setVisibleColumns([...visibleColumns, columnKey]);
+      } else {
+        setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+      }
+    };
+
+    return (
+      <Table
+        {...args}
+        showCustomizeColumns={true}
+        visibleColumns={visibleColumns}
+        onColumnVisibilityChange={handleColumnVisibilityChange}
+      />
+    );
+  },
+  args: {
+    columns: [
+      {
+        key: 'programTag',
+        title: 'Program Tag',
+        icon: <DocumentTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '300px',
+        cellType: 'simple',
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        key: 'treatyYear',
+        title: 'Treaty Year',
+        icon: <TextTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '120px',
+        align: 'right',
+        headerAlign: 'right',
+        cellType: 'simple',
+      },
+      {
+        key: 'insuranceLossRatio',
+        title: 'Insurance Loss Ratio',
+        icon: <TextTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '180px',
+        align: 'right',
+        headerAlign: 'right',
+        cellType: 'simple',
+      },
+      {
+        key: 'lineOfBusiness',
+        title: 'Line of Business',
+        icon: <TextTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '160px',
+        align: 'right',
+        headerAlign: 'right',
+        cellType: 'simple',
+      },
+      {
+        key: 'premium',
+        title: 'Premium',
+        icon: <AmmountTable color={colors.analytics.green700} />,
+        sortable: true,
+        width: '150px',
+        align: 'right',
+        headerAlign: 'right',
+        cellType: 'simple',
+      },
+    ],
+    data: [
+      {
+        programTag: 'Aviation Treaty 2023',
+        treatyYear: 'TY23',
+        insuranceLossRatio: '53.2%',
+        lineOfBusiness: 'Aviation',
+        premium: '£14,235,825',
+      },
+      {
+        programTag: 'Aviation Treaty 2024',
+        treatyYear: 'TY24',
+        insuranceLossRatio: '48.7%',
+        lineOfBusiness: 'Aviation',
+        premium: '$4,217,311',
+      },
+      {
+        programTag: 'Cyber Treaty 2023',
+        treatyYear: 'TY23',
+        insuranceLossRatio: '61.5%',
+        lineOfBusiness: 'Cyber',
+        premium: '€11,109,938',
+      },
+      {
+        programTag: 'Health Treaty 2023',
+        treatyYear: 'TY23',
+        insuranceLossRatio: '42.3%',
+        lineOfBusiness: 'Health',
+        premium: '£3,743,254',
+      },
+      {
+        programTag: 'Liability Treaty 2024',
+        treatyYear: 'TY24',
+        insuranceLossRatio: '55.8%',
+        lineOfBusiness: 'Liability',
+        premium: '€15,600,000',
+      },
+    ],
+    title: 'Valuations',
+    showHeader: true,
+    showSearch: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `Demonstrates the Customize Columns feature that allows users to show/hide table columns dynamically.
+
+**Key Features:**
+- **Customize Columns Button**: Located in the table header next to the search
+- **Dropdown Menu**: Shows all available columns with checkboxes
+- **Dynamic Visibility**: Toggle columns on/off in real-time
+- **State Management**: Tracks which columns are currently visible
+- **Smooth Updates**: Table automatically adjusts layout when columns change
+
+**Implementation:**
+\`\`\`tsx
+const [visibleColumns, setVisibleColumns] = useState([
+  'programTag',
+  'treatyYear',
+  'insuranceLossRatio',
+  'lineOfBusiness',
+  'premium',
+]);
+
+const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+  if (visible) {
+    setVisibleColumns([...visibleColumns, columnKey]);
+  } else {
+    setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+  }
+};
+
+<Table
+  columns={columns}
+  data={data}
+  showCustomizeColumns={true}
+  visibleColumns={visibleColumns}
+  onColumnVisibilityChange={handleColumnVisibilityChange}
+/>
+\`\`\`
+
+**Props:**
+- \`showCustomizeColumns: boolean\` - Enables the customize columns feature
+- \`visibleColumns: string[]\` - Array of column keys to display
+- \`onColumnVisibilityChange: (columnKey, visible) => void\` - Callback when column visibility changes
+
+**Usage Tips:**
+- Start with all columns visible by default
+- Store column preferences in localStorage for persistence
+- Ensure at least one column is always visible
+- Column order remains unchanged (only visibility is affected)`,
       },
     },
   },

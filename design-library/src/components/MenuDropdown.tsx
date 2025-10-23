@@ -288,9 +288,11 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
           <div style={displayTextStyles}>
             {selectedOption ? (
               <>
-                <span style={{ color: colors.blackAndWhite.black500 }}>
-                  {selectedPrefix}:{' '}
-                </span>
+                {selectedPrefix && (
+                  <span style={{ color: colors.blackAndWhite.black500 }}>
+                    {selectedPrefix}:{' '}
+                  </span>
+                )}
                 <span style={{
                   color: actualState === 'disabled'
                     ? colors.blackAndWhite.black500

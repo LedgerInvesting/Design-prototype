@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { typography, borderRadius, shadows, useSemanticColors, colors } from '../tokens';
-import { SearchMedium, ChevronLeftSmall, ChevronRightSmall } from '../icons';
+import { SearchMedium, ChevronLeftSmall, ChevronRightSmall, ChevronBottomSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
 import { ActionCell, ActionType } from './ActionCell';
 import { CustomCell, CustomCellElement } from './CustomCell';
 import { StatusCell, StatusType } from './StatusCell';
+import { Selector } from './Selector';
 
 // Base interfaces
 export type CellType = 'simple' | 'document' | 'action' | 'custom' | 'status';
@@ -67,6 +68,10 @@ export interface CompactTableHeaderProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   showSearch?: boolean;
+  showCustomizeColumns?: boolean;
+  columns?: TableColumn[];
+  visibleColumns?: string[];
+  onColumnVisibilityChange?: (columnKey: string, visible: boolean) => void;
   currentPage?: number;
   totalPages?: number;
   totalItems?: number;
@@ -80,6 +85,10 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
   searchValue = '',
   onSearchChange,
   showSearch = true,
+  showCustomizeColumns = false,
+  columns = [],
+  visibleColumns = [],
+  onColumnVisibilityChange,
   currentPage = 1,
   totalPages = 1,
   totalItems = 0,
@@ -88,7 +97,23 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
   className = '',
 }) => {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
+  const customizeRef = useRef<HTMLDivElement>(null);
   const colors = useSemanticColors();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (customizeRef.current && !customizeRef.current.contains(event.target as Node)) {
+        setIsCustomizeOpen(false);
+      }
+    };
+
+    if (isCustomizeOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isCustomizeOpen]);
 
   const headerStyles: React.CSSProperties = {
     display: 'flex',
@@ -184,6 +209,62 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
   const startItem = Math.min((currentPage - 1) * itemsPerPage + 1, totalItems);
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
+  // Customize Columns styles
+  const customizeButtonStyles: React.CSSProperties = {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: borderRadius.absolute,
+    height: '30px',
+    padding: '4px 12px',
+    gap: '6px',
+    border: `1px solid ${colors.theme.primary400}`,
+    cursor: 'pointer',
+    transition: 'border-color 0.2s ease',
+  };
+
+  const customizeTextStyles: React.CSSProperties = {
+    ...typography.styles.bodyM,
+    color: colors.blackAndWhite.black900,
+    whiteSpace: 'nowrap',
+  };
+
+  const customizeDropdownStyles: React.CSSProperties = {
+    position: 'absolute',
+    top: '38px',
+    left: 0,
+    backgroundColor: colors.blackAndWhite.white,
+    border: `1px solid ${colors.theme.primary400}`,
+    borderRadius: borderRadius[8],
+    padding: '12px',
+    minWidth: '220px',
+    boxShadow: shadows.medium,
+    zIndex: 1000,
+    display: isCustomizeOpen ? 'flex' : 'none',
+    flexDirection: 'column',
+    gap: '8px',
+  };
+
+  const dropdownTitleStyles: React.CSSProperties = {
+    ...typography.styles.bodyM,
+    color: colors.blackAndWhite.black900,
+    fontWeight: typography.fontWeight.medium,
+    marginBottom: '4px',
+  };
+
+  const checkboxItemStyles: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '4px 0',
+    cursor: 'pointer',
+    background: 'transparent',
+    border: 'none',
+    width: '100%',
+    textAlign: 'left',
+  };
+
   return (
     <>
       <style>
@@ -195,7 +276,7 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
         `}
       </style>
       <div style={headerStyles} className={className}>
-        {/* Left Section: Title + Search */}
+        {/* Left Section: Title + Search + Customize */}
         <div style={leftSectionStyles}>
           {title && <div style={titleStyles}>{title}</div>}
           {showSearch && (
@@ -229,6 +310,54 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
               )}
               <div style={searchIconStyles}>
                 <SearchMedium color={colors.blackAndWhite.black900} />
+              </div>
+            </div>
+          )}
+
+          {/* Customize Columns Button */}
+          {showCustomizeColumns && columns.length > 0 && (
+            <div ref={customizeRef} style={{ position: 'relative' }}>
+              <button
+                style={customizeButtonStyles}
+                onClick={() => setIsCustomizeOpen(!isCustomizeOpen)}
+                type="button"
+                aria-label="Customize columns"
+              >
+                <span style={customizeTextStyles}>Customize columns</span>
+                <ChevronBottomSmall color={colors.blackAndWhite.black900} />
+              </button>
+
+              {/* Dropdown */}
+              <div style={customizeDropdownStyles}>
+                <div style={dropdownTitleStyles}>Show columns</div>
+                {columns
+                  .filter((column, index) => {
+                    // Exclude first column and action columns
+                    if (index === 0) return false;
+                    if (column.cellType === 'action') return false;
+                    return true;
+                  })
+                  .map((column) => (
+                    <button
+                      key={column.key}
+                      style={checkboxItemStyles}
+                      onClick={() => {
+                        const isCurrentlyVisible = visibleColumns.includes(column.key);
+                        onColumnVisibilityChange?.(column.key, !isCurrentlyVisible);
+                      }}
+                      type="button"
+                    >
+                      <Selector
+                        variant="checkbox"
+                        checked={visibleColumns.includes(column.key)}
+                        onChange={(checked) => onColumnVisibilityChange?.(column.key, checked)}
+                        size={16}
+                      />
+                      <span style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black900 }}>
+                        {column.title}
+                      </span>
+                    </button>
+                  ))}
               </div>
             </div>
           )}
@@ -1183,6 +1312,9 @@ export interface TableProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   showSearch?: boolean;
+  showCustomizeColumns?: boolean;
+  visibleColumns?: string[];
+  onColumnVisibilityChange?: (columnKey: string, visible: boolean) => void;
   showFooterPagination?: boolean;
   currentPage?: number;
   totalPages?: number;
@@ -1204,6 +1336,9 @@ export const Table: React.FC<TableProps> = ({
   searchValue = '',
   onSearchChange,
   showSearch = true,
+  showCustomizeColumns = false,
+  visibleColumns = [],
+  onColumnVisibilityChange,
   showFooterPagination = false,
   currentPage = 1,
   totalPages = 1,
@@ -1239,24 +1374,37 @@ export const Table: React.FC<TableProps> = ({
 
   const currentSortState = onSort ? sortState : internalSortState;
 
-  // Smart column sizing: Make first column longer when table doesn't need horizontal scroll
+  // Filter columns based on visibility and apply smart sizing
   const adjustedColumns = React.useMemo(() => {
+    // Filter columns by visibility if showCustomizeColumns is enabled
+    let filteredColumns = columns;
+    if (showCustomizeColumns && visibleColumns.length > 0) {
+      filteredColumns = columns.filter((col, index) => {
+        // Always show the first column (index 0)
+        if (index === 0) return true;
+        // Always show action columns
+        if (col.cellType === 'action') return true;
+        // Show if in visible columns list
+        return visibleColumns.includes(col.key);
+      });
+    }
+
     // Only apply smart sizing when table doesn't need horizontal scroll
-    if (needsScroll || columns.length === 0) {
-      return columns;
+    if (needsScroll || filteredColumns.length === 0) {
+      return filteredColumns;
     }
 
     // Find the first document column (typically the first column)
-    const firstDocumentColumnIndex = columns.findIndex(col => col.cellType === 'document');
+    const firstDocumentColumnIndex = filteredColumns.findIndex(col => col.cellType === 'document');
     if (firstDocumentColumnIndex === -1) {
-      return columns; // No document column found, return original columns
+      return filteredColumns; // No document column found, return filtered columns
     }
 
     // Calculate total width of all columns except the first document column
     let totalOtherColumnsWidth = 0;
     let hasFixedWidths = true;
 
-    columns.forEach((col, index) => {
+    filteredColumns.forEach((col, index) => {
       if (index !== firstDocumentColumnIndex && col.width) {
         // Extract numeric value from width (e.g., "150px" -> 150)
         const widthValue = parseInt(col.width.replace(/[^\d]/g, ''), 10);
@@ -1272,7 +1420,7 @@ export const Table: React.FC<TableProps> = ({
 
     // Only apply smart sizing if we have fixed widths for other columns
     if (!hasFixedWidths) {
-      return columns;
+      return filteredColumns;
     }
 
     // Calculate remaining width for the first document column
@@ -1283,7 +1431,7 @@ export const Table: React.FC<TableProps> = ({
     // Reduce the first column width by 30% for better proportions
     const reducedWidth = Math.max(300, Math.floor(baseRemainingWidth * 0.7)); // 30% reduction, minimum 300px
 
-    return columns.map((col, index) => {
+    return filteredColumns.map((col, index) => {
       if (index === firstDocumentColumnIndex) {
         return {
           ...col,
@@ -1292,7 +1440,7 @@ export const Table: React.FC<TableProps> = ({
       }
       return col;
     });
-  }, [columns, needsScroll]);
+  }, [columns, needsScroll, showCustomizeColumns, visibleColumns]);
 
   // Sort data based on current sort state
   const sortedData = React.useMemo(() => {
@@ -1501,6 +1649,10 @@ export const Table: React.FC<TableProps> = ({
           searchValue={searchValue}
           onSearchChange={onSearchChange}
           showSearch={showSearch}
+          showCustomizeColumns={showCustomizeColumns}
+          columns={columns}
+          visibleColumns={visibleColumns}
+          onColumnVisibilityChange={onColumnVisibilityChange}
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalItems}

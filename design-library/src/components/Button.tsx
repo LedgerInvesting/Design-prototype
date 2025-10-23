@@ -5,7 +5,7 @@ import { icons } from '../icons';
 export type ButtonVariant = 'primary' | 'small' | 'icon' | 'tertiary' | 'secondary';
 export type PrimaryColor = 'black' | 'white' | 'invisible' | 'main' | 'light' | 'green';
 export type SmallColor = 'black' | 'white' | 'invisible' | 'main' | 'light' | 'green';
-export type IconColor = 'black' | 'main' | 'light' | 'green' | 'white' | 'invisible';
+export type IconColor = 'black' | 'main' | 'light' | 'green' | 'white' | 'invisible' | 'primary200';
 export type TertiaryColor = 'white';
 export type SecondaryColor = 'primary200';
 export type ButtonShape = 'circle' | 'square';
@@ -311,9 +311,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   // Icon button styles
   const getIconStyles = () => {
     const baseStyles = {
-      width: '26px',
-      height: '26px',
-      padding: '7px',
+      width: '36px',
+      height: '36px',
+      padding: '8px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -365,6 +365,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
           ...baseStyles,
           ...shapeStyles,
           ...getSimpleBackground(colors.blackAndWhite.white, 'invisible'),
+        };
+      case 'primary200':
+        return {
+          ...baseStyles,
+          ...shapeStyles,
+          ...getSimpleBackground(colors.theme.primary200, 'primary200'),
+          color: colors.blackAndWhite.black900,
         };
       default:
         return {
@@ -427,6 +434,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       case 'invisible':
         // Use green900 for analytics theme to ensure proper contrast
         return currentTheme === 'analytics' ? colors.analytics.green900 : colors.theme.primary700;
+      case 'primary200':
+        return colors.theme.primary200;
       default:
         return colors.blackAndWhite.black900;
     }

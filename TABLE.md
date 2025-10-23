@@ -15,9 +15,10 @@
 8. [Pagination](#pagination)
 9. [Sorting](#sorting)
 10. [Alignment Control](#alignment-control)
-11. [Common Patterns](#common-patterns)
-12. [Complete Examples](#complete-examples)
-13. [Best Practices](#best-practices)
+11. [Customize Columns](#customize-columns)
+12. [Common Patterns](#common-patterns)
+13. [Complete Examples](#complete-examples)
+14. [Best Practices](#best-practices)
 
 ---
 
@@ -29,6 +30,7 @@ The Table component is a comprehensive, feature-rich data table that supports:
 - ✅ Grouped and collapsible rows
 - ✅ Dual pagination modes (modern and classic)
 - ✅ Full alignment control (headers and cells)
+- ✅ Customize columns (show/hide columns dynamically)
 - ✅ Horizontal scrolling with intelligent drag cursor
 - ✅ Search functionality
 - ✅ Theme-aware styling
@@ -602,6 +604,333 @@ const columns = [
 
 ---
 
+## Customize Columns
+
+The Customize Columns feature allows users to dynamically show/hide table columns through an interactive dropdown interface.
+
+### Features
+- ✅ Settings dropdown button in table header (next to search)
+- ✅ Checkbox interface for toggling column visibility
+- ✅ Real-time table updates when columns are shown/hidden
+- ✅ Smooth layout transitions
+- ✅ Theme-aware styling
+- ✅ Click-outside-to-close behavior
+
+### Implementation
+
+**1. Enable the feature:**
+```tsx
+<Table
+  columns={columns}
+  data={data}
+  showCustomizeColumns={true}
+  visibleColumns={visibleColumns}
+  onColumnVisibilityChange={handleColumnVisibilityChange}
+/>
+```
+
+**2. Set up state management:**
+```tsx
+const [visibleColumns, setVisibleColumns] = useState([
+  'name',      // Start with these columns visible
+  'value',
+  'status',
+]);
+
+const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+  if (visible) {
+    // Add column to visible list
+    setVisibleColumns([...visibleColumns, columnKey]);
+  } else {
+    // Remove column from visible list
+    setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+  }
+};
+```
+
+**3. Define columns normally:**
+```tsx
+const columns = [
+  {
+    key: 'name',
+    title: 'Name',
+    icon: <DocumentTable color={colors.theme.primary450} />,
+    width: '300px',
+    cellType: 'simple',
+    align: 'left',
+    headerAlign: 'left',
+  },
+  {
+    key: 'value',
+    title: 'Value',
+    icon: <TextTable color={colors.theme.primary450} />,
+    width: '150px',
+    cellType: 'simple',
+    align: 'right',
+    headerAlign: 'right',
+  },
+  {
+    key: 'status',
+    title: 'Status',
+    icon: <StatusTable color={colors.theme.primary450} />,
+    width: '120px',
+    cellType: 'status',
+    align: 'center',
+    headerAlign: 'center',
+  },
+];
+```
+
+### Complete Example
+```tsx
+import { Table } from '@design-library/components';
+import { useState } from 'react';
+import { DocumentTable, TextTable, AmmountTable } from '@design-library/icons';
+import { useSemanticColors } from '@design-library/tokens';
+
+function CustomizableTable() {
+  const colors = useSemanticColors();
+
+  // Track which columns are visible
+  const [visibleColumns, setVisibleColumns] = useState([
+    'programTag',
+    'treatyYear',
+    'premium',
+  ]);
+
+  // Handle column visibility changes
+  const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+    if (visible) {
+      setVisibleColumns([...visibleColumns, columnKey]);
+    } else {
+      setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+    }
+  };
+
+  const columns = [
+    {
+      key: 'programTag',
+      title: 'Program Tag',
+      icon: <DocumentTable color={colors.theme.primary450} />,
+      width: '300px',
+      cellType: 'simple',
+      align: 'left',
+      headerAlign: 'left',
+    },
+    {
+      key: 'treatyYear',
+      title: 'Treaty Year',
+      icon: <TextTable color={colors.theme.primary450} />,
+      width: '120px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'right',
+    },
+    {
+      key: 'premium',
+      title: 'Premium',
+      icon: <AmmountTable color={colors.theme.primary450} />,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'right',
+    },
+  ];
+
+  const data = [
+    {
+      programTag: 'Aviation Treaty 2023',
+      treatyYear: 'TY23',
+      premium: '£14,235,825',
+    },
+    {
+      programTag: 'Marine Policy 2024',
+      treatyYear: 'TY24',
+      premium: '£12,150,320',
+    },
+  ];
+
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      title="Valuations"
+      showHeader={true}
+      showSearch={true}
+      showCustomizeColumns={true}
+      visibleColumns={visibleColumns}
+      onColumnVisibilityChange={handleColumnVisibilityChange}
+    />
+  );
+}
+```
+
+### Props Reference
+
+```tsx
+interface TableProps {
+  // Customize Columns props
+  showCustomizeColumns?: boolean;  // Enable customize columns feature
+  visibleColumns?: string[];       // Array of visible column keys
+  onColumnVisibilityChange?: (columnKey: string, visible: boolean) => void;
+}
+```
+
+**`showCustomizeColumns`**: `boolean` (optional)
+- Enables the Customize Columns dropdown button in the table header
+- Button appears next to the search input
+- Default: `false`
+
+**`visibleColumns`**: `string[]` (optional)
+- Array of column keys that should be displayed
+- Only columns with keys in this array will be visible
+- If empty or not provided, all columns are shown
+- Example: `['name', 'value', 'status']`
+
+**`onColumnVisibilityChange`**: `(columnKey: string, visible: boolean) => void` (optional)
+- Callback fired when user toggles a column checkbox
+- `columnKey`: The key of the toggled column
+- `visible`: New visibility state (true = show, false = hide)
+- Use this to update your `visibleColumns` state
+
+### UI Behavior
+
+**Dropdown Button:**
+- Located in table header, right of search input
+- Settings icon with "Customize columns" text
+- Theme-aware primary200 background
+- Opens dropdown on click
+
+**Dropdown Menu:**
+- Title: "Show columns"
+- Lists all columns with checkboxes
+- Checkboxes reflect current visibility state
+- Click checkbox to toggle column visibility
+- Click outside dropdown to close
+- Positioned below the button (38px offset)
+
+**Table Updates:**
+- Columns immediately show/hide when toggled
+- Smart column sizing recalculates for remaining visible columns
+- Smooth transitions maintain table layout
+- Column order remains unchanged (only visibility affected)
+
+### Best Practices
+
+**✅ DO:**
+- **Start with key columns visible**: Initialize `visibleColumns` with the most important columns
+- **Persist preferences**: Store column visibility in localStorage for user convenience
+- **Ensure minimum columns**: Keep at least 1-2 essential columns always visible
+- **Use descriptive column titles**: Clear titles help users understand what they're showing/hiding
+- **Combine with search**: Customize Columns works great alongside search functionality
+
+**❌ DON'T:**
+- **Don't allow hiding all columns**: Ensure at least one column is always visible
+- **Don't change column order**: Only toggle visibility, maintain original column sequence
+- **Don't reset on re-render**: Preserve user's column choices across renders
+- **Don't hide critical columns**: Some columns (like primary identifiers) should always be visible
+
+### Persistence Example
+
+Store column preferences in localStorage:
+
+```tsx
+import { useState, useEffect } from 'react';
+
+function PersistentCustomizableTable() {
+  const STORAGE_KEY = 'table-visible-columns';
+
+  // Initialize from localStorage or defaults
+  const [visibleColumns, setVisibleColumns] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : ['name', 'value', 'status'];
+  });
+
+  // Save to localStorage when columns change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleColumns));
+  }, [visibleColumns]);
+
+  const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+    if (visible) {
+      setVisibleColumns([...visibleColumns, columnKey]);
+    } else {
+      // Prevent hiding last column
+      if (visibleColumns.length > 1) {
+        setVisibleColumns(visibleColumns.filter(key => key !== columnKey));
+      }
+    }
+  };
+
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      showCustomizeColumns={true}
+      visibleColumns={visibleColumns}
+      onColumnVisibilityChange={handleColumnVisibilityChange}
+    />
+  );
+}
+```
+
+### Advanced: Minimum Required Columns
+
+Prevent users from hiding critical columns:
+
+```tsx
+const REQUIRED_COLUMNS = ['name', 'id']; // Always visible
+
+const handleColumnVisibilityChange = (columnKey: string, visible: boolean) => {
+  // Don't allow hiding required columns
+  if (!visible && REQUIRED_COLUMNS.includes(columnKey)) {
+    return;
+  }
+
+  if (visible) {
+    setVisibleColumns([...visibleColumns, columnKey]);
+  } else {
+    // Prevent hiding last visible column
+    const remainingColumns = visibleColumns.filter(key => key !== columnKey);
+    if (remainingColumns.length > 0) {
+      setVisibleColumns(remainingColumns);
+    }
+  }
+};
+```
+
+### Styling
+
+The Customize Columns feature uses theme-aware design tokens:
+
+```tsx
+// Button styling
+backgroundColor: colors.theme.primary200,  // Theme-aware background
+borderRadius: borderRadius.absolute,       // Rounded pill shape
+height: '30px',
+padding: '4px 12px',
+
+// Dropdown styling
+border: `1px solid ${colors.theme.primary400}`,
+borderRadius: borderRadius[8],
+boxShadow: shadows.medium,
+```
+
+All styling automatically adapts to the current theme (Reports/Analytics/Marketplace).
+
+### Storybook Example
+
+See the **CustomizeColumns** story in Table.stories.tsx for a live interactive example:
+
+```bash
+cd "E:\Ledger design library\design-library"
+npm run storybook
+```
+
+Navigate to: `Components > Table > CustomizeColumns`
+
+---
+
 ## Common Patterns
 
 ### Pattern 1: Analytics Table (Green Theme)
@@ -1004,6 +1333,7 @@ View live examples in Storybook:
 - **CellTypesShowcase**: All 5 cell types
 - **ActionButtonsShowcase**: Action cell variations
 - **ColumnAlignment**: Alignment control examples
+- **CustomizeColumns**: Dynamic column visibility control
 - **HorizontalScroll**: Wide tables with scrolling
 
 **Start Storybook:**
