@@ -280,7 +280,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
 
   return (
     <Layout
-      pageType="analytics"
+      pageType="analytics-triangle-dashboard"
       selectedSidebarItem="analytics"
       selectedSidebarSubitem="triangle"
       onNavigate={navigationHandler}

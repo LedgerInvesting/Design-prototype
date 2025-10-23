@@ -39,10 +39,11 @@ import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
 export interface LayoutProps {
   children: React.ReactNode;
   className?: string;
+  pageType?: string; // Full page type for localStorage (e.g., 'analytics-triangle-dashboard')
   selectedSidebarItem?: string;
   selectedSidebarSubitem?: string;
   tabs?: React.ReactNode; // Optional tabs component to render between TopNav and content
-  onNavigate?: (itemId: string, subitemId?: string) => void;
+  onNavigate?: (itemId: string, subitemId?: string, pageType?: string) => void;
   onInboxClick?: () => void;
   maxWidth?: string; // For form layouts
 
@@ -72,6 +73,7 @@ export interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({
   children,
   className,
+  pageType,
   selectedSidebarItem,
   selectedSidebarSubitem,
   tabs,
@@ -227,6 +229,7 @@ export const Layout: React.FC<LayoutProps> = ({
             }}
             selectedItem={selectedSidebarItem}
             selectedSubitem={selectedSidebarSubitem}
+            currentPageType={pageType}
             onHoverChange={setIsSidebarHovered}
             isCompact={isCompact}
             userName={userName}

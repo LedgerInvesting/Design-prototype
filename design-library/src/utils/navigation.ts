@@ -32,8 +32,14 @@ export interface NavigationHandler {
  * @returns Navigation handler function compatible with Layout components
  */
 export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => {
-  return (itemId: string, subitemId?: string) => {
-    console.log('Navigate to:', itemId, subitemId);
+  return (itemId: string, subitemId?: string, pageType?: string) => {
+    console.log('Navigate to:', itemId, subitemId, 'pageType:', pageType);
+
+    // If a specific page type is provided (from localStorage), navigate directly to it
+    if (pageType) {
+      onNavigateToPage(pageType as PageType);
+      return;
+    }
 
     // Handle Home navigation
     if (itemId === 'home') {

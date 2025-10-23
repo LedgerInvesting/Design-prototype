@@ -33,11 +33,12 @@ interface SidebarItem {
 }
 
 interface SideNav2Props {
-  onNavigate?: (itemId: string, subitemId?: string) => void;
+  onNavigate?: (itemId: string, subitemId?: string, pageType?: string) => void;
   onInboxClick?: () => void;
   onHomeClick?: () => void;
   selectedItem?: string;
   selectedSubitem?: string;
+  currentPageType?: string; // Full page type (e.g., 'analytics-triangle-dashboard')
   onHoverChange?: (isHovered: boolean) => void;
   isCompact?: boolean; // Controlled compact state from parent
   userName?: string;
@@ -93,6 +94,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
   onHomeClick,
   selectedItem: propSelectedItem,
   selectedSubitem: propSelectedSubitem,
+  currentPageType,
   onHoverChange,
   isCompact: propIsCompact = false,
   userName = 'Sarah Johnson',
@@ -244,7 +246,13 @@ export const SideNav2: React.FC<SideNav2Props> = ({
   };
 
   const handleMainItemClick = (item: SidebarItem) => {
-    // Check localStorage for last visited page in this app
+    // Check localStorage for last visited full page type in this app
+    const lastPageKey = `lastPage_${item.id}`;
+    const lastVisitedPageType = typeof window !== 'undefined'
+      ? localStorage.getItem(lastPageKey)
+      : null;
+
+    // Also check for last visited subitem (fallback to old system)
     const lastVisitedKey = `lastVisited_${item.id}`;
     const lastVisitedSubitem = typeof window !== 'undefined'
       ? localStorage.getItem(lastVisitedKey)
@@ -263,14 +271,15 @@ export const SideNav2: React.FC<SideNav2Props> = ({
         setInternalSelectedItem(item.id);
         setInternalSelectedSubitem(targetSubitem.id);
       }
-      onNavigate?.(item.id, targetSubitem.id);
+      // Pass the saved page type if available, otherwise just navigate normally
+      onNavigate?.(item.id, targetSubitem.id, lastVisitedPageType || undefined);
     } else {
       // Only update internal state if not controlled
       if (propSelectedItem === undefined) {
         setInternalSelectedItem(item.id);
         setInternalSelectedSubitem('');
       }
-      onNavigate?.(item.id);
+      onNavigate?.(item.id, undefined, lastVisitedPageType || undefined);
     }
   };
 
@@ -283,6 +292,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
 
   const handleSubitemClick = (parentId: string, subitemId: string) => {
     // Save the last visited page for this app in localStorage
+    // Note: The currentPageType will be saved via useEffect when the page changes
     if (typeof window !== 'undefined') {
       const lastVisitedKey = `lastVisited_${parentId}`;
       localStorage.setItem(lastVisitedKey, subitemId);
@@ -295,6 +305,14 @@ export const SideNav2: React.FC<SideNav2Props> = ({
     }
     onNavigate?.(parentId, subitemId);
   };
+
+  // Save the current page type to localStorage whenever it changes
+  useEffect(() => {
+    if (currentPageType && propSelectedItem && typeof window !== 'undefined') {
+      const lastPageKey = `lastPage_${propSelectedItem}`;
+      localStorage.setItem(lastPageKey, currentPageType);
+    }
+  }, [currentPageType, propSelectedItem]);
 
   const sidebarStyles: React.CSSProperties = {
     width: showFullMode ? '220px' : '80px',
