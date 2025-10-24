@@ -4,7 +4,7 @@ import { Button, DashboardCard } from '@design-library/components';
 import { typography, borderRadius, useSemanticColors } from '@design-library/tokens';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
-import { ChevronRightSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall } from '@design-library/icons';
+import { ChevronRightSmall, ChevronDownExtraSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall } from '@design-library/icons';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -54,6 +54,8 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const [selectedChart2, setSelectedChart2] = useState('right-edge');
   const [isCard1Collapsed, setIsCard1Collapsed] = useState(false);
   const [isCard2Collapsed, setIsCard2Collapsed] = useState(false);
+  const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
+  const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
 
   // Data Completeness chart data - triangular pattern
   // Y-axis: 07-23 (index 0, top) to 04-24 (index 9, bottom)
@@ -293,26 +295,173 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           { text: ' Triangle Dashboard', important: false }
         ]}
         actions={[
-          <Button
-            key="settings"
-            variant="primary"
-            color="white"
-            onClick={() => console.log('Triangle Settings clicked')}
-            showIcon={false}
-            style={{ border: 'none', height: '44px' }}
-          >
-            Triangle Settings
-          </Button>,
-          <Button
-            key="download"
-            variant="primary"
-            color="black"
-            onClick={() => console.log('Download clicked')}
-            icon={<ChevronRightSmall color={colors.theme.primary700} />}
-            style={{ height: '44px' }}
-          >
-            Download
-          </Button>
+          // Triangle Settings Dropdown
+          <div key="settings" style={{ position: 'relative' }}>
+            <button
+              onClick={() => setIsSettingsDropdownOpen(!isSettingsDropdownOpen)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '8px 12px 8px 20px',
+                height: '44px',
+                backgroundColor: colors.blackAndWhite.white,
+                border: 'none',
+                borderRadius: borderRadius[4],
+                cursor: 'pointer',
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+              }}
+            >
+              <span>Triangle Settings</span>
+              <div style={{
+                height: '20px',
+                width: '1px',
+                backgroundColor: colors.theme.primary400,
+                transform: 'rotate(90deg)'
+              }} />
+              <ChevronDownExtraSmall color={colors.blackAndWhite.black900} />
+            </button>
+            {isSettingsDropdownOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '48px',
+                right: 0,
+                backgroundColor: colors.blackAndWhite.white,
+                border: `1px solid ${colors.theme.primary400}`,
+                borderRadius: borderRadius[8],
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                minWidth: '200px',
+                zIndex: 1000,
+              }}>
+                <div
+                  onClick={() => {
+                    console.log('Rename triangle clicked');
+                    setIsSettingsDropdownOpen(false);
+                  }}
+                  style={{
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    borderBottom: `1px solid ${colors.theme.primary400}`,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  Rename triangle
+                </div>
+                <div
+                  onClick={() => {
+                    console.log('Delete triangle clicked');
+                    setIsSettingsDropdownOpen(false);
+                  }}
+                  style={{
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    ...typography.styles.bodyM,
+                    color: colors.error.darkBorders,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  Delete triangle
+                </div>
+              </div>
+            )}
+          </div>,
+          // Download Dropdown
+          <div key="download" style={{ position: 'relative' }}>
+            <button
+              onClick={() => setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '8px 12px 8px 20px',
+                height: '44px',
+                backgroundColor: colors.blackAndWhite.black900,
+                border: 'none',
+                borderRadius: borderRadius[4],
+                cursor: 'pointer',
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.white,
+              }}
+            >
+              <span>Download</span>
+              <div style={{
+                height: '20px',
+                width: '1px',
+                backgroundColor: 'rgba(58, 66, 61, 1)',
+                transform: 'rotate(90deg)'
+              }} />
+              <ChevronDownExtraSmall color={colors.blackAndWhite.white} />
+            </button>
+            {isDownloadDropdownOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '48px',
+                right: 0,
+                backgroundColor: colors.blackAndWhite.white,
+                border: `1px solid ${colors.theme.primary400}`,
+                borderRadius: borderRadius[8],
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                minWidth: '200px',
+                zIndex: 1000,
+              }}>
+                <div
+                  onClick={() => {
+                    console.log('Download as PNG clicked');
+                    setIsDownloadDropdownOpen(false);
+                  }}
+                  style={{
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    borderBottom: `1px solid ${colors.theme.primary400}`,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  Download as .PNG
+                </div>
+                <div
+                  onClick={() => {
+                    console.log('Download as TRIB clicked');
+                    setIsDownloadDropdownOpen(false);
+                  }}
+                  style={{
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    borderBottom: `1px solid ${colors.theme.primary400}`,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  Download as .TRIB
+                </div>
+                <div
+                  onClick={() => {
+                    console.log('Download as SVG clicked');
+                    setIsDownloadDropdownOpen(false);
+                  }}
+                  style={{
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  Download as .SVG
+                </div>
+              </div>
+            )}
+          </div>
         ]}
       />
 
