@@ -877,7 +877,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   overflow: 'hidden',
                   textOverflow: 'ellipsis'
                 }}>
-                  Ledger Investing
+                  korra
                 </div>
               </div>
             )}
