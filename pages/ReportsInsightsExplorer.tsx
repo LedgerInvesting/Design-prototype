@@ -96,37 +96,37 @@ const categoryNames = {
 
 // Sample program data
 const programsData: Program[] = [
-  { id: '1', name: 'Appalachian.wc-companionTY21', category: 2, currentLossRatio: 75, quotaSharePremium: 250000, premium: 250000, lossRatio: 75 },
-  { id: '2', name: 'Appalachian.wc-companionTY22', category: 1, currentLossRatio: 100, quotaSharePremium: 1400000, premium: 1400000, lossRatio: 100 },
-  { id: '3', name: 'Appalachian.gl-contractorTY22', category: 1, currentLossRatio: 98, quotaSharePremium: 1500000, premium: 1500000, lossRatio: 98 },
-  { id: '4', name: 'Rms.gl-hospitalityTY21', category: 3, currentLossRatio: 95, quotaSharePremium: 1600000, premium: 1600000, lossRatio: 95 },
-  { id: '5', name: 'Trinity.ca-towingTY21', category: 2, currentLossRatio: 0, quotaSharePremium: 1300000, premium: 1300000, lossRatio: 0 },
-  { id: '6', name: 'Atllas.wc-ilsTY23', category: 2, currentLossRatio: 40, quotaSharePremium: 350000, premium: 350000, lossRatio: 40 },
-  { id: '7', name: 'Cornerstone.gl-snow-iceTY21', category: 5, currentLossRatio: 40, quotaSharePremium: 2700000, premium: 2700000, lossRatio: 40 },
-  { id: '8', name: 'Cardigan.ca-nemt-admittedTY22', category: 4, currentLossRatio: 60, quotaSharePremium: 1100000, premium: 1100000, lossRatio: 60 },
-  { id: '9', name: 'cardigan.ca-nemt-nonadmittedTY22', category: 1, currentLossRatio: 30, quotaSharePremium: 900000, premium: 900000, lossRatio: 30 },
-  { id: '10', name: 'rms.gl-hospitalityTY22', category: 4, currentLossRatio: 100, quotaSharePremium: 1800000, premium: 1800000, lossRatio: 100 },
-  { id: '11', name: 'rms.gl-hospitalityTY23', category: 3, currentLossRatio: 100, quotaSharePremium: 2000000, premium: 2000000, lossRatio: 100 },
-  { id: '12', name: 'Xpt.ca-truckTY23', category: 1, currentLossRatio: -5, quotaSharePremium: 500000, premium: 500000, lossRatio: -5 },
-  { id: '13', name: 'Cornerstone.gl-snow-iceTY22', category: 5, currentLossRatio: 85, quotaSharePremium: 3500000, premium: 3500000, lossRatio: 85 },
-  { id: '14', name: 'Paragon.ca-yellow-busTY22', category: 3, currentLossRatio: 91, quotaSharePremium: 2200000, premium: 2200000, lossRatio: 91 },
-  { id: '15', name: 'Summit.wc-manufacturingTY23', category: 1, currentLossRatio: 55, quotaSharePremium: 1750000, premium: 1750000, lossRatio: 55 },
-  { id: '16', name: 'Pinnacle.gl-retailTY21', category: 4, currentLossRatio: 70, quotaSharePremium: 980000, premium: 980000, lossRatio: 70 },
-  { id: '17', name: 'Horizon.ca-deliveryTY22', category: 2, currentLossRatio: 45, quotaSharePremium: 1250000, premium: 1250000, lossRatio: 45 },
-  { id: '18', name: 'Nexus.wc-constructionTY23', category: 5, currentLossRatio: 110, quotaSharePremium: 2100000, premium: 2100000, lossRatio: 110 },
-  { id: '19', name: 'Frontier.gl-restaurantTY21', category: 3, currentLossRatio: 88, quotaSharePremium: 1450000, premium: 1450000, lossRatio: 88 },
-  { id: '20', name: 'Meridian.ca-rideshare-TY22', category: 1, currentLossRatio: 35, quotaSharePremium: 820000, premium: 820000, lossRatio: 35 },
-  { id: '21', name: 'Beacon.wc-healthcareTY23', category: 2, currentLossRatio: 65, quotaSharePremium: 1900000, premium: 1900000, lossRatio: 65 },
-  { id: '22', name: 'Vanguard.gl-entertainmentTY21', category: 4, currentLossRatio: 78, quotaSharePremium: 1350000, premium: 1350000, lossRatio: 78 },
-  { id: '23', name: 'Crest.ca-logisticsTY22', category: 3, currentLossRatio: 92, quotaSharePremium: 1680000, premium: 1680000, lossRatio: 92 },
-  { id: '24', name: 'Liberty.wc-educationTY23', category: 1, currentLossRatio: 25, quotaSharePremium: 750000, premium: 750000, lossRatio: 25 },
+  { id: '1', name: 'Blue Commercial Auto 2020', category: 2, currentLossRatio: 75, quotaSharePremium: 250000, premium: 250000, lossRatio: 75 },
+  { id: '2', name: 'Red Worker\'s Comp 2021', category: 1, currentLossRatio: 100, quotaSharePremium: 1400000, premium: 1400000, lossRatio: 100 },
+  { id: '3', name: 'Green General Liability 2022', category: 1, currentLossRatio: 98, quotaSharePremium: 1500000, premium: 1500000, lossRatio: 98 },
+  { id: '4', name: 'Yellow Agriculture 2023', category: 3, currentLossRatio: 95, quotaSharePremium: 1600000, premium: 1600000, lossRatio: 95 },
+  { id: '5', name: 'Black Aviation 2024', category: 2, currentLossRatio: 0, quotaSharePremium: 1300000, premium: 1300000, lossRatio: 0 },
+  { id: '6', name: 'White Cyber 2025', category: 2, currentLossRatio: 40, quotaSharePremium: 350000, premium: 350000, lossRatio: 40 },
+  { id: '7', name: 'Purple Commercial Auto 2021', category: 5, currentLossRatio: 40, quotaSharePremium: 2700000, premium: 2700000, lossRatio: 40 },
+  { id: '8', name: 'Silver Worker\'s Comp 2024', category: 4, currentLossRatio: 60, quotaSharePremium: 1100000, premium: 1100000, lossRatio: 60 },
+  { id: '9', name: 'Gold General Liability 2020', category: 1, currentLossRatio: 30, quotaSharePremium: 900000, premium: 900000, lossRatio: 30 },
+  { id: '10', name: 'Pink Agriculture 2025', category: 4, currentLossRatio: 100, quotaSharePremium: 1800000, premium: 1800000, lossRatio: 100 },
+  { id: '11', name: 'Orange Aviation 2022', category: 3, currentLossRatio: 100, quotaSharePremium: 2000000, premium: 2000000, lossRatio: 100 },
+  { id: '12', name: 'Teal Cyber 2023', category: 1, currentLossRatio: -5, quotaSharePremium: 500000, premium: 500000, lossRatio: -5 },
+  { id: '13', name: 'Brown Commercial Auto 2025', category: 5, currentLossRatio: 85, quotaSharePremium: 3500000, premium: 3500000, lossRatio: 85 },
+  { id: '14', name: 'Cyan Worker\'s Comp 2022', category: 3, currentLossRatio: 91, quotaSharePremium: 2200000, premium: 2200000, lossRatio: 91 },
+  { id: '15', name: 'Maroon General Liability 2024', category: 1, currentLossRatio: 55, quotaSharePremium: 1750000, premium: 1750000, lossRatio: 55 },
+  { id: '16', name: 'Indigo Agriculture 2021', category: 4, currentLossRatio: 70, quotaSharePremium: 980000, premium: 980000, lossRatio: 70 },
+  { id: '17', name: 'Violet Aviation 2020', category: 2, currentLossRatio: 45, quotaSharePremium: 1250000, premium: 1250000, lossRatio: 45 },
+  { id: '18', name: 'Grey Cyber 2021', category: 5, currentLossRatio: 110, quotaSharePremium: 2100000, premium: 2100000, lossRatio: 110 },
+  { id: '19', name: 'Navy Commercial Auto 2023', category: 3, currentLossRatio: 88, quotaSharePremium: 1450000, premium: 1450000, lossRatio: 88 },
+  { id: '20', name: 'Coral Worker\'s Comp 2020', category: 1, currentLossRatio: 35, quotaSharePremium: 820000, premium: 820000, lossRatio: 35 },
+  { id: '21', name: 'Mint General Liability 2025', category: 2, currentLossRatio: 65, quotaSharePremium: 1900000, premium: 1900000, lossRatio: 65 },
+  { id: '22', name: 'Beige Agriculture 2024', category: 4, currentLossRatio: 78, quotaSharePremium: 1350000, premium: 1350000, lossRatio: 78 },
+  { id: '23', name: 'Turquoise Aviation 2023', category: 3, currentLossRatio: 92, quotaSharePremium: 1680000, premium: 1680000, lossRatio: 92 },
+  { id: '24', name: 'Lavender Cyber 2022', category: 1, currentLossRatio: 25, quotaSharePremium: 750000, premium: 750000, lossRatio: 25 },
 ];
 
 export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
   const semanticColors = colors; // For chart components
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProgram, setSelectedProgram] = useState<string>('6'); // Atllas.wc-ilsTY23
+  const [selectedProgram, setSelectedProgram] = useState<string>('6'); // White Cyber 2025
   const [hoveredProgram, setHoveredProgram] = useState<string | null>(null);
   const [yAxisMetric, setYAxisMetric] = useState('Current Loss Ratio');
   const [xAxisMetric, setXAxisMetric] = useState('Quota Share premium');
