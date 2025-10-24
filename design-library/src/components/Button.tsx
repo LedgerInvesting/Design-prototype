@@ -311,9 +311,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   // Icon button styles
   const getIconStyles = () => {
     const baseStyles = {
-      width: '36px',
-      height: '36px',
-      padding: '8px',
+      width: '26px',
+      height: '26px',
+      padding: '5px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
