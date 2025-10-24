@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { Layout, PageBanner } from '@design-library/pages';
 import { Table } from '@design-library/components';
 import { AddSmall, DocumentTable, TextTable, AmmountTable, ArrangeTable, CalendarTable } from '@design-library/icons';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
+import { NewTriangleModal, TriangleFormData } from './NewTriangleModal';
 
 /**
  * Props for the AnalyticsTriangle component
@@ -53,6 +54,8 @@ const filterVisibleRows = (tableData: any[]) => {
  */
 export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const newTriangleButtonRef = useRef<HTMLButtonElement>(null);
 
   // Customize columns state - start with all data columns visible (excluding first column)
   const [visibleColumns, setVisibleColumns] = useState([
@@ -262,6 +265,24 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
     }
   };
 
+  const handleNewTriangleClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCreateTriangle = (formData: TriangleFormData) => {
+    console.log('Creating triangle with data:', formData);
+    // Handle triangle creation logic here
+    setIsModalOpen(false);
+    // Optionally navigate to the new triangle dashboard
+    // if (onNavigateToPage) {
+    //   onNavigateToPage('analytics-triangle-dashboard', { triangleName: formData.triangleName });
+    // }
+  };
+
   /**
    * Handle group toggle (expand/collapse)
    * Finds the actual group in tableData using the visible row index and groupName
@@ -320,7 +341,7 @@ Import and export triangles in a variety of formats."
           patternSrc="/pattern_analytics.svg"
           buttonText="New Triangle"
           buttonIcon={<AddSmall color={colors.theme.main} />}
-          onButtonClick={() => console.log('New Triangle clicked')}
+          onButtonClick={handleNewTriangleClick}
           illustrationAlt="triangle"
         />
 
@@ -439,6 +460,14 @@ Import and export triangles in a variety of formats."
             pagination={{ enabled: true, variant: 'modern' }}
           />
         </div>
+
+        {/* New Triangle Modal */}
+        <NewTriangleModal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          onCreateTriangle={handleCreateTriangle}
+          buttonRef={newTriangleButtonRef}
+        />
       </Layout>
     </ThemeProvider>
   );
