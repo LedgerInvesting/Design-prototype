@@ -191,9 +191,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
           onChange={titleDropdown.onChange}
           placeholder={titleDropdown.placeholder}
           selectedPrefix=""
-          style={{
-            minWidth: '200px',
-          }}
+          dropdownListMinWidth="400px"
         />
       );
     }

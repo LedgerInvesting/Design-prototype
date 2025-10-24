@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Layout, PageHeader } from '@design-library/pages';
-import { Button, DashboardCard } from '@design-library/components';
-import { typography, borderRadius, useSemanticColors } from '@design-library/tokens';
+import { Button, DashboardCard, ChartTooltip } from '@design-library/components';
+import { typography, borderRadius, useSemanticColors, shadows, spacing } from '@design-library/tokens';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
 import { ChevronRightSmall, ChevronDownExtraSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall } from '@design-library/icons';
@@ -56,6 +56,38 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const [isCard2Collapsed, setIsCard2Collapsed] = useState(false);
   const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
   const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+
+  // Ref for download dropdown to handle outside clicks
+  const downloadDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (downloadDropdownRef.current && !downloadDropdownRef.current.contains(event.target as Node)) {
+        setIsDownloadDropdownOpen(false);
+      }
+    };
+
+    if (isDownloadDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDownloadDropdownOpen]);
+
+  // All available chart options
+  const allChartOptions = [
+    { value: 'data-completeness', label: 'Data Completeness' },
+    { value: 'right-edge', label: 'Right Edge' },
+    { value: 'heatmap', label: 'Heatmap' },
+    { value: 'triangle-mountain', label: 'Triangle Mountain' },
+    { value: 'histogram', label: 'Histogram' },
+    { value: 'ballistic', label: 'Ballistic' },
+    { value: 'age-to-age-factors', label: 'Age-to-Age Factors' },
+    { value: 'growth-curve', label: 'Growth Curve' },
+  ];
 
   // Data Completeness chart data - triangular pattern
   // Y-axis: 07-23 (index 0, top) to 04-24 (index 9, bottom)
@@ -119,6 +151,11 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const renderDataCompletenessChart = () => (
     <ResponsiveContainer width="100%" height={400}>
       <ScatterChart margin={{ top: 20, right: 40, bottom: 40, left: 40 }}>
+        <defs>
+          <filter id="dropShadowSmall" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" floodOpacity="0.05" />
+          </filter>
+        </defs>
         <CartesianGrid
           strokeDasharray="3 3"
           vertical={true}
@@ -161,8 +198,20 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             style: { ...typography.styles.dataXS, fill: colors.blackAndWhite.black500 }
           }}
         />
-        <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-        <Scatter name="Points" data={dataCompletenessData} fill={colors.theme.main} />
+        <Tooltip
+          content={<ChartTooltip />}
+          cursor={false}
+          isAnimationActive={false}
+        />
+        <Scatter
+          name="Points"
+          data={dataCompletenessData}
+          fill={colors.theme.main}
+          stroke={colors.blackAndWhite.white}
+          strokeWidth={2}
+          style={{ filter: 'url(#dropShadowSmall)' }}
+          shape={<circle r={7} />}
+        />
       </ScatterChart>
     </ResponsiveContainer>
   );
@@ -211,9 +260,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             style: { ...typography.styles.dataXS, fill: colors.blackAndWhite.black500 }
           }}
         />
-        <Tooltip
-          cursor={{ strokeDasharray: '3 3' }}
-        />
+        <Tooltip content={<ChartTooltip />} cursor={false} />
         <Bar
           yAxisId="left"
           dataKey="premium"
@@ -295,91 +342,28 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           { text: ' Triangle Dashboard', important: false }
         ]}
         actions={[
-          // Triangle Settings Dropdown
-          <div key="settings" style={{ position: 'relative' }}>
-            <button
-              onClick={() => setIsSettingsDropdownOpen(!isSettingsDropdownOpen)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '8px 12px 8px 20px',
-                height: '44px',
-                backgroundColor: colors.blackAndWhite.white,
-                border: 'none',
-                borderRadius: borderRadius[4],
-                cursor: 'pointer',
-                ...typography.styles.bodyL,
-                color: colors.blackAndWhite.black900,
-              }}
-            >
-              <span>Triangle Settings</span>
-              <div style={{
-                height: '20px',
-                width: '1px',
-                backgroundColor: colors.theme.primary400,
-                transform: 'rotate(90deg)'
-              }} />
-              <ChevronDownExtraSmall color={colors.blackAndWhite.black900} />
-            </button>
-            {isSettingsDropdownOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '48px',
-                right: 0,
-                backgroundColor: colors.blackAndWhite.white,
-                border: `1px solid ${colors.theme.primary400}`,
-                borderRadius: borderRadius[8],
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                minWidth: '200px',
-                zIndex: 1000,
-              }}>
-                <div
-                  onClick={() => {
-                    console.log('Rename triangle clicked');
-                    setIsSettingsDropdownOpen(false);
-                  }}
-                  style={{
-                    padding: '12px 16px',
-                    cursor: 'pointer',
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    borderBottom: `1px solid ${colors.theme.primary400}`,
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  Rename triangle
-                </div>
-                <div
-                  onClick={() => {
-                    console.log('Delete triangle clicked');
-                    setIsSettingsDropdownOpen(false);
-                  }}
-                  style={{
-                    padding: '12px 16px',
-                    cursor: 'pointer',
-                    ...typography.styles.bodyM,
-                    color: colors.error.darkBorders,
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  Delete triangle
-                </div>
-              </div>
-            )}
-          </div>,
+          // Triangle Settings Button
+          <Button
+            key="settings"
+            variant="primary"
+            color="invisible"
+            showIcon={false}
+            onClick={() => console.log('Triangle Settings clicked')}
+          >
+            Triangle Settings
+          </Button>,
           // Download Dropdown
-          <div key="download" style={{ position: 'relative' }}>
+          <div key="download" ref={downloadDropdownRef} style={{ position: 'relative' }}>
             <button
               onClick={() => setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '12px',
+                justifyContent: 'space-between',
+                gap: '8px',
                 padding: '8px 12px 8px 20px',
                 height: '44px',
+                minWidth: '120px',
                 backgroundColor: colors.blackAndWhite.black900,
                 border: 'none',
                 borderRadius: borderRadius[4],
@@ -390,24 +374,28 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             >
               <span>Download</span>
               <div style={{
-                height: '20px',
-                width: '1px',
-                backgroundColor: 'rgba(58, 66, 61, 1)',
-                transform: 'rotate(90deg)'
-              }} />
-              <ChevronDownExtraSmall color={colors.blackAndWhite.white} />
+                transform: isDownloadDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+              }}>
+                <ChevronDownExtraSmall color={colors.theme.primary700} />
+              </div>
             </button>
             {isDownloadDropdownOpen && (
               <div style={{
                 position: 'absolute',
-                top: '48px',
+                top: '100%',
                 right: 0,
-                backgroundColor: colors.blackAndWhite.white,
-                border: `1px solid ${colors.theme.primary400}`,
-                borderRadius: borderRadius[8],
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                 minWidth: '200px',
+                width: 'fit-content',
+                backgroundColor: colors.blackAndWhite.white,
+                border: 'none',
+                borderRadius: borderRadius[8],
+                marginTop: spacing[1],
                 zIndex: 1000,
+                boxShadow: shadows.medium,
+                padding: '10px',
               }}>
                 <div
                   onClick={() => {
@@ -415,11 +403,12 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                     setIsDownloadDropdownOpen(false);
                   }}
                   style={{
-                    padding: '12px 16px',
+                    padding: '12px 10px',
                     cursor: 'pointer',
                     ...typography.styles.bodyM,
                     color: colors.blackAndWhite.black900,
-                    borderBottom: `1px solid ${colors.theme.primary400}`,
+                    borderRadius: borderRadius[4],
+                    whiteSpace: 'nowrap',
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -432,11 +421,12 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                     setIsDownloadDropdownOpen(false);
                   }}
                   style={{
-                    padding: '12px 16px',
+                    padding: '12px 10px',
                     cursor: 'pointer',
                     ...typography.styles.bodyM,
                     color: colors.blackAndWhite.black900,
-                    borderBottom: `1px solid ${colors.theme.primary400}`,
+                    borderRadius: borderRadius[4],
+                    whiteSpace: 'nowrap',
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -449,10 +439,12 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                     setIsDownloadDropdownOpen(false);
                   }}
                   style={{
-                    padding: '12px 16px',
+                    padding: '12px 10px',
                     cursor: 'pointer',
                     ...typography.styles.bodyM,
                     color: colors.blackAndWhite.black900,
+                    borderRadius: borderRadius[4],
+                    whiteSpace: 'nowrap',
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -556,12 +548,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         {/* First Chart Card */}
         <DashboardCard
           titleDropdown={{
-            options: [
-              { value: 'data-completeness', label: 'Data Completeness' },
-              { value: 'right-edge', label: 'Right Edge' },
-              { value: 'heatmap', label: 'Heatmap' },
-              { value: 'triangle-mountain', label: 'Triangle Mountain' }
-            ],
+            options: allChartOptions.filter(option => option.value !== selectedChart2),
             value: selectedChart1,
             onChange: (value) => setSelectedChart1(value),
             placeholder: 'Chart'
@@ -589,12 +576,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         {/* Second Chart Card */}
         <DashboardCard
           titleDropdown={{
-            options: [
-              { value: 'data-completeness', label: 'Data Completeness' },
-              { value: 'right-edge', label: 'Right Edge' },
-              { value: 'heatmap', label: 'Heatmap' },
-              { value: 'triangle-mountain', label: 'Triangle Mountain' }
-            ],
+            options: allChartOptions.filter(option => option.value !== selectedChart1),
             value: selectedChart2,
             onChange: (value) => setSelectedChart2(value),
             placeholder: 'Chart'

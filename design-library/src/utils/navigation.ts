@@ -35,8 +35,31 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
   return (itemId: string, subitemId?: string, pageType?: string) => {
     console.log('Navigate to:', itemId, subitemId, 'pageType:', pageType);
 
-    // If a specific page type is provided (from localStorage), navigate directly to it
-    if (pageType) {
+    // Valid page types
+    const validPageTypes: PageType[] = [
+      'home',
+      'reports-explorer',
+      'reports-insights-explorer',
+      'reports-insights-program-details',
+      'reports-transaction-management',
+      'reports-new-transaction-form',
+      'reports-renewal-transaction',
+      'reports-cash-settlement',
+      'reports-bdx-upload',
+      'reports-contracts-explorer',
+      'contracts-ai-extraction',
+      'contracts-transactions',
+      'analytics-valuation',
+      'analytics-valuation-dashboard',
+      'analytics-valuation-configuration',
+      'analytics-valuation-status',
+      'analytics-triangle',
+      'analytics-triangle-dashboard',
+      'marketplace-offerings'
+    ];
+
+    // If a specific page type is provided (from localStorage), validate and navigate directly to it
+    if (pageType && validPageTypes.includes(pageType as PageType)) {
       onNavigateToPage(pageType as PageType);
       return;
     }

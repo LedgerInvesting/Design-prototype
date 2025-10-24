@@ -727,6 +727,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
 
   return (
     <Layout
+      pageType="reports-explorer"
       breadcrumbs={[
         { label: 'REPORTS EXPLORER', isActive: true }
       ]}

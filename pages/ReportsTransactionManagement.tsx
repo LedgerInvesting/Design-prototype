@@ -741,6 +741,7 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
 
   return (
     <Layout
+      pageType="reports-transaction-management"
       breadcrumbs={[
         { label: 'TRANSACTION MANAGEMENT', isActive: true }
       ]}

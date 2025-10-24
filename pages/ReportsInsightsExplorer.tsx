@@ -297,6 +297,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
 
   return (
     <Layout
+      pageType="reports-insights-explorer"
       breadcrumbs={createBreadcrumbs.reports.insightsExplorer()}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="insights-explorer"

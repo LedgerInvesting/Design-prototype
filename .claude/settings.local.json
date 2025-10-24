@@ -78,7 +78,11 @@
       "Bash(findstr:*)",
       "WebFetch(domain:korra-ldgr.vercel.app)",
       "mcp__figma-dev-mode-mcp-server__get_design_context",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(while read file)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(done)",
+      "Bash(for file in ReportsBDXUpload.tsx ReportsCashSettlement.tsx ReportsContractsExplorer.tsx ReportsTransactionManagement.tsx ReportsNewTransactionForm.tsx ReportsInsightsProgramDetails.tsx)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

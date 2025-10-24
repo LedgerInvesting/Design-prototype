@@ -49,6 +49,10 @@ export interface MenuDropdownProps {
   showBorder?: boolean;
   /** Selected value prefix (default: 'Option') */
   selectedPrefix?: string;
+  /** Additional inline styles */
+  style?: React.CSSProperties;
+  /** Dropdown list minimum width */
+  dropdownListMinWidth?: string;
 }
 
 export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
@@ -70,6 +74,8 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
   triggerBackgroundColor,
   showBorder = false,
   selectedPrefix = 'Option',
+  style,
+  dropdownListMinWidth,
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   const [isOpen, setIsOpen] = useState(false);
@@ -174,7 +180,7 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
       top: '100%',
       left: 0,
       right: 0,
-      minWidth: '100%',
+      minWidth: dropdownListMinWidth || '100%',
       width: 'fit-content',
       backgroundColor: colors.blackAndWhite.white,
       border: 'none',
@@ -281,7 +287,7 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
       <div ref={dropdownRef} style={{ position: 'relative' }}>
         <div
           ref={ref}
-          style={containerStyles}
+          style={{ ...containerStyles, ...style }}
           onClick={handleDropdownClick}
         >
           {/* Display text */}
@@ -325,8 +331,8 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
         {/* Dropdown list */}
         {isOpen && !disabled && (
           <div style={dropdownListStyles} className="dropdown-list">
-            {options.length > 5 ? (
-              <CustomScroll maxHeight="200px" scrollClassName="dropdown-scroll">
+            {options.length > 7 ? (
+              <CustomScroll maxHeight="300px" scrollClassName="dropdown-scroll">
                 {options.map((option, index) => (
                   <div
                     key={option.value}

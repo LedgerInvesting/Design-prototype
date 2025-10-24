@@ -468,6 +468,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
 
   return (
     <Layout
+      pageType="reports-bdx-upload"
       breadcrumbs={breadcrumbs}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="bdx-upload"
