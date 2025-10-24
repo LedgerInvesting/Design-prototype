@@ -172,23 +172,30 @@ export const NewTriangleModal: React.FC<NewTriangleModalProps> = ({
             type="text"
           />
 
-          {/* Policy Group Dropdown */}
-          <FormDropdown
-            label="Policy group"
-            value={formData.policyGroup}
-            onChange={(value) => handleInputChange('policyGroup', value)}
-            options={policyGroupOptions}
-            placeholder="Select Policy group"
-          />
+          {/* Policy Group and Risk Period - Side by Side */}
+          <div style={{ display: 'flex', gap: '20px' }}>
+            {/* Policy Group Dropdown */}
+            <div style={{ flex: 1 }}>
+              <FormDropdown
+                label="Policy group"
+                value={formData.policyGroup}
+                onChange={(value) => handleInputChange('policyGroup', value)}
+                options={policyGroupOptions}
+                placeholder="Select Policy group"
+              />
+            </div>
 
-          {/* Risk Period Dropdown */}
-          <FormDropdown
-            label="Risk Period"
-            value={formData.riskPeriod}
-            onChange={(value) => handleInputChange('riskPeriod', value)}
-            options={riskPeriodOptions}
-            placeholder="Select Risk Period"
-          />
+            {/* Risk Period Dropdown */}
+            <div style={{ flex: 1 }}>
+              <FormDropdown
+                label="Risk Period"
+                value={formData.riskPeriod}
+                onChange={(value) => handleInputChange('riskPeriod', value)}
+                options={riskPeriodOptions}
+                placeholder="Select Risk Period"
+              />
+            </div>
+          </div>
 
           {/* Drag and Drop File Upload Area */}
           <div style={{ marginTop: '8px' }}>
