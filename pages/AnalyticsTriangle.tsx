@@ -276,11 +276,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
   const handleCreateTriangle = (formData: TriangleFormData) => {
     console.log('Creating triangle with data:', formData);
     // Handle triangle creation logic here
-    setIsModalOpen(false);
-    // Optionally navigate to the new triangle dashboard
-    // if (onNavigateToPage) {
-    //   onNavigateToPage('analytics-triangle-dashboard', { triangleName: formData.triangleName });
-    // }
+    // Navigation is handled by the modal
   };
 
   /**
@@ -466,6 +462,7 @@ Import and export triangles in a variety of formats."
           isOpen={isModalOpen}
           onClose={handleModalClose}
           onCreateTriangle={handleCreateTriangle}
+          onNavigateToPage={onNavigateToPage}
           buttonRef={newTriangleButtonRef}
         />
       </Layout>

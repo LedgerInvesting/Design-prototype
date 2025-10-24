@@ -8,6 +8,7 @@ export interface NewTriangleModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateTriangle: (formData: TriangleFormData) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
   buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
@@ -23,6 +24,7 @@ export const NewTriangleModal: React.FC<NewTriangleModalProps> = ({
   isOpen,
   onClose,
   onCreateTriangle,
+  onNavigateToPage,
   buttonRef,
 }) => {
   const semanticColors = useSemanticColors();
@@ -92,6 +94,11 @@ export const NewTriangleModal: React.FC<NewTriangleModalProps> = ({
   const handleUploadTriangle = () => {
     onCreateTriangle(formData);
     onClose();
+
+    // Navigate to triangle dashboard with the triangle name
+    if (onNavigateToPage) {
+      onNavigateToPage('analytics-triangle-dashboard', { triangleName: formData.triangleName });
+    }
   };
 
   // Check if all required fields are filled
