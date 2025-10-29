@@ -57,6 +57,8 @@ export interface ModalProps {
   contentStyle?: React.CSSProperties;
   /** Footer content (typically buttons) */
   footer?: React.ReactNode;
+  /** Whether to show the close button (default: true) */
+  showCloseButton?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -83,6 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
   modalStyle,
   contentStyle,
   footer,
+  showCloseButton = true,
 }) => {
   const colors = useSemanticColors();
   const [shouldRender, setShouldRender] = useState(isOpen);
@@ -249,22 +252,24 @@ export const Modal: React.FC<ModalProps> = ({
     <div style={backdropStyles} onClick={handleBackdropClick}>
       <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
         {/* Close button */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            zIndex: 1,
-          }}
-        >
-          <Button
-            variant="icon"
-            color="light"
-            shape="square"
-            onClick={onClose}
-            icon={<CloseMedium color={colors.blackAndWhite.black900} />}
-          />
-        </div>
+        {showCloseButton && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              zIndex: 1,
+            }}
+          >
+            <Button
+              variant="icon"
+              color="light"
+              shape="square"
+              onClick={onClose}
+              icon={<CloseMedium color={colors.blackAndWhite.black900} />}
+            />
+          </div>
+        )}
 
         {/* Header section */}
         {(title || subtitle) && (

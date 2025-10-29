@@ -19,6 +19,7 @@ import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } fr
 import { NewTransactionModal } from './NewTransactionModal';
 import { BrandNewTransactionModal } from './BrandNewTransactionModal';
 import { UploadContractModal } from './UploadContractModal';
+import { ContractProcessingModal } from './ContractProcessingModal';
 
 
 // Transaction icon component
@@ -739,6 +740,11 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false);
+  const [uploadData, setUploadData] = useState<{ transactionName: string; fileName: string }>({
+    transactionName: '',
+    fileName: ''
+  });
   const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
 
   return (
@@ -820,10 +826,21 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
         }}
         onContinue={(data) => {
           console.log('Upload data:', data);
+          setUploadData({
+            transactionName: data.transactionName,
+            fileName: data.file?.name || ''
+          });
           setIsUploadModalOpen(false);
-          // TODO: Navigate to contract AI extraction page or processing page
-          // onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+          setIsProcessingModalOpen(true);
         }}
+      />
+
+      {/* Contract Processing Modal */}
+      <ContractProcessingModal
+        isOpen={isProcessingModalOpen}
+        fileName={uploadData.fileName}
+        transactionName={uploadData.transactionName}
+        buttonRef={newTransactionButtonRef}
       />
     </Layout>
   );
