@@ -3,6 +3,14 @@ import { Modal, Button, FileUploadBox, ThemeProvider } from '@design-library/com
 import { useSemanticColors, typography, borderRadius } from '@design-library/tokens';
 import { ContractsLogo } from '@design-library/icons';
 
+// Contract colors (direct reference to bypass theme context issues with portals)
+const contractColors = {
+  yellow700: '#fcdc6a',
+  yellow400: '#f0ebe1',
+  yellow300: '#f5f0e8',
+  yellow200: '#f9f6f0',
+};
+
 export interface UploadContractModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -87,7 +95,7 @@ export const UploadContractModal: React.FC<UploadContractModalProps> = ({
 
         {/* Form Content */}
         <div style={{
-          backgroundColor: colors.theme.primary200,
+          backgroundColor: contractColors.yellow200,
           borderRadius: borderRadius[8],
           padding: '30px 15px 20px 15px',
           display: 'flex',
@@ -114,7 +122,7 @@ export const UploadContractModal: React.FC<UploadContractModalProps> = ({
                 width: '100%',
                 height: '34px',
                 padding: '8px 20px 10px 20px',
-                border: `1px solid ${colors.theme.primary400}`,
+                border: `1px solid ${contractColors.yellow400}`,
                 borderRadius: borderRadius[4],
                 backgroundColor: colors.blackAndWhite.white,
                 ...typography.styles.bodyM,
@@ -145,7 +153,7 @@ export const UploadContractModal: React.FC<UploadContractModalProps> = ({
                 width: '100%',
                 height: '34px',
                 padding: '8px 20px 10px 20px',
-                border: `1px solid ${colors.theme.primary400}`,
+                border: `1px solid ${contractColors.yellow400}`,
                 borderRadius: borderRadius[4],
                 backgroundColor: colors.blackAndWhite.white,
                 ...typography.styles.bodyM,

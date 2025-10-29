@@ -741,9 +741,10 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false);
-  const [uploadData, setUploadData] = useState<{ transactionName: string; fileName: string }>({
+  const [uploadData, setUploadData] = useState<{ transactionName: string; fileName: string; description: string }>({
     transactionName: '',
-    fileName: ''
+    fileName: '',
+    description: ''
   });
   const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -828,7 +829,8 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
           console.log('Upload data:', data);
           setUploadData({
             transactionName: data.transactionName,
-            fileName: data.file?.name || ''
+            fileName: data.file?.name || '',
+            description: data.description
           });
           setIsUploadModalOpen(false);
           setIsProcessingModalOpen(true);
@@ -840,7 +842,13 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
         isOpen={isProcessingModalOpen}
         fileName={uploadData.fileName}
         transactionName={uploadData.transactionName}
+        description={uploadData.description}
         buttonRef={newTransactionButtonRef}
+        onContinue={() => {
+          setIsProcessingModalOpen(false);
+          // TODO: Pass contract data to form - requires App-level state management
+          onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
+        }}
       />
     </Layout>
   );

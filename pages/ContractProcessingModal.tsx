@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import { Modal, Button, ThemeProvider } from '@design-library/components';
-import { useSemanticColors, typography, borderRadius } from '@design-library/tokens';
+import { useSemanticColors, typography, borderRadius, colors } from '@design-library/tokens';
 import { ContractsLogo } from '@design-library/icons';
 import animationData from './product-illustration.json';
+
+// Contract colors (direct reference to bypass theme context issues with portals)
+const contractColors = {
+  yellow700: '#fcdc6a',
+  yellow400: '#f0ebe1',
+  yellow300: '#f5f0e8',
+};
 
 export interface ContractProcessingModalProps {
   isOpen: boolean;
   fileName: string;
   transactionName: string;
+  description: string;
   buttonRef?: React.RefObject<HTMLButtonElement>;
+  onContinue?: () => void;
 }
 
 type ProcessStep = 'uploading' | 'analyzing' | 'extracting' | 'creating' | 'completed';
@@ -26,7 +35,9 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
   isOpen,
   fileName,
   transactionName,
+  description,
   buttonRef,
+  onContinue,
 }) => {
   const [steps, setSteps] = useState<StepProgress[]>([
     { step: 'uploading', label: 'Uploading file', status: 'running', statusText: 'Running', progress: 0 },
@@ -134,23 +145,23 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
     }, 8000);
   }, [isOpen]);
 
-  // Animated dot for running state (white with theme border)
-  const AnimatedDot: React.FC = () => {
-    const colors = useSemanticColors();
+  // Animated dot for running state (white with yellow border) - moves with progress
+  const AnimatedDot: React.FC<{ progress: number }> = ({ progress }) => {
     return (
       <div
         style={{
           position: 'absolute',
-          right: '-6px',
+          left: `calc(${progress}% - 6px)`,
           top: '50%',
           transform: 'translateY(-50%)',
           width: '12px',
           height: '12px',
           borderRadius: '50%',
           backgroundColor: colors.blackAndWhite.white,
-          border: `2px solid ${colors.theme.primary700}`,
+          border: `2px solid ${contractColors.yellow700}`,
           animation: 'pulse 1.5s ease-in-out infinite',
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+          transition: 'left 0.3s ease',
         }}
       />
     );
@@ -173,8 +184,6 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
 
   // Progress bar component
   const ProgressBar: React.FC<{ stepData: StepProgress }> = ({ stepData }) => {
-    const colors = useSemanticColors();
-
     return (
       <div style={{
         display: 'flex',
@@ -187,7 +196,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
         <div style={{
           position: 'relative',
           height: '6px',
-          backgroundColor: colors.theme.primary300,
+          backgroundColor: contractColors.yellow300,
           borderRadius: borderRadius[12],
           overflow: 'visible',
         }}>
@@ -198,13 +207,13 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
             top: 0,
             height: '100%',
             width: `${stepData.progress}%`,
-            backgroundColor: colors.theme.primary700,
+            backgroundColor: contractColors.yellow700,
             borderRadius: borderRadius[12],
             transition: 'width 0.3s ease',
           }} />
 
           {/* Animated Dot for running state */}
-          {stepData.status === 'running' && <AnimatedDot />}
+          {stepData.status === 'running' && <AnimatedDot progress={stepData.progress} />}
         </div>
 
         {/* Labels */}
@@ -235,13 +244,13 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
 
   // Modal content with contracts theme
   const ModalContent: React.FC = () => {
-    const colors = useSemanticColors();
+    const semanticColors = useSemanticColors();
 
     return (
       <>
         {/* Yellow Header with Animation */}
         <div style={{
-          backgroundColor: colors.theme.primary700,
+          backgroundColor: contractColors.yellow700,
           height: '150px',
           borderRadius: borderRadius[8],
           overflow: 'hidden',
@@ -259,10 +268,12 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
             alignItems: 'center',
             justifyContent: 'center',
             marginLeft: '-16px',
+            marginTop: '15px', // Move animation 15px down
           }}>
             <Lottie
               animationData={animationData}
               loop={true}
+              autoplay={true}
               style={{
                 width: '160px',
                 height: '160px',
@@ -281,7 +292,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
             {/* Processing Title */}
             <div style={{
               ...typography.styles.subheadingM,
-              color: colors.blackAndWhite.black900,
+              color: semanticColors.blackAndWhite.black900,
               fontWeight: 500,
             }}>
               Processing {transactionName}
@@ -296,7 +307,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
               <div style={{
                 width: '20px',
                 height: '20px',
-                backgroundColor: colors.blackAndWhite.black900,
+                backgroundColor: semanticColors.blackAndWhite.black900,
                 borderRadius: '4px',
                 display: 'flex',
                 alignItems: 'center',
@@ -314,7 +325,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
               </div>
               <div style={{
                 ...typography.styles.bodyM,
-                color: colors.blackAndWhite.black800,
+                color: semanticColors.blackAndWhite.black800,
                 fontWeight: 500,
               }}>
                 Powered by korra ContractsAI
@@ -368,7 +379,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
             <Button
               variant="primary"
               color="black"
-              onClick={() => {}}
+              onClick={onContinue}
               disabled={!allComplete}
               showIcon={false}
               style={{ width: '140px' }}
