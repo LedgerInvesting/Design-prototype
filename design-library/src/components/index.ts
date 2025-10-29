@@ -33,6 +33,9 @@ export type { SelectorProps, SelectorVariant } from './Selector';
 export { ButtonSelector } from './ButtonSelector';
 export type { ButtonSelectorProps, ButtonSelectorType } from './ButtonSelector';
 
+export { FileUploadBox } from './FileUploadBox';
+export type { FileUploadBoxProps } from './FileUploadBox';
+
 // Date Components
 export { DatePicker } from './DatePicker';
 export type { DatePickerProps } from './DatePicker';

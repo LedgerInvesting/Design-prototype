@@ -9,6 +9,7 @@ import {
   Modal,
   Button,
   ButtonSelector,
+  FileUploadBox,
   colors,
   typography,
   borderRadius,
@@ -127,30 +128,9 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
     setIsAddModalOpen(true);
   };
 
-  // File handling functions
+  // File handling function
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
-  };
-
-  const handleBrowseClick = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx,.csv,.xls';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) handleFileSelect(file);
-    };
-    input.click();
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) handleFileSelect(file);
   };
 
   // Modal hover handlers
@@ -929,130 +909,15 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
                   />
                 </div>
 
-                {/* Upload Area */}
-                {selectedFile ? (
-                  // Show selected file with Figma design
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: `2px dashed ${semanticColors.theme.primary400}`,
-                    borderRadius: borderRadius[8],
-                    backgroundColor: semanticColors.blackAndWhite.white,
-                    padding: '12px',
-                    gap: '12px',
-                    width: '100%'
-                  }}>
-                    {/* Document illustration on the left */}
-                    <div style={{
-                      flexShrink: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: shadows.small
-                    }}>
-                      <svg width="50" height="70" viewBox="0 0 54 71" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="54" height="71" rx="6" fill="white" />
-                        <rect x="5.05542" y="9.94844" width="23.6641" height="2" fill="#DFDFDF"/>
-                        <rect x="5.39526" y="20.1315" width="28.4272" height="2" fill="#DFDFDF"/>
-                        <rect x="5.39526" y="32.3512" width="28.4272" height="2" fill="#DFDFDF"/>
-                        <rect x="5.39526" y="40.328" width="28.4272" height="2" fill="#DFDFDF"/>
-                        <rect x="5.39526" y="55.1482" width="15.377" height="2" fill="#DFDFDF"/>
-                        <rect x="5.39526" y="59.0518" width="5.02344" height="2" fill="#DFDFDF"/>
-                        <rect x="12.0144" y="59.0518" width="5.02344" height="2" fill="#DFDFDF"/>
-                        <rect x="48.9441" y="26.2047" width="28.4272" height="2" transform="rotate(-180 48.9441 26.2047)" fill="#DFDFDF"/>
-                        <rect x="48.9441" y="38.4244" width="28.4272" height="2" transform="rotate(-180 48.9441 38.4244)" fill="#DFDFDF"/>
-                        <rect x="48.9441" y="30.6174" width="12.4375" height="2" transform="rotate(-180 48.9441 30.6174)" fill="#DFDFDF"/>
-                        <rect x="36.3875" y="20.1315" width="12.5572" height="2" fill="#DFDFDF"/>
-                        <rect x="36.3875" y="32.3512" width="12.5572" height="2" fill="#DFDFDF"/>
-                        <rect x="17.9519" y="26.2047" width="12.5572" height="2" transform="rotate(-180 17.9519 26.2047)" fill="#DFDFDF"/>
-                        <rect x="17.9519" y="38.4244" width="12.5572" height="2" transform="rotate(-180 17.9519 38.4244)" fill="#DFDFDF"/>
-                        <rect x="17.9519" y="30.6174" width="12.5572" height="2" transform="rotate(-180 17.9519 30.6174)" fill="#DFDFDF"/>
-                        <rect x="33.2429" y="30.6174" width="12.5572" height="2" transform="rotate(-180 33.2429 30.6174)" fill="#DFDFDF"/>
-                      </svg>
-                    </div>
-
-                    {/* Filename in the center */}
-                    <div style={{
-                      flex: 1,
-                      ...typography.styles.bodyM,
-                      color: semanticColors.blackAndWhite.black900,
-                      fontWeight: typography.fontWeight.medium,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {selectedFile.name}
-                    </div>
-
-                    {/* Close button on the right */}
-                    <div style={{
-                      flexShrink: 0,
-                      width: '26px',
-                      height: '26px',
-                      backgroundColor: semanticColors.theme.primary200,
-                      borderRadius: borderRadius[4],
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer'
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedFile(null);
-                    }}
-                    >
-                      <CloseMedium color={semanticColors.blackAndWhite.black700} />
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      border: `2px dashed ${semanticColors.theme.primary400}`,
-                      borderRadius: borderRadius[8],
-                      padding: '40px 24px',
-                      textAlign: 'center',
-                      backgroundColor: semanticColors.blackAndWhite.white,
-                      cursor: 'pointer'
-                    }}
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop}
-                    onClick={handleBrowseClick}
-                  >
-                    <div style={{
-                      width: '48px',
-                      height: '48px',
-                      backgroundColor: semanticColors.success.fill,
-                      borderRadius: borderRadius[8],
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto 16px auto'
-                    }}>
-                      <DownloadMedium color={semanticColors.blackAndWhite.black900} />
-                    </div>
-                    <div style={{
-                      ...typography.styles.bodyL,
-                      color: semanticColors.blackAndWhite.black900
-                    }}>
-                      Drag and drop your file here or click to{' '}
-                      <span
-                        style={{
-                          color: semanticColors.blackAndWhite.black900,
-                          cursor: 'pointer',
-                          textDecoration: 'underline'
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent double click
-                          if (!selectedFile) {
-                            handleBrowseClick();
-                          }
-                        }}
-                      >
-                        browse files
-                      </span>
-                    </div>
-                  </div>
-                )}
+                {/* File Upload Box */}
+                <FileUploadBox
+                  selectedFile={selectedFile}
+                  onFileSelect={handleFileSelect}
+                  onFileRemove={() => setSelectedFile(null)}
+                  acceptedFileTypes=".xlsx,.csv,.xls"
+                  showFilePreview={true}
+                  placeholderText="Drag and drop your file here or click to"
+                />
               </div>
 
               {/* File Requirements */}
