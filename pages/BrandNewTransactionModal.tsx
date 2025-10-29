@@ -24,7 +24,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
   const handleContinue = () => {
     if (selectedMethod) {
       onContinue(selectedMethod);
-      onClose();
+      // Don't close here - let parent handle modal flow
     }
   };
 

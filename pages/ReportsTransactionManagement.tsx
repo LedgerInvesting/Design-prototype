@@ -18,6 +18,7 @@ import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } fr
 // Import modal
 import { NewTransactionModal } from './NewTransactionModal';
 import { BrandNewTransactionModal } from './BrandNewTransactionModal';
+import { UploadContractModal } from './UploadContractModal';
 
 
 // Transaction icon component
@@ -737,6 +738,7 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
   const settings = useSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const newTransactionButtonRef = React.useRef<HTMLButtonElement>(null);
 
   return (
@@ -798,10 +800,29 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
         }}
         onContinue={(inputMethod) => {
           if (inputMethod === 'enter-manually') {
+            setIsBrandNewModalOpen(false);
             onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
           } else if (inputMethod === 'upload-pdf') {
-            // TODO: Handle PDF upload flow
+            setIsBrandNewModalOpen(false);
+            setIsUploadModalOpen(true);
           }
+        }}
+      />
+
+      {/* Upload Contract Modal */}
+      <UploadContractModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        buttonRef={newTransactionButtonRef}
+        onBack={() => {
+          setIsUploadModalOpen(false);
+          setIsBrandNewModalOpen(true);
+        }}
+        onContinue={(data) => {
+          console.log('Upload data:', data);
+          setIsUploadModalOpen(false);
+          // TODO: Navigate to contract AI extraction page or processing page
+          // onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
         }}
       />
     </Layout>
