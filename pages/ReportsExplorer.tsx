@@ -1108,17 +1108,20 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               }}>
                 Insights
               </h3>
-              <button style={{
-                backgroundColor: colors.theme.primary200,
-                border: 'none',
-                borderRadius: borderRadius.absolute,
-                padding: '6px 12px',
-                ...typography.styles.bodyS,
-                fontWeight: 600,
-                color: colors.blackAndWhite.black900,
-                cursor: 'pointer',
-                textTransform: 'uppercase'
-              }}>
+              <button
+                style={{
+                  backgroundColor: colors.theme.primary200,
+                  border: 'none',
+                  borderRadius: borderRadius.absolute,
+                  padding: '6px 12px',
+                  ...typography.styles.bodyS,
+                  fontWeight: 600,
+                  color: colors.blackAndWhite.black900,
+                  cursor: 'pointer',
+                  textTransform: 'uppercase'
+                }}
+                onClick={() => onNavigateToPage?.('reports-contracts-explorer')}
+              >
                 EXPLORE
               </button>
             </div>
