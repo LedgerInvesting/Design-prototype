@@ -134,21 +134,23 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
     }, 8000);
   }, [isOpen]);
 
-  // Animated dot for running state
+  // Animated dot for running state (white with theme border)
   const AnimatedDot: React.FC = () => {
     const colors = useSemanticColors();
     return (
       <div
         style={{
           position: 'absolute',
-          right: '-3px',
+          right: '-6px',
           top: '50%',
           transform: 'translateY(-50%)',
-          width: '6px',
-          height: '6px',
+          width: '12px',
+          height: '12px',
           borderRadius: '50%',
-          backgroundColor: colors.contracts.yellow700,
+          backgroundColor: colors.blackAndWhite.white,
+          border: `2px solid ${colors.theme.primary700}`,
           animation: 'pulse 1.5s ease-in-out infinite',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}
       />
     );
@@ -160,7 +162,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
     styleSheet.textContent = `
       @keyframes pulse {
         0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
-        50% { opacity: 0.5; transform: translateY(-50%) scale(1.2); }
+        50% { opacity: 0.8; transform: translateY(-50%) scale(1.1); }
       }
     `;
     document.head.appendChild(styleSheet);
@@ -185,7 +187,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
         <div style={{
           position: 'relative',
           height: '6px',
-          backgroundColor: colors.contracts.dynamic.yellow300,
+          backgroundColor: colors.theme.primary300,
           borderRadius: borderRadius[12],
           overflow: 'visible',
         }}>
@@ -196,7 +198,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
             top: 0,
             height: '100%',
             width: `${stepData.progress}%`,
-            backgroundColor: colors.contracts.yellow700,
+            backgroundColor: colors.theme.primary700,
             borderRadius: borderRadius[12],
             transition: 'width 0.3s ease',
           }} />
@@ -239,7 +241,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
       <>
         {/* Yellow Header with Animation */}
         <div style={{
-          backgroundColor: colors.contracts.yellow700,
+          backgroundColor: colors.theme.primary700,
           height: '150px',
           borderRadius: borderRadius[8],
           overflow: 'hidden',
