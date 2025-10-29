@@ -172,6 +172,10 @@ export const UploadContractModal: React.FC<UploadContractModalProps> = ({
             onFileRemove={() => setSelectedFile(null)}
             acceptedFileTypes=".pdf"
             showFilePreview={true}
+            themeColors={{
+              primary400: contractColors.yellow400,
+              primary200: contractColors.yellow200,
+            }}
           />
         </div>
       </>

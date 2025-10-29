@@ -1,5 +1,5 @@
 import React from 'react';
-import { borderRadius, useSemanticColors, typography } from '../tokens';
+import { borderRadius, useSemanticColors, typography, shadows } from '../tokens';
 import { DownloadMedium, CloseMedium } from '../icons';
 
 export interface FileUploadBoxProps {
@@ -21,6 +21,11 @@ export interface FileUploadBoxProps {
   minHeight?: string;
   /** Custom placeholder text */
   placeholderText?: string;
+  /** Override theme colors (for use in portals where context doesn't work) */
+  themeColors?: {
+    primary400?: string;
+    primary200?: string;
+  };
 }
 
 /**
@@ -49,8 +54,13 @@ export const FileUploadBox: React.FC<FileUploadBoxProps> = ({
   height = 'auto',
   minHeight = '99px',
   placeholderText = 'Drop File here to get started or',
+  themeColors,
 }) => {
   const colors = useSemanticColors();
+
+  // Use theme override colors if provided, otherwise use context colors
+  const borderColor = themeColors?.primary400 || colors.theme.primary400;
+  const closeButtonBg = themeColors?.primary200 || colors.theme.primary200;
 
   const handleBrowseClick = () => {
     const input = document.createElement('input');
@@ -79,7 +89,7 @@ export const FileUploadBox: React.FC<FileUploadBoxProps> = ({
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        border: `2px dashed ${colors.theme.primary400}`,
+        border: `2px dashed ${borderColor}`,
         borderRadius: borderRadius[8],
         backgroundColor: colors.blackAndWhite.white,
         padding: '12px',
@@ -92,6 +102,7 @@ export const FileUploadBox: React.FC<FileUploadBoxProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          filter: `drop-shadow(${shadows.small})`,
         }}>
           <svg width="50" height="70" viewBox="0 0 54 71" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="54" height="71" rx="6" fill="white" />
@@ -134,7 +145,7 @@ export const FileUploadBox: React.FC<FileUploadBoxProps> = ({
               flexShrink: 0,
               width: '26px',
               height: '26px',
-              backgroundColor: colors.theme.primary200,
+              backgroundColor: closeButtonBg,
               borderRadius: borderRadius[4],
               display: 'flex',
               alignItems: 'center',
@@ -157,7 +168,7 @@ export const FileUploadBox: React.FC<FileUploadBoxProps> = ({
   return (
     <div
       style={{
-        border: `1px dashed ${colors.theme.primary400}`,
+        border: `1px dashed ${borderColor}`,
         borderRadius: borderRadius[12],
         padding: '30px',
         textAlign: 'center',

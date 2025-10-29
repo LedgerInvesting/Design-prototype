@@ -220,7 +220,7 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '7px',
+          gap: '1px',
           width: '146px',
         }}>
           <div style={{
@@ -274,6 +274,9 @@ export const ContractProcessingModal: React.FC<ContractProcessingModalProps> = (
               animationData={animationData}
               loop={true}
               autoplay={true}
+              rendererSettings={{
+                preserveAspectRatio: 'xMidYMid slice'
+              }}
               style={{
                 width: '160px',
                 height: '160px',
