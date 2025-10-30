@@ -35,6 +35,8 @@ export interface TopNavProps {
   onNavigate?: (itemId: string, subitemId?: string) => void;
   appAction?: AppActionConfig; // Optional context-aware app action button
   isSidebarCompact?: boolean; // Track sidebar state for icon color
+  showAskQuill?: boolean; // Show "Ask Quill" button on home page
+  onAskQuillClick?: () => void;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -52,6 +54,8 @@ export const TopNav: React.FC<TopNavProps> = ({
   onSidebarToggle,
   onNavigate,
   appAction,
+  showAskQuill = false,
+  onAskQuillClick,
   isSidebarCompact = false,
   className,
   style,
@@ -82,6 +86,8 @@ export const TopNav: React.FC<TopNavProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: spacing[4],
+    flex: 1,
+    minWidth: 0,
   };
 
   const breadcrumbsStyles: React.CSSProperties = {
@@ -119,6 +125,7 @@ export const TopNav: React.FC<TopNavProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: spacing[4],
+    flexShrink: 0,
   };
 
   const profileSectionStyles: React.CSSProperties = {
@@ -265,7 +272,18 @@ export const TopNav: React.FC<TopNavProps> = ({
   };
 
   return (
-    <nav className={className} style={containerStyles}>
+    <>
+      <style>{`
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
+      <nav className={className} style={containerStyles}>
       {/* Left Section - Sidebar Toggle + Breadcrumbs */}
       <div style={leftSectionStyles}>
         {/* Sidebar Toggle Button */}
@@ -329,6 +347,61 @@ export const TopNav: React.FC<TopNavProps> = ({
             actionText={appAction.actionText}
             onClick={appAction.onClick}
           />
+        )}
+
+        {/* Ask Quill Button - AI Assistant */}
+        {showAskQuill && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <span style={{
+              fontFamily: 'Söhne',
+              fontSize: '14px',
+              fontWeight: 600,
+              lineHeight: 1.3,
+              color: colors.blackAndWhite.black700
+            }}>
+              Have a question?
+            </span>
+            <button
+              onClick={onAskQuillClick}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 12px',
+                backgroundColor: colors.blackAndWhite.white,
+                border: `1px solid ${colors.contracts.dynamic.yellow400}`,
+                borderRadius: borderRadius[24],
+                cursor: 'pointer',
+                fontFamily: 'Söhne',
+                fontSize: '14px',
+                fontWeight: 600,
+                lineHeight: 1.3,
+                color: colors.blackAndWhite.black900,
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = colors.blackAndWhite.white;
+              }}
+            >
+              <img
+                src="/quill.png"
+                alt="Quill"
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  animation: 'spin 10s linear infinite'
+                }}
+              />
+              Ask Quill
+            </button>
+          </div>
         )}
 
         {/* Separator - Always visible to separate page content from account */}
@@ -418,5 +491,6 @@ export const TopNav: React.FC<TopNavProps> = ({
         </div>
       </div>
     </nav>
+    </>
   );
 };

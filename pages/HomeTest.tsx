@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Layout } from '@design-library/pages';
 import type { BreadcrumbItem } from '@design-library/pages';
-import { colors, typography, spacing, borderRadius, useSemanticColors } from '@design-library/tokens';
+import { colors, typography, spacing, borderRadius, ThemeProvider } from '@design-library/tokens';
 import {
-  AddMedium,
-  DocumentMedium,
-  GraphMedium,
-  FolderMedium,
-  S1ArrowRightMedium,
-  PlaySmall,
-  S1ArrowUpMedium,
-  UploadMedium
+  S2ArrowRightSmall,
+  S1ArrowRightSmall,
+  GraphSmall,
+  KeyTermsSmall,
+  ValuationsSmall,
+  BordereauSmall,
+  TrianglesSmall,
+  PlaySmall
 } from '@design-library/icons';
 import { createNavigationHandler, type NavigationHandler } from '@design-library/utils/navigation';
 
@@ -19,107 +19,10 @@ interface HomeTestProps {
 }
 
 export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
-  // State for animated text rotation
-  const [currentPromptIndex, setCurrentPromptIndex] = React.useState(0);
-  const [isAnimating, setIsAnimating] = React.useState(false);
-  const [isFocused, setIsFocused] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState('');
-
-  const prompts = [
-    "How is my investment portfolio performing?",
-    "Extract the key terms from this insurance contract.",
-    "Display the earned premium triangle for this dataset"
-  ];
-
-  // Rotate prompts every 3 seconds (only when not focused)
-  React.useEffect(() => {
-    if (isFocused) return;
-
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentPromptIndex((prev) => (prev + 1) % prompts.length);
-        setIsAnimating(false);
-      }, 400);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [isFocused]);
-
-  // Add CSS for hover effects and animations
-  React.useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      [class*="video-thumbnail-"]:hover .dark-overlay {
-        opacity: 0 !important;
-      }
-      [class*="video-thumbnail-"] img {
-        transition: transform 0.6s ease;
-      }
-      [class*="video-thumbnail-"]:hover img {
-        transform: scale(1.10);
-      }
-
-      /* Arrow button background hover scale - triggered by card hover */
-      .arrow-button-background {
-        transition: transform 0.4s ease;
-      }
-      .quick-action-card:hover .arrow-button-background {
-        transform: scale(1.3);
-      }
-
-      /* Watch Videos button hover scale */
-      .explore-products-card:hover .button-background {
-        transform: scale(1.1);
-      }
-
-      /* Transaction preview cards hover scale */
-      .transaction-preview-card {
-        transition: transform 0.4s ease;
-      }
-      .transaction-preview-card:hover {
-        transform: scale(1.025);
-      }
-
-      /* Document preview hover scale */
-      .document-preview {
-        transition: transform 0.4s ease;
-      }
-      .document-preview:hover {
-        transform: scale(1.025);
-      }
-      @keyframes slideInFromLeft {
-        from {
-          opacity: 0;
-          transform: translateX(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-      @keyframes slideOutToRight {
-        from {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        to {
-          opacity: 0;
-          transform: translateX(20px);
-        }
-      }
-      .prompt-text-enter {
-        animation: slideInFromLeft 0.4s ease forwards;
-      }
-      .prompt-text-exit {
-        animation: slideOutToRight 0.4s ease forwards;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
+  const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
+  const [hoveredButtonIndex, setHoveredButtonIndex] = useState<number | null>(null);
+  const [isStartButtonHovered, setIsStartButtonHovered] = useState(false);
+  const [hoveredVideoIndex, setHoveredVideoIndex] = useState<number | null>(null);
 
   const breadcrumbs: BreadcrumbItem[] = [
     { label: 'WELCOME', isActive: true }
@@ -128,663 +31,542 @@ export const HomeTest: React.FC<HomeTestProps> = ({ onNavigateToPage }) => {
   // Create navigation handler
   const navigationHandler = onNavigateToPage ? createNavigationHandler(onNavigateToPage) : undefined;
 
-  // Action buttons data
+  // Carousel items for "How to get started?" card
+  const carouselItems = [
+    {
+      badge: 'AI POWERED',
+      title: 'Create your first transaction',
+      description: 'To see the full potential of Korra and its features you need to create a transaction. Upload your key terms, policy, claims, premiums, losses...',
+      buttonText: 'START',
+      onClick: () => onNavigateToPage?.('reports-new-transaction-form')
+    }
+  ];
+
+  // Action buttons data with hover states
   const actionButtons = [
     {
-      icon: AddMedium,
+      icon: GraphSmall,
+      iconBgColor: colors.reports.blue700,
       iconColor: colors.reports.blue900,
-      backgroundColor: colors.reports.blue500,
-      label: 'Source a new deal',
-      onClick: () => onNavigateToPage?.('reports-new-transaction-form')
-    },
-    {
-      icon: DocumentMedium,
-      iconColor: '#C5950B', // Yellow 900
-      backgroundColor: '#FBDB6B', // Yellow from design
-      label: 'Extract Key Terms',
-      onClick: () => onNavigateToPage?.('contracts-ai-extraction')
-    },
-    {
-      icon: GraphMedium,
-      iconColor: colors.analytics.green900,
-      backgroundColor: colors.analytics.green700,
-      label: 'See Portfolio Performances',
+      hoverBgColor: colors.contracts.dynamic.yellow200,
+      label: 'View Portfolio Performances',
       onClick: () => onNavigateToPage?.('analytics-valuation-dashboard')
     },
     {
-      icon: FolderMedium,
-      iconColor: '#BC6833',
-      backgroundColor: '#F59E77', // Orange from design
-      label: 'Set up Bordereau',
-      onClick: () => console.log('Set up Bordereau clicked')
-    },
-    {
-      icon: AddMedium,
-      iconColor: colors.reports.blue900,
-      backgroundColor: colors.reports.blue500,
-      label: 'Source a new deal',
-      onClick: () => onNavigateToPage?.('reports-new-transaction-form')
-    },
-    {
-      icon: DocumentMedium,
-      iconColor: '#C5950B', // Yellow 900
-      backgroundColor: '#FBDB6B', // Yellow from design
+      icon: KeyTermsSmall,
+      iconBgColor: '#FBDB6B', // Contracts theme main color from Figma
+      iconColor: colors.contracts.yellow900,
+      hoverBgColor: colors.contracts.dynamic.yellow200,
       label: 'Extract Key Terms',
       onClick: () => onNavigateToPage?.('contracts-ai-extraction')
+    },
+    {
+      icon: ValuationsSmall,
+      iconBgColor: colors.analytics.green700,
+      iconColor: colors.analytics.green900,
+      hoverBgColor: colors.contracts.dynamic.yellow200,
+      label: 'See Valuations',
+      onClick: () => onNavigateToPage?.('analytics-valuation-dashboard')
+    },
+    {
+      icon: BordereauSmall,
+      iconBgColor: colors.reports.blue700,
+      iconColor: colors.reports.blue900,
+      hoverBgColor: colors.contracts.dynamic.yellow200,
+      label: 'Set up and Upload Bordereau',
+      onClick: () => onNavigateToPage?.('reports-bdx-upload')
+    },
+    {
+      icon: TrianglesSmall,
+      iconBgColor: colors.analytics.green700,
+      iconColor: colors.analytics.green900,
+      hoverBgColor: colors.contracts.dynamic.yellow200,
+      label: 'View Triangles',
+      onClick: () => onNavigateToPage?.('analytics-valuation-status')
+    }
+  ];
+
+  // Video demos data
+  const videoDemos = [
+    {
+      title: 'Reports',
+      description: 'Automate and streamline bordereaux management',
+      duration: '2:30',
+      thumbnail: '/Reports.png',
+      bgColor: colors.reports.blue800
+    },
+    {
+      title: 'Analytics',
+      description: 'Assess and boost portfolio profitability',
+      duration: '2:30',
+      thumbnail: '/analytics.png',
+      bgColor: colors.analytics.green800
+    },
+    {
+      title: 'Contracts',
+      description: 'Convert agreements into actionable data',
+      duration: '2:30',
+      thumbnail: '/Contracts.png',
+      bgColor: '#FBDB6B'
     }
   ];
 
   return (
-    <Layout
-      pageType="home"
-      breadcrumbs={breadcrumbs}
-      selectedSidebarItem="home"
-      onNavigate={navigationHandler}
-      onInboxClick={() => {
-        console.log('Inbox clicked');
-      }}
-    >
-      {/* Welcome Title */}
-      <div style={{ marginBottom: '36px' }}>
-        <h1 style={{
-          fontFamily: 'Bradford LL',
-          fontSize: '42px',
-          fontWeight: 500,
-          lineHeight: 1.2,
-          letterSpacing: '-1.5px',
-          color: colors.blackAndWhite.black900,
-          margin: 0
-        }}>
-          Welcome back, <span style={{ color: colors.blackAndWhite.black500 }}>Sebastian</span>
-        </h1>
-      </div>
+    <ThemeProvider initialTheme="reports">
+      <Layout
+        breadcrumbs={breadcrumbs}
+        selectedSidebarItem="home"
+        onNavigate={navigationHandler}
+        onInboxClick={() => {
+          console.log('Inbox clicked');
+        }}
+        showAskQuill={true}
+        onAskQuillClick={() => {
+          console.log('Ask Quill clicked');
+        }}
+      >
+        {/* Welcome Title */}
+        <div style={{ marginBottom: '70px' }}>
+          <h1 style={{
+            fontFamily: 'Bradford LL',
+            fontSize: '42px',
+            fontWeight: 500,
+            lineHeight: 1.2,
+            letterSpacing: '-1.4px',
+            color: colors.blackAndWhite.black900,
+            margin: 0
+          }}>
+            Welcome to Korra, <span style={{ color: colors.blackAndWhite.black900 }}>Sebastian.</span><br />
+            <span style={{ color: colors.blackAndWhite.black500 }}>Here's few actions you can take to get started.</span>
+          </h1>
+        </div>
 
-      {/* Quick Actions Section */}
-      <div style={{ marginBottom: '60px' }}>
-        {/* Cards Grid */}
+        {/* Main Content - Two Column Layout */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '60% 40%',
-          gap: '20px'
+          gridTemplateColumns: '50% 50%',
+          gap: '20px',
+          marginBottom: '70px'
         }}>
-          {/* Transactions Card */}
-          <div
-            className="quick-action-card"
-            style={{
-              position: 'relative',
-              boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.06)',
-              height: '390px',
-              borderRadius: borderRadius[16]
-            }}
-          >
-            {/* Background Layer */}
-            <div
-              className="card-background-layer"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: colors.reports.blue700,
-                borderRadius: borderRadius[16],
-                zIndex: 0
-              }}
-            />
-
-            {/* Content Layer */}
+          {/* Left Card - How to get started? */}
+          <div style={{
+            backgroundColor: colors.reports.blue700,
+            borderRadius: borderRadius[16],
+            padding: '10px',
+            boxShadow: '0px 2px 5px 0px rgba(0, 0, 0, 0.06)',
+            height: '390px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            {/* Card Header */}
             <div style={{
-              position: 'relative',
-              zIndex: 1,
-              padding: '16px',
-              height: '100%',
+              padding: '10px 20px',
               display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              height: '56px'
             }}>
-              {/* Card Header */}
-              <div style={{
-                padding: '20px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start'
+              <h3 style={{
+                fontFamily: 'Söhne',
+                fontSize: '20px',
+                fontWeight: 600,
+                lineHeight: 1.2,
+                color: colors.blackAndWhite.black900,
+                margin: 0
               }}>
-                <div>
-                  <h3 style={{
-                    ...typography.styles.subheadingM,
-                    color: colors.blackAndWhite.black900,
-                    margin: 0
-                  }}>
-                    Next Steps
-                  </h3>
-                  <p style={{
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    opacity: 0.5,
-                    margin: '3px 0 0 0'
-                  }}>
-                    You have 2 transaction peding
-                  </p>
-                </div>
-                <div
-                  onClick={() => onNavigateToPage?.('reports-transaction-management')}
+                How to get started?
+              </h3>
+
+              {/* Navigation Arrows */}
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                <button
+                  onClick={() => setCurrentCarouselIndex(Math.max(0, currentCarouselIndex - 1))}
+                  disabled={currentCarouselIndex === 0}
                   style={{
-                    width: '40px',
-                    height: '40px',
-                    position: 'relative',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    backgroundColor: '#83C9ED',
+                    border: 'none',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    cursor: 'pointer',
-                    flexShrink: 0
+                    cursor: currentCarouselIndex === 0 ? 'not-allowed' : 'pointer',
+                    opacity: currentCarouselIndex === 0 ? 0.5 : 1
                   }}
                 >
-                  {/* Steps Complete Indicator */}
-                  <div style={{ position: 'relative', width: '50px', height: '50px' }}>
-                    {/* White Background Circle - 10px bigger */}
-                    <svg width="50" height="50" viewBox="0 0 50 50" style={{ position: 'absolute', top: 0, left: 0 }}>
-                      <circle
-                        cx="25"
-                        cy="25"
-                        r="25"
-                        fill={colors.blackAndWhite.white}
-                      />
-                    </svg>
-                    {/* Background Circle */}
-                    <svg width="50" height="50" viewBox="0 0 50 50" style={{ position: 'absolute', top: 0, left: 0 }}>
-                      <circle
-                        cx="25"
-                        cy="25"
-                        r="18"
-                        fill="none"
-                        stroke="#F4EFE6"
-                        strokeWidth="3"
-                      />
-                    </svg>
-                    {/* Progress Arc (1/6 = 16.67% = 60 degrees) */}
-                    <svg width="50" height="50" viewBox="0 0 50 50" style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}>
-                      <circle
-                        cx="25"
-                        cy="25"
-                        r="18"
-                        fill="none"
-                        stroke="#15BF53"
-                        strokeWidth="3"
-                        strokeDasharray="113.1" /* 2 * PI * 18 = 113.1 */
-                        strokeDashoffset="94.25" /* 113.1 - (113.1 * 0.167) = 94.25 */
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    {/* Center Text */}
+                  <div style={{ transform: 'rotate(180deg)' }}>
+                    <S2ArrowRightSmall color={colors.blackAndWhite.black900} />
+                  </div>
+                </button>
+                <button
+                  onClick={() => setCurrentCarouselIndex(Math.min(carouselItems.length - 1, currentCarouselIndex + 1))}
+                  disabled={currentCarouselIndex === carouselItems.length - 1}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    backgroundColor: '#83C9ED',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: currentCarouselIndex === carouselItems.length - 1 ? 'not-allowed' : 'pointer',
+                    opacity: currentCarouselIndex === carouselItems.length - 1 ? 0.5 : 1
+                  }}
+                >
+                  <S2ArrowRightSmall color={colors.blackAndWhite.black900} />
+                </button>
+              </div>
+            </div>
+
+            {/* Card Content */}
+            <div style={{
+              backgroundColor: colors.blackAndWhite.white,
+              borderRadius: borderRadius[8],
+              height: '300px',
+              padding: '21px 23px 20px 23px',
+              position: 'relative'
+            }}>
+              {/* Content wrapper with natural flow */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                {/* AI Powered Badge */}
+                <div style={{
+                  backgroundColor: '#F9F6F0',
+                  borderRadius: borderRadius[24],
+                  padding: '6px 8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'flex-start',
+                  marginBottom: '10px'
+                }}>
+                  <span style={{
+                    fontFamily: 'Söhne Mono',
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                    color: colors.blackAndWhite.black900,
+                    lineHeight: 1.2
+                  }}>
+                    {carouselItems[currentCarouselIndex].badge}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h4 style={{
+                  fontFamily: 'Söhne',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  lineHeight: 1.3,
+                  color: colors.blackAndWhite.black900,
+                  margin: '0 0 10px 0'
+                }}>
+                  {carouselItems[currentCarouselIndex].title}
+                </h4>
+
+                {/* Description - aligned with image box start (11px from right) */}
+                <p style={{
+                  fontFamily: 'Söhne',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  lineHeight: 1.3,
+                  color: colors.blackAndWhite.black500,
+                  margin: 0,
+                  paddingRight: '205px'
+                }}>
+                  {carouselItems[currentCarouselIndex].description}
+                </p>
+              </div>
+
+              {/* Transaction Form Preview Image */}
+              <div style={{
+                position: 'absolute',
+                right: '11px',
+                top: '76px',
+                width: '194px',
+                height: '214px',
+                backgroundColor: '#F9F6F0',
+                borderRadius: borderRadius[4],
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden'
+              }}>
+                <img
+                  src="/carousel-image.svg"
+                  alt="Transaction form preview"
+                  style={{
+                    width: '85%',
+                    height: '85%',
+                    objectFit: 'contain'
+                  }}
+                />
+              </div>
+
+              {/* START Button */}
+              <button
+                onClick={carouselItems[currentCarouselIndex].onClick}
+                onMouseEnter={() => setIsStartButtonHovered(true)}
+                onMouseLeave={() => setIsStartButtonHovered(false)}
+                style={{
+                  position: 'absolute',
+                  bottom: '20px',
+                  left: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span style={{
+                  fontFamily: 'Söhne Mono',
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  letterSpacing: '1.2px',
+                  textTransform: 'uppercase',
+                  color: colors.blackAndWhite.black900,
+                  textDecoration: isStartButtonHovered ? 'underline' : 'none',
+                  transition: 'text-decoration 0.2s ease'
+                }}>
+                  start
+                </span>
+                <div style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: borderRadius[8],
+                  backgroundColor: colors.reports.blue700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transform: isStartButtonHovered ? 'translateX(5px)' : 'translateX(0)',
+                  transition: 'transform 0.2s ease'
+                }}>
+                  <S1ArrowRightSmall color={colors.blackAndWhite.black900} />
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Right Side - Action Buttons */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px'
+          }}>
+            {actionButtons.map((button, index) => {
+              const isHovered = hoveredButtonIndex === index;
+              return (
+                <button
+                  key={index}
+                  onClick={button.onClick}
+                  onMouseEnter={() => setHoveredButtonIndex(index)}
+                  onMouseLeave={() => setHoveredButtonIndex(null)}
+                  style={{
+                    height: '70px',
+                    backgroundColor: isHovered ? button.hoverBgColor : colors.blackAndWhite.white,
+                    border: `1px solid ${colors.blackAndWhite.black100}`,
+                    borderRadius: borderRadius[16],
+                    padding: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                      width: '20px',
+                      height: '20px',
+                      backgroundColor: button.iconBgColor,
+                      borderRadius: borderRadius[4],
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <button.icon color={button.iconColor} />
+                    </div>
+                    <span style={{
+                      fontFamily: 'Söhne',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      lineHeight: 1.3,
+                      color: isHovered ? colors.blackAndWhite.black900 : colors.blackAndWhite.black800,
+                      transition: 'color 0.2s ease'
+                    }}>
+                      {button.label}
+                    </span>
+                  </div>
+
+                  {/* Arrow - circular black button when hovered */}
+                  {isHovered ? (
+                    <div style={{
+                      width: '24px',
+                      height: '24px',
+                      backgroundColor: colors.blackAndWhite.black900,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <S1ArrowRightSmall color={colors.blackAndWhite.white} />
+                    </div>
+                  ) : (
+                    <S1ArrowRightSmall color={colors.blackAndWhite.black900} />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Video Demos Section */}
+        <div>
+          {/* Section Label */}
+          <p style={{
+            fontFamily: 'Bradford LL',
+            fontSize: '12px',
+            fontWeight: 700,
+            fontStyle: 'italic',
+            lineHeight: 1.3,
+            letterSpacing: '-0.24px',
+            color: '#838985',
+            marginBottom: '16px'
+          }}>
+            Or Watch Product Demos
+          </p>
+
+          {/* Video Cards Grid */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '20px'
+          }}>
+            {videoDemos.map((video, index) => {
+              const isHovered = hoveredVideoIndex === index;
+              return (
+                <div key={index} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Video Thumbnail */}
+                  <div
+                    onMouseEnter={() => setHoveredVideoIndex(index)}
+                    onMouseLeave={() => setHoveredVideoIndex(null)}
+                    style={{
+                      position: 'relative',
+                      height: '170px',
+                      borderRadius: borderRadius[16],
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      backgroundColor: '#F9F6F0'
+                    }}
+                  >
+                    {/* Background Image */}
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                        transition: 'transform 0.3s ease'
+                      }}
+                    />
+
+                    {/* Black Overlay - fades out on hover */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                      opacity: isHovered ? 0 : 1,
+                      transition: 'opacity 0.3s ease',
+                      pointerEvents: 'none'
+                    }} />
+
+                    {/* Play Button Overlay */}
                     <div style={{
                       position: 'absolute',
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
+                      width: '44px',
+                      height: '29px',
+                      backgroundColor: colors.blackAndWhite.white,
+                      borderRadius: borderRadius[24],
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '1px'
+                      justifyContent: 'center',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      zIndex: 1
                     }}>
+                      <PlaySmall color={video.bgColor} />
+                    </div>
+                  </div>
+
+                  {/* Video Info */}
+                  <div style={{
+                    padding: '0 10px'
+                  }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       <span style={{
-                        ...typography.styles.dataXS,
+                        fontFamily: 'Söhne',
+                        fontSize: '14px',
                         fontWeight: 600,
+                        lineHeight: 1.3,
                         color: colors.blackAndWhite.black900
-                      }}>1</span>
-                      <span style={{
-                        ...typography.styles.dataXS,
-                        color: colors.blackAndWhite.black300
-                      }}>/6</span>
+                      }}>
+                        {video.title}
+                      </span>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        gap: '12px'
+                      }}>
+                        <p style={{
+                          fontFamily: 'Söhne',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          lineHeight: 1.3,
+                          color: colors.blackAndWhite.black500,
+                          margin: 0,
+                          flex: 1
+                        }}>
+                          {video.description}
+                        </p>
+                        <span style={{
+                          fontFamily: 'Söhne',
+                          fontSize: '14px',
+                          fontWeight: 600,
+                          lineHeight: 1.3,
+                          color: colors.blackAndWhite.black500,
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {video.duration}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Transaction Preview Cards */}
-              <div style={{
-                display: 'flex',
-                gap: '6px',
-                height: '230px'
-              }}>
-              {/* Card 1 */}
-              <div
-                className="transaction-preview-card"
-                style={{
-                  flex: 1,
-                  backgroundColor: colors.blackAndWhite.white,
-                  borderRadius: '10px',
-                  padding: '20px',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between'
-                }}>
-                {/* Text - Top Left */}
-                <div>
-                  <div style={{
-                    ...typography.styles.bodyL,
-                    color: colors.blackAndWhite.black900,
-                    marginBottom: '4px'
-                  }}>
-                    Create a Transaction Manually
-                  </div>
-                  <div style={{
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    opacity: 0.5
-                  }}>
-                    Create a Transaction Manually
-                  </div>
-                </div>
-                {/* Bottom Row: Document Preview Box + Button */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '10px' }}>
-                  {/* Document Preview Box */}
-                  <div style={{
-                    backgroundColor: colors.contracts.dynamic.yellow200,
-                    borderRadius: '6px',
-                    padding: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '130px',
-                    height: '130px',
-                    flexShrink: 0
-                  }}>
-                    {/* Document Image */}
-                    <img
-                      src="/document.png"
-                      alt="Document"
-                      style={{
-                        height: '100%',
-                        width: 'auto'
-                      }}
-                    />
-                  </div>
-                  {/* Button - Bottom Right */}
-                  <div
-                    onClick={() => onNavigateToPage?.('reports-new-transaction-form')}
-                    style={{
-                      backgroundColor: colors.blackAndWhite.black900,
-                      border: 'none',
-                      borderRadius: '400px',
-                      padding: '6px 15px',
-                      fontSize: '10px',
-                      fontFamily: 'Söhne Mono',
-                      fontWeight: 600,
-                      letterSpacing: '1.2px',
-                      textTransform: 'uppercase',
-                      color: colors.blackAndWhite.white,
-                      cursor: 'pointer',
-                      flexShrink: 0
-                    }}>
-                    START
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2 */}
-              <div
-                className="transaction-preview-card"
-                style={{
-                  flex: 1,
-                  backgroundColor: colors.blackAndWhite.white,
-                  borderRadius: '10px',
-                  padding: '20px',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between'
-                }}>
-                {/* Text - Top Left */}
-                <div>
-                  <div style={{
-                    ...typography.styles.bodyL,
-                    color: colors.blackAndWhite.black900,
-                    marginBottom: '4px'
-                  }}>
-                    Extract Key Terms
-                  </div>
-                  <div style={{
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    opacity: 0.5
-                  }}>
-                    Extract Key Terms
-                  </div>
-                </div>
-                {/* Bottom Row: Document Preview Box + Button */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '10px' }}>
-                  {/* Document Preview Box */}
-                  <div style={{
-                    backgroundColor: colors.contracts.dynamic.yellow200,
-                    borderRadius: '6px',
-                    padding: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '130px',
-                    height: '130px',
-                    flexShrink: 0
-                  }}>
-                    {/* Document Image */}
-                    <img
-                      src="/document.png"
-                      alt="Document"
-                      style={{
-                        height: '100%',
-                        width: 'auto'
-                      }}
-                    />
-                  </div>
-                  {/* Button - Bottom Right */}
-                  <div
-                    onClick={() => onNavigateToPage?.('reports-new-transaction-form')}
-                    style={{
-                      backgroundColor: colors.blackAndWhite.black900,
-                      border: 'none',
-                      borderRadius: '400px',
-                      padding: '6px 15px',
-                      fontSize: '10px',
-                      fontFamily: 'Söhne Mono',
-                      fontWeight: 600,
-                      letterSpacing: '1.2px',
-                      textTransform: 'uppercase',
-                      color: colors.blackAndWhite.white,
-                      cursor: 'pointer',
-                      flexShrink: 0
-                    }}>
-                    START
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
-          </div>
-
-          {/* Explore Products Card - NEW */}
-          <div
-            className="quick-action-card explore-products-card"
-            style={{
-              position: 'relative',
-              boxShadow: '0px 2px 5px 0px rgba(0,0,0,0.06)',
-              height: '390px',
-              borderRadius: borderRadius[16],
-              overflow: 'hidden',
-              cursor: 'pointer'
-            }}
-          >
-            {/* Video Background */}
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                zIndex: 0
-              }}
-            >
-              <source src="https://korra-ldgr.vercel.app/contact/contact-video.mp4" type="video/mp4" />
-            </video>
-
-            {/* Gradient Overlay - Black 900 starting from 50% height */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: `linear-gradient(to bottom, rgba(23, 33, 27, 0) 0%, rgba(23, 33, 27, 0) 50%, ${colors.blackAndWhite.black900} 100%)`,
-                zIndex: 1
-              }}
-            />
-
-            {/* Content Layer */}
-            <div style={{
-              position: 'relative',
-              zIndex: 2,
-              padding: '30px',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start'
-            }}>
-              {/* Centered Watch Videos Button */}
-              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                <button
-                  className="watch-videos-button"
-                  style={{
-                    position: 'relative',
-                    border: 'none',
-                    borderRadius: '300px',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    cursor: 'pointer',
-                    backgroundColor: 'transparent'
-                  }}>
-                  {/* Background that scales */}
-                  <div
-                    className="button-background"
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: colors.blackAndWhite.white,
-                      borderRadius: '300px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      transition: 'transform 0.3s ease',
-                      zIndex: 0
-                    }}
-                  />
-                  {/* Content that stays same size */}
-                  <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <PlaySmall color={colors.marketplace.violet700} />
-                    <span style={{
-                      ...typography.styles.navS,
-                      color: colors.blackAndWhite.black900
-                    }}>
-                      WATCH VIDEOS
-                    </span>
-                  </div>
-                </button>
-              </div>
-
-              {/* Bottom Text - Left Aligned */}
-              <div style={{ textAlign: 'left', width: '100%' }}>
-                <h3 style={{
-                  ...typography.styles.subheadingM,
-                  color: colors.blackAndWhite.white,
-                  margin: '0 0 8px 0'
-                }}>
-                  Explore Products
-                </h3>
-                <p style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.white,
-                  opacity: 0.8,
-                  margin: 0
-                }}>
-                  Learn more about each apps
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
-      </div>
-
-      {/* Main Action Buttons */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '20px',
-        marginBottom: '60px'
-      }}>
-        {actionButtons.map((button, index) => (
-          <button
-            key={index}
-            onClick={button.onClick}
-            style={{
-              height: '72px',
-              border: `1px solid ${colors.blackAndWhite.black100}`,
-              borderRadius: borderRadius[16],
-              backgroundColor: colors.blackAndWhite.white,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '13px',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = colors.contracts.dynamic.yellow200;
-              e.currentTarget.style.borderColor = colors.blackAndWhite.black300;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = colors.blackAndWhite.white;
-              e.currentTarget.style.borderColor = colors.blackAndWhite.black100;
-            }}
-          >
-            <div style={{
-              width: '24px',
-              height: '24px',
-              backgroundColor: button.backgroundColor,
-              borderRadius: borderRadius[4],
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              position: 'relative'
-            }}>
-              <div style={{
-                position: 'relative',
-                left: index === 0 ? '1px' : index === 1 ? '1px' : index === 3 ? '1px' : '0', // Blue 1px right, Yellow 1px right, Last 1px right
-                top: index === 2 ? '1px' : '0' // Green 1px down
-              }}>
-                <button.icon color={button.iconColor} />
-              </div>
-            </div>
-            <span style={{
-              ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black900
-            }}>
-              {button.label}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Ask Korra AI Section */}
-      <div style={{ marginTop: '60px' }}>
-        {/* Chat Section */}
-        <div style={{
-          backgroundColor: colors.contracts.dynamic.yellow200,
-          height: '142px',
-          width: '100%',
-          borderRadius: borderRadius[16],
-          padding: '20px',
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}>
-        {/* Input or Animated Prompt Text */}
-        {isFocused ? (
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => {
-              if (!inputValue) setIsFocused(false);
-            }}
-            autoFocus
-            style={{
-              ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black900,
-              backgroundColor: 'transparent',
-              border: 'none',
-              outline: 'none',
-              padding: 0,
-              margin: 0,
-              width: '100%'
-            }}
-            placeholder={prompts[0]}
-          />
-        ) : (
-          <div
-            onClick={() => setIsFocused(true)}
-            style={{
-              position: 'relative',
-              height: '18px',
-              overflow: 'hidden',
-              cursor: 'text'
-            }}
-          >
-            <p
-              className={isAnimating ? 'prompt-text-exit' : 'prompt-text-enter'}
-              style={{
-                ...typography.styles.bodyM,
-                color: '#838985',
-                margin: 0
-              }}
-            >
-              {prompts[currentPromptIndex]}
-            </p>
-          </div>
-        )}
-
-        {/* Bottom Row: Upload Button and Send Button */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          {/* Upload Button */}
-          <button style={{
-            backgroundColor: colors.blackAndWhite.white,
-            border: 'none',
-            borderRadius: '300px',
-            padding: '10px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            cursor: 'pointer'
-          }}>
-            <span style={{
-              ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black900
-            }}>
-              Upload
-            </span>
-          </button>
-
-          {/* Send Button */}
-          <button style={{
-            width: '35px',
-            height: '35px',
-            borderRadius: '50%',
-            backgroundColor: colors.blackAndWhite.black900,
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer'
-          }}>
-            <S1ArrowRightMedium color={colors.blackAndWhite.white} />
-          </button>
-        </div>
-        </div>
-      </div>
-    </Layout>
+      </Layout>
+    </ThemeProvider>
   );
 };

@@ -615,6 +615,63 @@ export const UserSmall: React.FC<SmallIconProps> = ({
   </svg>
 );
 
+export const BordereauSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <g clipPath="url(#clip0_2001_10)">
+      <rect x="0.982422" y="1.11575" width="10" height="10" rx="2" stroke={color} strokeWidth="1.6"/>
+      <path d="M0.982422 3.11575C0.982422 2.01118 1.87785 1.11575 2.98242 1.11575H5.98242V11.1158H2.98242C1.87785 11.1158 0.982422 10.2203 0.982422 9.11575V3.11575Z" stroke={color} strokeWidth="1.6"/>
+      <path d="M0.982422 3.11575C0.982422 2.01118 1.87785 1.11575 2.98242 1.11575H8.98242C10.087 1.11575 10.9824 2.01118 10.9824 3.11575V6.11575H0.982422V3.11575Z" stroke={color} strokeWidth="1.6"/>
+    </g>
+    <defs>
+      <clipPath id="clip0_2001_10">
+        <rect width="12" height="12" fill="white"/>
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const KeyTermsSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M6.23684 2H2.44738C1.92416 2 1.50001 2.39797 1.50001 2.88889L1.5 9.11111C1.5 9.60203 1.92415 10 2.44737 10H6.23684M4.81579 6H10.5M10.5 6L7.6579 3.33333M10.5 6L7.6579 8.66667" stroke={color} strokeWidth="1.6"/>
+  </svg>
+);
+
+export const TrianglesSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <g clipPath="url(#clip0_2001_39)">
+      <rect x="0.362305" y="0.556" width="3" height="3" rx="1" fill={color}/>
+      <rect x="0.362305" y="4.556" width="3" height="3" rx="1" fill={color}/>
+      <rect x="0.362305" y="8.556" width="3" height="3" rx="1" fill={color}/>
+      <rect x="8.3623" y="0.556" width="3" height="3" rx="1" fill={color}/>
+      <rect x="4.3623" y="0.556" width="3" height="3" rx="1" fill={color}/>
+      <rect x="4.3623" y="4.556" width="3" height="3" rx="1" fill={color}/>
+    </g>
+    <defs>
+      <clipPath id="clip0_2001_39">
+        <rect width="12" height="12" fill="white"/>
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const ValuationsSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M1 9L4.14277 5.48521L6.42851 7.97041L11 3M11 3L7.66662 3M11 3V6.72781" stroke={color} strokeWidth="1.6"/>
+  </svg>
+);
+
 // Medium Icons (22x22px) - Auto-generated from SVG files
 
 export const AddMedium: React.FC<MediumIconProps> = ({ 

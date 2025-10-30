@@ -58,6 +58,8 @@ export interface LayoutProps {
   onManageAccountClick?: () => void;
   onSettingsClick?: () => void;
   appAction?: AppActionConfig; // Optional context-aware app action button
+  showAskQuill?: boolean; // Show "Ask Quill" button on home page
+  onAskQuillClick?: () => void;
 
   // Form mode props (FormTopNav)
   formMode?: boolean;
@@ -92,6 +94,8 @@ export const Layout: React.FC<LayoutProps> = ({
   onManageAccountClick,
   onSettingsClick,
   appAction,
+  showAskQuill = false,
+  onAskQuillClick,
 
   // Form mode props
   formMode = false,
@@ -260,7 +264,8 @@ export const Layout: React.FC<LayoutProps> = ({
           zIndex: 999,
           backgroundColor: colors.blackAndWhite.black900,
           borderRadius: '0 0 12px 12px',
-          transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
+          transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+          overflow: 'visible'
         }}>
           {formMode ? (
             <FormTopNav
@@ -282,6 +287,8 @@ export const Layout: React.FC<LayoutProps> = ({
               onSidebarToggle={handleSidebarToggle}
               onNavigate={onNavigate}
               appAction={appAction}
+              showAskQuill={showAskQuill}
+              onAskQuillClick={onAskQuillClick}
               isSidebarCompact={isCompact}
             />
           ) : (
@@ -298,6 +305,8 @@ export const Layout: React.FC<LayoutProps> = ({
               onSidebarToggle={handleSidebarToggle}
               onNavigate={onNavigate}
               appAction={appAction}
+              showAskQuill={showAskQuill}
+              onAskQuillClick={onAskQuillClick}
               isSidebarCompact={isCompact}
             />
           )}
