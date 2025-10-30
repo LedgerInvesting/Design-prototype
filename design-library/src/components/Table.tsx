@@ -6,6 +6,7 @@ import { ActionCell, ActionType } from './ActionCell';
 import { CustomCell, CustomCellElement } from './CustomCell';
 import { StatusCell, StatusType } from './StatusCell';
 import { Selector } from './Selector';
+import { Button } from './Button';
 
 // Base interfaces
 export type CellType = 'simple' | 'document' | 'action' | 'custom' | 'status';
@@ -62,6 +63,16 @@ export interface SortState {
   direction: SortDirection;
 }
 
+// Header action type
+export interface TableHeaderAction {
+  /** Type of action button or separator */
+  type: 'icon' | 'separator';
+  /** Icon component (for icon buttons) */
+  icon?: React.ReactNode;
+  /** Click handler */
+  onClick?: () => void;
+}
+
 // Compact Table Header Component (Contracts/Transactions style)
 export interface CompactTableHeaderProps {
   title?: string;
@@ -77,6 +88,7 @@ export interface CompactTableHeaderProps {
   totalItems?: number;
   itemsPerPage?: number;
   onPageChange?: (page: number) => void;
+  headerActions?: TableHeaderAction[];
   className?: string;
 }
 
@@ -94,6 +106,7 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
   totalItems = 0,
   itemsPerPage = 10,
   onPageChange,
+  headerActions = [],
   className = '',
 }) => {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -642,11 +655,43 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
         )}
       </div>
 
-      {showPagination && (
+      {(showPagination || (headerActions && headerActions.length > 0)) && (
         <div style={rightSectionStyles}>
-          <span style={paginationStyles}>
-            {startItem}-{endItem} of {totalItems} documents
-          </span>
+          {/* Header Actions */}
+          {headerActions && headerActions.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {headerActions.map((action, index) => {
+                if (action.type === 'separator') {
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        width: '1px',
+                        height: '20px',
+                        backgroundColor: colors.theme.primary400,
+                      }}
+                    />
+                  );
+                } else {
+                  return (
+                    <Button
+                      key={index}
+                      variant="icon"
+                      color="primary200"
+                      icon={action.icon}
+                      onClick={action.onClick}
+                      shape="square"
+                    />
+                  );
+                }
+              })}
+            </div>
+          )}
+          {showPagination && (
+            <span style={paginationStyles}>
+              {startItem}-{endItem} of {totalItems} documents
+            </span>
+          )}
         </div>
       )}
       </div>
@@ -1038,7 +1083,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
 
   // Group header row styles (extracted for clarity)
   const groupHeaderStyle: React.CSSProperties = {
-    height: '46px',
+    minHeight: '46px',
     borderTop: `1px solid ${colors.theme.primary400}`,
     borderBottom: `1px solid ${colors.theme.primary400}`,
     cursor: 'pointer',
@@ -1325,6 +1370,7 @@ export interface TableProps {
   onSort?: (column: string) => void;
   onGroupToggle?: (rowIndex: number) => void;
   emptyMessage?: string;
+  headerActions?: TableHeaderAction[];
   className?: string;
 }
 
@@ -1349,6 +1395,7 @@ export const Table: React.FC<TableProps> = ({
   onSort,
   onGroupToggle,
   emptyMessage = 'No data available',
+  headerActions = [],
   className = '',
 }) => {
   const colors = useSemanticColors();
@@ -1658,6 +1705,7 @@ export const Table: React.FC<TableProps> = ({
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           onPageChange={onPageChange}
+          headerActions={headerActions}
         />
       )}
       

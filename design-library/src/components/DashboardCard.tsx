@@ -5,14 +5,14 @@ import { MenuDropdown } from './MenuDropdown';
 import type { DropdownOption } from './MenuDropdown';
 
 export interface DashboardCardAction {
-  /** Type of action button */
-  type: 'text' | 'icon';
+  /** Type of action button or separator */
+  type: 'text' | 'icon' | 'separator';
   /** Button label (for text buttons) */
   label?: string;
   /** Icon component (for icon buttons) */
   icon?: React.ReactNode;
   /** Click handler */
-  onClick: () => void;
+  onClick?: () => void;
   /** Button variant (optional) */
   variant?: 'primary' | 'small' | 'icon' | 'secondary';
   /** Button color (optional) */
@@ -129,7 +129,20 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
       return (
         <div style={actionsContainerStyles}>
           {actions.map((action, index) => {
-            if (action.type === 'icon') {
+            if (action.type === 'separator') {
+              // Render vertical separator
+              return (
+                <div
+                  key={index}
+                  style={{
+                    width: '1px',
+                    height: '20px',
+                    backgroundColor: colors.theme.primary400,
+                    transform: 'rotate(0deg)',
+                  }}
+                />
+              );
+            } else if (action.type === 'icon') {
               return (
                 <Button
                   key={index}
@@ -138,9 +151,9 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
                   icon={action.icon}
                   onClick={(e) => {
                     e?.stopPropagation?.(); // Prevent card click
-                    action.onClick();
+                    action.onClick?.();
                   }}
-                  shape="circle"
+                  shape="square"
                 />
               );
             } else {
@@ -151,7 +164,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
                   variant={action.variant || 'secondary'}
                   onClick={(e) => {
                     e?.stopPropagation?.(); // Prevent card click
-                    action.onClick();
+                    action.onClick?.();
                   }}
                 >
                   {action.label}

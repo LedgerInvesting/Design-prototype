@@ -70,7 +70,12 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
 
   // Table data with grouped and ungrouped rows
   const [tableData, setTableData] = useState([
-    // Ungrouped triangle rows (normal padding)
+    // Unassigned transaction Group
+    {
+      isGroup: true,
+      groupName: 'Unassigned transaction',
+      isExpanded: true,
+    },
     {
       id: 'standalone-1',
       triangle: 'cd12345e-6789-012b-345c-6d7cd12345e-6789-01...',
@@ -81,6 +86,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 60.0',
       sourceNotes: '£8,542,190',
+      isGroupChild: true,
     },
     {
       id: 'standalone-2',
@@ -92,6 +98,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 55.0',
       sourceNotes: '£6,321,450',
+      isGroupChild: true,
     },
     {
       id: 'standalone-3',
@@ -103,6 +110,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 64.0',
       sourceNotes: '£11,234,567',
+      isGroupChild: true,
     },
     // Pomelo Treaty 2024 Group
     {
@@ -188,7 +196,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       sourceNotes: '£9,876,543',
       isGroupChild: true,
     },
-    // More ungrouped triangle rows
+    // More items in Unassigned transaction group
     {
       id: 'standalone-4',
       triangle: 'ij23456c-def0-1234-5678-9aij23456c-def0-12...',
@@ -199,6 +207,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 58.0',
       sourceNotes: '£7,654,321',
+      isGroupChild: true,
     },
     {
       id: 'standalone-5',
@@ -210,6 +219,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 62.0',
       sourceNotes: '£9,123,456',
+      isGroupChild: true,
     },
     {
       id: 'standalone-6',
@@ -221,6 +231,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 52.0',
       sourceNotes: '£5,432,109',
+      isGroupChild: true,
     },
     {
       id: 'standalone-7',
@@ -232,6 +243,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 67.0',
       sourceNotes: '£12,345,678',
+      isGroupChild: true,
     },
     {
       id: 'standalone-8',
@@ -243,6 +255,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 61.0',
       sourceNotes: '£8,765,432',
+      isGroupChild: true,
     },
     {
       id: 'standalone-9',
@@ -254,6 +267,7 @@ export const AnalyticsTriangle: React.FC<AnalyticsTriangleProps> = ({ onNavigate
       evaluationDates: '23-06-20 to 24-06-20',
       developmentLags: '0.0 to 56.0',
       sourceNotes: '£6,789,012',
+      isGroupChild: true,
     },
   ]);
 
@@ -356,7 +370,7 @@ Import and export triangles in a variety of formats."
             columns={[
               {
                 key: 'triangle',
-                title: 'Triangle',
+                title: 'Transaction Triangle',
                 icon: <DocumentTable color={colors.theme.primary450} />,
                 sortIcon: <ArrangeTable color={colors.theme.primary450} />,
                 sortable: true,

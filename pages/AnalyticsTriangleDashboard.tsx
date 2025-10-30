@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Layout, PageHeader } from '@design-library/pages';
 import { Button, DashboardCard, ChartTooltip } from '@design-library/components';
 import { typography, borderRadius, useSemanticColors, shadows, spacing } from '@design-library/tokens';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
-import { ChevronRightSmall, ChevronDownExtraSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall } from '@design-library/icons';
+import { ChevronRightSmall, ChevronDownExtraSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall, MoreSmall } from '@design-library/icons';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -52,30 +53,43 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const colors = useSemanticColors();
   const [selectedChart1, setSelectedChart1] = useState('data-completeness');
   const [selectedChart2, setSelectedChart2] = useState('right-edge');
-  const [isCard1Collapsed, setIsCard1Collapsed] = useState(false);
-  const [isCard2Collapsed, setIsCard2Collapsed] = useState(false);
+  const [isCard1Expanded, setIsCard1Expanded] = useState(false);
+  const [isCard2Expanded, setIsCard2Expanded] = useState(false);
+  const [isChart1MenuOpen, setIsChart1MenuOpen] = useState(false);
+  const [isChart2MenuOpen, setIsChart2MenuOpen] = useState(false);
   const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
-  const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+  const [chart1MenuPosition, setChart1MenuPosition] = useState({ top: 0, left: 0 });
+  const [chart2MenuPosition, setChart2MenuPosition] = useState({ top: 0, left: 0 });
 
-  // Ref for download dropdown to handle outside clicks
+  // Refs for menu dropdowns to handle outside clicks
+  const chart1MenuRef = useRef<HTMLDivElement>(null);
+  const chart2MenuRef = useRef<HTMLDivElement>(null);
+  const chart1ButtonRef = useRef<HTMLDivElement>(null);
+  const chart2ButtonRef = useRef<HTMLDivElement>(null);
   const downloadDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (chart1MenuRef.current && !chart1MenuRef.current.contains(event.target as Node)) {
+        setIsChart1MenuOpen(false);
+      }
+      if (chart2MenuRef.current && !chart2MenuRef.current.contains(event.target as Node)) {
+        setIsChart2MenuOpen(false);
+      }
       if (downloadDropdownRef.current && !downloadDropdownRef.current.contains(event.target as Node)) {
         setIsDownloadDropdownOpen(false);
       }
     };
 
-    if (isDownloadDropdownOpen) {
+    if (isChart1MenuOpen || isChart2MenuOpen || isDownloadDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isDownloadDropdownOpen]);
+  }, [isChart1MenuOpen, isChart2MenuOpen, isDownloadDropdownOpen]);
 
   // All available chart options
   const allChartOptions = [
@@ -313,6 +327,69 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     }
   };
 
+  // Render chart action menu using portals
+  const renderChartMenu = (
+    isOpen: boolean,
+    menuRef: React.RefObject<HTMLDivElement>,
+    position: { top: number; left: number },
+    chartName: string,
+    onClose: () => void
+  ) => {
+    if (!isOpen) return null;
+
+    const menuContent = (
+      <div
+        ref={menuRef}
+        style={{
+          position: 'fixed',
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+          backgroundColor: colors.blackAndWhite.white,
+          borderRadius: borderRadius[8],
+          boxShadow: shadows.medium,
+          padding: '10px',
+          zIndex: 9999,
+          minWidth: '200px',
+        }}
+      >
+        {[
+          { label: 'Download as PNG', onClick: () => console.log(`Download ${chartName} as PNG`) },
+          { label: 'Download as SVG', onClick: () => console.log(`Download ${chartName} as SVG`) },
+          { label: 'Delete graph', onClick: () => console.log(`Delete ${chartName}`) },
+        ].map((option, index) => (
+          <div
+            key={index}
+            onClick={() => {
+              option.onClick();
+              onClose();
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.backgroundColor = 'transparent';
+            }}
+            style={{
+              padding: '12px 10px',
+              borderRadius: borderRadius[4],
+              fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+              fontSize: typography.styles.bodyM.fontSize,
+              fontWeight: typography.styles.bodyM.fontWeight,
+              lineHeight: typography.styles.bodyM.lineHeight,
+              color: colors.blackAndWhite.black900,
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
+            }}
+          >
+            {option.label}
+          </div>
+        ))}
+      </div>
+    );
+
+    return createPortal(menuContent, document.body);
+  };
+
   // Create navigation handler
   const navigationHandler = onNavigateToPage
     ? createPageNavigationHandler(onNavigateToPage, 'analytics-triangle-dashboard')
@@ -541,65 +618,119 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
       {/* Chart Cards */}
       <div style={{
         display: 'flex',
-        flexDirection: 'column',
+        flexWrap: 'wrap',
         gap: '40px',
         width: '100%'
       }}>
         {/* First Chart Card */}
-        <DashboardCard
-          titleDropdown={{
-            options: allChartOptions.filter(option => option.value !== selectedChart2),
-            value: selectedChart1,
-            onChange: (value) => setSelectedChart1(value),
-            placeholder: 'Chart'
-          }}
-          icon={<CardsGraph />}
-          actions={[
-            {
-              type: 'icon',
-              icon: <ConfigSmall />,
-              onClick: () => console.log(`Configuring ${selectedChart1} chart parameters...`),
-              color: 'primary200'
-            },
-            {
-              type: 'icon',
-              icon: <DownloadSmall />,
-              onClick: () => console.log(`Downloading ${selectedChart1} chart...`),
-              color: 'primary200'
-            }
-          ]}
-          width="100%"
-        >
-          {renderChart(selectedChart1)}
-        </DashboardCard>
+        <div style={{
+          position: 'relative',
+          width: isCard1Expanded ? '100%' : 'calc(50% - 20px)',
+          transition: 'width 0.3s ease'
+        }}>
+          <DashboardCard
+            titleDropdown={{
+              options: allChartOptions.filter(option => option.value !== selectedChart2),
+              value: selectedChart1,
+              onChange: (value) => setSelectedChart1(value),
+              placeholder: 'Chart'
+            }}
+            icon={<CardsGraph />}
+            actions={[
+              {
+                type: 'icon',
+                icon: isCard1Expanded
+                  ? <CollapseSmall color={colors.blackAndWhite.black900} />
+                  : <ExpandSmall color={colors.blackAndWhite.black900} />,
+                onClick: () => setIsCard1Expanded(!isCard1Expanded),
+                color: 'primary200'
+              },
+              {
+                type: 'separator'
+              },
+              {
+                type: 'icon',
+                icon: <div ref={chart1ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart1ButtonRef.current) {
+                    const rect = chart1ButtonRef.current.getBoundingClientRect();
+                    setChart1MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200, // Align right edge of menu with button
+                    });
+                  }
+                  setIsChart1MenuOpen(!isChart1MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ]}
+            width="100%"
+          >
+            {renderChart(selectedChart1)}
+          </DashboardCard>
+          {renderChartMenu(
+            isChart1MenuOpen,
+            chart1MenuRef,
+            chart1MenuPosition,
+            selectedChart1,
+            () => setIsChart1MenuOpen(false)
+          )}
+        </div>
 
         {/* Second Chart Card */}
-        <DashboardCard
-          titleDropdown={{
-            options: allChartOptions.filter(option => option.value !== selectedChart1),
-            value: selectedChart2,
-            onChange: (value) => setSelectedChart2(value),
-            placeholder: 'Chart'
-          }}
-          icon={<CardsGraph />}
-          actions={[
-            {
-              type: 'icon',
-              icon: <ConfigSmall />,
-              onClick: () => console.log(`Configuring ${selectedChart2} chart parameters...`),
-              color: 'primary200'
-            },
-            {
-              type: 'icon',
-              icon: <DownloadSmall />,
-              onClick: () => console.log(`Downloading ${selectedChart2} chart...`),
-              color: 'primary200'
-            }
-          ]}
-          width="100%"
-        >
-          {renderChart(selectedChart2)}
-        </DashboardCard>
+        <div style={{
+          position: 'relative',
+          width: isCard2Expanded ? '100%' : 'calc(50% - 20px)',
+          transition: 'width 0.3s ease'
+        }}>
+          <DashboardCard
+            titleDropdown={{
+              options: allChartOptions.filter(option => option.value !== selectedChart1),
+              value: selectedChart2,
+              onChange: (value) => setSelectedChart2(value),
+              placeholder: 'Chart'
+            }}
+            icon={<CardsGraph />}
+            actions={[
+              {
+                type: 'icon',
+                icon: isCard2Expanded
+                  ? <CollapseSmall color={colors.blackAndWhite.black900} />
+                  : <ExpandSmall color={colors.blackAndWhite.black900} />,
+                onClick: () => setIsCard2Expanded(!isCard2Expanded),
+                color: 'primary200'
+              },
+              {
+                type: 'separator'
+              },
+              {
+                type: 'icon',
+                icon: <div ref={chart2ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart2ButtonRef.current) {
+                    const rect = chart2ButtonRef.current.getBoundingClientRect();
+                    setChart2MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200, // Align right edge of menu with button
+                    });
+                  }
+                  setIsChart2MenuOpen(!isChart2MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ]}
+            width="100%"
+          >
+            {renderChart(selectedChart2)}
+          </DashboardCard>
+          {renderChartMenu(
+            isChart2MenuOpen,
+            chart2MenuRef,
+            chart2MenuPosition,
+            selectedChart2,
+            () => setIsChart2MenuOpen(false)
+          )}
+        </div>
 
         {/* Add Another Graph Button */}
         <Button

@@ -425,6 +425,17 @@ export const ExternalLinkSmall: React.FC<SmallIconProps> = ({
     </svg>
 );
 
+export const MoreSmall: React.FC<SmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.small} height={ICON_SIZES.small} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <circle cx="2.75" cy="6.5" r="1.25" fill={color}/>
+    <circle cx="6.5" cy="6.5" r="1.25" fill={color}/>
+    <circle cx="10.25" cy="6.5" r="1.25" fill={color}/>
+  </svg>
+);
+
 export const GraphSmall: React.FC<SmallIconProps> = ({ 
   color = 'currentColor', 
   className 
