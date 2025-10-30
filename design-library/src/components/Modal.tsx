@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { borderRadius, shadows } from '../tokens';
-import { useSemanticColors } from '../tokens/ThemeProvider';
+import { useSemanticColors, ThemeProvider } from '../tokens/ThemeProvider';
+import { ProductTheme } from '../tokens/theme';
 import { CloseMedium } from '../icons';
 import { Button } from './Button';
 
@@ -59,6 +60,8 @@ export interface ModalProps {
   footer?: React.ReactNode;
   /** Whether to show the close button (default: true) */
   showCloseButton?: boolean;
+  /** Theme to use for modal content (overrides parent theme context) */
+  theme?: ProductTheme;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -86,6 +89,7 @@ export const Modal: React.FC<ModalProps> = ({
   contentStyle,
   footer,
   showCloseButton = true,
+  theme,
 }) => {
   const colors = useSemanticColors();
   const [shouldRender, setShouldRender] = useState(isOpen);
@@ -335,8 +339,15 @@ export const Modal: React.FC<ModalProps> = ({
     </div>
   );
 
+  // Wrap with ThemeProvider if theme prop is provided
+  const wrappedContent = theme ? (
+    <ThemeProvider initialTheme={theme}>
+      {modalContent}
+    </ThemeProvider>
+  ) : modalContent;
+
   // Render modal in a portal to avoid parent transform issues
-  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null;
+  return typeof document !== 'undefined' ? createPortal(wrappedContent, document.body) : null;
 };
 
 export default Modal;

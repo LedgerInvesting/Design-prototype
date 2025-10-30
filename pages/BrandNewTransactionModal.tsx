@@ -39,7 +39,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
 
   const optionCardStyles = (isSelected: boolean): React.CSSProperties => ({
     border: isSelected
-      ? `1px solid #9ad5f7`
+      ? `1px solid ${colors.theme.primary700}`
       : `1px solid ${colors.theme.primary400}`,
     borderRadius: '12px',
     padding: '20px',
@@ -98,6 +98,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
       backdropBlur={false}
       backdropOpacity={0.6}
       width="670px"
+      theme="contracts"
       footer={
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
@@ -141,7 +142,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
                 width: '30px',
                 height: '30px',
                 borderRadius: '8px',
-                backgroundColor: '#FFF493', // Yellow background
+                backgroundColor: '#fcdc6a',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -167,7 +168,7 @@ export const BrandNewTransactionModal: React.FC<BrandNewTransactionModalProps> =
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#FFF493',
+                backgroundColor: '#fcdc6a',
                 borderRadius: '4px',
                 padding: '4px 8px',
                 marginTop: '12px',
