@@ -678,8 +678,8 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   ];
 
   // Render Data Completeness chart (visx)
-  const renderDataCompletenessChart = () => {
-    const width = 600;
+  const renderDataCompletenessChart = (containerWidth: number = 600) => {
+    const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 40, bottom: 70, left: 70 };
     const innerWidth = width - margin.left - margin.right;
@@ -777,8 +777,8 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   };
 
   // Render Right Edge chart (visx)
-  const renderRightEdgeChart = () => {
-    const width = 600;
+  const renderRightEdgeChart = (containerWidth: number = 600) => {
+    const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 70, bottom: 70, left: 70 };
     const innerWidth = width - margin.left - margin.right;
@@ -1715,9 +1715,9 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const renderChart = (chartType: string, containerWidth: number = 600) => {
     switch (chartType) {
       case 'data-completeness':
-        return renderDataCompletenessChart();
+        return renderDataCompletenessChart(containerWidth);
       case 'right-edge':
-        return renderRightEdgeChart();
+        return renderRightEdgeChart(containerWidth);
       case 'heatmap':
         return renderHeatmapChart(containerWidth);
       case 'growth-curve':
