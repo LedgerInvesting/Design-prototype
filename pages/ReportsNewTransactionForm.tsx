@@ -2266,6 +2266,14 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}
+      appAction={{
+        app: 'contracts',
+        actionText: 'Review PDF in Contracts App',
+        onClick: () => {
+          console.log('Navigate to Contracts App to review PDF');
+          onNavigateToPage?.('contracts-ai-extraction');
+        }
+      }}
       tabs={
         <FormTabs
           tabs={formTabs}

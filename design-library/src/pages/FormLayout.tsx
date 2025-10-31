@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from './';
+import { Layout, AppActionConfig } from './';
 
 /**
  * @deprecated Use Layout with formMode={true} instead
@@ -33,6 +33,7 @@ export interface FormLayoutProps {
   selectedSidebarItem?: string;
   selectedSidebarSubitem?: string;
   tabs?: React.ReactNode; // Optional tabs component to render between FormTopNav and content
+  appAction?: AppActionConfig; // Optional context-aware app action button
 }
 
 // FormLayout is now just a wrapper around Layout with formMode=true
@@ -48,6 +49,7 @@ export const FormLayout: React.FC<FormLayoutProps> = (props) => {
       showStatus={props.showStatus}
       progress={props.progress}
       onBackClick={props.onBackClick}
+      appAction={props.appAction}
     />
   );
 };
