@@ -22,7 +22,7 @@ import {
 import { AxisBottom, AxisLeft, AxisRight } from '@visx/axis';
 import { Group } from '@visx/group';
 import { scaleBand, scaleLinear, scalePower, scaleTime } from '@visx/scale';
-import { AreaClosed, Bar, Circle, Line as VisxLine, LinePath } from '@visx/shape';
+import { AreaClosed, Circle, Line as VisxLine, LinePath } from '@visx/shape';
 import { Grid } from '@visx/grid';
 import { useTooltip } from '@visx/tooltip';
 import { BoxPlot } from '@visx/stats';
