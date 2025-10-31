@@ -2252,7 +2252,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
   return (
     <FormLayout
       formTitle={renewalData ? "RENEWAL TRANSACTION WORKFLOW" : "NEW TRANSACTION WORKFLOW"}
-      entryType={renewalData ? "Renewal Transaction" : "Manual Entry"}
+      entryType={renewalData?.fromPDFUpload ? "PDF Upload" : renewalData ? "Renewal Transaction" : "Manual Entry"}
       statusText="draft"
       statusVariant="warning"
       progress={getProgress()}
@@ -2266,14 +2266,14 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}
-      appAction={{
+      appAction={renewalData?.fromPDFUpload ? {
         app: 'contracts',
         actionText: 'Review PDF in Contracts App',
         onClick: () => {
           console.log('Navigate to Contracts App to review PDF');
           onNavigateToPage?.('contracts-ai-extraction');
         }
-      }}
+      } : undefined}
       tabs={
         <FormTabs
           tabs={formTabs}

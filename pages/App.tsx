@@ -62,7 +62,7 @@ function AppContent() {
     window.history.pushState(null, '', `#${page}`);
 
     if (data) {
-      if (page === 'new-transaction-form') {
+      if (page === 'new-transaction-form' || page === 'reports-new-transaction-form') {
         setRenewalData(data);
       } else if (page === 'reports-insights-program-details') {
         console.log('Setting programDetailsData:', data);

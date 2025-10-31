@@ -846,8 +846,11 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
         buttonRef={newTransactionButtonRef}
         onContinue={() => {
           setIsProcessingModalOpen(false);
-          // TODO: Pass contract data to form - requires App-level state management
-          onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
+          // Pass flag to indicate coming from PDF upload flow
+          onNavigateToPage && onNavigateToPage('reports-new-transaction-form', {
+            fromPDFUpload: true,
+            uploadData: uploadData
+          });
         }}
       />
     </Layout>
