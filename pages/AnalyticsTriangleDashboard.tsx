@@ -19,10 +19,10 @@ import {
   Scatter,
   ReferenceLine,
 } from 'recharts';
-import { AxisBottom, AxisLeft } from '@visx/axis';
+import { AxisBottom, AxisLeft, AxisRight } from '@visx/axis';
 import { Group } from '@visx/group';
 import { scaleBand, scaleLinear, scalePower, scaleTime } from '@visx/scale';
-import { AreaClosed, Circle, Line as VisxLine, LinePath } from '@visx/shape';
+import { AreaClosed, Bar, Circle, Line as VisxLine, LinePath } from '@visx/shape';
 import { Grid } from '@visx/grid';
 import { useTooltip } from '@visx/tooltip';
 import { BoxPlot } from '@visx/stats';
@@ -677,155 +677,276 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     { period: "Jul 23", premium: 9.0, ratioA: 20, ratioB: 10 },
   ];
 
-  // Render Data Completeness chart
-  const renderDataCompletenessChart = () => (
-    <ResponsiveContainer width="100%" height={400}>
-      <ScatterChart margin={{ top: 20, right: 40, bottom: 40, left: 40 }}>
-        <defs>
-          <filter id="dropShadowSmall" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="0" dy="2" stdDeviation="2" floodOpacity="0.05" />
-          </filter>
-        </defs>
-        <CartesianGrid
-          strokeDasharray="3 3"
-          vertical={true}
-          horizontal={true}
-          stroke={colors.theme.primary400}
-        />
-        <XAxis
-          type="number"
-          dataKey="x"
-          name="Dev Lag (months)"
-          domain={[0, 21]}
-          ticks={[0, 3, 6, 9, 12, 15, 18, 21]}
-          axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
-          tickLine={false}
-          tick={{ fill: colors.blackAndWhite.black500, fontSize: 10, fontFamily: 'Söhne' }}
-          label={{
-            value: "Dev Lag (months)",
-            position: "bottom",
-            style: { ...typography.styles.dataXS, fill: colors.blackAndWhite.black500 }
-          }}
-        />
-        <YAxis
-          type="number"
-          dataKey="y"
-          name="Period Start"
-          domain={[-1, 10]}
-          ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-          tickFormatter={(value) => {
-            const labels = ["07-23", "08-23", "09-23", "10-23", "11-23", "12-23", "01-24", "02-24", "03-24", "04-24"];
-            return labels[value] || "";
-          }}
-          reversed
-          axisLine={false}
-          tickLine={false}
-          tick={{ fill: colors.blackAndWhite.black500, fontSize: 10, fontFamily: 'Söhne' }}
-          label={{
-            value: "Period Start",
-            angle: -90,
-            position: "insideLeft",
-            style: { ...typography.styles.dataXS, fill: colors.blackAndWhite.black500 }
-          }}
-        />
-        <Tooltip
-          content={<ChartTooltip />}
-          cursor={false}
-          isAnimationActive={false}
-        />
-        <Scatter
-          name="Points"
-          data={dataCompletenessData}
-          fill={colors.theme.main}
-          stroke={colors.blackAndWhite.white}
-          strokeWidth={2}
-          style={{ filter: 'url(#dropShadowSmall)' }}
-          shape={<circle r={7} />}
-        />
-      </ScatterChart>
-    </ResponsiveContainer>
-  );
+  // Render Data Completeness chart (visx)
+  const renderDataCompletenessChart = () => {
+    const width = 600;
+    const height = 400;
+    const margin = { top: 20, right: 40, bottom: 70, left: 70 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
 
-  // Render Right Edge chart
-  const renderRightEdgeChart = () => (
-    <ResponsiveContainer width="100%" height={400}>
-      <ComposedChart data={rightEdgeData} margin={{ top: 20, right: 60, left: 20, bottom: 20 }}>
-        <CartesianGrid
-          strokeDasharray="3 3"
-          vertical={true}
-          horizontal={true}
-          stroke={colors.theme.primary400}
-        />
-        <XAxis
-          dataKey="period"
-          axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
-          tickLine={false}
-          tick={{ fill: colors.blackAndWhite.black500, fontSize: 10, fontFamily: 'Söhne' }}
-        />
-        <YAxis
-          yAxisId="left"
-          orientation="left"
-          tickFormatter={(v) => `${v.toFixed(1)}M`}
-          axisLine={false}
-          tickLine={false}
-          tick={{ fill: colors.blackAndWhite.black500, fontSize: 10, fontFamily: 'Söhne' }}
-          label={{
-            value: "Earned Premium",
-            angle: -90,
-            position: "insideLeft",
-            style: { ...typography.styles.dataXS, fill: colors.blackAndWhite.black500 }
-          }}
-        />
-        <YAxis
-          yAxisId="right"
-          orientation="right"
-          tickFormatter={(v) => `${v}%`}
-          axisLine={false}
-          tickLine={false}
-          tick={{ fill: colors.blackAndWhite.black500, fontSize: 10, fontFamily: 'Söhne' }}
-          label={{
-            value: "Loss ratio",
-            angle: 90,
-            position: "insideRight",
-            style: { ...typography.styles.dataXS, fill: colors.blackAndWhite.black500 }
-          }}
-        />
-        <Tooltip content={<ChartTooltip />} cursor={false} />
-        <Bar
-          yAxisId="left"
-          dataKey="premium"
-          fill={colors.theme.primary200}
-          fillOpacity={0.4}
-          barSize={40}
-          radius={[4, 4, 0, 0]}
-        />
-        <Line
-          yAxisId="right"
-          type="monotone"
-          dataKey="ratioA"
-          stroke="#F0C32E"
-          strokeWidth={3}
-          dot={{ r: 5, fill: colors.blackAndWhite.white, strokeWidth: 3, stroke: "#F0C32E" }}
-          activeDot={{ r: 6 }}
-        />
-        <Line
-          yAxisId="right"
-          type="monotone"
-          dataKey="ratioB"
-          stroke="#42C172"
-          strokeWidth={3}
-          dot={{ r: 5, fill: colors.blackAndWhite.white, strokeWidth: 3, stroke: "#42C172" }}
-          activeDot={{ r: 6 }}
-        />
-      </ComposedChart>
-    </ResponsiveContainer>
-  );
+    const lagScale = scaleLinear<number>({
+      domain: [0, 21],
+      range: [0, innerWidth],
+    });
+
+    const periodLabels = ["07-23", "08-23", "09-23", "10-23", "11-23", "12-23", "01-24", "02-24", "03-24", "04-24"];
+    const periodScale = scaleBand<number>({
+      domain: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      range: [0, innerHeight],
+      padding: 0.1,
+    });
+
+    return (
+      <div style={{ width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <svg width={width} height={height}>
+          <Group left={margin.left} top={margin.top}>
+            {/* Grid */}
+            <Grid
+              xScale={lagScale}
+              yScale={periodScale}
+              width={innerWidth}
+              height={innerHeight}
+              stroke={colors.theme.primary400}
+              strokeDasharray="3,3"
+            />
+
+            {/* Data points */}
+            {dataCompletenessData.map((point, i) => (
+              <Circle
+                key={i}
+                cx={lagScale(point.x)}
+                cy={periodScale(point.y)! + periodScale.bandwidth() / 2}
+                r={7}
+                fill={colors.theme.main}
+                stroke={colors.blackAndWhite.white}
+                strokeWidth={2}
+              />
+            ))}
+
+            {/* X Axis */}
+            <AxisBottom
+              scale={lagScale}
+              top={innerHeight}
+              stroke={colors.blackAndWhite.black900}
+              strokeWidth={2}
+              tickStroke="transparent"
+              tickLabelProps={() => ({
+                fill: colors.blackAndWhite.black500,
+                fontSize: 10,
+                fontFamily: 'Söhne',
+                textAnchor: 'middle',
+              })}
+              label="Dev Lag (months)"
+              labelProps={{
+                fill: colors.blackAndWhite.black500,
+                fontSize: 11,
+                fontFamily: 'Söhne',
+                textAnchor: 'middle',
+              }}
+              labelOffset={15}
+              tickValues={[0, 3, 6, 9, 12, 15, 18, 21]}
+            />
+
+            {/* Y Axis */}
+            <AxisLeft
+              scale={periodScale}
+              stroke="transparent"
+              tickStroke="transparent"
+              tickLabelProps={() => ({
+                fill: colors.blackAndWhite.black500,
+                fontSize: 10,
+                fontFamily: 'Söhne',
+                textAnchor: 'end',
+                dx: -10,
+              })}
+              tickFormat={(value) => periodLabels[value as number] || ""}
+              label="Period Start"
+              labelProps={{
+                fill: colors.blackAndWhite.black500,
+                fontSize: 11,
+                fontFamily: 'Söhne',
+                textAnchor: 'middle',
+              }}
+              labelOffset={53}
+            />
+          </Group>
+        </svg>
+      </div>
+    );
+  };
+
+  // Render Right Edge chart (visx)
+  const renderRightEdgeChart = () => {
+    const width = 600;
+    const height = 400;
+    const margin = { top: 20, right: 70, bottom: 70, left: 70 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    const periodScale = scaleBand<string>({
+      domain: rightEdgeData.map(d => d.period),
+      range: [0, innerWidth],
+      padding: 0.3,
+    });
+
+    const premiumScale = scaleLinear<number>({
+      domain: [0, Math.max(...rightEdgeData.map(d => d.premium))],
+      range: [innerHeight, 0],
+      nice: true,
+    });
+
+    const ratioScale = scaleLinear<number>({
+      domain: [0, Math.max(...rightEdgeData.map(d => Math.max(d.ratioA, d.ratioB)))],
+      range: [innerHeight, 0],
+      nice: true,
+    });
+
+    return (
+      <div style={{ width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <svg width={width} height={height}>
+          <Group left={margin.left} top={margin.top}>
+            {/* Grid */}
+            <Grid
+              xScale={periodScale}
+              yScale={premiumScale}
+              width={innerWidth}
+              height={innerHeight}
+              stroke={colors.theme.primary400}
+              strokeDasharray="3,3"
+            />
+
+            {/* Bars */}
+            {rightEdgeData.map((d, i) => (
+              <rect
+                key={i}
+                x={periodScale(d.period)}
+                y={premiumScale(d.premium)}
+                width={periodScale.bandwidth()}
+                height={innerHeight - premiumScale(d.premium)}
+                fill={colors.theme.primary200}
+                opacity={0.4}
+                rx={4}
+              />
+            ))}
+
+            {/* Line ratioA */}
+            <LinePath
+              data={rightEdgeData}
+              x={d => (periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
+              y={d => ratioScale(d.ratioA)}
+              stroke="#F0C32E"
+              strokeWidth={3}
+            />
+
+            {/* Line ratioB */}
+            <LinePath
+              data={rightEdgeData}
+              x={d => (periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
+              y={d => ratioScale(d.ratioB)}
+              stroke="#42C172"
+              strokeWidth={3}
+            />
+
+            {/* Dots for ratioA */}
+            {rightEdgeData.map((d, i) => (
+              <Circle
+                key={`a-${i}`}
+                cx={(periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
+                cy={ratioScale(d.ratioA)}
+                r={5}
+                fill={colors.blackAndWhite.white}
+                stroke="#F0C32E"
+                strokeWidth={3}
+              />
+            ))}
+
+            {/* Dots for ratioB */}
+            {rightEdgeData.map((d, i) => (
+              <Circle
+                key={`b-${i}`}
+                cx={(periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
+                cy={ratioScale(d.ratioB)}
+                r={5}
+                fill={colors.blackAndWhite.white}
+                stroke="#42C172"
+                strokeWidth={3}
+              />
+            ))}
+
+            {/* X Axis */}
+            <AxisBottom
+              scale={periodScale}
+              top={innerHeight}
+              stroke={colors.blackAndWhite.black900}
+              strokeWidth={2}
+              tickStroke="transparent"
+              tickLabelProps={() => ({
+                fill: colors.blackAndWhite.black500,
+                fontSize: 10,
+                fontFamily: 'Söhne',
+                textAnchor: 'middle',
+              })}
+              labelOffset={15}
+            />
+
+            {/* Left Y Axis (Premium) */}
+            <AxisLeft
+              scale={premiumScale}
+              stroke="transparent"
+              tickStroke="transparent"
+              tickLabelProps={() => ({
+                fill: colors.blackAndWhite.black500,
+                fontSize: 10,
+                fontFamily: 'Söhne',
+                textAnchor: 'end',
+                dx: -10,
+              })}
+              tickFormat={(value) => `${(value as number).toFixed(1)}M`}
+              label="Earned Premium"
+              labelProps={{
+                fill: colors.blackAndWhite.black500,
+                fontSize: 11,
+                fontFamily: 'Söhne',
+                textAnchor: 'middle',
+              }}
+              labelOffset={53}
+            />
+
+            {/* Right Y Axis (Loss Ratio) */}
+            <AxisRight
+              scale={ratioScale}
+              left={innerWidth}
+              stroke="transparent"
+              tickStroke="transparent"
+              tickLabelProps={() => ({
+                fill: colors.blackAndWhite.black500,
+                fontSize: 10,
+                fontFamily: 'Söhne',
+                textAnchor: 'start',
+                dx: 10,
+              })}
+              tickFormat={(value) => `${value}%`}
+              label="Loss ratio"
+              labelProps={{
+                fill: colors.blackAndWhite.black500,
+                fontSize: 11,
+                fontFamily: 'Söhne',
+                textAnchor: 'middle',
+              }}
+              labelOffset={53}
+            />
+          </Group>
+        </svg>
+      </div>
+    );
+  };
 
   // Render Heatmap chart using @visx
   const renderHeatmapChart = (containerWidth: number) => {
     const width = containerWidth;
     const height = 400;
-    const margin = { top: 20, right: 40, bottom: 60, left: 70 };
+    const margin = { top: 20, right: 40, bottom: 70, left: 70 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -944,7 +1065,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
-              labelOffset={45}
+              labelOffset={53}
             />
           </Group>
         </svg>
@@ -997,7 +1118,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const renderGrowthCurveChart = (containerWidth: number) => {
     const width = containerWidth;
     const height = 400;
-    const margin = { top: 20, right: 40, bottom: 60, left: 70 };
+    const margin = { top: 20, right: 40, bottom: 70, left: 70 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -1118,7 +1239,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
-              labelOffset={45}
+              labelOffset={53}
             />
           </Group>
         </svg>
@@ -1171,7 +1292,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const renderMountainChart = (containerWidth: number) => {
     const width = containerWidth;
     const height = 400;
-    const margin = { top: 20, right: 40, bottom: 60, left: 70 };
+    const margin = { top: 20, right: 40, bottom: 70, left: 70 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -1324,7 +1445,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
-              labelOffset={45}
+              labelOffset={53}
             />
           </Group>
         </svg>
@@ -1377,7 +1498,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const renderAgeToAgeChart = (containerWidth: number) => {
     const width = containerWidth;
     const height = 400;
-    const margin = { top: 20, right: 40, bottom: 60, left: 70 };
+    const margin = { top: 20, right: 40, bottom: 70, left: 70 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -1541,7 +1662,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
-              labelOffset={45}
+              labelOffset={53}
             />
           </Group>
         </svg>
