@@ -6,6 +6,7 @@ import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemePr
 import { AddMedium, CalendarTable, TextTable, StatusProgressTable } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 import { AddTriangleModal } from './AddTriangleModal';
+import { createPageNavigationHandler } from '@design-library/utils/navigation';
 
 interface ValuationStatusProps {
   onNavigateToPage: (page: string) => void;
@@ -492,21 +493,7 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
     <Layout
       selectedSidebarItem="analytics"
       selectedSidebarSubitem="valuation"
-      onNavigate={(itemId, subitemId) => {
-        if (itemId === 'analytics' && subitemId === 'valuation') {
-          onNavigateToPage('analytics-valuation');
-        } else if (itemId === 'reports') {
-          if (subitemId === 'transactions') {
-            onNavigateToPage('reports-transaction-management');
-          } else if (subitemId === 'reports-explorer') {
-            onNavigateToPage('reports-explorer');
-          } else if (subitemId === 'bdx-upload') {
-            onNavigateToPage('reports-bdx-upload');
-          }
-        } else if (itemId === 'contracts') {
-          onNavigateToPage('reports-contracts-explorer');
-        }
-      }}
+      onNavigate={createPageNavigationHandler(onNavigateToPage, 'analytics-valuation-status')}
       breadcrumbs={[
         { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
         { label: programName, onClick: () => onNavigateToPage?.('analytics-valuation-dashboard'), isActive: false },
