@@ -305,7 +305,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div style={headerStyles}>
         {showFullMode ? (
           <>
-            <KorraLogo color={colors.blackAndWhite.white} />
+            <button
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'opacity 0.2s ease'
+              }}
+              onClick={() => {
+                // Navigate to home when logo is clicked
+                if (onNavigate) {
+                  onNavigate('home');
+                }
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '0.7';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '1';
+              }}
+              title="Go to Home"
+            >
+              <KorraLogo color={colors.blackAndWhite.white} />
+            </button>
             <div style={{ position: 'relative' }}>
               <button
                 style={{
@@ -356,7 +381,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </>
         ) : (
-          <KLogo color={colors.blackAndWhite.white} />
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              transition: 'opacity 0.2s ease'
+            }}
+            onClick={() => {
+              // Navigate to home when logo is clicked
+              if (onNavigate) {
+                onNavigate('home');
+              }
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = '0.7';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = '1';
+            }}
+            title="Go to Home"
+          >
+            <KLogo color={colors.blackAndWhite.white} />
+          </button>
         )}
       </div>
 
