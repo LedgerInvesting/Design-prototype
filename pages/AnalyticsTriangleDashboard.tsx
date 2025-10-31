@@ -137,6 +137,24 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     hideTooltip: hideAgeToAgeTooltip,
   } = useTooltip<{ period: string; lag: number; factor: number }>();
 
+  const {
+    tooltipData: dataCompletenessTooltipData,
+    tooltipLeft: dataCompletenessTooltipLeft,
+    tooltipTop: dataCompletenessTooltipTop,
+    tooltipOpen: dataCompletenessTooltipOpen,
+    showTooltip: showDataCompletenessTooltip,
+    hideTooltip: hideDataCompletenessTooltip,
+  } = useTooltip<{ x: number; y: number }>();
+
+  const {
+    tooltipData: rightEdgeTooltipData,
+    tooltipLeft: rightEdgeTooltipLeft,
+    tooltipTop: rightEdgeTooltipTop,
+    tooltipOpen: rightEdgeTooltipOpen,
+    showTooltip: showRightEdgeTooltip,
+    hideTooltip: hideRightEdgeTooltip,
+  } = useTooltip<{ period: string; premium: number; ratioA: number; ratioB: number }>();
+
   // Refs for menu dropdowns to handle outside clicks
   const chart1MenuRef = useRef<HTMLDivElement>(null);
   const chart2MenuRef = useRef<HTMLDivElement>(null);
@@ -721,6 +739,19 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fill={colors.theme.main}
                 stroke={colors.blackAndWhite.white}
                 strokeWidth={2}
+                onMouseEnter={(event) => {
+                  const svgRect = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
+                  const circleRect = event.currentTarget.getBoundingClientRect();
+                  if (svgRect) {
+                    showDataCompletenessTooltip({
+                      tooltipData: { x: point.x, y: point.y },
+                      tooltipLeft: circleRect.left - svgRect.left + circleRect.width / 2,
+                      tooltipTop: circleRect.top - svgRect.top,
+                    });
+                  }
+                }}
+                onMouseLeave={() => hideDataCompletenessTooltip()}
+                style={{ cursor: 'pointer' }}
               />
             ))}
 
@@ -772,6 +803,47 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             />
           </Group>
         </svg>
+        {dataCompletenessTooltipOpen && dataCompletenessTooltipData && (
+          <div
+            style={{
+              position: 'absolute',
+              top: (dataCompletenessTooltipTop || 0) - 10,
+              left: (dataCompletenessTooltipLeft || 0),
+              transform: 'translate(-50%, -100%)',
+              backgroundColor: colors.blackAndWhite.white,
+              padding: '12px',
+              borderRadius: borderRadius[8],
+              border: `1px solid ${colors.theme.primary400}`,
+              boxShadow: shadows.medium,
+              pointerEvents: 'none',
+              zIndex: 1000,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <div style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black900,
+              margin: '0 0 8px 0',
+              fontWeight: 600,
+            }}>
+              Data Point
+            </div>
+            <div style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black500,
+              margin: '0 0 4px 0',
+            }}>
+              Dev Lag: {dataCompletenessTooltipData.x} months
+            </div>
+            <div style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black500,
+              margin: 0,
+            }}>
+              Period: {periodLabels[dataCompletenessTooltipData.y]}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -827,6 +899,19 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fill={colors.theme.primary200}
                 opacity={0.4}
                 rx={4}
+                onMouseEnter={(event) => {
+                  const svgRect = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
+                  const barRect = event.currentTarget.getBoundingClientRect();
+                  if (svgRect) {
+                    showRightEdgeTooltip({
+                      tooltipData: d,
+                      tooltipLeft: barRect.left - svgRect.left + barRect.width / 2,
+                      tooltipTop: barRect.top - svgRect.top,
+                    });
+                  }
+                }}
+                onMouseLeave={() => hideRightEdgeTooltip()}
+                style={{ cursor: 'pointer' }}
               />
             ))}
 
@@ -858,6 +943,19 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fill={colors.blackAndWhite.white}
                 stroke="#F0C32E"
                 strokeWidth={3}
+                onMouseEnter={(event) => {
+                  const svgRect = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
+                  const circleRect = event.currentTarget.getBoundingClientRect();
+                  if (svgRect) {
+                    showRightEdgeTooltip({
+                      tooltipData: d,
+                      tooltipLeft: circleRect.left - svgRect.left + circleRect.width / 2,
+                      tooltipTop: circleRect.top - svgRect.top,
+                    });
+                  }
+                }}
+                onMouseLeave={() => hideRightEdgeTooltip()}
+                style={{ cursor: 'pointer' }}
               />
             ))}
 
@@ -871,6 +969,19 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                 fill={colors.blackAndWhite.white}
                 stroke="#42C172"
                 strokeWidth={3}
+                onMouseEnter={(event) => {
+                  const svgRect = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
+                  const circleRect = event.currentTarget.getBoundingClientRect();
+                  if (svgRect) {
+                    showRightEdgeTooltip({
+                      tooltipData: d,
+                      tooltipLeft: circleRect.left - svgRect.left + circleRect.width / 2,
+                      tooltipTop: circleRect.top - svgRect.top,
+                    });
+                  }
+                }}
+                onMouseLeave={() => hideRightEdgeTooltip()}
+                style={{ cursor: 'pointer' }}
               />
             ))}
 
@@ -938,6 +1049,54 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             />
           </Group>
         </svg>
+        {rightEdgeTooltipOpen && rightEdgeTooltipData && (
+          <div
+            style={{
+              position: 'absolute',
+              top: (rightEdgeTooltipTop || 0) - 10,
+              left: (rightEdgeTooltipLeft || 0),
+              transform: 'translate(-50%, -100%)',
+              backgroundColor: colors.blackAndWhite.white,
+              padding: '12px',
+              borderRadius: borderRadius[8],
+              border: `1px solid ${colors.theme.primary400}`,
+              boxShadow: shadows.medium,
+              pointerEvents: 'none',
+              zIndex: 1000,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <div style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black900,
+              margin: '0 0 8px 0',
+              fontWeight: 600,
+            }}>
+              {rightEdgeTooltipData.period}
+            </div>
+            <div style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black500,
+              margin: '0 0 4px 0',
+            }}>
+              Premium: ${rightEdgeTooltipData.premium.toFixed(1)}M
+            </div>
+            <div style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black500,
+              margin: '0 0 4px 0',
+            }}>
+              Ratio A: {rightEdgeTooltipData.ratioA}%
+            </div>
+            <div style={{
+              ...typography.styles.bodyM,
+              color: colors.blackAndWhite.black500,
+              margin: 0,
+            }}>
+              Ratio B: {rightEdgeTooltipData.ratioB}%
+            </div>
+          </div>
+        )}
       </div>
     );
   };
