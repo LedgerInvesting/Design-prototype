@@ -259,12 +259,12 @@ export const Layout: React.FC<LayoutProps> = ({
         <div style={{
           position: 'fixed',
           top: 0,
+          left: sidebarWidth,
           right: 0,
-          width: `calc(100% - ${sidebarWidth})`,
           zIndex: 999,
           backgroundColor: colors.blackAndWhite.black900,
           borderRadius: '0 0 12px 12px',
-          transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+          transition: 'left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
           overflow: 'visible'
         }}>
           {formMode ? (
@@ -314,14 +314,14 @@ export const Layout: React.FC<LayoutProps> = ({
 
         {/* Optional Tabs - Full width under TopNav */}
         {tabs && (
-          <div style={{ 
-            position: 'fixed', 
+          <div style={{
+            position: 'fixed',
             top: '60px', // Right under TopNav (TopNav height is 60px)
-            right: 0, 
-            width: `calc(100% - ${sidebarWidth})`, 
+            left: sidebarWidth,
+            right: 0,
             zIndex: 998, // Just below TopNav
             backgroundColor: colors.blackAndWhite.white,
-            transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
+            transition: 'left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
           }}>
             {tabs}
           </div>
