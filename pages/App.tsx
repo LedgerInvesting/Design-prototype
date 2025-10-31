@@ -32,13 +32,9 @@ function AppContent() {
   const useSideNavTest = settings.uiExperiments.sidenavTest;
 
   const [currentPage, setCurrentPage] = useState<PageType>(() => {
-    // Initialize from URL hash or default
+    // Initialize from URL hash or default to home
     const hash = window.location.hash.slice(1) as PageType;
-    // If sidenavTest is enabled and no hash, default to home
-    if (!hash && useSideNavTest) {
-      return 'home';
-    }
-    return hash || 'marketplace-offerings';
+    return hash || 'home';
   });
   const [valuationData, setValuationData] = useState<any>(null);
   const [renewalData, setRenewalData] = useState<any>(null);
@@ -123,7 +119,7 @@ function AppContent() {
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:
-        return useSideNavTest ? <HomeTest onNavigateToPage={setPage} /> : <MarketplaceOfferings onNavigateToPage={setPage} />;
+        return <HomeTest onNavigateToPage={setPage} />;
     }
   };
 
