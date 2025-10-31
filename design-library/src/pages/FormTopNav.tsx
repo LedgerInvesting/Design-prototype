@@ -1,7 +1,15 @@
 import React from 'react';
 import { Button, Status } from '../components';
+import { AppActionButton } from '../components/AppActionButton';
 import { colors, typography, spacing, borderRadius, shadows } from '../tokens';
 import { HideShowSidebarMedium } from '../icons';
+import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
+
+export interface AppActionConfig {
+  app: 'marketplace' | 'reports' | 'analytics' | 'contracts';
+  actionText: string;
+  onClick: () => void;
+}
 
 export interface FormTopNavProps {
   title?: string;
@@ -13,6 +21,7 @@ export interface FormTopNavProps {
   onBackClick?: () => void;
   onSidebarToggle?: () => void;
   isSidebarCompact?: boolean; // Track sidebar state for icon color
+  appAction?: AppActionConfig; // Optional context-aware app action button
   className?: string;
   style?: React.CSSProperties;
 }
@@ -27,9 +36,11 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
   onBackClick,
   onSidebarToggle,
   isSidebarCompact = false,
+  appAction,
   className,
   style
 }) => {
+  const { settings: prototypeSettings } = usePrototypeSettings();
   // Using same base container styles as default TopNav
   const containerStyles: React.CSSProperties = {
     display: 'flex',
@@ -189,15 +200,25 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
         )}
       </div>
 
-      {/* Right Section: Progress + Button */}
+      {/* Right Section: Progress or App Action + Button */}
       <div style={rightSectionStyles}>
-        <div style={progressContainerStyles}>
-          <div style={progressBarStyles}>
-            <div style={progressFillStyles} />
+        {/* Show AppActionButton if setting is enabled and appAction is provided */}
+        {prototypeSettings.appIntegration.showExtraCardButtons && appAction ? (
+          <AppActionButton
+            app={appAction.app}
+            actionText={appAction.actionText}
+            onClick={appAction.onClick}
+          />
+        ) : (
+          /* Otherwise show progress bar */
+          <div style={progressContainerStyles}>
+            <div style={progressBarStyles}>
+              <div style={progressFillStyles} />
+            </div>
+            <span style={progressTextStyles}>{progress}% Complete</span>
           </div>
-          <span style={progressTextStyles}>{progress}% Complete</span>
-        </div>
-        
+        )}
+
         <Button
           variant="primary"
           color="white"

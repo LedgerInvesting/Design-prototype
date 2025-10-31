@@ -182,17 +182,16 @@ export const Layout: React.FC<LayoutProps> = ({
   const sidebarWidth = isCompact && !isSidebarHovered ? '80px' : '220px';
 
   const pageStyles: React.CSSProperties = {
-    display: 'flex',
     minHeight: '100vh',
     backgroundColor: colors.blackAndWhite.black900,
   };
 
   const mainContentStyles: React.CSSProperties = {
-    flex: 1,
     marginLeft: sidebarWidth,
     backgroundColor: colors.blackAndWhite.white,
     transition: 'margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
     overflow: 'hidden', // Contain any overflow
+    minHeight: '100vh',
   };
 
   const contentAreaStyles: React.CSSProperties = {
@@ -203,9 +202,10 @@ export const Layout: React.FC<LayoutProps> = ({
     padding: formMode ? '40px 60px 60px 60px' : '40px 60px 60px 60px', // Standard padding (will be overridden by inline marginTop)
     overflow: 'hidden', // Prevent any content from overflowing
     boxSizing: 'border-box', // Include padding in width calculation
-    // Page transition animation - start slightly larger and zoom in (only in nav mode)
-    opacity: (!formMode && isAnimating) ? 1 : 0.95,
-    transform: (!formMode && isAnimating) ? 'scale(1)' : 'scale(1.02)',
+    // Page transition animation - start at 102% and zoom down to 100% (only in nav mode)
+    opacity: (!formMode && isAnimating) ? 0.95 : 1,
+    transform: (!formMode && isAnimating) ? 'scale(1.02)' : 'scale(1)',
+    transformOrigin: 'center center', // Ensure scaling from center
     transition: !formMode ? 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none',
   };
 
@@ -278,6 +278,7 @@ export const Layout: React.FC<LayoutProps> = ({
               onBackClick={onBackClick}
               onSidebarToggle={handleSidebarToggle}
               isSidebarCompact={isCompact}
+              appAction={appAction}
             />
           ) : useSideNav2 ? (
             <TopNav2
