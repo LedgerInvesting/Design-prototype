@@ -716,7 +716,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     });
 
     return (
-      <div style={{ width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
         <svg width={width} height={height}>
           <Group left={margin.left} top={margin.top}>
             {/* Grid */}
@@ -763,16 +763,14 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               strokeWidth={2}
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               })}
               label="Dev Lag (months)"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={15}
@@ -785,18 +783,16 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'end',
                 dx: -10,
               })}
               tickFormat={(value) => periodLabels[value as number] || ""}
               label="Period Start"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={53}
@@ -875,7 +871,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     });
 
     return (
-      <div style={{ width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
         <svg width={width} height={height}>
           <Group left={margin.left} top={margin.top}>
             {/* Grid */}
@@ -993,9 +989,8 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               strokeWidth={2}
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               })}
               labelOffset={15}
@@ -1007,18 +1002,16 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'end',
                 dx: -10,
               })}
               tickFormat={(value) => `${(value as number).toFixed(1)}M`}
               label="Earned Premium"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={53}
@@ -1031,18 +1024,16 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'start',
                 dx: 10,
               })}
               tickFormat={(value) => `${value}%`}
               label="Loss ratio"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={53}
@@ -1190,16 +1181,14 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               strokeWidth={2}
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               })}
               label="Dev Lag (months)"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={15}
@@ -1211,17 +1200,15 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'end',
                 dx: -10,
               })}
               label="Period Start"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={53}
@@ -1363,16 +1350,14 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               })}
               label="Dev Lag (months)"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={15}
@@ -1384,18 +1369,16 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'end',
                 dx: -10,
               })}
               tickFormat={(value) => `${value}%`}
               label="Loss Ratio"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={53}
@@ -1568,17 +1551,15 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               })}
               tickFormat={(value) => formatDate(value as number)}
               label="Experience Period"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={15}
@@ -1590,18 +1571,16 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'end',
                 dx: -10,
               })}
               tickFormat={(value) => `${value}%`}
               label="Loss Ratio"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={53}
@@ -1786,16 +1765,14 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               })}
               label="Development Lag (months)"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={15}
@@ -1807,18 +1784,16 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               stroke="transparent"
               tickStroke="transparent"
               tickLabelProps={() => ({
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 10,
-                fontFamily: 'Söhne',
                 textAnchor: 'end',
                 dx: -10,
               })}
               tickFormat={(value) => value.toFixed(1)}
               label="Age-to-Age Factor"
               labelProps={{
+                ...typography.styles.dataXS,
                 fill: colors.blackAndWhite.black500,
-                fontSize: 11,
-                fontFamily: 'Söhne',
                 textAnchor: 'middle',
               }}
               labelOffset={53}
