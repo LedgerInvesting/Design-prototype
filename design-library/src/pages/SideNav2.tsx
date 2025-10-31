@@ -482,7 +482,21 @@ export const SideNav2: React.FC<SideNav2Props> = ({
     >
       {/* Header with logo only - hide when app is expanded */}
       {!expandedApp && (
-        <div style={headerStyles}>
+        <div
+          style={{
+            ...headerStyles,
+            cursor: 'pointer'
+          }}
+          onClick={() => {
+            if (onHomeClick) {
+              onHomeClick();
+            }
+            // Also call onNavigate to ensure consistent navigation handling
+            if (onNavigate) {
+              onNavigate('home');
+            }
+          }}
+        >
           {showFullMode ? (
             <KorraLogo color={colors.blackAndWhite.white} />
           ) : (

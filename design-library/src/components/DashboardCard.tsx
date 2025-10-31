@@ -114,6 +114,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+    paddingTop: '45px',
     ...bodyStyle,
   };
 

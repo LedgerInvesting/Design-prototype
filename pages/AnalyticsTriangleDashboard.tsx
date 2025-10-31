@@ -235,7 +235,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
       observer5?.disconnect();
       observer6?.disconnect();
     };
-  }, [isCard1Expanded, isCard2Expanded, isCard3Expanded, isCard4Expanded, isCard5Expanded, isCard6Expanded]);
+  }, [isCard1Expanded, isCard2Expanded, isCard3Expanded, isCard4Expanded, isCard5Expanded, isCard6Expanded, isCard1Visible, isCard2Visible, isCard3Visible, isCard4Visible, isCard5Visible, isCard6Visible]);
 
   // Scroll to card when expanded - force center alignment
   useEffect(() => {
@@ -1661,8 +1661,9 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         }}
       >
         {[
-          { label: 'Download as PNG', onClick: () => console.log(`Download ${chartName} as PNG`), disabled: false },
-          { label: 'Download as SVG', onClick: () => console.log(`Download ${chartName} as SVG`), disabled: false },
+          { label: 'Download as .trib', onClick: () => console.log(`Download ${chartName} as .trib`), disabled: false },
+          { label: 'Download as .csv', onClick: () => console.log(`Download ${chartName} as .csv`), disabled: false },
+          { label: 'Download as .json', onClick: () => console.log(`Download ${chartName} as .json`), disabled: false },
           { label: 'Delete graph', onClick: handleRemoveChart, disabled: !canDelete },
         ].map((option, index) => (
           <div
@@ -1791,7 +1792,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               }}>
                 <div
                   onClick={() => {
-                    console.log('Download as PNG clicked');
+                    console.log('Download as .trib clicked');
                     setIsDownloadDropdownOpen(false);
                   }}
                   style={{
@@ -1805,11 +1806,11 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  Download as .PNG
+                  Download as .trib
                 </div>
                 <div
                   onClick={() => {
-                    console.log('Download as TRIB clicked');
+                    console.log('Download as .csv clicked');
                     setIsDownloadDropdownOpen(false);
                   }}
                   style={{
@@ -1823,11 +1824,11 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  Download as .TRIB
+                  Download as .csv
                 </div>
                 <div
                   onClick={() => {
-                    console.log('Download as SVG clicked');
+                    console.log('Download as .json clicked');
                     setIsDownloadDropdownOpen(false);
                   }}
                   style={{
@@ -1841,7 +1842,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  Download as .SVG
+                  Download as .json
                 </div>
               </div>
             )}
@@ -1935,7 +1936,8 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         display: 'flex',
         flexWrap: 'wrap',
         gap: '40px',
-        width: '100%'
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
         {/* First Chart Card */}
         {isCard1Visible && (
@@ -1949,19 +1951,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           >
           <DashboardCard
             titleDropdown={{
-              options: allChartOptions.filter(option => {
-                // Always allow current selection
-                if (option.value === selectedChart1) return true;
-                // Filter out charts selected in other visible cards
-                if (isCard2Visible && option.value === selectedChart2) return false;
-                if (isCard3Visible && option.value === selectedChart3) return false;
-                if (isCard4Visible && option.value === selectedChart4) return false;
-                if (isCard5Visible && option.value === selectedChart5) return false;
-                if (isCard6Visible && option.value === selectedChart6) return false;
-                return true;
-              }),
+              options: allChartOptions,
               value: selectedChart1,
-              onChange: (value) => setSelectedChart1(value),
+              onChange: (value) => {
+                // Check if the selected chart is already displayed in another visible card
+                if (isCard2Visible && value === selectedChart2) {
+                  setSelectedChart2(selectedChart1);
+                } else if (isCard3Visible && value === selectedChart3) {
+                  setSelectedChart3(selectedChart1);
+                } else if (isCard4Visible && value === selectedChart4) {
+                  setSelectedChart4(selectedChart1);
+                } else if (isCard5Visible && value === selectedChart5) {
+                  setSelectedChart5(selectedChart1);
+                } else if (isCard6Visible && value === selectedChart6) {
+                  setSelectedChart6(selectedChart1);
+                }
+                setSelectedChart1(value);
+              },
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
@@ -2022,19 +2028,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         >
           <DashboardCard
             titleDropdown={{
-              options: allChartOptions.filter(option => {
-                // Always allow current selection
-                if (option.value === selectedChart2) return true;
-                // Filter out charts selected in other visible cards
-                if (isCard1Visible && option.value === selectedChart1) return false;
-                if (isCard3Visible && option.value === selectedChart3) return false;
-                if (isCard4Visible && option.value === selectedChart4) return false;
-                if (isCard5Visible && option.value === selectedChart5) return false;
-                if (isCard6Visible && option.value === selectedChart6) return false;
-                return true;
-              }),
+              options: allChartOptions,
               value: selectedChart2,
-              onChange: (value) => setSelectedChart2(value),
+              onChange: (value) => {
+                // Check if the selected chart is already displayed in another visible card
+                if (isCard1Visible && value === selectedChart1) {
+                  setSelectedChart1(selectedChart2);
+                } else if (isCard3Visible && value === selectedChart3) {
+                  setSelectedChart3(selectedChart2);
+                } else if (isCard4Visible && value === selectedChart4) {
+                  setSelectedChart4(selectedChart2);
+                } else if (isCard5Visible && value === selectedChart5) {
+                  setSelectedChart5(selectedChart2);
+                } else if (isCard6Visible && value === selectedChart6) {
+                  setSelectedChart6(selectedChart2);
+                }
+                setSelectedChart2(value);
+              },
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
@@ -2095,19 +2105,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         >
           <DashboardCard
             titleDropdown={{
-              options: allChartOptions.filter(option => {
-                // Always allow current selection
-                if (option.value === selectedChart3) return true;
-                // Filter out charts selected in other visible cards
-                if (isCard1Visible && option.value === selectedChart1) return false;
-                if (isCard2Visible && option.value === selectedChart2) return false;
-                if (isCard4Visible && option.value === selectedChart4) return false;
-                if (isCard5Visible && option.value === selectedChart5) return false;
-                if (isCard6Visible && option.value === selectedChart6) return false;
-                return true;
-              }),
+              options: allChartOptions,
               value: selectedChart3,
-              onChange: (value) => setSelectedChart3(value),
+              onChange: (value) => {
+                // Check if the selected chart is already displayed in another visible card
+                if (isCard1Visible && value === selectedChart1) {
+                  setSelectedChart1(selectedChart3);
+                } else if (isCard2Visible && value === selectedChart2) {
+                  setSelectedChart2(selectedChart3);
+                } else if (isCard4Visible && value === selectedChart4) {
+                  setSelectedChart4(selectedChart3);
+                } else if (isCard5Visible && value === selectedChart5) {
+                  setSelectedChart5(selectedChart3);
+                } else if (isCard6Visible && value === selectedChart6) {
+                  setSelectedChart6(selectedChart3);
+                }
+                setSelectedChart3(value);
+              },
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
@@ -2168,19 +2182,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         >
           <DashboardCard
             titleDropdown={{
-              options: allChartOptions.filter(option => {
-                // Always allow current selection
-                if (option.value === selectedChart4) return true;
-                // Filter out charts selected in other visible cards
-                if (isCard1Visible && option.value === selectedChart1) return false;
-                if (isCard2Visible && option.value === selectedChart2) return false;
-                if (isCard3Visible && option.value === selectedChart3) return false;
-                if (isCard5Visible && option.value === selectedChart5) return false;
-                if (isCard6Visible && option.value === selectedChart6) return false;
-                return true;
-              }),
+              options: allChartOptions,
               value: selectedChart4,
-              onChange: (value) => setSelectedChart4(value),
+              onChange: (value) => {
+                // Check if the selected chart is already displayed in another visible card
+                if (isCard1Visible && value === selectedChart1) {
+                  setSelectedChart1(selectedChart4);
+                } else if (isCard2Visible && value === selectedChart2) {
+                  setSelectedChart2(selectedChart4);
+                } else if (isCard3Visible && value === selectedChart3) {
+                  setSelectedChart3(selectedChart4);
+                } else if (isCard5Visible && value === selectedChart5) {
+                  setSelectedChart5(selectedChart4);
+                } else if (isCard6Visible && value === selectedChart6) {
+                  setSelectedChart6(selectedChart4);
+                }
+                setSelectedChart4(value);
+              },
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
@@ -2241,19 +2259,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         >
           <DashboardCard
             titleDropdown={{
-              options: allChartOptions.filter(option => {
-                // Always allow current selection
-                if (option.value === selectedChart5) return true;
-                // Filter out charts selected in other visible cards
-                if (isCard1Visible && option.value === selectedChart1) return false;
-                if (isCard2Visible && option.value === selectedChart2) return false;
-                if (isCard3Visible && option.value === selectedChart3) return false;
-                if (isCard4Visible && option.value === selectedChart4) return false;
-                if (isCard6Visible && option.value === selectedChart6) return false;
-                return true;
-              }),
+              options: allChartOptions,
               value: selectedChart5,
-              onChange: (value) => setSelectedChart5(value),
+              onChange: (value) => {
+                // Check if the selected chart is already displayed in another visible card
+                if (isCard1Visible && value === selectedChart1) {
+                  setSelectedChart1(selectedChart5);
+                } else if (isCard2Visible && value === selectedChart2) {
+                  setSelectedChart2(selectedChart5);
+                } else if (isCard3Visible && value === selectedChart3) {
+                  setSelectedChart3(selectedChart5);
+                } else if (isCard4Visible && value === selectedChart4) {
+                  setSelectedChart4(selectedChart5);
+                } else if (isCard6Visible && value === selectedChart6) {
+                  setSelectedChart6(selectedChart5);
+                }
+                setSelectedChart5(value);
+              },
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
@@ -2314,19 +2336,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         >
           <DashboardCard
             titleDropdown={{
-              options: allChartOptions.filter(option => {
-                // Always allow current selection
-                if (option.value === selectedChart6) return true;
-                // Filter out charts selected in other visible cards
-                if (isCard1Visible && option.value === selectedChart1) return false;
-                if (isCard2Visible && option.value === selectedChart2) return false;
-                if (isCard3Visible && option.value === selectedChart3) return false;
-                if (isCard4Visible && option.value === selectedChart4) return false;
-                if (isCard5Visible && option.value === selectedChart5) return false;
-                return true;
-              }),
+              options: allChartOptions,
               value: selectedChart6,
-              onChange: (value) => setSelectedChart6(value),
+              onChange: (value) => {
+                // Check if the selected chart is already displayed in another visible card
+                if (isCard1Visible && value === selectedChart1) {
+                  setSelectedChart1(selectedChart6);
+                } else if (isCard2Visible && value === selectedChart2) {
+                  setSelectedChart2(selectedChart6);
+                } else if (isCard3Visible && value === selectedChart3) {
+                  setSelectedChart3(selectedChart6);
+                } else if (isCard4Visible && value === selectedChart4) {
+                  setSelectedChart4(selectedChart6);
+                } else if (isCard5Visible && value === selectedChart5) {
+                  setSelectedChart5(selectedChart6);
+                }
+                setSelectedChart6(value);
+              },
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
