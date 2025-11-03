@@ -397,6 +397,64 @@ return (
 );
 ```
 
+### **Page Transition Animation**
+
+**IMPORTANT**: The Layout component automatically handles page transition animations. You do NOT need to implement any animation yourself.
+
+**How it works:**
+- When navigating between pages, the Layout component detects the change
+- Content starts at **102% scale** and **95% opacity**
+- Smoothly animates to **100% scale** and **100% opacity** over 300ms
+- Uses `cubic-bezier(0.25, 0.8, 0.25, 1)` for a professional easing effect
+- Animation is triggered by changes in `selectedSidebarItem`, `selectedSidebarSubitem`, or `breadcrumbs`
+
+**What you need to do:**
+- **NOTHING!** Just wrap your content in `<Layout>` and the animation happens automatically
+- **DO NOT** add custom scale animations to your page content
+- **DO NOT** add wrapper divs with transform or animation styles
+
+**Example - Animation Handled Automatically:**
+```tsx
+// ✅ CORRECT - Layout handles all animations
+export const YourPage: React.FC = ({ onNavigateToPage }) => {
+  return (
+    <Layout
+      breadcrumbs={breadcrumbs}
+      selectedSidebarItem="reports"
+      onNavigate={navigationHandler}
+    >
+      {/* Your content - no animation styles needed */}
+      <YourPageContent />
+    </Layout>
+  );
+};
+
+// ❌ INCORRECT - Don't add custom animations
+export const YourPage: React.FC = ({ onNavigateToPage }) => {
+  return (
+    <Layout {...props}>
+      <div style={{
+        transform: 'scale(1.02)',  // DON'T DO THIS
+        animation: 'fadeIn 0.3s'    // DON'T DO THIS
+      }}>
+        <YourPageContent />
+      </div>
+    </Layout>
+  );
+};
+```
+
+**Animation Details (for reference only):**
+```tsx
+// These styles are already in Layout component - DO NOT duplicate
+contentAreaStyles = {
+  opacity: isAnimating ? 0.95 : 1,                    // Start faded, end fully visible
+  transform: isAnimating ? 'scale(1.02)' : 'scale(1)', // Start larger, zoom down to normal
+  transformOrigin: 'center center',
+  transition: 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'
+};
+```
+
 ### **Full-Width Layout Pattern**
 ```tsx
 return (

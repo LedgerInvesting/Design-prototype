@@ -82,7 +82,8 @@
       "Bash(while read file)",
       "Bash(do echo \"=== $file ===\")",
       "Bash(done)",
-      "Bash(for file in ReportsBDXUpload.tsx ReportsCashSettlement.tsx ReportsContractsExplorer.tsx ReportsTransactionManagement.tsx ReportsNewTransactionForm.tsx ReportsInsightsProgramDetails.tsx)"
+      "Bash(for file in ReportsBDXUpload.tsx ReportsCashSettlement.tsx ReportsContractsExplorer.tsx ReportsTransactionManagement.tsx ReportsNewTransactionForm.tsx ReportsInsightsProgramDetails.tsx)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

@@ -6,6 +6,7 @@ import {
   ChevronRightExtraSmall,
   InboxMedium,
   HomeMedium,
+  Home14,
   UserSmall,
   SettingsMedium,
   CloseSmall,
@@ -62,7 +63,7 @@ const sidebarItems: SidebarItem[] = [
     label: 'Reports',
     icon: ReportsLogo,
     subitems: [
-      { id: 'transactions', label: 'transactions' },
+      { id: 'transactions', label: 'Transactions' },
       { id: 'bdx-upload', label: 'BDX upload' },
       { id: 'insights-explorer', label: 'Insights' },
       { id: 'reports-explorer', label: 'Reports explorer' }
@@ -318,7 +319,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
     width: showFullMode ? '220px' : '80px',
     minHeight: '100vh',
     backgroundColor: colors.blackAndWhite.black900,
-    padding: '0.7rem',
+    padding: '0 10px 18px 10px',
     display: 'flex',
     flexDirection: 'column',
     gap: spacing[1],
@@ -335,7 +336,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
     alignItems: 'center',
     marginBottom: spacing[8],
     padding: `0 ${spacing[2]}`,
-    minHeight: '32px', // Ensure consistent height for both modes
+    height: '60px', // Match TopNav height
   };
 
   const mainItemStyles: React.CSSProperties = {
@@ -498,7 +499,9 @@ export const SideNav2: React.FC<SideNav2Props> = ({
           }}
         >
           {showFullMode ? (
-            <KorraLogo color={colors.blackAndWhite.white} />
+            <div style={{ marginLeft: '8px' }}>
+              <KorraLogo color={colors.blackAndWhite.white} />
+            </div>
           ) : (
             <KLogo color={colors.blackAndWhite.white} />
           )}
@@ -534,9 +537,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
           }}
         >
           <div style={mainItemContentStyles}>
-            <div style={{ width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <HomeMedium color={selectedItem === 'home' ? colors.blackAndWhite.black900 : colors.blackAndWhite.white} />
-            </div>
+            <Home14 color={selectedItem === 'home' ? colors.blackAndWhite.black900 : colors.blackAndWhite.white} />
             <span style={{
               ...typography.styles.bodyL,
               color: selectedItem === 'home' ? colors.blackAndWhite.black900 : colors.blackAndWhite.black500,
@@ -546,24 +547,19 @@ export const SideNav2: React.FC<SideNav2Props> = ({
               position: showFullMode ? 'static' : 'absolute'
             }}>Home</span>
           </div>
+          {showFullMode && (
+            <ChevronRightExtraSmall color={selectedItem === 'home' ? colors.blackAndWhite.black900 : colors.blackAndWhite.black700} />
+          )}
         </button>
 
+        {/* Inbox button - Hidden but kept in code for future use */}
         <button
           style={{
             ...mainItemStyles,
-            ...(selectedItem === 'inbox' ? { backgroundColor: colors.blackAndWhite.white } : {})
+            ...(selectedItem === 'inbox' ? { backgroundColor: colors.blackAndWhite.white } : {}),
+            display: 'none' // Hidden from view
           }}
           onClick={onInboxClick}
-          onMouseEnter={(e) => {
-            if (selectedItem !== 'inbox') {
-              Object.assign(e.currentTarget.style, mainItemHoverStyles);
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (selectedItem !== 'inbox') {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }
-          }}
         >
           <div style={mainItemContentStyles}>
             <div style={{ width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -594,11 +590,11 @@ export const SideNav2: React.FC<SideNav2Props> = ({
           }}>
             {/* App icon at top - aligned with header */}
             <div style={{
-              height: '40px',
+              height: '60px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: '0.4rem'
+              marginBottom: 0
             }}>
               {sidebarItems.find(i => i.id === expandedApp)?.icon &&
                 React.createElement(sidebarItems.find(i => i.id === expandedApp)!.icon, {
@@ -671,15 +667,28 @@ export const SideNav2: React.FC<SideNav2Props> = ({
               justifyContent: 'space-between',
               paddingLeft: spacing[4],
               paddingRight: 0,
-              marginBottom: '0.4rem',
-              height: '40px'
+              marginBottom: 0,
+              height: '60px'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3] }}>
-                {sidebarItems.find(i => i.id === expandedApp)?.icon &&
-                  React.createElement(sidebarItems.find(i => i.id === expandedApp)!.icon)}
+                <div style={{
+                  width: '22px',
+                  height: '22px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <div style={{ transform: 'scale(1.57)', transformOrigin: 'center' }}>
+                    {sidebarItems.find(i => i.id === expandedApp)?.icon &&
+                      React.createElement(sidebarItems.find(i => i.id === expandedApp)!.icon)}
+                  </div>
+                </div>
                 <span style={{
-                  ...mainItemTextStyles,
-                  color: colors.blackAndWhite.white
+                  ...typography.styles.bodyL,
+                  color: colors.blackAndWhite.white,
+                  fontFamily: 'Bradford LL, serif',
+                  fontWeight: 700,
+                  fontSize: '16px'
                 }}>
                   {sidebarItems.find(i => i.id === expandedApp)?.label}
                 </span>
@@ -696,7 +705,17 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                 }}
                 onClick={handleCloseApp}
               >
-                <CloseSmall color={colors.blackAndWhite.white} />
+                <div style={{
+                  width: '22px',
+                  height: '22px',
+                  backgroundColor: colors.blackAndWhite.black800,
+                  borderRadius: borderRadius.absolute,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <CloseSmall color={colors.blackAndWhite.white} />
+                </div>
               </button>
             </div>
 
@@ -707,7 +726,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
               animation: 'fadeInContent 0.4s ease-out'
             }} />
 
-            {/* Resources/Products Section */}
+            {/* Resources/Explore Section */}
             <div style={{
               ...typography.styles.bodyM,
               color: colors.blackAndWhite.black500,
@@ -715,7 +734,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
               marginBottom: '8px',
               animation: 'fadeInContent 0.4s ease-out'
             }}>
-              {expandedApp === 'contracts' ? 'Resources' : 'Products'}
+              {expandedApp === 'contracts' ? 'Resources' : 'Explore'}
             </div>
 
             {/* Submenu items */}
@@ -729,6 +748,9 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                       ...subitemStyles,
                       padding: `0 ${spacing[4]}`,
                       height: '40px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                       ...(isSelected ? selectedSubitemStyles : {})
                     }}
                     onClick={() => handleSubitemClick(expandedApp, subitem.id)}
@@ -749,6 +771,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                     }}>
                       {subitem.label}
                     </span>
+                    <ChevronRightExtraSmall color={isSelected ? colors.blackAndWhite.black900 : colors.blackAndWhite.black700} />
                   </button>
                 );
               })}
@@ -876,13 +899,28 @@ export const SideNav2: React.FC<SideNav2Props> = ({
             {showFullMode && (
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
-                  ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.white,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: spacing[2]
                 }}>
-                  {userName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
+                  <div style={{
+                    ...typography.styles.bodyL,
+                    color: colors.blackAndWhite.white,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}>
+                    {userName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
+                  </div>
+                  <div style={{
+                    transform: isUserMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <ChevronDownExtraSmall color={colors.blackAndWhite.white} />
+                  </div>
                 </div>
                 <div style={{
                   ...typography.styles.bodyS,

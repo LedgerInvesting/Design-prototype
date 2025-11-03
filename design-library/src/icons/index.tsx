@@ -31,6 +31,10 @@ export interface CardIconProps extends BaseIconProps {
   // Card icons are used beside card titles, 15x18px
 }
 
+export interface Home14IconProps extends BaseIconProps {
+  // Home icon at 14x14px for navigation
+}
+
 // Icon size constants
 export const ICON_SIZES = {
   extraSmall: 8,
@@ -40,6 +44,7 @@ export const ICON_SIZES = {
   tableArrange: 12, // Arrange icon is 12x12px
   logo: 14, // Standard size for navigation logos
   card: 15, // Card icons are 15x18px
+  home14: 14, // Home icon at 14x14px
 } as const;
 
 // Extra Small Icons (8x8px)
@@ -1000,14 +1005,24 @@ export const HelpMedium: React.FC<MediumIconProps> = ({
     </svg>
 );
 
-export const HomeMedium: React.FC<MediumIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const HomeMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M11 12.0533L11 16.0533" stroke={color} strokeWidth="2"/>
     <path d="M11.5535 4.55326L17.0003 9.99997L17.0003 16.5533L5.00027 16.5533L5.00027 9.99997L10.447 4.55326" stroke={color} strokeWidth="2"/>
     </svg>
+);
+
+export const Home14: React.FC<Home14IconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.home14} height={ICON_SIZES.home14} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M7.27637 8.20715L7.27637 12.2072" stroke={color} strokeWidth="2"/>
+    <path d="M7.82991 0.707064L13.2766 6.15378L13.2767 12.7071L1.27664 12.7071L1.27664 6.15378L6.72339 0.707064" stroke={color} strokeWidth="2"/>
+  </svg>
 );
 
 export const InboxMedium: React.FC<MediumIconProps> = ({ 
