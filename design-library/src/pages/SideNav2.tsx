@@ -723,7 +723,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
             <div style={{
               borderTop: `1px solid ${colors.blackAndWhite.black800}`,
               marginBottom: '20px',
-              animation: 'fadeInContent 0.4s ease-out'
+              marginLeft: '17px'
             }} />
 
             {/* Resources/Explore Section */}
@@ -731,14 +731,13 @@ export const SideNav2: React.FC<SideNav2Props> = ({
               ...typography.styles.bodyM,
               color: colors.blackAndWhite.black500,
               padding: `0 ${spacing[4]}`,
-              marginBottom: '8px',
-              animation: 'fadeInContent 0.4s ease-out'
+              marginBottom: '8px'
             }}>
               {expandedApp === 'contracts' ? 'Resources' : 'Explore'}
             </div>
 
             {/* Submenu items */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: spacing[4], animation: 'fadeInContent 0.4s ease-out' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: spacing[4] }}>
               {sidebarItems.find(i => i.id === expandedApp)?.subitems?.map((subitem) => {
                 const isSelected = selectedItem === expandedApp && selectedSubitem === subitem.id;
                 return (
@@ -838,6 +837,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
       <div style={{
         borderTop: `1px solid ${colors.blackAndWhite.black800}`,
         paddingTop: '10px',
+        marginLeft: '17px',
         position: 'relative'
       }}>
           <div

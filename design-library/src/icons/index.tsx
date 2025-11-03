@@ -1611,73 +1611,72 @@ export const KorraLogo: React.FC<LogoIconProps> = ({
   </svg>
 );
 
-export const MarketplaceLogo: React.FC<LogoIconProps> = ({ 
-  color = '#ceb5fb', 
-  className 
+export const MarketplaceLogo: React.FC<LogoIconProps> = ({
+  color = '#C8ABFA',
+  className
 }) => (
   <svg width={ICON_SIZES.logo} height={ICON_SIZES.logo} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clipPath="url(#clip0_101_1296)">
-      <path d="M2.09815e-07 0L5.5 5.09966e-07L5.5 2.54546L0 2.54545L2.09815e-07 0Z" fill={color}/>
-      <path d="M8.5 0L14 5.09966e-07V2.54546L8.5 2.54545V0Z" fill={color}/>
-      <path d="M2.09815e-07 5.72727L5.5 5.72727L5.5 8.27273H0L2.09815e-07 5.72727Z" fill={color}/>
-      <path d="M8.5 5.72727L14 5.72727V8.27273H8.5V5.72727Z" fill={color}/>
-      <path d="M5.5 2.54546L8.5 2.54545V5.72727L5.5 5.72727L5.5 2.54546Z" fill={color}/>
-      <path d="M5.5 8.27273H8.5V11.4545H5.5V8.27273Z" fill={color}/>
-      <path d="M2.09815e-07 11.4545H5.5V14H0L2.09815e-07 11.4545Z" fill={color}/>
-      <path d="M8.5 11.4545L14 11.4545V14H8.5V11.4545Z" fill={color}/>
+    <path d="M0.636719 0.636353L5.63672 0.636353L5.63672 2.9504L0.636719 2.9504L0.636719 0.636353Z" fill={color}/>
+    <path d="M8.36399 0.636353L13.364 0.636353V2.9504L8.36399 2.9504V0.636353Z" fill={color}/>
+    <path d="M0.636719 5.84296L5.63672 5.84296L5.63672 8.15701L0.636719 8.15701L0.636719 5.84296Z" fill={color}/>
+    <path d="M8.36399 5.84296L13.364 5.84296V8.15701L8.36399 8.15701V5.84296Z" fill={color}/>
+    <path d="M5.63672 2.9504L8.36399 2.9504V5.84296L5.63672 5.84296L5.63672 2.9504Z" fill={color}/>
+    <path d="M5.63672 8.15701L8.36399 8.15701V11.0496H5.63672V8.15701Z" fill={color}/>
+    <path d="M0.636719 11.0496H5.63672V13.3636H0.636719L0.636719 11.0496Z" fill={color}/>
+    <path d="M8.36399 11.0496L13.364 11.0496V13.3636H8.36399V11.0496Z" fill={color}/>
+  </svg>
+);
+
+export const ReportsLogo: React.FC<LogoIconProps> = ({
+  color = '#9ad5f7',
+  className
+}) => (
+  <svg width={ICON_SIZES.logo} height={ICON_SIZES.logo} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <g clipPath="url(#clip0_reports_logo)">
+      <path d="M0.635742 2.54551L6.99938 2.54551V4.77278L0.635742 4.77278L0.635742 2.54551Z" fill={color}/>
+      <path d="M6.99938 0.318237L13.363 0.318238V2.54551L6.99938 2.54551V0.318237Z" fill={color}/>
+      <path d="M0.635742 7.00006L6.99938 7.00006V9.22733L0.635742 9.22733L0.635742 7.00006Z" fill={color}/>
+      <path d="M6.99938 4.77278L13.363 4.77278V7.00006L6.99938 7.00006V4.77278Z" fill={color}/>
+      <path d="M0.635742 11.4546L6.99938 11.4546V13.6819H0.635742L0.635742 11.4546Z" fill={color}/>
+      <path d="M6.99938 9.22733L13.363 9.22733V11.4546L6.99938 11.4546V9.22733Z" fill={color}/>
     </g>
     <defs>
-      <clipPath id="clip0_101_1296">
+      <clipPath id="clip0_reports_logo">
         <rect width="14" height="14" fill="white"/>
       </clipPath>
     </defs>
   </svg>
 );
 
-export const ReportsLogo: React.FC<LogoIconProps> = ({ 
-  color = '#9ad5f7', 
-  className 
+export const AnalyticsLogo: React.FC<LogoIconProps> = ({
+  color = '#82F2A8',
+  className
 }) => (
   <svg width={ICON_SIZES.logo} height={ICON_SIZES.logo} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M1 2.16667L7 2.16667V4.33333L1 4.33333L1 2.16667Z" fill={color}/>
-    <path d="M7 0L13 5.52463e-07V2.16667L7 2.16667V0Z" fill={color}/>
-    <path d="M1 6.5L7 6.5V8.66667L1 8.66667L1 6.5Z" fill={color}/>
-    <path d="M7 4.33333L13 4.33333V6.5L7 6.5V4.33333Z" fill={color}/>
-    <path d="M1 10.8333L7 10.8333V13H1L1 10.8333Z" fill={color}/>
-    <path d="M7 8.66667L13 8.66667V10.8333L7 10.8333V8.66667Z" fill={color}/>
-  </svg>
-);
-
-export const AnalyticsLogo: React.FC<LogoIconProps> = ({ 
-  color = '#64EF99', 
-  className 
-}) => (
-  <svg width={ICON_SIZES.logo} height={ICON_SIZES.logo} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <g clipPath="url(#clip0_101_1318)">
-      <path d="M11.6667 0L14 2.33334L11.6667 4.66668L9.33333 2.33334L11.6667 0Z" fill={color}/>
-      <path d="M7.00001 4.66661L9.33335 6.99995L7.00001 9.33328L4.66668 6.99995L7.00001 4.66661Z" fill={color}/>
-      <path d="M2.33333 9.33332L4.66667 11.6667L2.33333 14L0 11.6667L2.33333 9.33332Z" fill={color}/>
-      <path d="M11.6667 4.66668L14 6.99995L11.6667 9.33328L9.33335 6.99995L11.6667 4.66668Z" fill={color}/>
-      <path d="M7.00001 9.33328L9.33335 11.6667L7.00001 14L4.66667 11.6667L7.00001 9.33328Z" fill={color}/>
-      <path d="M11.6667 9.33328L14 11.6667L11.6667 14L9.33335 11.6667L11.6667 9.33328Z" fill={color}/>
+    <g clipPath="url(#clip0_analytics_logo)">
+      <path d="M11.7959 0.0179443L14.1244 2.34647L11.7959 4.67499L9.46739 2.34647L11.7959 0.0179443Z" fill={color}/>
+      <path d="M7.13889 4.67492L9.4674 7.00344L7.13889 9.33196L4.81037 7.00344L7.13889 4.67492Z" fill={color}/>
+      <path d="M2.48184 9.332L4.81036 11.6605L2.48184 13.989L0.15332 11.6605L2.48184 9.332Z" fill={color}/>
+      <path d="M11.7959 4.67499L14.1244 7.00344L11.7959 9.33196L9.4674 7.00344L11.7959 4.67499Z" fill={color}/>
+      <path d="M7.13889 9.33196L9.4674 11.6605L7.13889 13.989L4.81036 11.6605L7.13889 9.33196Z" fill={color}/>
+      <path d="M11.7959 9.33196L14.1244 11.6605L11.7959 13.989L9.4674 11.6605L11.7959 9.33196Z" fill={color}/>
     </g>
     <defs>
-      <clipPath id="clip0_101_1318">
+      <clipPath id="clip0_analytics_logo">
         <rect width="14" height="14" fill="white"/>
       </clipPath>
     </defs>
   </svg>
 );
 
-export const ContractsLogo: React.FC<LogoIconProps> = ({ 
-  color = '#FFE671', 
-  className 
+export const ContractsLogo: React.FC<LogoIconProps> = ({
+  color = '#FFDD61',
+  className
 }) => (
   <svg width={ICON_SIZES.logo} height={ICON_SIZES.logo} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path fillRule="evenodd" clipRule="evenodd" d="M1.29297 11.2928L5.79297 6.79285L7.20718 8.20706L2.70718 12.7071L1.29297 11.2928Z" fill={color}/>
-    <path fillRule="evenodd" clipRule="evenodd" d="M7.29297 11.2928L11.793 6.79285L13.2072 8.20706L8.70718 12.7071L7.29297 11.2928Z" fill={color}/>
-    <path fillRule="evenodd" clipRule="evenodd" d="M5.79297 6.20706L1.29297 1.70706L2.70718 0.292847L7.20718 4.79285L5.79297 6.20706Z" fill={color}/>
-    <path fillRule="evenodd" clipRule="evenodd" d="M11.793 6.20706L7.29297 1.70706L8.70718 0.292847L13.2072 4.79285L11.793 6.20706Z" fill={color}/>
+    <path d="M10.1812 0V3.19291H6.99938V10.8071H3.81756V14H0.635742V0H10.1812Z" fill={color}/>
+    <path d="M10.1812 14H6.99938V10.8071H10.1812V14Z" fill={color}/>
+    <path d="M13.363 7.61418H10.1812V4.42127H13.363V7.61418Z" fill={color}/>
   </svg>
 );
 
