@@ -704,6 +704,28 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   justifyContent: 'center'
                 }}
                 onClick={handleCloseApp}
+                onMouseEnter={(e) => {
+                  const circle = e.currentTarget.querySelector('div');
+                  if (circle) {
+                    (circle as HTMLElement).style.backgroundColor = colors.blackAndWhite.white;
+                  }
+                  const paths = e.currentTarget.querySelectorAll('path, line, polyline, polygon, circle, rect');
+                  paths.forEach(path => {
+                    (path as SVGElement).style.transition = 'stroke 0.2s ease';
+                    (path as SVGElement).style.stroke = colors.blackAndWhite.black900;
+                  });
+                }}
+                onMouseLeave={(e) => {
+                  const circle = e.currentTarget.querySelector('div');
+                  if (circle) {
+                    (circle as HTMLElement).style.backgroundColor = colors.blackAndWhite.black800;
+                  }
+                  const paths = e.currentTarget.querySelectorAll('path, line, polyline, polygon, circle, rect');
+                  paths.forEach(path => {
+                    (path as SVGElement).style.transition = 'stroke 0.2s ease';
+                    (path as SVGElement).style.stroke = colors.blackAndWhite.white;
+                  });
+                }}
               >
                 <div style={{
                   width: '22px',
@@ -712,9 +734,16 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   borderRadius: borderRadius.absolute,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  transition: 'background-color 0.2s ease'
                 }}>
-                  <CloseSmall color={colors.blackAndWhite.white} />
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <CloseSmall color={colors.blackAndWhite.white} />
+                  </div>
                 </div>
               </button>
             </div>
