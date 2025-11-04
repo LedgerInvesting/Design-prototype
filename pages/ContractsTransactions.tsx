@@ -473,7 +473,7 @@ export const ContractsTransactions: React.FC<TransactionManagementProps> = ({ on
         patternSrc="/pattern_contracts.svg"
         buttonText="New Extraction"
         buttonIcon={<span style={{ color: colors.theme.primary700 }}>+</span>}
-        onButtonClick={() => onNavigateToPage && onNavigateToPage('contracts-ai-extraction')}
+        onButtonClick={() => onNavigateToPage && onNavigateToPage('contracts-upload')}
         illustrationAlt="transaction management"
       />
 
