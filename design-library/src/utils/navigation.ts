@@ -12,6 +12,7 @@ export type PageType =
   | 'reports-cash-settlement'
   | 'reports-bdx-upload'
   | 'reports-contracts-explorer'
+  | 'contracts-upload'
   | 'contracts-ai-extraction'
   | 'contracts-transactions'
   | 'analytics-valuation'
@@ -47,6 +48,7 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
       'reports-cash-settlement',
       'reports-bdx-upload',
       'reports-contracts-explorer',
+      'contracts-upload',
       'contracts-ai-extraction',
       'contracts-transactions',
       'analytics-valuation',
@@ -90,7 +92,9 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
     }
     // Handle Contracts navigation
     else if (itemId === 'contracts') {
-      if (subitemId === 'ai-extraction') {
+      if (subitemId === 'upload') {
+        onNavigateToPage('contracts-upload');
+      } else if (subitemId === 'ai-extraction') {
         onNavigateToPage('contracts-ai-extraction');
       } else if (subitemId === 'transactions') {
         onNavigateToPage('contracts-transactions');
@@ -182,7 +186,13 @@ export const createPageNavigationHandler = (
     }
     // Handle Contracts navigation
     else if (itemId === 'contracts') {
-      if (subitemId === 'ai-extraction') {
+      if (subitemId === 'upload') {
+        if (currentPage === 'contracts-upload') {
+          console.log('Already on contracts upload page');
+        } else {
+          onNavigateToPage('contracts-upload');
+        }
+      } else if (subitemId === 'ai-extraction') {
         if (currentPage === 'contracts-ai-extraction') {
           console.log('Already on contracts AI extraction page');
         } else {
@@ -263,6 +273,7 @@ export const createBreadcrumbs = {
   },
   contracts: {
     start: () => [{ label: 'Contracts', isActive: true }],
+    upload: () => [{ label: 'Contracts', isActive: false }, { label: 'Upload', isActive: true }],
     aiExtraction: () => [{ label: 'Contracts', isActive: false }, { label: 'AI Extraction', isActive: true }],
     explorer: (onNavigateToPage: NavigationHandler) => [
       { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('reports-explorer'), isActive: false },

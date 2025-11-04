@@ -84,7 +84,7 @@ const sidebarItems: SidebarItem[] = [
     icon: ContractsLogo,
     subitems: [
       { id: 'transactions', label: 'Transactions' },
-      { id: 'ai-extraction', label: 'AI Extraction' }
+      { id: 'upload', label: 'Upload' }
     ]
   }
 ];
@@ -143,7 +143,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
       },
       contracts: {
         'transactions': ReplaceMedium,
-        'ai-extraction': DocumentMedium
+        'upload': DownloadMedium
       }
     };
 
