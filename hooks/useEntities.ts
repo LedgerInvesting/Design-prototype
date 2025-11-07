@@ -1,17 +1,29 @@
 /**
- * Entities Data Hook for Reports Explorer
+ * @fileoverview Entities Data Hook for Reports Explorer
+ * 
  * Provides hierarchical data structure: Reinsurers -> MGAs -> Programs -> Transactions
- * Includes aggregated metrics for each level
+ * Includes aggregated metrics for each entity level with deterministic generation.
+ * 
+ * This hook manages the complete entity hierarchy used throughout the Reports system,
+ * providing consistent data structure and helper functions for entity relationships.
+ * 
+ * @version 1.0.0
+ * @author Claude Code Assistant
  */
 import { useState, useEffect, useMemo } from 'react';
 
-// Entity interfaces
+/**
+ * Base entity interface - common properties for all entity types
+ */
 export interface BaseEntity {
   id: string;
   name: string;
   type: 'Reinsurer' | 'MGA' | 'Program' | 'Transaction';
 }
 
+/**
+ * Reinsurer entity - top level in the hierarchy
+ */
 export interface Reinsurer extends BaseEntity {
   type: 'Reinsurer';
   country: string;
@@ -21,6 +33,9 @@ export interface Reinsurer extends BaseEntity {
   metrics: EntityMetrics;
 }
 
+/**
+ * MGA (Managing General Agent) entity - middle tier
+ */
 export interface MGA extends BaseEntity {
   type: 'MGA';
   product_line?: string;
@@ -30,6 +45,9 @@ export interface MGA extends BaseEntity {
   metrics: EntityMetrics;
 }
 
+/**
+ * Program entity - specific insurance programs
+ */
 export interface Program extends BaseEntity {
   type: 'Program';
   product_line: string;
@@ -42,6 +60,9 @@ export interface Program extends BaseEntity {
   metrics: EntityMetrics;
 }
 
+/**
+ * Transaction entity - individual financial transactions
+ */
 export interface Transaction extends BaseEntity {
   type: 'Transaction';
   transaction_type: 'Premium' | 'Claims' | 'Commission' | 'Adjustment';
@@ -52,6 +73,9 @@ export interface Transaction extends BaseEntity {
   metrics: EntityMetrics;
 }
 
+/**
+ * Entity metrics interface - financial and operational metrics for each entity
+ */
 export interface EntityMetrics {
   cession: {
     premium: { value: string; growth: string; direction: 'up' | 'down' };
@@ -75,7 +99,14 @@ export interface EntityMetrics {
   };
 }
 
-// Mock data generator for metrics
+/**
+ * Generates deterministic metrics based on entity ID
+ * Uses hash-based calculation to ensure consistent results for same entity
+ * 
+ * @param entityType - Type of entity (for context, currently unused)
+ * @param entityId - Unique identifier used for hash-based generation
+ * @returns EntityMetrics object with calculated financial and operational data
+ */
 const generateMetrics = (entityType: string, entityId: string): EntityMetrics => {
   // Generate deterministic but varied data based on entity ID
   const hash = entityId.split('').reduce((a, b) => {
@@ -181,6 +212,15 @@ const MOCK_ENTITIES = {
   ]
 };
 
+/**
+ * Custom hook for managing entity hierarchy and data
+ * 
+ * Provides complete hierarchical data structure with relationships between
+ * reinsurers, MGAs, programs, and transactions. Includes helper functions
+ * for finding entities and navigating relationships.
+ * 
+ * @returns Object containing entities data, loading state, and utility functions
+ */
 export const useEntities = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -200,7 +200,10 @@ const StatusMeter: React.FC<StatusMeterProps> = ({ level }) => {
   );
 };
 
-// Tree node interface for the entity selector
+/**
+ * Tree node interface for hierarchical entity selector
+ * Represents nodes in the dropdown tree structure
+ */
 interface TreeNode {
   id: string;
   label: string;
@@ -209,7 +212,10 @@ interface TreeNode {
   children?: TreeNode[];
 }
 
-// Entity selector card component with hierarchical dropdown
+/**
+ * Entity selector card component with hierarchical dropdown
+ * Allows users to select entities from the hierarchical structure
+ */
 interface EntitySelectorCardProps {
   currentEntity: {
     id: string;
@@ -480,7 +486,10 @@ const EntitySelectorCard: React.FC<EntitySelectorCardProps> = ({
   );
 };
 
-// Entity relationship pills component
+/**
+ * Entity relationship pills component
+ * Shows clickable parent hierarchy breadcrumbs
+ */
 interface EntityRelationshipProps {
   parents: { id: string; name: string; type: BaseEntity['type'] }[];
   onEntityClick?: (entity: { id: string; name: string; type: BaseEntity['type'] }) => void;
@@ -550,7 +559,10 @@ const EntityRelationship: React.FC<EntityRelationshipProps> = ({
   );
 };
 
-// Main page component
+/**
+ * Reports Explorer main component
+ * Displays hierarchical entity selector, metrics, and insights
+ */
 interface ReportNavigationProps {
   onNavigateToPage?: (page: 'reports-cash-settlement' | 'reports-explorer' | 'reports-transaction-management' | 'reports-contracts-explorer' | 'analytics-valuation' | 'reports-bdx-upload' | 'marketplace-offerings') => void;
 }
@@ -642,79 +654,6 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
   
   const { parents } = getEntityParents();
 
-  // Chart data for Insights section - varies by program
-  const chartDataByProgram: Record<string, any[]> = {
-    "Property Cat Treaty": [
-      { "date": "2025-01", "lineA": 80, "lineB": 10, "lineC": 0, "lineD": 2 },
-      { "date": "2025-02", "lineA": 75, "lineB": 35, "lineC": 3, "lineD": 6 },
-      { "date": "2025-03", "lineA": 77, "lineB": 20, "lineC": 6, "lineD": 12 },
-      { "date": "2025-04", "lineA": 65, "lineB": 22, "lineC": 10, "lineD": 15 },
-      { "date": "2025-05", "lineA": 62, "lineB": 25, "lineC": 15, "lineD": 18 },
-      { "date": "2025-06", "lineA": 60, "lineB": 28, "lineC": 18, "lineD": 20 },
-      { "date": "2025-07", "lineA": 58, "lineB": 30, "lineC": 22, "lineD": 25 },
-      { "date": "2025-08", "lineA": 50, "lineB": 32, "lineC": 27, "lineD": 28 },
-      { "date": "2025-09", "lineA": 70, "lineB": 40, "lineC": 35, "lineD": 33 },
-      { "date": "2025-10", "lineA": 78, "lineB": 45, "lineC": 42, "lineD": 37 },
-      { "date": "2025-11", "lineA": 82, "lineB": 50, "lineC": 48, "lineD": 42 },
-      { "date": "2025-12", "lineA": 85, "lineB": 52, "lineC": 55, "lineD": 46 }
-    ],
-    "Appalachian.wc-companionTY21": [
-      { "date": "2025-01", "lineA": 45, "lineB": 25, "lineC": 15, "lineD": 8 },
-      { "date": "2025-02", "lineA": 50, "lineB": 30, "lineC": 20, "lineD": 12 },
-      { "date": "2025-03", "lineA": 48, "lineB": 28, "lineC": 18, "lineD": 10 },
-      { "date": "2025-04", "lineA": 55, "lineB": 35, "lineC": 25, "lineD": 15 },
-      { "date": "2025-05", "lineA": 52, "lineB": 32, "lineC": 22, "lineD": 13 },
-      { "date": "2025-06", "lineA": 58, "lineB": 38, "lineC": 28, "lineD": 18 },
-      { "date": "2025-07", "lineA": 60, "lineB": 40, "lineC": 30, "lineD": 20 },
-      { "date": "2025-08", "lineA": 62, "lineB": 42, "lineC": 32, "lineD": 22 },
-      { "date": "2025-09", "lineA": 65, "lineB": 45, "lineC": 35, "lineD": 25 },
-      { "date": "2025-10", "lineA": 68, "lineB": 48, "lineC": 38, "lineD": 28 },
-      { "date": "2025-11", "lineA": 70, "lineB": 50, "lineC": 40, "lineD": 30 },
-      { "date": "2025-12", "lineA": 72, "lineB": 52, "lineC": 42, "lineD": 32 }
-    ],
-    "Appalachian.wc-companionTY20": [
-      { "date": "2025-01", "lineA": 35, "lineB": 45, "lineC": 25, "lineD": 15 },
-      { "date": "2025-02", "lineA": 38, "lineB": 48, "lineC": 28, "lineD": 18 },
-      { "date": "2025-03", "lineA": 40, "lineB": 50, "lineC": 30, "lineD": 20 },
-      { "date": "2025-04", "lineA": 42, "lineB": 52, "lineC": 32, "lineD": 22 },
-      { "date": "2025-05", "lineA": 45, "lineB": 55, "lineC": 35, "lineD": 25 },
-      { "date": "2025-06", "lineA": 47, "lineB": 57, "lineC": 37, "lineD": 27 },
-      { "date": "2025-07", "lineA": 50, "lineB": 60, "lineC": 40, "lineD": 30 },
-      { "date": "2025-08", "lineA": 52, "lineB": 62, "lineC": 42, "lineD": 32 },
-      { "date": "2025-09", "lineA": 55, "lineB": 65, "lineC": 45, "lineD": 35 },
-      { "date": "2025-10", "lineA": 58, "lineB": 68, "lineC": 48, "lineD": 38 },
-      { "date": "2025-11", "lineA": 60, "lineB": 70, "lineC": 50, "lineD": 40 },
-      { "date": "2025-12", "lineA": 63, "lineB": 73, "lineC": 53, "lineD": 43 }
-    ],
-    "Appalachian.wc-companionTY19": [
-      { "date": "2025-01", "lineA": 25, "lineB": 55, "lineC": 35, "lineD": 20 },
-      { "date": "2025-02", "lineA": 28, "lineB": 58, "lineC": 38, "lineD": 23 },
-      { "date": "2025-03", "lineA": 30, "lineB": 60, "lineC": 40, "lineD": 25 },
-      { "date": "2025-04", "lineA": 32, "lineB": 62, "lineC": 42, "lineD": 27 },
-      { "date": "2025-05", "lineA": 35, "lineB": 65, "lineC": 45, "lineD": 30 },
-      { "date": "2025-06", "lineA": 37, "lineB": 67, "lineC": 47, "lineD": 32 },
-      { "date": "2025-07", "lineA": 40, "lineB": 70, "lineC": 50, "lineD": 35 },
-      { "date": "2025-08", "lineA": 42, "lineB": 72, "lineC": 52, "lineD": 37 },
-      { "date": "2025-09", "lineA": 45, "lineB": 75, "lineC": 55, "lineD": 40 },
-      { "date": "2025-10", "lineA": 48, "lineB": 78, "lineC": 58, "lineD": 43 },
-      { "date": "2025-11", "lineA": 50, "lineB": 80, "lineC": 60, "lineD": 45 },
-      { "date": "2025-12", "lineA": 53, "lineB": 83, "lineC": 63, "lineD": 48 }
-    ],
-    "Appalachian.wc-companionTY18": [
-      { "date": "2025-01", "lineA": 70, "lineB": 20, "lineC": 5, "lineD": 3 },
-      { "date": "2025-02", "lineA": 68, "lineB": 22, "lineC": 7, "lineD": 5 },
-      { "date": "2025-03", "lineA": 65, "lineB": 25, "lineC": 10, "lineD": 8 },
-      { "date": "2025-04", "lineA": 63, "lineB": 27, "lineC": 12, "lineD": 10 },
-      { "date": "2025-05", "lineA": 60, "lineB": 30, "lineC": 15, "lineD": 12 },
-      { "date": "2025-06", "lineA": 58, "lineB": 32, "lineC": 17, "lineD": 14 },
-      { "date": "2025-07", "lineA": 55, "lineB": 35, "lineC": 20, "lineD": 17 },
-      { "date": "2025-08", "lineA": 53, "lineB": 37, "lineC": 22, "lineD": 19 },
-      { "date": "2025-09", "lineA": 50, "lineB": 40, "lineC": 25, "lineD": 22 },
-      { "date": "2025-10", "lineA": 48, "lineB": 42, "lineC": 27, "lineD": 24 },
-      { "date": "2025-11", "lineA": 45, "lineB": 45, "lineC": 30, "lineD": 27 },
-      { "date": "2025-12", "lineA": 43, "lineB": 47, "lineC": 32, "lineD": 29 }
-    ]
-  };
 
   // Generate chart data based on current entity
   const chartData = React.useMemo(() => {
@@ -747,74 +686,6 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
     }));
   }, [currentEntity.id]);
 
-  // Metric data by program
-  const metricsByProgram: Record<string, any> = {
-    "Property Cat Treaty": {
-      cession: {
-        premium: { value: "$32,156,789", growth: "7.8%", direction: "up" as const },
-        remittance: { value: "$19,794,232", growth: "7.8%", direction: "up" as const },
-        collateral: { value: "$7,468,987", growth: "2.4%", direction: "down" as const }
-      },
-      validation: {
-        policies: { count: 12, percent: "+0.38%", level: "excellent" as const },
-        premium: { value: "$34,156", percent: "+0.38%", level: "excellent" as const },
-        claims: { count: 13, percent: "+0.38%", level: "marginal" as const },
-        losses: { value: "$56,789", percent: "+0.38%", level: "excellent" as const }
-      }
-    },
-    "Appalachian.wc-companionTY21": {
-      cession: {
-        premium: { value: "$45,234,567", growth: "5.2%", direction: "up" as const },
-        remittance: { value: "$28,456,123", growth: "4.8%", direction: "up" as const },
-        collateral: { value: "$9,876,543", growth: "1.2%", direction: "up" as const }
-      },
-      validation: {
-        policies: { count: 8, percent: "+0.15%", level: "excellent" as const },
-        premium: { value: "$28,450", percent: "+0.22%", level: "excellent" as const },
-        claims: { count: 5, percent: "-0.10%", level: "excellent" as const },
-        losses: { value: "$42,350", percent: "+0.18%", level: "excellent" as const }
-      }
-    },
-    "Appalachian.wc-companionTY20": {
-      cession: {
-        premium: { value: "$38,987,654", growth: "3.5%", direction: "up" as const },
-        remittance: { value: "$24,123,456", growth: "3.2%", direction: "up" as const },
-        collateral: { value: "$8,234,567", growth: "0.8%", direction: "down" as const }
-      },
-      validation: {
-        policies: { count: 18, percent: "+0.52%", level: "marginal" as const },
-        premium: { value: "$48,920", percent: "+0.45%", level: "marginal" as const },
-        claims: { count: 22, percent: "+0.68%", level: "concerning" as const },
-        losses: { value: "$78,450", percent: "+0.55%", level: "marginal" as const }
-      }
-    },
-    "Appalachian.wc-companionTY19": {
-      cession: {
-        premium: { value: "$28,456,123", growth: "2.1%", direction: "up" as const },
-        remittance: { value: "$17,890,234", growth: "1.8%", direction: "up" as const },
-        collateral: { value: "$6,123,456", growth: "0.5%", direction: "down" as const }
-      },
-      validation: {
-        policies: { count: 25, percent: "+0.78%", level: "concerning" as const },
-        premium: { value: "$62,340", percent: "+0.82%", level: "concerning" as const },
-        claims: { count: 28, percent: "+0.95%", level: "concerning" as const },
-        losses: { value: "$94,560", percent: "+0.88%", level: "concerning" as const }
-      }
-    },
-    "Appalachian.wc-companionTY18": {
-      cession: {
-        premium: { value: "$52,345,678", growth: "8.9%", direction: "up" as const },
-        remittance: { value: "$32,567,890", growth: "9.2%", direction: "up" as const },
-        collateral: { value: "$11,234,567", growth: "3.5%", direction: "up" as const }
-      },
-      validation: {
-        policies: { count: 6, percent: "+0.12%", level: "excellent" as const },
-        premium: { value: "$21,340", percent: "+0.08%", level: "excellent" as const },
-        claims: { count: 4, percent: "-0.05%", level: "excellent" as const },
-        losses: { value: "$35,670", percent: "+0.10%", level: "excellent" as const }
-      }
-    }
-  };
 
   // Get current entity's metrics from the database
   const currentEntityData = findEntityById(currentEntity.id, currentEntity.type);

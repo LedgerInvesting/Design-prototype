@@ -1,10 +1,7 @@
 import React from 'react';
+
 // Import page components
 import { Layout } from '@design-library/pages';
-import type { BreadcrumbItem } from '@design-library/pages';
-
-// Import base components  
-import { Card, Button, Stack, Grid, Container } from '@design-library/components';
 
 // Import design tokens
 import { typography, spacing, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
@@ -12,7 +9,9 @@ import { typography, spacing, borderRadius, shadows, useSemanticColors, colors a
 // Import navigation utilities
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
 
-// Custom document icon component
+/**
+ * Custom document icon component props
+ */
 interface DocumentIconProps {
   fillColor?: string;
 }
@@ -302,7 +301,10 @@ const MetricCard: React.FC<MetricCardProps> = ({
   );
 };
 
-// Main page component
+/**
+ * Reports Cash Settlement page props
+ * Displays cession statement details for selected entity from Reports Explorer
+ */
 interface CashSettlementProps {
   onNavigateToPage?: (page: string, data?: any) => void;
   entityData?: {
