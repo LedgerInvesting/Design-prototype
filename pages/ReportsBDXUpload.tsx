@@ -27,6 +27,7 @@ import {
   CloseMedium
 } from '@design-library/icons';
 import { createPageNavigationHandler, type PageType } from '@design-library/utils/navigation';
+import { useTransactions } from './hooks/useTransactionsStable';
 
 interface BDXUploadProps {
   onNavigateToPage?: (page: string, data?: any) => void;
@@ -38,6 +39,10 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
   onInboxClick,
 }) => {
   const semanticColors = useSemanticColors();
+  
+  // Get transaction data to use real transaction name
+  const { transactions } = useTransactions({ limit: 1 });
+  const selectedTransaction = transactions[0]; // Use first transaction
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     type: 'error' | 'progress' | 'success' | 'attention' | null;
@@ -469,7 +474,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
               color: semanticColors.blackAndWhite.black900
             }}>bordereau status</span> <em>of</em> <span style={{
               color: semanticColors.blackAndWhite.black900
-            }}>Brazos Commercial Auto Mileage</span> Plus Bordereau. You can upload bordereau and track progress across different stages.
+            }}>{selectedTransaction?.transaction_name || 'Selected Transaction'}</span> Plus Bordereau. You can upload bordereau and track progress across different stages.
           </h2>
         </div>
 

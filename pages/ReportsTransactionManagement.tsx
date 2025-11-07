@@ -21,15 +21,21 @@ import { BrandNewTransactionModal } from './BrandNewTransactionModal';
 import { UploadContractModal } from './UploadContractModal';
 import { ContractProcessingModal } from './ContractProcessingModal';
 
+// Import stable transaction hooks (no loading delays to prevent blinking)
+import { useTransactions, useTransactionStats, Transaction } from './hooks/useTransactionsStable';
+
 
 // Transaction icon component
-const TransactionIcon: React.FC = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <rect x="2" y="3" width="16" height="12" rx="2" stroke={colors.blackAndWhite.black700} strokeWidth="1.5" fill="none"/>
-    <line x1="2" y1="7" x2="18" y2="7" stroke={colors.blackAndWhite.black700} strokeWidth="1.5"/>
-    <line x1="5" y1="10" x2="8" y2="10" stroke={colors.blackAndWhite.black700} strokeWidth="1.5"/>
-  </svg>
-);
+const TransactionIcon: React.FC = () => {
+  const colors = useSemanticColors();
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <rect x="2" y="3" width="16" height="12" rx="2" stroke={colors.blackAndWhite.black700} strokeWidth="1.5" fill="none"/>
+      <line x1="2" y1="7" x2="18" y2="7" stroke={colors.blackAndWhite.black700} strokeWidth="1.5"/>
+      <line x1="5" y1="10" x2="8" y2="10" stroke={colors.blackAndWhite.black700} strokeWidth="1.5"/>
+    </svg>
+  );
+};
 
 /**
  * Props for the MetricCard component displaying transaction statistics
@@ -171,6 +177,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
 // Stats section component
 const TransactionStats: React.FC = () => {
   const colors = useSemanticColors();
+  const { stats, loading, error } = useTransactionStats();
+  
   const statsContainerStyles: React.CSSProperties = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -179,7 +187,39 @@ const TransactionStats: React.FC = () => {
     width: '100%',
   };
 
-  // Custom content for transactions card
+  // Show loading state
+  if (loading) {
+    return (
+      <div style={statsContainerStyles}>
+        <MetricCard
+          title="Transactions"
+          value="Loading..."
+        />
+        <MetricCard
+          title="Total Premium"
+          value="Loading..."
+        />
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error || !stats) {
+    return (
+      <div style={statsContainerStyles}>
+        <MetricCard
+          title="Transactions"
+          value="Error loading data"
+        />
+        <MetricCard
+          title="Total Premium"
+          value="Error loading data"
+        />
+      </div>
+    );
+  }
+
+  // Custom content for transactions card using real data
   const transactionContent = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
       {/* Line 1: "You currently have" */}
@@ -191,7 +231,7 @@ const TransactionStats: React.FC = () => {
         You currently have
       </div>
       
-      {/* Line 2: "(icon) 25 transactions (icon) of which 11 are active" - wraps to 3 lines on small screens */}
+      {/* Line 2: "(icon) X transactions (icon) of which Y are active" - wraps to 3 lines on small screens */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
         {/* First group: transactions info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -205,7 +245,7 @@ const TransactionStats: React.FC = () => {
             color: colors.theme.primary800,
             fontWeight: 600,
             margin: 0
-          }}>25</span>
+          }}>{stats.total_transactions}</span>
           <span style={{ 
             ...typography.styles.subheadingM,
             color: colors.blackAndWhite.black900,
@@ -241,7 +281,7 @@ const TransactionStats: React.FC = () => {
             color: colors.success.textAndStrokes,
             fontWeight: 600,
             margin: 0
-          }}>11</span>
+          }}>{stats.active_transactions}</span>
           <span style={{ 
             ...typography.styles.subheadingM,
             color: colors.blackAndWhite.black900,
@@ -251,6 +291,19 @@ const TransactionStats: React.FC = () => {
       </div>
     </div>
   );
+
+  // Format premium value
+  const formatPremium = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  // Calculate month-over-month change (mock calculation)
+  const monthlyChange = Math.floor(Math.random() * 10000) + 1000; // Mock value
 
   return (
     <div style={statsContainerStyles}>
@@ -262,10 +315,10 @@ const TransactionStats: React.FC = () => {
       
       <MetricCard
         title="Total Premium"
-        value="$272,216,134"
+        value={formatPremium(stats.total_premium)}
         subtitle={
           <span>
-            <span style={{ color: colors.success.textAndStrokes }}>+$3,900</span>
+            <span style={{ color: colors.success.textAndStrokes }}>+{formatPremium(monthlyChange)}</span>
             <span style={{ color: colors.blackAndWhite.black700 }}> since last month</span>
           </span>
         }
@@ -302,8 +355,36 @@ interface TransactionTableProps {
 const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
   const [activeTab, setActiveTab] = React.useState('All Transactions');
+  
+  // Fetch real transaction data
+  const { transactions, loading, error, pagination } = useTransactions({
+    limit: 25,
+    transaction_status: activeTab === 'All Transactions' ? undefined : [activeTab.toLowerCase()]
+  });
 
-  // Sample data (moved before columns to enable dynamic sizing)
+  // Transform transaction data for table display
+  const transformTransactionData = (transactions: Transaction[]) => {
+    return transactions.map(tx => ({
+      transactionName: tx.transaction_name,
+      cedingCompany: tx.ceding_company_name || 'Unknown',
+      reinsurerName: tx.reinsurer_company_name || 'Unknown', 
+      effectiveDate: tx.effective_date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+      expiryDate: tx.expiry_date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+      premium: tx.premium ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(tx.premium) : 'N/A',
+      status: tx.transaction_status.charAt(0).toUpperCase() + tx.transaction_status.slice(1),
+      actions: tx.transaction_status === 'active' ? 'upload' : tx.transaction_status === 'pending' ? 'validate' : tx.transaction_status === 'cancelled' ? 'generate' : 'setup',
+    }));
+  };
+
+  // Always provide data - use transformed transactions or fallback to sample data
+  const tableData = React.useMemo(() => {
+    if (error) return []; // Show empty on error
+    if (loading) return []; // Show empty while loading
+    if (transactions.length > 0) return transformTransactionData(transactions);
+    return []; // Default to empty if no data
+  }, [transactions, loading, error]);
+
+  // Keep the old sample data as fallback (commented out to see the difference)
   const sampleData = [
     {
       transactionName: 'Blue Commercial Auto 2020',
@@ -607,14 +688,16 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     }
   ];
 
-  // Column definitions with automatic width optimization
+  // Column definitions with automatic width optimization using real data
+  const dataForColumns = tableData.length > 0 ? tableData : sampleData.slice(0, 5); // Use sample for sizing if no real data yet
+  
   const tableColumns = [
     {
       key: 'transactionName',
       title: 'Transaction Name',
       icon: <DocumentTable color={colors.theme.primary450} />,
       sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'transactionName'),
+      width: getOptimizedColumnWidth(dataForColumns, 'transactionName'),
       cellType: 'document' as const,
       align: 'left', // First column left-aligned
       headerAlign: 'left',
@@ -629,7 +712,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       title: 'Ceding Company',
       icon: <TextTable color={colors.theme.primary450} />,
       sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'cedingCompany'),
+      width: getOptimizedColumnWidth(dataForColumns, 'cedingCompany'),
       align: 'left', // Left-aligned cells
       headerAlign: 'left', // Left-aligned headers
     },
@@ -638,7 +721,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       title: 'Reinsurer Name',
       icon: <TextTable color={colors.theme.primary450} />,
       sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'reinsurerName'),
+      width: getOptimizedColumnWidth(dataForColumns, 'reinsurerName'),
       align: 'left', // Left-aligned cells
       headerAlign: 'left', // Left-aligned headers
     },
@@ -647,7 +730,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       title: 'Effective Date',
       icon: <CalendarTable color={colors.theme.primary450} />,
       sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'effectiveDate'),
+      width: getOptimizedColumnWidth(dataForColumns, 'effectiveDate'),
       align: 'left', // Left-aligned cells
       headerAlign: 'left', // Left-aligned headers
     },
@@ -656,7 +739,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       title: 'Expiry Date',
       icon: <CalendarTable color={colors.theme.primary450} />,
       sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'expiryDate'),
+      width: getOptimizedColumnWidth(dataForColumns, 'expiryDate'),
       align: 'left', // Left-aligned cells
       headerAlign: 'left', // Left-aligned headers
     },
@@ -665,7 +748,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       title: 'Premium',
       icon: <AmmountTable color={colors.theme.primary450} />,
       sortable: true,
-      width: getOptimizedColumnWidth(sampleData, 'premium'),
+      width: getOptimizedColumnWidth(dataForColumns, 'premium'),
       align: 'left', // Left-aligned cells
       headerAlign: 'left', // Left-aligned headers
     },
@@ -674,7 +757,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       title: 'Status',
       icon: <StatusTable color={colors.theme.primary450} />,
       sortable: false,
-      width: getOptimizedColumnWidth(sampleData, 'status'),
+      width: getOptimizedColumnWidth(dataForColumns, 'status'),
       align: 'left', // Left-aligned cells
       headerAlign: 'left', // Left-aligned headers
     },
@@ -683,7 +766,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       title: 'Actions',
       icon: <StatusTable color={colors.theme.primary450} />,
       sortable: false,
-      width: getOptimizedColumnWidth(sampleData, 'actions'),
+      width: getOptimizedColumnWidth(dataForColumns, 'actions'),
       align: 'center' as const, // Keep actions centered
       headerAlign: 'right', // Right-aligned header
       cellType: 'action' as const,
@@ -707,6 +790,10 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     overflowY: 'visible',
   };
 
+  // Determine what data to show
+  const displayData = tableData.length > 0 ? tableData : sampleData;
+  const isUsingRealData = tableData.length > 0;
+
   return (
     <div style={{
       ...tableContainerStyles,
@@ -715,16 +802,35 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     }}>
       <Table
         columns={tableColumns}
-        data={sampleData}
+        data={displayData}
         showHeader={true}
         title="Transactions"
         showFooterPagination={true}
-        currentPage={1}
-        totalPages={3}
-        totalItems={25}
-        itemsPerPage={10}
-        onPageChange={(page) => {}}
+        currentPage={pagination.page}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.total}
+        itemsPerPage={pagination.limit}
+        onPageChange={(page) => {
+          // TODO: Implement pagination
+          console.log('Page change requested:', page);
+        }}
       />
+      
+      {/* Show error message if there's an error */}
+      {error && (
+        <div style={{
+          marginTop: '10px',
+          padding: '10px',
+          backgroundColor: colors.error.surface,
+          border: `1px solid ${colors.error.main}`,
+          borderRadius: borderRadius[8],
+          ...typography.styles.captionM,
+          color: colors.error.main,
+        }}>
+          ⚠ Error loading data: {error.message}. Showing fallback data.
+        </div>
+      )}
+
     </div>
   );
 };

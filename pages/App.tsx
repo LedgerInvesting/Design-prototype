@@ -41,6 +41,7 @@ function AppContent() {
   const [renewalData, setRenewalData] = useState<any>(null);
   const [programDetailsData, setProgramDetailsData] = useState<any>(null);
   const [triangleData, setTriangleData] = useState<any>(null);
+  const [currentEntityData, setCurrentEntityData] = useState<any>(null);
 
   // Listen to browser back/forward buttons
   useEffect(() => {
@@ -71,6 +72,9 @@ function AppContent() {
       } else if (page === 'analytics-triangle-dashboard') {
         console.log('Setting triangleData:', data);
         setTriangleData(data);
+      } else if (page === 'reports-cash-settlement') {
+        console.log('Setting currentEntityData:', data);
+        setCurrentEntityData(data);
       } else {
         setValuationData(data);
       }
@@ -84,7 +88,7 @@ function AppContent() {
       case 'home':
         return <HomeTest onNavigateToPage={setPage} />;
       case 'reports-cash-settlement':
-        return <ReportsCashSettlement onNavigateToPage={setPage} />;
+        return <ReportsCashSettlement onNavigateToPage={setPage} entityData={currentEntityData} />;
       case 'reports-explorer':
         return <ReportNavigation onNavigateToPage={setPage} />;
       case 'reports-insights-explorer':

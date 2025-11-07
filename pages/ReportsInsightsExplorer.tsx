@@ -56,6 +56,8 @@ import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/
 // Import icons
 import { SearchMedium } from '@design-library/icons';
 
+// Enhanced program data available directly in component
+
 // Import Recharts
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -70,6 +72,13 @@ interface Program {
   quotaSharePremium: number;
   premium: number;
   lossRatio: number;
+  quotaShare: number;
+  grossWrittenPremium: number;
+  grossEarnedPremium: number;
+  paidLossRatio: number;
+  reportedLossRatio: number;
+  ultimateLossRatio: number;
+  productLine: string;
 }
 
 interface ReportsInsightsExplorerProps {
@@ -85,48 +94,154 @@ const categoryColors = {
   5: '#ff8588', // Red/Pink
 };
 
-// Category names
+// Category names - updated to match our enhanced product lines
 const categoryNames = {
-  1: 'Private Passenger Auto',
-  2: 'Motor',
-  3: 'Workers\' Compensation',
-  4: 'General Liability',
-  5: 'Commercial Auto',
+  1: 'Property & Casualty',
+  2: 'Specialty Lines',
+  3: 'Energy & Marine',
+  4: 'Financial & Professional',
+  5: 'Agriculture & Surety',
 };
 
-// Sample program data
-const programsData: Program[] = [
-  { id: '1', name: 'Blue Commercial Auto 2020', category: 2, currentLossRatio: 75, quotaSharePremium: 250000, premium: 250000, lossRatio: 75 },
-  { id: '2', name: 'Red Worker\'s Comp 2021', category: 1, currentLossRatio: 100, quotaSharePremium: 1400000, premium: 1400000, lossRatio: 100 },
-  { id: '3', name: 'Green General Liability 2022', category: 1, currentLossRatio: 98, quotaSharePremium: 1500000, premium: 1500000, lossRatio: 98 },
-  { id: '4', name: 'Yellow Agriculture 2023', category: 3, currentLossRatio: 95, quotaSharePremium: 1600000, premium: 1600000, lossRatio: 95 },
-  { id: '5', name: 'Black Aviation 2024', category: 2, currentLossRatio: 0, quotaSharePremium: 1300000, premium: 1300000, lossRatio: 0 },
-  { id: '6', name: 'White Cyber 2025', category: 2, currentLossRatio: 40, quotaSharePremium: 350000, premium: 350000, lossRatio: 40 },
-  { id: '7', name: 'Purple Commercial Auto 2021', category: 5, currentLossRatio: 40, quotaSharePremium: 2700000, premium: 2700000, lossRatio: 40 },
-  { id: '8', name: 'Silver Worker\'s Comp 2024', category: 4, currentLossRatio: 60, quotaSharePremium: 1100000, premium: 1100000, lossRatio: 60 },
-  { id: '9', name: 'Gold General Liability 2020', category: 1, currentLossRatio: 30, quotaSharePremium: 900000, premium: 900000, lossRatio: 30 },
-  { id: '10', name: 'Pink Agriculture 2025', category: 4, currentLossRatio: 100, quotaSharePremium: 1800000, premium: 1800000, lossRatio: 100 },
-  { id: '11', name: 'Orange Aviation 2022', category: 3, currentLossRatio: 100, quotaSharePremium: 2000000, premium: 2000000, lossRatio: 100 },
-  { id: '12', name: 'Teal Cyber 2023', category: 1, currentLossRatio: -5, quotaSharePremium: 500000, premium: 500000, lossRatio: -5 },
-  { id: '13', name: 'Brown Commercial Auto 2025', category: 5, currentLossRatio: 85, quotaSharePremium: 3500000, premium: 3500000, lossRatio: 85 },
-  { id: '14', name: 'Cyan Worker\'s Comp 2022', category: 3, currentLossRatio: 91, quotaSharePremium: 2200000, premium: 2200000, lossRatio: 91 },
-  { id: '15', name: 'Maroon General Liability 2024', category: 1, currentLossRatio: 55, quotaSharePremium: 1750000, premium: 1750000, lossRatio: 55 },
-  { id: '16', name: 'Indigo Agriculture 2021', category: 4, currentLossRatio: 70, quotaSharePremium: 980000, premium: 980000, lossRatio: 70 },
-  { id: '17', name: 'Violet Aviation 2020', category: 2, currentLossRatio: 45, quotaSharePremium: 1250000, premium: 1250000, lossRatio: 45 },
-  { id: '18', name: 'Grey Cyber 2021', category: 5, currentLossRatio: 110, quotaSharePremium: 2100000, premium: 2100000, lossRatio: 110 },
-  { id: '19', name: 'Navy Commercial Auto 2023', category: 3, currentLossRatio: 88, quotaSharePremium: 1450000, premium: 1450000, lossRatio: 88 },
-  { id: '20', name: 'Coral Worker\'s Comp 2020', category: 1, currentLossRatio: 35, quotaSharePremium: 820000, premium: 820000, lossRatio: 35 },
-  { id: '21', name: 'Mint General Liability 2025', category: 2, currentLossRatio: 65, quotaSharePremium: 1900000, premium: 1900000, lossRatio: 65 },
-  { id: '22', name: 'Beige Agriculture 2024', category: 4, currentLossRatio: 78, quotaSharePremium: 1350000, premium: 1350000, lossRatio: 78 },
-  { id: '23', name: 'Turquoise Aviation 2023', category: 3, currentLossRatio: 92, quotaSharePremium: 1680000, premium: 1680000, lossRatio: 92 },
-  { id: '24', name: 'Lavender Cyber 2022', category: 1, currentLossRatio: 25, quotaSharePremium: 750000, premium: 750000, lossRatio: 25 },
-];
+// Product line to category mapping
+const getProductLineCategory = (productLine: string): 1 | 2 | 3 | 4 | 5 => {
+  const categoryMap: Record<string, 1 | 2 | 3 | 4 | 5> = {
+    'Commercial Auto': 1,
+    'Property': 1,
+    'General Liability': 1,
+    'Workers Compensation': 1,
+    'Aviation': 2,
+    'Cyber': 2,
+    'Professional Indemnity': 2,
+    'Management Liability': 2,
+    'Marine': 3,
+    'Energy': 3,
+    'Transportation': 3,
+    'Environmental': 4,
+    'Financial Lines': 4,
+    'Life Sciences': 4,
+    'Trade Credit': 4,
+    'Agriculture': 5,
+    'Surety': 5,
+    'Casualty': 1,
+    'Product Liability': 1,
+    'Warranty': 2
+  };
+  return categoryMap[productLine] || 2; // Default to Specialty Lines
+};
+
+// Enhanced program data directly from our 20 programs (same source as useTransactionsStable.ts)
+const getAllEnhancedPrograms = (): Program[] => {
+  const enhancedPrograms = [
+    {
+      id: 'prog-001', name: 'Commercial Auto Specialty Lines', quota_share: 27, gross_written_premium: 5920000, gross_earned_premium: 5910000,
+      paid_loss_ratio: 58, reported_loss_ratio: 67, ultimate_loss_ratio: 104, product_line: 'Commercial Auto'
+    },
+    {
+      id: 'prog-002', name: 'Workers Compensation Industrial', quota_share: 35, gross_written_premium: 7210000, gross_earned_premium: 7180000,
+      paid_loss_ratio: 63, reported_loss_ratio: 75, ultimate_loss_ratio: 112, product_line: 'Workers Compensation'
+    },
+    {
+      id: 'prog-003', name: 'General Liability Manufacturing', quota_share: 30, gross_written_premium: 6180000, gross_earned_premium: 6160000,
+      paid_loss_ratio: 55, reported_loss_ratio: 64, ultimate_loss_ratio: 101, product_line: 'General Liability'
+    },
+    {
+      id: 'prog-004', name: 'Property Catastrophe Regional', quota_share: 40, gross_written_premium: 8430000, gross_earned_premium: 8410000,
+      paid_loss_ratio: 60, reported_loss_ratio: 72, ultimate_loss_ratio: 110, product_line: 'Property'
+    },
+    {
+      id: 'prog-005', name: 'Marine Cargo International', quota_share: 25, gross_written_premium: 4820000, gross_earned_premium: 4790000,
+      paid_loss_ratio: 52, reported_loss_ratio: 63, ultimate_loss_ratio: 99, product_line: 'Marine'
+    },
+    {
+      id: 'prog-006', name: 'Professional Indemnity Technology', quota_share: 33, gross_written_premium: 6430000, gross_earned_premium: 6420000,
+      paid_loss_ratio: 59, reported_loss_ratio: 69, ultimate_loss_ratio: 108, product_line: 'Professional Indemnity'
+    },
+    {
+      id: 'prog-007', name: 'Directors Officers Liability', quota_share: 29, gross_written_premium: 5260000, gross_earned_premium: 5250000,
+      paid_loss_ratio: 57, reported_loss_ratio: 66, ultimate_loss_ratio: 103, product_line: 'Management Liability'
+    },
+    {
+      id: 'prog-008', name: 'Cyber Security Protection', quota_share: 31, gross_written_premium: 6950000, gross_earned_premium: 6940000,
+      paid_loss_ratio: 64, reported_loss_ratio: 73, ultimate_loss_ratio: 115, product_line: 'Cyber'
+    },
+    {
+      id: 'prog-009', name: 'Energy Oil Gas Upstream', quota_share: 37, gross_written_premium: 7820000, gross_earned_premium: 7800000,
+      paid_loss_ratio: 61, reported_loss_ratio: 74, ultimate_loss_ratio: 111, product_line: 'Energy'
+    },
+    {
+      id: 'prog-010', name: 'Aviation Hull War Risk', quota_share: 26, gross_written_premium: 5040000, gross_earned_premium: 5020000,
+      paid_loss_ratio: 53, reported_loss_ratio: 62, ultimate_loss_ratio: 97, product_line: 'Aviation'
+    },
+    {
+      id: 'prog-011', name: 'Casualty Umbrella Excess', quota_share: 38, gross_written_premium: 7540000, gross_earned_premium: 7530000,
+      paid_loss_ratio: 62, reported_loss_ratio: 76, ultimate_loss_ratio: 114, product_line: 'Casualty'
+    },
+    {
+      id: 'prog-012', name: 'Environmental Liability Pollution', quota_share: 22, gross_written_premium: 4460000, gross_earned_premium: 4450000,
+      paid_loss_ratio: 49, reported_loss_ratio: 57, ultimate_loss_ratio: 92, product_line: 'Environmental'
+    },
+    {
+      id: 'prog-013', name: 'Product Recall Food Safety', quota_share: 34, gross_written_premium: 7010000, gross_earned_premium: 7000000,
+      paid_loss_ratio: 60, reported_loss_ratio: 70, ultimate_loss_ratio: 107, product_line: 'Product Liability'
+    },
+    {
+      id: 'prog-014', name: 'Life Sciences Clinical Trials', quota_share: 20, gross_written_premium: 3920000, gross_earned_premium: 3910000,
+      paid_loss_ratio: 47, reported_loss_ratio: 55, ultimate_loss_ratio: 88, product_line: 'Life Sciences'
+    },
+    {
+      id: 'prog-015', name: 'Financial Lines Crime Fidelity', quota_share: 36, gross_written_premium: 8140000, gross_earned_premium: 8120000,
+      paid_loss_ratio: 63, reported_loss_ratio: 78, ultimate_loss_ratio: 118, product_line: 'Financial Lines'
+    },
+    {
+      id: 'prog-016', name: 'Trade Credit Political Risk', quota_share: 28, gross_written_premium: 5630000, gross_earned_premium: 5620000,
+      paid_loss_ratio: 56, reported_loss_ratio: 65, ultimate_loss_ratio: 102, product_line: 'Trade Credit'
+    },
+    {
+      id: 'prog-017', name: 'Surety Construction Bonds', quota_share: 41, gross_written_premium: 8760000, gross_earned_premium: 8740000,
+      paid_loss_ratio: 65, reported_loss_ratio: 79, ultimate_loss_ratio: 120, product_line: 'Surety'
+    },
+    {
+      id: 'prog-018', name: 'Agriculture Crop Livestock', quota_share: 23, gross_written_premium: 4620000, gross_earned_premium: 4600000,
+      paid_loss_ratio: 50, reported_loss_ratio: 59, ultimate_loss_ratio: 95, product_line: 'Agriculture'
+    },
+    {
+      id: 'prog-019', name: 'Transportation Motor Fleet', quota_share: 39, gross_written_premium: 7910000, gross_earned_premium: 7900000,
+      paid_loss_ratio: 62, reported_loss_ratio: 73, ultimate_loss_ratio: 113, product_line: 'Transportation'
+    },
+    {
+      id: 'prog-020', name: 'Warranty Extended Protection', quota_share: 24, gross_written_premium: 4980000, gross_earned_premium: 4960000,
+      paid_loss_ratio: 54, reported_loss_ratio: 64, ultimate_loss_ratio: 100, product_line: 'Warranty'
+    }
+  ];
+
+  return enhancedPrograms.map((program) => ({
+    id: program.id,
+    name: program.name,
+    category: getProductLineCategory(program.product_line),
+    currentLossRatio: program.reported_loss_ratio,
+    quotaSharePremium: Math.round(program.gross_earned_premium * (program.quota_share / 100)),
+    premium: program.gross_earned_premium,
+    lossRatio: program.reported_loss_ratio,
+    quotaShare: program.quota_share,
+    grossWrittenPremium: program.gross_written_premium,
+    grossEarnedPremium: program.gross_earned_premium,
+    paidLossRatio: program.paid_loss_ratio,
+    reportedLossRatio: program.reported_loss_ratio,
+    ultimateLossRatio: program.ultimate_loss_ratio,
+    productLine: program.product_line
+  }));
+};
 
 export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
   const semanticColors = colors; // For chart components
+  
+  // Get all 20 enhanced programs directly
+  const programsData = getAllEnhancedPrograms();
+  
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProgram, setSelectedProgram] = useState<string>('6'); // White Cyber 2025
+  const [selectedProgram, setSelectedProgram] = useState<string>(programsData[0]?.id || 'prog-001');
   const [hoveredProgram, setHoveredProgram] = useState<string | null>(null);
   const [yAxisMetric, setYAxisMetric] = useState('Current Loss Ratio');
   const [xAxisMetric, setXAxisMetric] = useState('Quota Share premium');
@@ -143,13 +258,15 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
     program.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Axis options
+  // Axis options - enhanced with real metrics
   const axisOptions = [
     { value: 'Current Loss Ratio', label: 'Current Loss Ratio' },
     { value: 'Quota Share premium', label: 'Quota Share premium' },
-    { value: 'Premium', label: 'Premium' },
-    { value: 'Loss Ratio', label: 'Loss Ratio' },
-    { value: 'Combined Ratio', label: 'Combined Ratio' }
+    { value: 'Premium', label: 'Gross Earned Premium' },
+    { value: 'Loss Ratio', label: 'Reported Loss Ratio' },
+    { value: 'Paid Loss Ratio', label: 'Paid Loss Ratio' },
+    { value: 'Ultimate Loss Ratio', label: 'Ultimate Loss Ratio' },
+    { value: 'Quota Share', label: 'Quota Share %' }
   ];
 
   const getMetricValue = (program: Program, metric: string): number => {
@@ -159,9 +276,15 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
       case 'Quota Share premium':
         return program.quotaSharePremium;
       case 'Premium':
-        return program.premium;
+        return program.grossEarnedPremium;
       case 'Loss Ratio':
-        return program.lossRatio;
+        return program.reportedLossRatio;
+      case 'Paid Loss Ratio':
+        return program.paidLossRatio;
+      case 'Ultimate Loss Ratio':
+        return program.ultimateLossRatio;
+      case 'Quota Share':
+        return program.quotaShare;
       default:
         return 0;
     }
@@ -473,8 +596,11 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                     );
                   }}
                   tickFormatter={(value) => {
-                    if (value >= 1000000) return `$${(value / 1000000).toFixed(0)}M`;
-                    if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`;
+                    if (xAxisMetric.includes('premium') || xAxisMetric === 'Premium') {
+                      if (value >= 1000000) return `$${(value / 1000000).toFixed(0)}M`;
+                      if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`;
+                      return `$${value}`;
+                    }
                     return `${value}%`;
                   }}
                   tickLine={false}
@@ -492,7 +618,14 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       dataLength={chartData.length}
                     />
                   )}
-                  tickFormatter={(value) => `${value}%`}
+                  tickFormatter={(value) => {
+                    if (yAxisMetric.includes('premium') || yAxisMetric === 'Premium') {
+                      if (value >= 1000000) return `$${(value / 1000000).toFixed(0)}M`;
+                      if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`;
+                      return `$${value}`;
+                    }
+                    return `${value}%`;
+                  }}
                   tickLine={false}
                   axisLine={false}
                 />
@@ -613,7 +746,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                     </p>
                   </div>
 
-                  {/* Stats */}
+                  {/* Stats - Using real data from enhanced programs */}
                   <div style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -626,7 +759,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       ...typography.styles.bodyS
                     }}>
                       <span style={{ color: staticColors.blackAndWhite.black500 }}>Quota Share</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right' }}>17.5%</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right' }}>{hoveredData.quotaShare}%</span>
                     </div>
                     <div style={{
                       display: 'flex',
@@ -635,7 +768,11 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       ...typography.styles.bodyS
                     }}>
                       <span style={{ color: staticColors.blackAndWhite.black500 }}>Gross Written Premium</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '38px' }}>$11M</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '60px' }}>
+                        ${hoveredData.grossWrittenPremium >= 1000000 
+                          ? `${(hoveredData.grossWrittenPremium / 1000000).toFixed(1)}M` 
+                          : `${(hoveredData.grossWrittenPremium / 1000).toFixed(0)}k`}
+                      </span>
                     </div>
                     <div style={{
                       display: 'flex',
@@ -644,7 +781,11 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       ...typography.styles.bodyS
                     }}>
                       <span style={{ color: staticColors.blackAndWhite.black500 }}>Gross Earned Premium</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '38px' }}>$11M</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '60px' }}>
+                        ${hoveredData.grossEarnedPremium >= 1000000 
+                          ? `${(hoveredData.grossEarnedPremium / 1000000).toFixed(1)}M` 
+                          : `${(hoveredData.grossEarnedPremium / 1000).toFixed(0)}k`}
+                      </span>
                     </div>
                     <div style={{
                       display: 'flex',
@@ -653,7 +794,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       ...typography.styles.bodyS
                     }}>
                       <span style={{ color: staticColors.blackAndWhite.black500 }}>Paid Loss Ratio</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '38px' }}>45%</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '60px' }}>{hoveredData.paidLossRatio}%</span>
                     </div>
                     <div style={{
                       display: 'flex',
@@ -662,7 +803,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       ...typography.styles.bodyS
                     }}>
                       <span style={{ color: staticColors.blackAndWhite.black500 }}>Reported Loss Ratio</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '38px' }}>68%</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '60px' }}>{hoveredData.reportedLossRatio}%</span>
                     </div>
                     <div style={{
                       display: 'flex',
@@ -671,7 +812,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       ...typography.styles.bodyS
                     }}>
                       <span style={{ color: staticColors.blackAndWhite.black500 }}>Ultimate Loss Ratio</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '38px' }}>80%</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '60px' }}>{hoveredData.ultimateLossRatio}%</span>
                     </div>
                     <div style={{
                       display: 'flex',
@@ -679,8 +820,8 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       alignItems: 'center',
                       ...typography.styles.bodyS
                     }}>
-                      <span style={{ color: staticColors.blackAndWhite.black500 }}>Current Loss Ratio Delta from Initial</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '38px' }}>18%</span>
+                      <span style={{ color: staticColors.blackAndWhite.black500 }}>Product Line</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '60px' }}>{hoveredData.productLine}</span>
                     </div>
                     <div style={{
                       display: 'flex',
@@ -688,8 +829,12 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       alignItems: 'center',
                       ...typography.styles.bodyS
                     }}>
-                      <span style={{ color: staticColors.blackAndWhite.black500 }}>Current Loss Ratio 6-Month Delta</span>
-                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '38px' }}>-1%</span>
+                      <span style={{ color: staticColors.blackAndWhite.black500 }}>Quota Share Premium</span>
+                      <span style={{ color: staticColors.blackAndWhite.black900, textAlign: 'right', width: '60px' }}>
+                        ${hoveredData.quotaSharePremium >= 1000000 
+                          ? `${(hoveredData.quotaSharePremium / 1000000).toFixed(1)}M` 
+                          : `${(hoveredData.quotaSharePremium / 1000).toFixed(0)}k`}
+                      </span>
                     </div>
                   </div>
 

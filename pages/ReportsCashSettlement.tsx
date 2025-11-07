@@ -305,10 +305,24 @@ const MetricCard: React.FC<MetricCardProps> = ({
 // Main page component
 interface CashSettlementProps {
   onNavigateToPage?: (page: string, data?: any) => void;
+  entityData?: {
+    id: string;
+    name: string;
+    type: string;
+    path: string;
+  } | null;
 }
 
-export const ReportsCashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage }) => {
+export const ReportsCashSettlement: React.FC<CashSettlementProps> = ({ onNavigateToPage, entityData }) => {
   const colors = useSemanticColors();
+  
+  // Use entity data passed from Reports Explorer, fallback to default
+  const currentEntity = entityData || {
+    id: '',
+    name: 'Cucumber GL Seasonal',
+    type: 'Program',
+    path: 'Cucumber GL Seasonal'
+  };
   const titleStyles: React.CSSProperties = {
     ...typography.styles.headlineH2,
     color: colors.blackAndWhite.black900,
@@ -334,7 +348,7 @@ export const ReportsCashSettlement: React.FC<CashSettlementProps> = ({ onNavigat
     >
       <div style={titleStyles}>
         <span style={{ color: staticColors.blackAndWhite.black500 }}>You're now reviewing Contracts from </span>
-        <span style={{ color: staticColors.blackAndWhite.black900 }}>Cucumber GL Seasonal.</span>
+        <span style={{ color: staticColors.blackAndWhite.black900 }}>{currentEntity.name}.</span>
         <span style={{ color: staticColors.blackAndWhite.black500 }}> Cession statement</span>
       </div>
 

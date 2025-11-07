@@ -83,7 +83,12 @@
       "Bash(do echo \"=== $file ===\")",
       "Bash(done)",
       "Bash(for file in ReportsBDXUpload.tsx ReportsCashSettlement.tsx ReportsContractsExplorer.tsx ReportsTransactionManagement.tsx ReportsNewTransactionForm.tsx ReportsInsightsProgramDetails.tsx)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(sudo chown:*)",
+      "Bash(npm cache clean:*)",
+      "Bash(npm config:*)",
+      "Bash(git fetch:*)",
+      "Bash(git branch:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

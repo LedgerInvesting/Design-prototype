@@ -15,6 +15,9 @@ import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/
 // Import icons
 import { ArrowUpSmall, ArrowDownSmall, ChevronRightExtraSmall, CardsGraph, CardsCheck, CardsText } from '@design-library/icons';
 
+// Import entities hook
+import { useEntities, type BaseEntity, type EntityMetrics } from '../hooks/useEntities';
+
 const ChevronDownIcon: React.FC = () => (
   <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M2 3L4 5L6 3" stroke={staticColors.blackAndWhite.black900} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
@@ -197,84 +200,93 @@ const StatusMeter: React.FC<StatusMeterProps> = ({ level }) => {
   );
 };
 
-// Tree node interface for the program selector
+// Tree node interface for the entity selector
 interface TreeNode {
   id: string;
   label: string;
+  type: 'folder' | 'reinsurer' | 'mga' | 'program' | 'transaction';
+  entity?: BaseEntity;
   children?: TreeNode[];
 }
 
-// Program selector card component with tree dropdown
-interface ProgramSelectorCardProps {
-  currentProgram: {
+// Entity selector card component with hierarchical dropdown
+interface EntitySelectorCardProps {
+  currentEntity: {
+    id: string;
     name: string;
-    account: string;
+    type: BaseEntity['type'];
+    path: string; // Display path like "Reinsurer > MGA > Program"
   };
-  onProgramChange?: (program: { name: string; account: string }) => void;
+  onEntityChange?: (entity: { id: string; name: string; type: BaseEntity['type']; path: string }) => void;
 }
 
-const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
-  currentProgram,
-  onProgramChange
+const EntitySelectorCard: React.FC<EntitySelectorCardProps> = ({
+  currentEntity,
+  onEntityChange
 }) => {
   const colors = useSemanticColors();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const [expandedNodes, setExpandedNodes] = React.useState<Set<string>>(new Set());
+  const [expandedNodes, setExpandedNodes] = React.useState<Set<string>>(new Set(['reinsurers-folder']));
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const { entities, loading } = useEntities();
 
-  // Simplified tree data structure
-  const treeData: TreeNode[] = React.useMemo(() => [
-    {
-      id: 'reinsurers-folder',
-      label: 'Reinsurers',
-      children: [
-        {
-          id: 'swiss-re',
-          label: 'Swiss Re',
+  // Build hierarchical tree data from entities
+  const treeData: TreeNode[] = React.useMemo(() => {
+    if (loading || !entities) return [];
+
+    return [
+      {
+        id: 'reinsurers-folder',
+        label: 'Reinsurers',
+        type: 'folder',
+        children: entities.reinsurers.map(reinsurer => ({
+          id: reinsurer.id,
+          label: reinsurer.name,
+          type: 'reinsurer',
+          entity: reinsurer,
           children: [
             {
-              id: 'mga-global',
-              label: 'Global MGA Solutions',
-              children: [
-                { id: 'property-cat-treaty', label: 'Property Cat Treaty' },
-                { id: 'property-quota-treaty', label: 'Property Quota Share Treaty' },
-                { id: 'casualty-excess-treaty', label: 'Casualty Excess Treaty' },
-                { id: 'marine-hull-treaty', label: 'Marine Hull Treaty' }
-              ]
+              id: `${reinsurer.id}-mgas-folder`,
+              label: 'MGAs',
+              type: 'folder',
+              children: reinsurer.mgas.map(mga => ({
+                id: mga.id,
+                label: mga.name,
+                type: 'mga',
+                entity: mga,
+                children: [
+                  {
+                    id: `${mga.id}-programs-folder`,
+                    label: 'Programs',
+                    type: 'folder',
+                    children: mga.programs.map(program => ({
+                      id: program.id,
+                      label: program.name,
+                      type: 'program',
+                      entity: program,
+                      children: [
+                        {
+                          id: `${program.id}-transactions-folder`,
+                          label: 'Transactions',
+                          type: 'folder',
+                          children: program.transactions.map(transaction => ({
+                            id: transaction.id,
+                            label: transaction.name,
+                            type: 'transaction',
+                            entity: transaction
+                          }))
+                        }
+                      ]
+                    }))
+                  }
+                ]
+              }))
             }
           ]
-        },
-        {
-          id: 'munich-re',
-          label: 'Munich Re',
-          children: [
-            {
-              id: 'mga-north-america',
-              label: 'North America MGA',
-              children: [
-                { id: 'auto-liability-treaty', label: 'Auto Liability Treaty' },
-                { id: 'workers-comp-excess-treaty', label: 'Workers Comp Excess Treaty' }
-              ]
-            }
-          ]
-        },
-        {
-          id: 'berkshire-hathaway',
-          label: 'Berkshire Hathaway Re',
-          children: [
-            {
-              id: 'mga-international',
-              label: 'International MGA',
-              children: [
-                { id: 'aviation-hull-treaty', label: 'Aviation Hull Treaty' },
-                { id: 'energy-liability-treaty', label: 'Energy Liability Treaty' }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ], []);
+        }))
+      }
+    ];
+  }, [entities, loading]);
 
   // Handle clicks outside dropdown
   React.useEffect(() => {
@@ -298,17 +310,17 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
     setExpandedNodes(newExpanded);
   };
 
-  const selectProgram = (node: TreeNode, parentPath: string[] = []) => {
-    if (!node.children) {
-      // Only select leaf nodes (Treaties)
-      // Build account string from parent hierarchy: Reinsurer - MGA
-      const reinsurer = parentPath[0] || '';
-      const mga = parentPath[1] || '';
-      const account = mga ? `${reinsurer} - ${mga}` : reinsurer;
+  const selectEntity = (node: TreeNode, parentPath: string[] = []) => {
+    if (node.entity) {
+      // Build display path from parent hierarchy
+      const pathParts = [...parentPath.filter(p => p !== 'Reinsurers' && p !== 'MGAs' && p !== 'Programs' && p !== 'Transactions'), node.label];
+      const displayPath = pathParts.join(' > ');
 
-      onProgramChange?.({
-        name: node.label,
-        account: account
+      onEntityChange?.({
+        id: node.entity.id,
+        name: node.entity.name,
+        type: node.entity.type,
+        path: displayPath
       });
       setIsDropdownOpen(false);
     }
@@ -320,11 +332,9 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
     const isLeaf = !hasChildren;
     const currentPath = [...parentPath, node.label];
 
-    // Check if this is a folder title (Reinsurers, MGA, Programs, Treaties)
-    const isFolderTitle = node.label === 'Reinsurers' ||
-                         node.label === 'MGA' ||
-                         node.label === 'Programs' ||
-                         node.label === 'Treaties';
+    // Check if this is a folder title
+    const isFolderTitle = node.type === 'folder';
+    const isSelectable = node.entity !== undefined;
 
     const nodeStyles: React.CSSProperties = {
       display: 'flex',
@@ -355,8 +365,8 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
           onClick={() => {
             if (hasChildren) {
               toggleNode(node.id);
-            } else {
-              selectProgram(node, parentPath);
+            } else if (isSelectable) {
+              selectEntity(node, parentPath);
             }
           }}
         >
@@ -378,7 +388,7 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
                 }}
               />
             )}
-            {isLeaf && (
+            {isLeaf && isSelectable && (
               <div style={{
                 width: '4px',
                 height: '4px',
@@ -392,7 +402,7 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
           <span style={{
             ...(isFolderTitle ? typography.styles.captionS : typography.styles.bodyM),
             color: isFolderTitle ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
-            fontWeight: isLeaf ? 400 : 500
+            fontWeight: isSelectable ? 400 : 500
           }}>
             {node.label}
           </span>
@@ -450,7 +460,7 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
       >
         <div style={textStyles}>
-          You're viewing: {currentProgram.account}, {currentProgram.name}
+          You're viewing: {currentEntity.path}
         </div>
         <ChevronDownIcon
           style={{
@@ -470,17 +480,15 @@ const ProgramSelectorCard: React.FC<ProgramSelectorCardProps> = ({
   );
 };
 
-// Program relationship pills component
-interface ProgramRelationshipProps {
-  primaryProgram: string;
-  additionalPrograms: string[];
-  onProgramClick?: (program: string) => void;
+// Entity relationship pills component
+interface EntityRelationshipProps {
+  parents: { id: string; name: string; type: BaseEntity['type'] }[];
+  onEntityClick?: (entity: { id: string; name: string; type: BaseEntity['type'] }) => void;
 }
 
-const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
-  primaryProgram,
-  additionalPrograms,
-  onProgramClick
+const EntityRelationship: React.FC<EntityRelationshipProps> = ({
+  parents,
+  onEntityClick
 }) => {
   const colors = useSemanticColors();
   const containerStyles: React.CSSProperties = {
@@ -514,42 +522,30 @@ const ProgramRelationship: React.FC<ProgramRelationshipProps> = ({
     outline: 'none',
   };
 
+  if (parents.length === 0) {
+    return null; // Don't show anything if there are no parents
+  }
+
   return (
     <div style={containerStyles}>
       <span style={labelStyles}>Part of</span>
-      <button
-        style={pillStyles}
-        onClick={() => onProgramClick?.(primaryProgram)}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = colors.theme.primary300;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = colors.theme.primary200;
-        }}
-      >
-        {primaryProgram}
-      </button>
-
-      {additionalPrograms.length > 0 && (
-        <>
-          <span style={labelStyles}>Also included in</span>
-          {additionalPrograms.map((program, index) => (
-            <button
-              key={index}
-              style={pillStyles}
-              onClick={() => onProgramClick?.(program)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = colors.theme.primary300;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = colors.theme.primary200;
-              }}
-            >
-              {program}
-            </button>
-          ))}
-        </>
-      )}
+      {parents.map((parent, index) => (
+        <React.Fragment key={parent.id}>
+          {index > 0 && <span style={labelStyles}>→</span>}
+          <button
+            style={pillStyles}
+            onClick={() => onEntityClick?.(parent)}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = colors.theme.primary300;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = colors.theme.primary200;
+            }}
+          >
+            {parent.name}
+          </button>
+        </React.Fragment>
+      ))}
     </div>
   );
 };
@@ -561,22 +557,90 @@ interface ReportNavigationProps {
 
 export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateToPage }) => {
   const colors = useSemanticColors();
+  const { entities, loading, findEntityById } = useEntities();
 
-  // State for the current program
-  const [currentProgram, setCurrentProgram] = React.useState({
-    name: "Property Cat Treaty",
-    account: "Swiss Re - Global MGA Solutions"
+  // State for the current entity
+  const [currentEntity, setCurrentEntity] = React.useState({
+    id: "prog-002",
+    name: "Property Cat Treaty 2025",
+    type: "Program" as BaseEntity['type'],
+    path: "Pineapple Re > Falcon Risk Services > Property Cat Treaty 2025"
   });
 
-  // Mock data for related programs
-  const relatedPrograms = {
-    primaryProgram: "Appalachian.wc-companionTY21",
-    additionalPrograms: [
-      "Appalachian.wc-companionTY20",
-      "Appalachian.wc-companionTY19",
-      "Appalachian.wc-companionTY18"
-    ]
-  };
+  // Get entity parents dynamically based on current selection
+  const getEntityParents = React.useCallback(() => {
+    if (!entities || loading) return { parents: [] };
+    
+    const currentEntityData = findEntityById(currentEntity.id, currentEntity.type);
+    if (!currentEntityData) return { parents: [] };
+    
+    const parents: { id: string; name: string; type: BaseEntity['type'] }[] = [];
+    
+    // Find parents based on entity type
+    switch (currentEntity.type) {
+      case 'Transaction':
+        // Find the program this transaction belongs to
+        const program = entities.programs.find(p => 
+          p.transactions.some(t => t.id === currentEntity.id)
+        );
+        if (program) {
+          parents.push({ id: program.id, name: program.name, type: 'Program' });
+          
+          // Find the MGA this program belongs to
+          const mga = entities.mgas.find(m => 
+            m.programs.some(p => p.id === program.id)
+          );
+          if (mga) {
+            parents.push({ id: mga.id, name: mga.name, type: 'MGA' });
+            
+            // Find the Reinsurer this MGA belongs to
+            const reinsurer = entities.reinsurers.find(r => 
+              r.mgas.some(m => m.id === mga.id)
+            );
+            if (reinsurer) {
+              parents.push({ id: reinsurer.id, name: reinsurer.name, type: 'Reinsurer' });
+            }
+          }
+        }
+        break;
+        
+      case 'Program':
+        // Find the MGA this program belongs to
+        const programMga = entities.mgas.find(m => 
+          m.programs.some(p => p.id === currentEntity.id)
+        );
+        if (programMga) {
+          parents.push({ id: programMga.id, name: programMga.name, type: 'MGA' });
+          
+          // Find the Reinsurer this MGA belongs to
+          const programReinsurer = entities.reinsurers.find(r => 
+            r.mgas.some(m => m.id === programMga.id)
+          );
+          if (programReinsurer) {
+            parents.push({ id: programReinsurer.id, name: programReinsurer.name, type: 'Reinsurer' });
+          }
+        }
+        break;
+        
+      case 'MGA':
+        // Find the Reinsurer this MGA belongs to
+        const mgaReinsurer = entities.reinsurers.find(r => 
+          r.mgas.some(m => m.id === currentEntity.id)
+        );
+        if (mgaReinsurer) {
+          parents.push({ id: mgaReinsurer.id, name: mgaReinsurer.name, type: 'Reinsurer' });
+        }
+        break;
+        
+      case 'Reinsurer':
+        // Reinsurers are top level, no parents
+        break;
+    }
+    
+    return { parents: parents.reverse() }; // Reverse to show hierarchy from top to bottom
+  }, [entities, loading, currentEntity, findEntityById]);
+  
+  const { parents } = getEntityParents();
 
   // Chart data for Insights section - varies by program
   const chartDataByProgram: Record<string, any[]> = {
@@ -652,7 +716,36 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
     ]
   };
 
-  const chartData = chartDataByProgram[currentProgram.name] || chartDataByProgram["Property Cat Treaty"];
+  // Generate chart data based on current entity
+  const chartData = React.useMemo(() => {
+    // For now, use a simple data generator based on entity ID
+    const baseData = [
+      { "date": "2025-01", "lineA": 80, "lineB": 10, "lineC": 0, "lineD": 2 },
+      { "date": "2025-02", "lineA": 75, "lineB": 35, "lineC": 3, "lineD": 6 },
+      { "date": "2025-03", "lineA": 77, "lineB": 20, "lineC": 6, "lineD": 12 },
+      { "date": "2025-04", "lineA": 65, "lineB": 22, "lineC": 10, "lineD": 15 },
+      { "date": "2025-05", "lineA": 62, "lineB": 25, "lineC": 15, "lineD": 18 },
+      { "date": "2025-06", "lineA": 60, "lineB": 28, "lineC": 18, "lineD": 20 },
+      { "date": "2025-07", "lineA": 58, "lineB": 30, "lineC": 22, "lineD": 25 },
+      { "date": "2025-08", "lineA": 50, "lineB": 32, "lineC": 27, "lineD": 28 },
+      { "date": "2025-09", "lineA": 70, "lineB": 40, "lineC": 35, "lineD": 33 },
+      { "date": "2025-10", "lineA": 78, "lineB": 45, "lineC": 42, "lineD": 37 },
+      { "date": "2025-11", "lineA": 82, "lineB": 50, "lineC": 48, "lineD": 42 },
+      { "date": "2025-12", "lineA": 85, "lineB": 52, "lineC": 55, "lineD": 46 }
+    ];
+    
+    // Apply variation based on entity ID for different visualization per entity
+    const hash = currentEntity.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+    const variation = (hash % 20) - 10; // -10 to +10 variation
+    
+    return baseData.map(item => ({
+      ...item,
+      lineA: Math.max(0, item.lineA + variation),
+      lineB: Math.max(0, item.lineB + variation / 2),
+      lineC: Math.max(0, item.lineC + variation / 3),
+      lineD: Math.max(0, item.lineD + variation / 4)
+    }));
+  }, [currentEntity.id]);
 
   // Metric data by program
   const metricsByProgram: Record<string, any> = {
@@ -723,7 +816,21 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
     }
   };
 
-  const currentMetrics = metricsByProgram[currentProgram.name] || metricsByProgram["Property Cat Treaty"];
+  // Get current entity's metrics from the database
+  const currentEntityData = findEntityById(currentEntity.id, currentEntity.type);
+  const currentMetrics = currentEntityData?.metrics || {
+    cession: {
+      premium: { value: "$0", growth: "0%", direction: "up" as const },
+      remittance: { value: "$0", growth: "0%", direction: "up" as const },
+      collateral: { value: "$0", growth: "0%", direction: "up" as const }
+    },
+    validation: {
+      policies: { count: 0, percent: "0%", level: "excellent" as const },
+      premium: { value: "$0", percent: "0%", level: "excellent" as const },
+      claims: { count: 0, percent: "0%", level: "excellent" as const },
+      losses: { value: "$0", percent: "0%", level: "excellent" as const }
+    }
+  };
 
   return (
     <Layout
@@ -739,23 +846,29 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
       }}
     >
 
-          {/* Program Selector Card */}
-          <ProgramSelectorCard
-            currentProgram={currentProgram}
-            onProgramChange={(program) => {
-              console.log('Program selected:', program);
-              setCurrentProgram(program);
+          {/* Entity Selector Card */}
+          <EntitySelectorCard
+            currentEntity={currentEntity}
+            onEntityChange={(entity) => {
+              console.log('Entity selected:', entity);
+              setCurrentEntity(entity);
             }}
           />
 
-          {/* Program Relationship Pills */}
-          <ProgramRelationship
-            primaryProgram={relatedPrograms.primaryProgram}
-            additionalPrograms={relatedPrograms.additionalPrograms}
-            onProgramClick={(program) => {
-              setCurrentProgram({
-                name: program,
-                account: 'Appalachian Workers Compensation'
+          {/* Entity Relationship Pills */}
+          <EntityRelationship
+            parents={parents}
+            onEntityClick={(parent) => {
+              // Build the path based on the parent's hierarchy
+              const parentPath = parents.slice(0, parents.indexOf(parent) + 1)
+                .map(p => p.name)
+                .join(' > ');
+              
+              setCurrentEntity({
+                id: parent.id,
+                name: parent.name,
+                type: parent.type,
+                path: parentPath
               });
             }}
           />
@@ -773,7 +886,10 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               icon={<CardsGraph color={colors.theme.primary700} />}
               button={{
                 text: "EXPLORE",
-                onClick: () => onNavigateToPage?.('reports-cash-settlement')
+                onClick: () => {
+                  // Pass current entity data to the next page
+                  onNavigateToPage?.('reports-cash-settlement', currentEntity);
+                }
               }}
               width="100%"
             >
@@ -1200,7 +1316,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                     fontWeight: 600,
                     marginBottom: '4px'
                   }}>
-                    2025-03-31
+                    {currentMetrics.dataIngestion?.lastUpdate || '2025-03-31'}
                   </div>
                   <div style={{
                     ...typography.styles.subheadingL,
@@ -1212,7 +1328,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                       color: colors.success.textAndStrokes,
                       fontWeight: 600
                     }}>
-                      11 days
+                      {currentMetrics.dataIngestion?.nextDue || '11 days'}
                     </span>
                     .
                   </div>
@@ -1303,13 +1419,13 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                     ...typography.styles.bodyL,
                     color: colors.blackAndWhite.black900,
                   }}>
-                    58 Contracts available
+                    {currentMetrics.contracts?.total || 0} Contracts available
                   </div>
                   <div style={{
                     ...typography.styles.bodyM,
                     color: colors.blackAndWhite.black500,
                   }}>
-                    5 Contracts executed in past 30 days
+                    {currentMetrics.contracts?.recent || 0} Contracts executed in past 30 days
                   </div>
                 </div>
               </div>
