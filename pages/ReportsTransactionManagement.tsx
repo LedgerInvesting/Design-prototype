@@ -841,10 +841,34 @@ interface TransactionManagementProps {
 }
 
 export const ReportsTransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
+  
+  // Function to detect if user accessed this page directly from sidebar navigation
+  const isDirectAccess = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    
+    // Check sessionStorage for navigation source
+    const navigationSource = sessionStorage.getItem('navigationSource');
+    
+    // If no navigation source is set, assume direct access
+    // If source is 'sidebar', it's direct access
+    // If source is 'page', it's navigation from another page
+    return !navigationSource || navigationSource === 'sidebar' || navigationSource === 'direct';
+  };
   const colors = useSemanticColors();
   const settings = useSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBrandNewModalOpen, setIsBrandNewModalOpen] = useState(false);
+  
+  // Clear navigation source after checking it to prepare for next navigation
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Clear the navigation source after a short delay to allow detection
+      const timer = setTimeout(() => {
+        sessionStorage.removeItem('navigationSource');
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, []);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false);
   const [uploadData, setUploadData] = useState<{ transactionName: string; fileName: string; description: string }>({
@@ -867,6 +891,13 @@ export const ReportsTransactionManagement: React.FC<TransactionManagementProps> 
       }}
       onManageAccountClick={undefined}
       onSettingsClick={undefined}
+      isSubPage={!isDirectAccess()}
+      onBackClick={() => {
+        // Navigate back to reports explorer only if not directly accessed
+        if (onNavigateToPage && !isDirectAccess()) {
+          onNavigateToPage('reports-explorer');
+        }
+      }}
     >
       {/* Header Section */}
       <PageBanner

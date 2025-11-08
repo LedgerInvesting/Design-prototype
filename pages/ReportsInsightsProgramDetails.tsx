@@ -160,6 +160,13 @@ const ReportsInsightsProgramDetails: React.FC<ReportsInsightsProgramDetailsProps
         actionText: 'Explore contract',
         onClick: () => onNavigateToPage?.('contracts-ai-extraction')
       }}
+      isSubPage={true}
+      onBackClick={() => {
+        // Navigate back to insights explorer
+        if (onNavigateToPage) {
+          onNavigateToPage('reports-insights-explorer');
+        }
+      }}
     >
       <div style={{
         display: 'flex',
@@ -173,7 +180,7 @@ const ReportsInsightsProgramDetails: React.FC<ReportsInsightsProgramDetailsProps
             { text: "You're now viewing the ", important: false },
             { text: programName, important: true },
             { text: ' from ', important: false },
-            { text: 'Firmat Capital Markets', important: true }
+            { text: 'Lulo Capital Markets', important: true }
           ]}
         />
 

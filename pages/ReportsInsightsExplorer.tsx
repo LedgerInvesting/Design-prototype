@@ -54,7 +54,7 @@ import { useSemanticColors, typography, spacing, borderRadius, colors as staticC
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
 
 // Import icons
-import { SearchMedium } from '@design-library/icons';
+import { SearchMedium, ChevronRightSmall } from '@design-library/icons';
 
 // Enhanced program data available directly in component
 
@@ -241,7 +241,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
   const programsData = getAllEnhancedPrograms();
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProgram, setSelectedProgram] = useState<string>(programsData[0]?.id || 'prog-001');
+  const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
   const [hoveredProgram, setHoveredProgram] = useState<string | null>(null);
   const [yAxisMetric, setYAxisMetric] = useState('Current Loss Ratio');
   const [xAxisMetric, setXAxisMetric] = useState('Quota Share premium');
@@ -252,6 +252,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isHoveringDotRef = useRef<boolean>(false);
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
+  const [hoveredFromList, setHoveredFromList] = useState<string | null>(null);
 
   // Filter programs based on search
   const filteredPrograms = programsData.filter(program =>
@@ -301,8 +302,14 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
   const renderCustomDot = (props: any) => {
     const { cx, cy, payload } = props;
     const isSelected = payload.id === selectedProgram;
-    const isHovered = payload.id === hoveredProgram;
-    const shouldShowShadow = isSelected || isHovered;
+    const isHoveredFromDot = payload.id === hoveredProgram;
+    const isHoveredFromList = payload.id === hoveredFromList;
+    const shouldShowShadow = isSelected || isHoveredFromDot || isHoveredFromList;
+    
+    // Check if any highlighting is active and this dot is not the active one
+    const hasActiveHighlight = hoveredProgram || hoveredFromList || selectedProgram;
+    const isActiveHighlight = isSelected || isHoveredFromDot || isHoveredFromList;
+    const shouldDim = hasActiveHighlight && !isActiveHighlight;
 
     return (
       <circle
@@ -314,7 +321,9 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
         strokeWidth={4}
         style={{
           cursor: 'pointer',
-          filter: shouldShowShadow ? 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' : 'none'
+          filter: shouldShowShadow ? 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' : 'none',
+          opacity: shouldDim ? 0.3 : 1,
+          transition: 'opacity 0.2s ease'
         }}
         onClick={() => {
           const programData = programsData.find(p => p.id === payload.id);
@@ -334,6 +343,7 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
           }
           isHoveringDotRef.current = true;
           setHoveredProgram(payload.id);
+          setHoveredFromList(null); // Clear list hover when hovering dot directly
 
           /**
            * Smart tooltip positioning algorithm
@@ -497,17 +507,25 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
               }}>
               {filteredPrograms.map((program) => {
                 const isSelected = selectedProgram === program.id;
-                const isHovered = hoveredProgram === program.id;
+                const isHovered = hoveredProgram === program.id || hoveredFromList === program.id;
                 const backgroundColor = isSelected
                   ? staticColors.reports.blue700
                   : isHovered
-                    ? staticColors.reports.dynamic.blue300
+                    ? colors.theme.primary300
                     : staticColors.blackAndWhite.white;
 
                 return (
                   <button
                     key={program.id}
-                    onClick={() => setSelectedProgram(program.id)}
+                    onClick={() => {
+                      setSelectedProgram(program.id);
+                      // Navigate to program details page with program data
+                      if (onNavigateToPage) {
+                        const programData = programsData.find(p => p.id === program.id);
+                        console.log('Navigating from list click with data:', programData);
+                        onNavigateToPage('reports-insights-program-details', programData);
+                      }
+                    }}
                     style={{
                       backgroundColor,
                       padding: '18px 10px',
@@ -522,12 +540,29 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                       textOverflow: 'ellipsis',
                       transition: 'all 0.2s ease',
                       display: 'flex',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
                     }}
-                    onMouseEnter={() => setHoveredProgram(program.id)}
-                    onMouseLeave={() => setHoveredProgram(null)}
+                    onMouseEnter={() => {
+                      setHoveredFromList(program.id);
+                      setHoveredProgram(null); // Don't show tooltip from list hover
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredFromList(null);
+                    }}
                   >
-                    {program.name}
+                    <span style={{
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}>
+                      {program.name}
+                    </span>
+                    {isHovered && (
+                      <ChevronRightSmall 
+                        color={staticColors.blackAndWhite.black900} 
+                      />
+                    )}
                   </button>
                 );
               })}
@@ -629,7 +664,10 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                   tickLine={false}
                   axisLine={false}
                 />
-                <Tooltip cursor={{ strokeDasharray: '3 3' }} content={() => null} />
+                <Tooltip 
+                  cursor={{ strokeDasharray: '3 3' }} 
+                  content={() => null}
+                />
                 <Scatter
                   data={chartData}
                   shape={renderCustomDot}
@@ -637,8 +675,8 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
               </ScatterChart>
             </ResponsiveContainer>
 
-            {/* Custom Tooltip Modal */}
-            {hoveredProgram && tooltipPosition && (() => {
+            {/* Custom Tooltip Modal - Only show when hovering dots directly, not from list */}
+            {hoveredProgram && tooltipPosition && !hoveredFromList && (() => {
               const hoveredData = programsData.find(p => p.id === hoveredProgram);
               if (!hoveredData) return null;
 
@@ -710,13 +748,11 @@ export const ReportsInsightsExplorer: React.FC<ReportsInsightsExplorerProps> = (
                   }}
                   onMouseLeave={() => {
                     setIsHoveringTooltip(false);
-                    // Delay hiding to prevent accidental closures
+                    // Immediate hiding when leaving the modal
                     hoverTimeoutRef.current = setTimeout(() => {
-                      if (!isHoveringTooltip && !isHoveringDotRef.current) {
-                        setHoveredProgram(null);
-                        setTooltipPosition(null);
-                      }
-                    }, 150);
+                      setHoveredProgram(null);
+                      setTooltipPosition(null);
+                    }, 100);
                   }}
                 >
                   {/* Header with program name */}

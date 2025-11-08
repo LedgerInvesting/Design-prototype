@@ -38,6 +38,19 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
   onNavigateToPage,
   onInboxClick,
 }) => {
+  
+  // Function to detect if user accessed this page directly from sidebar navigation
+  const isDirectAccess = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    
+    // Check sessionStorage for navigation source
+    const navigationSource = sessionStorage.getItem('navigationSource');
+    
+    // If no navigation source is set, assume direct access
+    // If source is 'sidebar', it's direct access
+    // If source is 'page', it's navigation from another page
+    return !navigationSource || navigationSource === 'sidebar' || navigationSource === 'direct';
+  };
   const semanticColors = useSemanticColors();
   
   // Get transaction data to use real transaction name
@@ -59,6 +72,18 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
   const [uploadedFiles, setUploadedFiles] = useState<Set<string>>(new Set());
   const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup navigation source after detection
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Clear navigation source after component mounts to reset state
+      const timer = setTimeout(() => {
+        sessionStorage.removeItem('navigationSource');
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -459,6 +484,13 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
       selectedSidebarSubitem="bdx-upload"
       onNavigate={createPageNavigationHandler(onNavigateToPage!, 'reports-bdx-upload')}
       onInboxClick={onInboxClick}
+      isSubPage={!isDirectAccess()}
+      onBackClick={() => {
+        // Navigate back to reports explorer only if not directly accessed
+        if (onNavigateToPage && !isDirectAccess()) {
+          onNavigateToPage('reports-explorer');
+        }
+      }}
     >
       {/* Header Section */}
         <div style={{

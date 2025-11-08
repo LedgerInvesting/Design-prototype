@@ -347,6 +347,13 @@ export const ReportsCashSettlement: React.FC<CashSettlementProps> = ({ onNavigat
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}
+      isSubPage={true}
+      onBackClick={() => {
+        // Navigate back to reports explorer
+        if (onNavigateToPage) {
+          onNavigateToPage('reports-explorer');
+        }
+      }}
     >
       <div style={titleStyles}>
         <span style={{ color: staticColors.blackAndWhite.black500 }}>You're now reviewing Contracts from </span>

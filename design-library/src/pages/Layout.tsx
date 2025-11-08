@@ -70,6 +70,7 @@ export interface LayoutProps {
   showStatus?: boolean;
   progress?: number;
   onBackClick?: () => void;
+  isSubPage?: boolean; // Whether the current page is a detail/sub page (shows back button)
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -106,6 +107,7 @@ export const Layout: React.FC<LayoutProps> = ({
   showStatus = true,
   progress,
   onBackClick,
+  isSubPage = false,
 }) => {
   // Get prototype settings
   const settings = useSettings();
@@ -241,6 +243,8 @@ export const Layout: React.FC<LayoutProps> = ({
             profileColor={profileColor}
             onManageAccountClick={onManageAccountClick}
             onSettingsClick={handleSettingsClick}
+            isSubPage={isSubPage}
+            onBackClick={onBackClick}
           />
         ) : (
           <Sidebar

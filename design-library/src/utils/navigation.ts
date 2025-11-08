@@ -28,6 +28,17 @@ export interface NavigationHandler {
 }
 
 /**
+ * Wrapper for onNavigateToPage that sets navigation source for contextual back buttons
+ */
+export const navigateToPage = (onNavigateToPage: NavigationHandler, page: PageType, data?: any) => {
+  if (typeof window !== 'undefined') {
+    // Set navigation source as 'page' when navigating from within the app
+    sessionStorage.setItem('navigationSource', 'page');
+  }
+  onNavigateToPage(page, data);
+};
+
+/**
  * Creates a standardized navigation handler for any page
  * @param onNavigateToPage - Function to navigate to pages
  * @returns Navigation handler function compatible with Layout components

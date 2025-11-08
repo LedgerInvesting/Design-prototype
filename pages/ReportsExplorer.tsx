@@ -1107,7 +1107,7 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
                   cursor: 'pointer',
                   textTransform: 'uppercase'
                 }}
-                onClick={() => onNavigateToPage?.('reports-contracts-explorer')}
+                onClick={() => onNavigateToPage?.('reports-insights-program-details')}
               >
                 EXPLORE
               </button>

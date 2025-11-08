@@ -59,7 +59,7 @@ export const TwoColorTitle: Story = {
           title={[
             { text: 'You are now viewing the ', important: false },
             { text: 'Atlas.wc-ilsTY23 insights', important: true },
-            { text: ' from Firmat Capital Markets', important: false }
+            { text: ' from Lulo Capital Markets', important: false }
           ]}
           primaryAction={{ label: 'Edit Configuration', onClick: () => alert('Primary action') }}
           secondaryAction={{ label: 'Export', onClick: () => alert('Secondary action') }}

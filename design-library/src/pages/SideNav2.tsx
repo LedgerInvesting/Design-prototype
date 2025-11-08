@@ -4,12 +4,15 @@ import { colors, typography, spacing, borderRadius, shadows, useSemanticColors }
 import {
   ChevronDownExtraSmall,
   ChevronRightExtraSmall,
+  ChevronLeftExtraSmall,
+  ChevronLeftSmall,
   InboxMedium,
   HomeMedium,
   Home14,
   UserSmall,
   SettingsMedium,
   CloseSmall,
+  ArrowLeftExtraSmall,
   AddSmall,
   KorraLogo,
   KLogo,
@@ -47,6 +50,8 @@ interface SideNav2Props {
   profileColor?: string;
   onManageAccountClick?: () => void;
   onSettingsClick?: () => void;
+  isSubPage?: boolean; // Whether current page is a detail/sub page
+  onBackClick?: () => void; // Handler for back button on sub pages
 }
 
 const sidebarItems: SidebarItem[] = [
@@ -101,7 +106,9 @@ export const SideNav2: React.FC<SideNav2Props> = ({
   userInitials = 'SJ',
   profileColor = colors.reports.blue700,
   onManageAccountClick,
-  onSettingsClick
+  onSettingsClick,
+  isSubPage = false,
+  onBackClick
 }) => {
   const colors = useSemanticColors();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -282,10 +289,15 @@ export const SideNav2: React.FC<SideNav2Props> = ({
     }
   };
 
-  const handleCloseApp = () => {
-    // Navigate to home when closing an app (this will automatically collapse the app)
-    if (onNavigate) {
-      onNavigate('home');
+  const handleCloseOrBack = () => {
+    if (isSubPage && onBackClick) {
+      // If on a sub page, use the back handler
+      onBackClick();
+    } else {
+      // Otherwise, navigate to home when closing an app (this will automatically collapse the app)
+      if (onNavigate) {
+        onNavigate('home');
+      }
     }
   };
 
@@ -295,6 +307,9 @@ export const SideNav2: React.FC<SideNav2Props> = ({
     if (typeof window !== 'undefined') {
       const lastVisitedKey = `lastVisited_${parentId}`;
       localStorage.setItem(lastVisitedKey, subitemId);
+      
+      // Set navigation source as 'sidebar' for contextual back button logic
+      sessionStorage.setItem('navigationSource', 'sidebar');
     }
 
     // Only update internal state if not controlled
@@ -701,7 +716,7 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}
-                onClick={handleCloseApp}
+                onClick={handleCloseOrBack}
                 onMouseEnter={(e) => {
                   const circle = e.currentTarget.querySelector('div');
                   if (circle) {
@@ -709,8 +724,9 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   }
                   const paths = e.currentTarget.querySelectorAll('path, line, polyline, polygon, circle, rect');
                   paths.forEach(path => {
-                    (path as SVGElement).style.transition = 'stroke 0.2s ease';
+                    (path as SVGElement).style.transition = 'stroke 0.2s ease, fill 0.2s ease';
                     (path as SVGElement).style.stroke = colors.blackAndWhite.black900;
+                    (path as SVGElement).style.fill = colors.blackAndWhite.black900;
                   });
                 }}
                 onMouseLeave={(e) => {
@@ -720,8 +736,9 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   }
                   const paths = e.currentTarget.querySelectorAll('path, line, polyline, polygon, circle, rect');
                   paths.forEach(path => {
-                    (path as SVGElement).style.transition = 'stroke 0.2s ease';
+                    (path as SVGElement).style.transition = 'stroke 0.2s ease, fill 0.2s ease';
                     (path as SVGElement).style.stroke = colors.blackAndWhite.white;
+                    (path as SVGElement).style.fill = colors.blackAndWhite.white;
                   });
                 }}
               >
@@ -740,7 +757,11 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <CloseSmall color={colors.blackAndWhite.white} />
+                    {isSubPage ? (
+                      <ChevronLeftSmall color={colors.blackAndWhite.white} />
+                    ) : (
+                      <CloseSmall color={colors.blackAndWhite.white} />
+                    )}
                   </div>
                 </div>
               </button>

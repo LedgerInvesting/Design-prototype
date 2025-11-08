@@ -50,6 +50,7 @@ export const FormLayout: React.FC<FormLayoutProps> = (props) => {
       progress={props.progress}
       onBackClick={props.onBackClick}
       appAction={props.appAction}
+      isSubPage={true}
     />
   );
 };
