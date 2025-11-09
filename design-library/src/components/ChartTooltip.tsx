@@ -36,28 +36,38 @@ export const ChartTooltip: React.FC<any> = ({ active, payload, label }) => {
             {label}
           </p>
         )}
-        {payload.map((entry: any, index: number) => (
-          <div key={index} style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            marginBottom: index < payload.length - 1 ? '4px' : 0,
-          }}>
-            <div style={{
-              width: '10px',
-              height: '10px',
-              backgroundColor: entry.color,
-              borderRadius: '2px',
-            }} />
-            <p style={{
-              ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black500,
-              margin: 0,
+        {payload
+          // Filter to only show the 3 main data series, exclude uncertainty bands
+          .filter((entry: any) => ['mean', 'reported', 'paid'].includes(entry.dataKey))
+          .map((entry: any, index: number) => (
+            <div key={index} style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: index < 2 ? '4px' : 0, // Adjust for filtered length
             }}>
-              {entry.name}: {entry.value}
-            </p>
-          </div>
-        ))}
+              <div style={{
+                width: '10px',
+                height: '10px',
+                backgroundColor: entry.color,
+                borderRadius: '2px',
+              }} />
+              <p style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black500,
+                margin: 0,
+              }}>
+                {entry.name}: {entry.value}%
+              </p>
+            </div>
+          ))}
+        {/* 
+        Commented out uncertainty band values for cleaner tooltip:
+        - outerBandBase, outerBandHeight (outer uncertainty band)
+        - innerBandBase, innerBandHeight (inner uncertainty band)
+        
+        TODO: Consider better way to display these confidence intervals
+        */}
       </div>
     );
   }

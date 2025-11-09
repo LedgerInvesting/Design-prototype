@@ -325,141 +325,141 @@ const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, offic
 
 const ChartComponent: React.FC = () => {
   const colors = useSemanticColors();
-  const [selectedPeriod, setSelectedPeriod] = useState('monthly');
-  const [monthlyOffset, setMonthlyOffset] = useState(() => {
-    // Start with the most recent months (showing last 8 months for monthly + New)
-    return Math.max(0, 36 - 8); // 39 total data points, start with monthly view default
-  }); // For dragging through months
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState(0);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // For Complete History hover
+  const [selectedPeriod, setSelectedPeriod] = useState('1year');
 
-  // Complete historical data - extends back to Jan 2022 for extensive scrolling
-  const completeHistoryData = [
-    // 2022 data
-    { month: 'Jan 2022', paid: 0, reported: 8, mean: 45, outerBandBase: 35, outerBandHeight: 20, innerBandBase: 40, innerBandHeight: 10 },
-    { month: 'Feb 2022', paid: 2, reported: 12, mean: 48, outerBandBase: 38, outerBandHeight: 20, innerBandBase: 43, innerBandHeight: 10 },
-    { month: 'Mar 2022', paid: 3, reported: 15, mean: 50, outerBandBase: 40, outerBandHeight: 20, innerBandBase: 45, innerBandHeight: 10 },
-    { month: 'Apr 2022', paid: 5, reported: 18, mean: 52, outerBandBase: 42, outerBandHeight: 20, innerBandBase: 47, innerBandHeight: 10 },
-    { month: 'May 2022', paid: 8, reported: 22, mean: 54, outerBandBase: 44, outerBandHeight: 20, innerBandBase: 49, innerBandHeight: 10 },
-    { month: 'Jun 2022', paid: 10, reported: 25, mean: 56, outerBandBase: 46, outerBandHeight: 20, innerBandBase: 51, innerBandHeight: 10 },
-    { month: 'Jul 2022', paid: 12, reported: 28, mean: 58, outerBandBase: 48, outerBandHeight: 20, innerBandBase: 53, innerBandHeight: 10 },
-    { month: 'Aug 2022', paid: 15, reported: 32, mean: 60, outerBandBase: 50, outerBandHeight: 20, innerBandBase: 55, innerBandHeight: 10 },
-    { month: 'Sep 2022', paid: 18, reported: 35, mean: 62, outerBandBase: 52, outerBandHeight: 20, innerBandBase: 57, innerBandHeight: 10 },
-    { month: 'Oct 2022', paid: 20, reported: 38, mean: 64, outerBandBase: 54, outerBandHeight: 20, innerBandBase: 59, innerBandHeight: 10 },
-    { month: 'Nov 2022', paid: 22, reported: 42, mean: 66, outerBandBase: 56, outerBandHeight: 20, innerBandBase: 61, innerBandHeight: 10 },
-    { month: 'Dec 2022', paid: 25, reported: 45, mean: 68, outerBandBase: 58, outerBandHeight: 20, innerBandBase: 63, innerBandHeight: 10 },
-    
-    // 2023 data
-    { month: 'Jan 2023', paid: 28, reported: 48, mean: 70, outerBandBase: 60, outerBandHeight: 20, innerBandBase: 65, innerBandHeight: 10 },
-    { month: 'Feb 2023', paid: 30, reported: 52, mean: 72, outerBandBase: 62, outerBandHeight: 20, innerBandBase: 67, innerBandHeight: 10 },
-    { month: 'Mar 2023', paid: 32, reported: 55, mean: 74, outerBandBase: 64, outerBandHeight: 20, innerBandBase: 69, innerBandHeight: 10 },
-    { month: 'Apr 2023', paid: 35, reported: 58, mean: 76, outerBandBase: 66, outerBandHeight: 20, innerBandBase: 71, innerBandHeight: 10 },
-    { month: 'May 2023', paid: 38, reported: 62, mean: 78, outerBandBase: 68, outerBandHeight: 20, innerBandBase: 73, innerBandHeight: 10 },
-    { month: 'Jun 2023', paid: 40, reported: 65, mean: 80, outerBandBase: 70, outerBandHeight: 20, innerBandBase: 75, innerBandHeight: 10 },
-    { month: 'Jul 2023', paid: 42, reported: 68, mean: 82, outerBandBase: 72, outerBandHeight: 20, innerBandBase: 77, innerBandHeight: 10 },
-    { month: 'Aug 2023', paid: 45, reported: 72, mean: 84, outerBandBase: 74, outerBandHeight: 20, innerBandBase: 79, innerBandHeight: 10 },
-    { month: 'Sep 2023', paid: 48, reported: 75, mean: 86, outerBandBase: 76, outerBandHeight: 20, innerBandBase: 81, innerBandHeight: 10 },
-    { month: 'Oct 2023', paid: 50, reported: 78, mean: 88, outerBandBase: 78, outerBandHeight: 20, innerBandBase: 83, innerBandHeight: 10 },
-    { month: 'Nov 2023', paid: 52, reported: 82, mean: 90, outerBandBase: 80, outerBandHeight: 20, innerBandBase: 85, innerBandHeight: 10 },
-    { month: 'Dec 2023', paid: 55, reported: 85, mean: 92, outerBandBase: 82, outerBandHeight: 20, innerBandBase: 87, innerBandHeight: 10 },
-    
-    // 2024 data (current year)
-    { month: 'Jan 2024', paid: 0, reported: 15, mean: 58, outerBandBase: 48, outerBandHeight: 20, innerBandBase: 53, innerBandHeight: 10 },
-    { month: 'Feb 2024', paid: 5, reported: 22, mean: 62, outerBandBase: 52, outerBandHeight: 20, innerBandBase: 57, innerBandHeight: 10 },
-    { month: 'Mar 2024', paid: 8, reported: 30, mean: 65, outerBandBase: 55, outerBandHeight: 20, innerBandBase: 60, innerBandHeight: 10 },
-    { month: 'Apr 2024', paid: 12, reported: 35, mean: 68, outerBandBase: 58, outerBandHeight: 20, innerBandBase: 63, innerBandHeight: 10 },
-    { month: 'May 2024', paid: 20, reported: 39, mean: 70, outerBandBase: 60, outerBandHeight: 20, innerBandBase: 65, innerBandHeight: 10 },
-    { month: 'Jun 2024', paid: 22, reported: 45, mean: 74, outerBandBase: 64, outerBandHeight: 20, innerBandBase: 69, innerBandHeight: 10 },
-    { month: 'Jul 2024', paid: 25, reported: 50, mean: 78, outerBandBase: 68, outerBandHeight: 20, innerBandBase: 73, innerBandHeight: 10 },
-    { month: 'Aug 2024', paid: 23, reported: 58, mean: 82, outerBandBase: 72, outerBandHeight: 20, innerBandBase: 77, innerBandHeight: 10 },
-    { month: 'Sep 2024', paid: 25, reported: 65, mean: 85, outerBandBase: 75, outerBandHeight: 20, innerBandBase: 80, innerBandHeight: 10 },
-    { month: 'Oct 2024', paid: 28, reported: 72, mean: 88, outerBandBase: 78, outerBandHeight: 20, innerBandBase: 83, innerBandHeight: 10 },
-    { month: 'Nov 2024', paid: 30, reported: 78, mean: 92, outerBandBase: 82, outerBandHeight: 20, innerBandBase: 87, innerBandHeight: 10 },
-    { month: 'Dec 2024', paid: 35, reported: 80, mean: 95, outerBandBase: 85, outerBandHeight: 20, innerBandBase: 90, innerBandHeight: 10 },
-    { month: 'Jan 2025', paid: 60, reported: 80, mean: 98, outerBandBase: 88, outerBandHeight: 20, innerBandBase: 93, innerBandHeight: 10 },
-    { month: 'Feb 2025', paid: 65, reported: 85, mean: 100, outerBandBase: 90, outerBandHeight: 20, innerBandBase: 95, innerBandHeight: 10 },
-    { month: 'Mar 2025', paid: 70, reported: 88, mean: 102, outerBandBase: 92, outerBandHeight: 20, innerBandBase: 97, innerBandHeight: 10 },
-    
-    // Future placeholder
-    { month: 'New', paid: null, reported: null, mean: null, outerBandBase: null, outerBandHeight: null, innerBandBase: null, innerBandHeight: null }
+  // 6-month data - 7 total sections: 6 data points arranged oldest to newest + last empty "New" section
+  const sixMonthData = [
+    {
+      month: 'Mar 2024', paid: 0, reported: 30, mean: 65,
+      outerBandBase: 55, outerBandHeight: 20, // 55 to 75 (mean ± 10%)
+      innerBandBase: 60, innerBandHeight: 10  // 60 to 70 (mean ± 5%)
+    },
+    {
+      month: 'May 2024', paid: 20, reported: 39, mean: 70,
+      outerBandBase: 60, outerBandHeight: 20, // 60 to 80
+      innerBandBase: 65, innerBandHeight: 10  // 65 to 75
+    },
+    {
+      month: 'Jul 2024', paid: 25, reported: 50, mean: 78,
+      outerBandBase: 68, outerBandHeight: 20, // 68 to 88
+      innerBandBase: 73, innerBandHeight: 10  // 73 to 83
+    },
+    {
+      month: 'Sep 2024', paid: 25, reported: 65, mean: 90,
+      outerBandBase: 80, outerBandHeight: 20, // 80 to 100
+      innerBandBase: 85, innerBandHeight: 10  // 85 to 95
+    },
+    {
+      month: 'Nov 2024', paid: 30, reported: 80, mean: 95,
+      outerBandBase: 85, outerBandHeight: 20, // 85 to 105
+      innerBandBase: 90, innerBandHeight: 10  // 90 to 100
+    },
+    {
+      month: 'Jan 2025', paid: 60, reported: 80, mean: 98,
+      outerBandBase: 88, outerBandHeight: 20, // 88 to 108
+      innerBandBase: 93, innerBandHeight: 10  // 93 to 103
+    },
+    {
+      month: 'New', paid: null, reported: null, mean: null,
+      outerBandBase: null, outerBandHeight: null,
+      innerBandBase: null, innerBandHeight: null
+    },
   ];
 
-  // Handle drag functionality for Monthly and Annual Views
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (selectedPeriod !== 'monthly' && selectedPeriod !== 'annual') return;
-    setIsDragging(true);
-    setDragStart(e.clientX);
-  };
+  // One year data with monthly progression
+  const oneYearData = [
+    {
+      month: 'Jan 2024', paid: 0, reported: 15, mean: 58,
+      outerBandBase: 48, outerBandHeight: 20, // 48 to 68 (mean ± 10%)
+      innerBandBase: 53, innerBandHeight: 10  // 53 to 63 (mean ± 5%)
+    },
+    {
+      month: 'Feb 2024', paid: 5, reported: 22, mean: 62,
+      outerBandBase: 52, outerBandHeight: 20, // 52 to 72
+      innerBandBase: 57, innerBandHeight: 10  // 57 to 67
+    },
+    {
+      month: 'Mar 2024', paid: 8, reported: 30, mean: 65,
+      outerBandBase: 55, outerBandHeight: 20, // 55 to 75
+      innerBandBase: 60, innerBandHeight: 10  // 60 to 70
+    },
+    {
+      month: 'Apr 2024', paid: 12, reported: 35, mean: 68,
+      outerBandBase: 58, outerBandHeight: 20, // 58 to 78
+      innerBandBase: 63, innerBandHeight: 10  // 63 to 73
+    },
+    {
+      month: 'May 2024', paid: 20, reported: 39, mean: 70,
+      outerBandBase: 60, outerBandHeight: 20, // 60 to 80
+      innerBandBase: 65, innerBandHeight: 10  // 65 to 75
+    },
+    {
+      month: 'Jun 2024', paid: 22, reported: 45, mean: 74,
+      outerBandBase: 64, outerBandHeight: 20, // 64 to 84
+      innerBandBase: 69, innerBandHeight: 10  // 69 to 79
+    },
+    {
+      month: 'Jul 2024', paid: 25, reported: 50, mean: 78,
+      outerBandBase: 68, outerBandHeight: 20, // 68 to 88
+      innerBandBase: 73, innerBandHeight: 10  // 73 to 83
+    },
+    {
+      month: 'Aug 2024', paid: 23, reported: 58, mean: 82,
+      outerBandBase: 72, outerBandHeight: 20, // 72 to 92
+      innerBandBase: 77, innerBandHeight: 10  // 77 to 87
+    },
+    {
+      month: 'Sep 2024', paid: 25, reported: 65, mean: 85,
+      outerBandBase: 75, outerBandHeight: 20, // 75 to 95
+      innerBandBase: 80, innerBandHeight: 10  // 80 to 90
+    },
+    {
+      month: 'Oct 2024', paid: 28, reported: 72, mean: 88,
+      outerBandBase: 78, outerBandHeight: 20, // 78 to 98
+      innerBandBase: 83, innerBandHeight: 10  // 83 to 93
+    },
+    {
+      month: 'Nov 2024', paid: 30, reported: 78, mean: 92,
+      outerBandBase: 82, outerBandHeight: 20, // 82 to 102
+      innerBandBase: 87, innerBandHeight: 10  // 87 to 97
+    },
+    {
+      month: 'Dec 2024', paid: 35, reported: 80, mean: 95,
+      outerBandBase: 85, outerBandHeight: 20, // 85 to 105
+      innerBandBase: 90, innerBandHeight: 10  // 90 to 100
+    },
+    {
+      month: 'New', paid: null, reported: null, mean: null,
+      outerBandBase: null, outerBandHeight: null,
+      innerBandBase: null, innerBandHeight: null
+    },
+  ];
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || (selectedPeriod !== 'monthly' && selectedPeriod !== 'annual')) return;
-    const deltaX = e.clientX - dragStart;
-    const sensitivity = 30; // Increase sensitivity for smoother scrolling
-    
-    if (Math.abs(deltaX) > sensitivity) {
-      const direction = deltaX > 0 ? -1 : 1; // Right drag = go back in time
-      
-      // Different max offsets for different views
-      let maxOffset;
-      if (selectedPeriod === 'monthly') {
-        maxOffset = completeHistoryData.length - 9; // Reserve space for 8 months + New
-      } else if (selectedPeriod === 'annual') {
-        maxOffset = completeHistoryData.length - 13; // Reserve space for 12 months + New
-      }
-      
-      const newOffset = Math.max(0, Math.min(maxOffset, monthlyOffset + direction));
-      
-      if (newOffset !== monthlyOffset) {
-        setMonthlyOffset(newOffset);
-        setDragStart(e.clientX);
-      }
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Get current data based on selected period and offset
-  let finalChartData, finalButtonData, finalDataLength, finalAddButtonIndex;
+  // Get current data based on selected period
+  const baseData = selectedPeriod === '6months' ? sixMonthData : oneYearData;
   
-  if (selectedPeriod === 'monthly') {
-    // Monthly View: Show 8 months of data in space for 6, creating cropped overflow effect
-    const startIndex = monthlyOffset;
-    const endIndex = Math.min(startIndex + 8, completeHistoryData.length - 1); // Show 8 months instead of 6
-    const monthlyData = completeHistoryData.slice(startIndex, endIndex);
+  if (selectedPeriod === '6months') {
+    // For 6-month view: chart shows all 7 data points, but buttons skip the first one
+    const chartData = baseData; // All 7 sections for chart (includes Mar 2024 + others + New)
+    const buttonData = baseData.slice(1); // Skip first section (Mar 2024) for buttons, start from May 2024
+    const dataLength = 7; // Chart shows 7 X-axis lines
+    const addButtonIndex = 5; // "Add Valuation" on 6th button section (which is "New")
     
-    // Add "New" section if we're at the latest data
-    if (endIndex === completeHistoryData.length - 1) {
-      monthlyData.push(completeHistoryData[completeHistoryData.length - 1]); // Add "New"
-    }
+    var finalChartData = chartData;
+    var finalButtonData = buttonData;
+    var finalDataLength = dataLength;
+    var finalAddButtonIndex = addButtonIndex;
+  } else {
+    // For 12-month view: chart shows all 13 data points, but buttons skip the first one
+    const chartData = baseData; // All 13 sections for chart (includes Jan 2024 + others + New)
+    const buttonData = baseData.slice(1); // Skip first section (Jan 2024) for buttons, start from Feb 2024
+    const dataLength = 13; // Chart shows 13 X-axis lines
+    const addButtonIndex = 11; // "Add Valuation" on 12th button section (which is "New")
     
-    finalChartData = monthlyData;
-    finalButtonData = monthlyData.slice(1); // Skip first for buttons
-    finalDataLength = monthlyData.length;
-    finalAddButtonIndex = monthlyData.length - 2; // Second to last is "New" for buttons
-  } else if (selectedPeriod === 'annual') {
-    // Annual Summary: Show 12 months of data, draggable through history
-    const startIndex = monthlyOffset;
-    const endIndex = Math.min(startIndex + 12, completeHistoryData.length - 1); // Show exactly 12 months
-    const annualData = completeHistoryData.slice(startIndex, endIndex);
-    
-    // Add "New" section if we're at the latest data
-    if (endIndex === completeHistoryData.length - 1) {
-      annualData.push(completeHistoryData[completeHistoryData.length - 1]); // Add "New"
-    }
-    
-    finalChartData = annualData;
-    finalButtonData = annualData.slice(1);
-    finalDataLength = annualData.length;
-    finalAddButtonIndex = annualData.length - 2;
-  } else if (selectedPeriod === 'complete') {
-    // Complete History: Show all data
-    finalChartData = completeHistoryData;
-    finalButtonData = completeHistoryData.slice(1);
-    finalDataLength = completeHistoryData.length;
-    finalAddButtonIndex = completeHistoryData.length - 2;
+    var finalChartData = chartData;
+    var finalButtonData = buttonData;
+    var finalDataLength = dataLength;
+    var finalAddButtonIndex = addButtonIndex;
   }
 
   return (
@@ -475,18 +475,18 @@ const ChartComponent: React.FC = () => {
         padding: '20px 30px',
         borderBottom: `1px solid ${colors.theme.primary400}`,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
           <CardsGraph color="#8b68f5" />
           <div style={{ ...typography.styles.bodyL, color: colors.blackAndWhite.black900 }}>
             Valuation runs over time
           </div>
         </div>
+        {/* Description removed */}
       </div>
 
       {/* Legend and Time Period Controls */}
       <div style={{
         padding: '20px 30px',
-        paddingBottom: '50px', // Add extra 30px spacing to the chart below
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -558,18 +558,21 @@ const ChartComponent: React.FC = () => {
           </div>
         </div>
 
-        {/* Time Period Dropdown and Navigation */}
+        {/* Time Period Dropdown */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '12px'
         }}>
+          <span style={{
+            ...typography.styles.bodyS,
+            color: colors.blackAndWhite.black700
+          }}>
+            Time period:
+          </span>
           <select 
             value={selectedPeriod}
-            onChange={(e) => {
-              setSelectedPeriod(e.target.value);
-              setMonthlyOffset(0); // Reset offset when changing view
-            }}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
             style={{
               ...typography.styles.bodyS,
               color: colors.blackAndWhite.black900,
@@ -577,50 +580,21 @@ const ChartComponent: React.FC = () => {
               border: `1px solid ${colors.theme.primary400}`,
               borderRadius: '4px',
               padding: '4px 8px',
-              minWidth: '120px'
+              minWidth: '80px'
             }}
           >
-            <option value="monthly">Monthly View</option>
-            <option value="annual">Annual View</option>
-            <option value="complete">Complete History</option>
+            <option value="1year">1 Year</option>
+            <option value="6months">6 months</option>
+            <option value="2years">2 Years</option>
+            <option value="3years">3 Years</option>
           </select>
-          
         </div>
       </div>
 
       {/* Chart */}
-      <div 
-        style={{ 
-          height: '421px', 
-          overflow: 'visible', 
-          outline: 'none', 
-          position: 'relative',
-          cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default',
-          userSelect: 'none' // Prevent text selection during drag
-        }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp} // Stop dragging if mouse leaves chart
-      >
-        <ResponsiveContainer 
-          width="100%" 
-          height="100%" 
-          style={{ 
-            overflow: 'visible', 
-            outline: 'none',
-            cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default'
-          }}
-        >
-          <ComposedChart 
-            data={finalChartData} 
-            margin={{ top: 50, right: 50, left: 15, bottom: 30 }} 
-            style={{ 
-              overflow: 'visible', 
-              outline: 'none',
-              cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default'
-            }}
-          >
+      <div style={{ height: '421px', overflow: 'visible', outline: 'none', position: 'relative' }}>
+        <ResponsiveContainer width="100%" height="100%" style={{ overflow: 'visible', outline: 'none' }}>
+          <ComposedChart data={finalChartData} margin={{ top: 50, right: 50, left: 15, bottom: 30 }} style={{ overflow: 'visible', outline: 'none' }}>
             <CartesianGrid strokeDasharray="3 3" stroke={colors.theme.primary450} />
 
             <XAxis
@@ -748,43 +722,33 @@ const ChartComponent: React.FC = () => {
             <div
               key={index}
               style={{
-                flex: selectedPeriod === 'complete' ? (hoveredIndex === index ? 3 : 0.5) : 1, // Expand hovered section, compact others
+                flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'flex-end',
                 gap: '4px',
                 borderRight: `1px dashed ${colors.theme.primary450}`,
-                borderLeft: index === 0 ? `1px dashed ${colors.theme.primary450}` : 'none', // Add left border to first button section
-                paddingRight: '8px',
-                minHeight: '55px', // Ensure consistent height
-                position: 'relative',
-                transition: selectedPeriod === 'complete' ? 'flex 0.3s ease, opacity 0.2s ease' : 'opacity 0.2s ease', // Smooth expansion
-                overflow: 'hidden' // Prevent content overflow during transitions
+                borderLeft: index === 0 ? `1px dashed ${colors.theme.primary450}` : 'none', // Add left border to first button section (May 24)
+                paddingRight: '8px'
               }}
-              onMouseEnter={() => selectedPeriod === 'complete' ? setHoveredIndex(index) : null}
-              onMouseLeave={() => selectedPeriod === 'complete' ? setHoveredIndex(null) : null}
             >
-              {/* Date label - Show always for Monthly/Annual, only on hover for Complete */}
+              {/* Date label */}
               <div style={{
                 ...typography.styles.dataXS,
                 color: colors.blackAndWhite.black900,
                 fontSize: '10px',
-                marginTop: '-6px',
-                opacity: selectedPeriod === 'complete' ? (hoveredIndex === index ? 1 : 0) : 1,
-                transition: 'opacity 0.2s ease'
+                marginTop: '-6px'
               }}>
                 {dataPoint.month}
               </div>
               
-              {/* Buttons - Show always for Monthly/Annual, only on hover for Complete */}
+              {/* Buttons - Special case for last data month */}
               <div style={{
                 display: 'flex',
-                gap: '2px',
-                opacity: selectedPeriod === 'complete' ? (hoveredIndex === index ? 1 : 0) : 1,
-                transition: 'opacity 0.2s ease'
+                gap: '2px'
               }}>
-                {dataPoint.month === 'New' ? (
+                {index === finalAddButtonIndex ? (
                   // Last data month - Single add button without text
                   <Button
                     variant="icon"
@@ -796,8 +760,7 @@ const ChartComponent: React.FC = () => {
                       width: '24px',
                       height: '24px',
                       padding: '4px',
-                      backgroundColor: colors.theme.primary700,
-                      border: 'none'
+                      border: `1px solid ${colors.theme.primary400}`
                     }}
                   />
                 ) : (
@@ -836,161 +799,6 @@ const ChartComponent: React.FC = () => {
           ))}
         </div>
 
-      </div>
-      
-      {/* Valuation Data Table */}
-      <div style={{
-        padding: '0'
-      }}>
-        {/* Separator with margins */}
-        <div style={{
-          borderTop: `1px solid ${colors.theme.primary400}`,
-          margin: '0 50px'
-        }} />
-        {/* Table Header */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 120px',
-          gap: '16px',
-          padding: '16px 0',
-          margin: '0 50px',
-          backgroundColor: colors.blackAndWhite.white,
-          borderBottom: `1px solid ${colors.theme.primary400}`
-        }}>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Date</div>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Loss modeling</div>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Paid Loss Ratio</div>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Reported Loss Ratio</div>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Expected loss ratio</div>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Current Written Premium</div>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500, textAlign: 'right' }}>Actions</div>
-        </div>
-        
-        {/* Table Rows */}
-        {[
-          { date: 'Jan, 2025', paid: '75%', reported: '62%', expected: '112%', premium: '$20,107,359' },
-          { date: 'Dec, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$21,542,987' },
-          { date: 'Nov, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$19,876,421' },
-          { date: 'Oct, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$22,345,789' },
-          { date: 'Sep, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$18,901,234' },
-          { date: 'Aug, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$20,456,890' },
-          { date: 'Jul, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$21,123,567' },
-          { date: 'Jun, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$19,567,234' },
-          { date: 'May, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$22,789,654' },
-          { date: 'Apr, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$18,234,901' }
-        ].map((row, index) => (
-          <div key={index} style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 120px',
-            gap: '16px',
-            padding: '16px 0',
-            margin: '0 50px',
-            backgroundColor: colors.blackAndWhite.white,
-            borderBottom: index < 9 ? `1px solid ${colors.theme.primary400}` : 'none',
-            alignItems: 'center'
-          }}>
-            {/* Date */}
-            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black900 }}>
-              {row.date}
-            </div>
-            
-            {/* Loss modeling */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: colors.theme.primary400
-              }} />
-              <span style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
-                Complete
-              </span>
-            </div>
-            
-            {/* Paid Loss Ratio */}
-            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
-              {row.paid}
-            </div>
-            
-            {/* Reported Loss Ratio */}
-            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
-              {row.reported}
-            </div>
-            
-            {/* Expected Loss Ratio */}
-            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
-              {row.expected}
-            </div>
-            
-            {/* Current Written Premium */}
-            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
-              {row.premium}
-            </div>
-            
-            {/* Actions */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
-              <Button
-                variant="icon"
-                color="white"
-                icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
-                onClick={() => console.log(`Download ${row.date}`)}
-                shape="square"
-                style={{
-                  minWidth: 'auto',
-                  width: '32px',
-                  height: '32px',
-                  padding: '6px',
-                  backgroundColor: colors.blackAndWhite.white,
-                  border: `1px solid ${colors.theme.primary400}`,
-                  borderRadius: borderRadius[8],
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              />
-              <Button
-                variant="small"
-                color="white"
-                showIcon={false}
-                onClick={() => console.log(`Edit ${row.date}`)}
-              >
-                Edit
-              </Button>
-            </div>
-          </div>
-        ))}
-        
-        {/* Pagination */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '20px 0',
-          margin: '0 50px',
-          backgroundColor: colors.blackAndWhite.white
-        }}>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
-            10 of 43 Valuations
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Button
-              variant="icon"
-              color="light"
-              icon={<ArrowDownSmall color={colors.blackAndWhite.black700} style={{ transform: 'rotate(90deg)' }} />}
-              onClick={() => console.log('Previous page')}
-              shape="square"
-              style={{ width: '24px', height: '24px', padding: '4px' }}
-            />
-            <Button
-              variant="icon"
-              color="light"
-              icon={<ArrowDownSmall color={colors.blackAndWhite.black700} style={{ transform: 'rotate(-90deg)' }} />}
-              onClick={() => console.log('Next page')}
-              shape="square"
-              style={{ width: '24px', height: '24px', padding: '4px' }}
-            />
-          </div>
-        </div>
       </div>
     </div>
   );
