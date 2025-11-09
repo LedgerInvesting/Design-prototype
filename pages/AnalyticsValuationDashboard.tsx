@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
 import { Button, DashboardCard, ChartTooltip, AppActionButton } from '@design-library/components';
@@ -326,10 +326,7 @@ const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, offic
 const ChartComponent: React.FC = () => {
   const colors = useSemanticColors();
   const [selectedPeriod, setSelectedPeriod] = useState('monthly');
-  const [monthlyOffset, setMonthlyOffset] = useState(() => {
-    // Start with the most recent months (showing last 8 months for monthly + New)
-    return Math.max(0, 36 - 8); // 39 total data points, start with monthly view default
-  }); // For dragging through months
+  const [monthlyOffset, setMonthlyOffset] = useState(0); // Initialize to 0, will be set correctly in useEffect
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // For Complete History hover
@@ -385,6 +382,13 @@ const ChartComponent: React.FC = () => {
     { month: 'New', paid: null, reported: null, mean: null, outerBandBase: null, outerBandHeight: null, innerBandBase: null, innerBandHeight: null }
   ];
 
+  // Set correct initial position after component mounts
+  useEffect(() => {
+    // Always start with the most recent data visible on the right
+    const initialOffset = Math.max(0, completeHistoryData.length - 9); // Show last 8 months + "New" section
+    setMonthlyOffset(initialOffset);
+  }, []); // Only run once on mount
+
   // Handle drag functionality for Monthly and Annual Views
   const handleMouseDown = (e: React.MouseEvent) => {
     if (selectedPeriod !== 'monthly' && selectedPeriod !== 'annual') return;
@@ -430,8 +434,8 @@ const ChartComponent: React.FC = () => {
     const endIndex = Math.min(startIndex + 8, completeHistoryData.length - 1); // Show 8 months instead of 6
     const monthlyData = completeHistoryData.slice(startIndex, endIndex);
     
-    // Add "New" section if we're at the latest data
-    if (endIndex === completeHistoryData.length - 1) {
+    // Add "New" section if we're showing the latest data (near the end)
+    if (endIndex >= completeHistoryData.length - 1) {
       monthlyData.push(completeHistoryData[completeHistoryData.length - 1]); // Add "New"
     }
     
@@ -445,8 +449,8 @@ const ChartComponent: React.FC = () => {
     const endIndex = Math.min(startIndex + 12, completeHistoryData.length - 1); // Show exactly 12 months
     const annualData = completeHistoryData.slice(startIndex, endIndex);
     
-    // Add "New" section if we're at the latest data
-    if (endIndex === completeHistoryData.length - 1) {
+    // Add "New" section if we're showing the latest data (near the end)
+    if (endIndex >= completeHistoryData.length - 1) {
       annualData.push(completeHistoryData[completeHistoryData.length - 1]); // Add "New"
     }
     
@@ -568,7 +572,14 @@ const ChartComponent: React.FC = () => {
             value={selectedPeriod}
             onChange={(e) => {
               setSelectedPeriod(e.target.value);
-              setMonthlyOffset(0); // Reset offset when changing view
+              // Reset to show newest data when changing view
+              if (e.target.value === 'monthly') {
+                setMonthlyOffset(Math.max(0, completeHistoryData.length - 9)); // Last 8 months + "New"
+              } else if (e.target.value === 'annual') {
+                setMonthlyOffset(Math.max(0, completeHistoryData.length - 13)); // Last 12 months + "New"
+              } else {
+                setMonthlyOffset(0); // Complete history starts from beginning
+              }
             }}
             style={{
               ...typography.styles.bodyS,
