@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
 import { Button, DashboardCard, ChartTooltip, AppActionButton } from '@design-library/components';
+import { Dropdown } from '@design-library/components/Dropdown';
 import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
 import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall } from '@design-library/icons';
@@ -568,33 +569,27 @@ const ChartComponent: React.FC = () => {
           alignItems: 'center',
           gap: '12px'
         }}>
-          <select 
+          <Dropdown
+            showLabel={false}
             value={selectedPeriod}
-            onChange={(e) => {
-              setSelectedPeriod(e.target.value);
+            selectedPrefix="View as"
+            options={[
+              { value: 'monthly', label: 'Monthly' },
+              { value: 'annual', label: 'Annually' }
+            ]}
+            onChange={(value) => {
+              setSelectedPeriod(value);
               // Reset to show newest data when changing view
-              if (e.target.value === 'monthly') {
+              if (value === 'monthly') {
                 setMonthlyOffset(Math.max(0, completeHistoryData.length - 9)); // Last 8 months + "New"
-              } else if (e.target.value === 'annual') {
+              } else if (value === 'annual') {
                 setMonthlyOffset(Math.max(0, completeHistoryData.length - 13)); // Last 12 months + "New"
               } else {
                 setMonthlyOffset(0); // Complete history starts from beginning
               }
             }}
-            style={{
-              ...typography.styles.bodyS,
-              color: colors.blackAndWhite.black900,
-              backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.theme.primary400}`,
-              borderRadius: '4px',
-              padding: '4px 8px',
-              minWidth: '120px'
-            }}
-          >
-            <option value="monthly">Monthly View</option>
-            <option value="annual">Annual View</option>
-            <option value="complete">Complete History</option>
-          </select>
+            state="filled"
+          />
           
         </div>
       </div>
