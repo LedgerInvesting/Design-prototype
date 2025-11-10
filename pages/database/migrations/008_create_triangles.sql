@@ -157,4 +157,86 @@ INSERT INTO triangles (
         'completed',
         '{"heatmap": [[15, 20, 23], [16, 21, 24], [15.5, 20.5, 23.5]], "growth_curve": [{"x": 1, "y": 15}, {"x": 2, "y": 20}, {"x": 3, "y": 23}], "mountain": [{"age": 12, "value": 23}, {"age": 24, "value": 24}, {"age": 36, "value": 25}], "age_to_age": [1.33, 1.15, 1.09]}',
         '{"12_24": 1.33, "24_36": 1.15, "36_48": 1.09, "48_60": 1.04}'
+    ),
+
+    -- Additional triangles for comparison testing (these match the available triangles in the dashboard)
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 0),
+        'ef56789a-bcde-f012-3456-789ef56789a-bcde-f0...',
+        'paid',
+        'left',
+        '#BD8B11',
+        'completed',
+        '{"heatmap": [[110, 165, 198], [132, 187, 220], [121, 176, 209]], "growth_curve": [{"x": 1, "y": 110}, {"x": 2, "y": 165}, {"x": 3, "y": 198}], "mountain": [{"age": 12, "value": 198}, {"age": 24, "value": 220}, {"age": 36, "value": 242}], "age_to_age": [1.5, 1.2, 1.1]}',
+        '{"12_24": 1.50, "24_36": 1.20, "36_48": 1.10, "48_60": 1.05}'
+    ),
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 0),
+        'gh78901b-cdef-2345-6789-01gh78901b-cdef-23...',
+        'incurred',
+        'center',
+        '#744DEB',
+        'completed',
+        '{"heatmap": [[90, 135, 165], [108, 153, 183], [99, 144, 174]], "growth_curve": [{"x": 1, "y": 90}, {"x": 2, "y": 135}, {"x": 3, "y": 165}], "mountain": [{"age": 12, "value": 165}, {"age": 24, "value": 180}, {"age": 36, "value": 195}], "age_to_age": [1.5, 1.22, 1.09]}',
+        '{"12_24": 1.50, "24_36": 1.22, "36_48": 1.09, "48_60": 1.04}'
+    ),
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 1),
+        'ij90123c-def0-4567-890a-bcij90123c-def0-45...',
+        'paid',
+        'left',
+        '#BD8B11',
+        'completed',
+        '{"heatmap": [[130, 195, 234], [156, 221, 265], [143, 208, 250]], "growth_curve": [{"x": 1, "y": 130}, {"x": 2, "y": 195}, {"x": 3, "y": 234}], "mountain": [{"age": 12, "value": 234}, {"age": 24, "value": 260}, {"age": 36, "value": 286}], "age_to_age": [1.5, 1.2, 1.1]}',
+        '{"12_24": 1.50, "24_36": 1.20, "36_48": 1.10, "48_60": 1.05}'
+    ),
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 1),
+        'kl12345d-ef01-6789-abcd-efkl12345d-ef01-67...',
+        'incurred',
+        'center',
+        '#744DEB',
+        'completed',
+        '{"heatmap": [[105, 158, 190], [126, 179, 215], [116, 169, 203]], "growth_curve": [{"x": 1, "y": 105}, {"x": 2, "y": 158}, {"x": 3, "y": 190}], "mountain": [{"age": 12, "value": 190}, {"age": 24, "value": 210}, {"age": 36, "value": 230}], "age_to_age": [1.5, 1.2, 1.1]}',
+        '{"12_24": 1.50, "24_36": 1.20, "36_48": 1.10, "48_60": 1.05}'
+    ),
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 2),
+        'mn34567e-f012-890a-bcde-f0mn34567e-f012-89...',
+        'paid',
+        'left',
+        '#BD8B11',
+        'completed',
+        '{"heatmap": [[95, 143, 172], [114, 162, 194], [105, 153, 183]], "growth_curve": [{"x": 1, "y": 95}, {"x": 2, "y": 143}, {"x": 3, "y": 172}], "mountain": [{"age": 12, "value": 172}, {"age": 24, "value": 190}, {"age": 36, "value": 208}], "age_to_age": [1.5, 1.2, 1.1]}',
+        '{"12_24": 1.50, "24_36": 1.20, "36_48": 1.10, "48_60": 1.05}'
+    ),
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 2),
+        'op56789f-0123-abc4-def5-67op56789f-0123-ab...',
+        'case',
+        'right',
+        '#3DA3CB',
+        'completed',
+        '{"heatmap": [[25, 38, 45], [30, 43, 51], [28, 41, 48]], "growth_curve": [{"x": 1, "y": 25}, {"x": 2, "y": 38}, {"x": 3, "y": 45}], "mountain": [{"age": 12, "value": 45}, {"age": 24, "value": 50}, {"age": 36, "value": 55}], "age_to_age": [1.52, 1.18, 1.11]}',
+        '{"12_24": 1.52, "24_36": 1.18, "36_48": 1.11, "48_60": 1.06}'
+    ),
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 3),
+        'qr78901g-h234-cdef-5678-90qr78901g-h234-cd...',
+        'paid',
+        'left',
+        '#BD8B11',
+        'completed',
+        '{"heatmap": [[115, 173, 208], [138, 196, 235], [127, 185, 222]], "growth_curve": [{"x": 1, "y": 115}, {"x": 2, "y": 173}, {"x": 3, "y": 208}], "mountain": [{"age": 12, "value": 208}, {"age": 24, "value": 230}, {"age": 36, "value": 252}], "age_to_age": [1.5, 1.2, 1.1]}',
+        '{"12_24": 1.50, "24_36": 1.20, "36_48": 1.10, "48_60": 1.05}'
+    ),
+    (
+        (SELECT id FROM valuations LIMIT 1 OFFSET 3),
+        'st90123h-i345-def6-7890-abst90123h-i345-de...',
+        'incurred',
+        'center',
+        '#744DEB',
+        'completed',
+        '{"heatmap": [[100, 150, 180], [120, 170, 204], [110, 160, 192]], "growth_curve": [{"x": 1, "y": 100}, {"x": 2, "y": 150}, {"x": 3, "y": 180}], "mountain": [{"age": 12, "value": 180}, {"age": 24, "value": 200}, {"age": 36, "value": 220}], "age_to_age": [1.5, 1.2, 1.1]}',
+        '{"12_24": 1.50, "24_36": 1.20, "36_48": 1.10, "48_60": 1.05}'
     );

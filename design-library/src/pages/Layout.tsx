@@ -7,6 +7,7 @@ import { Modal } from '../components/Modal';
 import { Selector } from '../components/Selector';
 import { Button } from '../components/Button';
 import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
+import { isSubPage as detectSubPage, type PageType } from '../utils/navigation';
 
 /**
  * Unified layout component that supports both navigation and form modes
@@ -107,11 +108,14 @@ export const Layout: React.FC<LayoutProps> = ({
   showStatus = true,
   progress,
   onBackClick,
-  isSubPage = false,
+  isSubPage = false, // Manual override - if not provided, will auto-detect
 }) => {
   // Get prototype settings
   const settings = useSettings();
   const useSideNav2 = settings.uiExperiments.sidenavTest;
+
+  // Auto-detect if this is a sub-page based on pageType (unless manually overridden)
+  const isActuallySubPage = isSubPage || (pageType ? detectSubPage(pageType as PageType) : false);
 
   // Prototype settings modal state
   const { settings: prototypeSettings, updateSetting, resetSettings } = usePrototypeSettings();
@@ -243,7 +247,7 @@ export const Layout: React.FC<LayoutProps> = ({
             profileColor={profileColor}
             onManageAccountClick={onManageAccountClick}
             onSettingsClick={handleSettingsClick}
-            isSubPage={isSubPage}
+            isSubPage={isActuallySubPage}
             onBackClick={onBackClick}
           />
         ) : (

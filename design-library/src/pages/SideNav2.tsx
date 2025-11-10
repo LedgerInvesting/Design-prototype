@@ -724,9 +724,15 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   }
                   const paths = e.currentTarget.querySelectorAll('path, line, polyline, polygon, circle, rect');
                   paths.forEach(path => {
-                    (path as SVGElement).style.transition = 'stroke 0.2s ease, fill 0.2s ease';
-                    (path as SVGElement).style.stroke = colors.blackAndWhite.black900;
-                    (path as SVGElement).style.fill = colors.blackAndWhite.black900;
+                    const svgPath = path as SVGElement;
+                    svgPath.style.transition = 'stroke 0.2s ease, fill 0.2s ease';
+                    // Only change fill for filled icons (chevrons), only stroke for line icons (close X)
+                    if (svgPath.getAttribute('fill') && svgPath.getAttribute('fill') !== 'none') {
+                      svgPath.style.fill = colors.blackAndWhite.black900;
+                    }
+                    if (svgPath.getAttribute('stroke') || svgPath.tagName === 'line') {
+                      svgPath.style.stroke = colors.blackAndWhite.black900;
+                    }
                   });
                 }}
                 onMouseLeave={(e) => {
@@ -736,9 +742,15 @@ export const SideNav2: React.FC<SideNav2Props> = ({
                   }
                   const paths = e.currentTarget.querySelectorAll('path, line, polyline, polygon, circle, rect');
                   paths.forEach(path => {
-                    (path as SVGElement).style.transition = 'stroke 0.2s ease, fill 0.2s ease';
-                    (path as SVGElement).style.stroke = colors.blackAndWhite.white;
-                    (path as SVGElement).style.fill = colors.blackAndWhite.white;
+                    const svgPath = path as SVGElement;
+                    svgPath.style.transition = 'stroke 0.2s ease, fill 0.2s ease';
+                    // Only change fill for filled icons (chevrons), only stroke for line icons (close X)
+                    if (svgPath.getAttribute('fill') && svgPath.getAttribute('fill') !== 'none') {
+                      svgPath.style.fill = colors.blackAndWhite.white;
+                    }
+                    if (svgPath.getAttribute('stroke') || svgPath.tagName === 'line') {
+                      svgPath.style.stroke = colors.blackAndWhite.white;
+                    }
                   });
                 }}
               >

@@ -347,7 +347,6 @@ export const ReportsCashSettlement: React.FC<CashSettlementProps> = ({ onNavigat
       onInboxClick={() => {
         console.log('Inbox clicked');
       }}
-      isSubPage={true}
       onBackClick={() => {
         // Navigate back to reports explorer
         if (onNavigateToPage) {

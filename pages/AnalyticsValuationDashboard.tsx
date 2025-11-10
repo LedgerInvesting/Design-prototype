@@ -5,7 +5,7 @@ import { Button, DashboardCard, ChartTooltip, AppActionButton } from '@design-li
 import { Dropdown } from '@design-library/components/Dropdown';
 import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall } from '@design-library/icons';
+import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall, ChevronLeftSmall, ChevronRightSmall } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 import { AddTriangleModal } from './AddTriangleModal';
 import { useSettings } from '@design-library/contexts';
@@ -94,6 +94,68 @@ const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) 
               <span>Policy-Year triangle</span>
             </div>
           </div>
+        </div>,
+        document.body
+      )}
+    </>
+  );
+};
+
+/**
+ * Simple Tooltip Component
+ *
+ * A lightweight tooltip wrapper that displays a text message when hovering over its children.
+ * Does not add any visual elements - only shows tooltip on hover.
+ */
+const SimpleTooltip: React.FC<{ text: string; children: React.ReactNode }> = ({ text, children }) => {
+  const colors = useSemanticColors();
+  const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    setIsVisible(true);
+    setPosition({ x: e.clientX + 10, y: e.clientY + 10 });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setPosition({ x: e.clientX + 10, y: e.clientY + 10 });
+  };
+
+  const handleMouseLeave = () => {
+    setIsVisible(false);
+  };
+
+  return (
+    <>
+      <div
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ cursor: 'pointer', display: 'inline-flex' }}
+      >
+        {children}
+      </div>
+
+      {/* Render tooltip in portal */}
+      {isVisible && typeof document !== 'undefined' && createPortal(
+        <div
+          style={{
+            position: 'fixed',
+            left: position.x,
+            top: position.y,
+            backgroundColor: colors.blackAndWhite.black900,
+            color: colors.blackAndWhite.white,
+            padding: '8px 12px',
+            borderRadius: '12px',
+            fontSize: '14px',
+            lineHeight: '20px',
+            zIndex: 1000,
+            pointerEvents: 'none',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {text}
         </div>,
         document.body
       )}
@@ -640,7 +702,7 @@ const ChartComponent: React.FC = () => {
               label={{
                 value: 'Evaluation Date',
                 position: 'insideBottom',
-                offset: -10,
+                offset: 0,
                 style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
               }}
             />
@@ -809,32 +871,36 @@ const ChartComponent: React.FC = () => {
                 ) : (
                   // Other months - Edit/Download buttons
                   <>
-                    <Button
-                      variant="icon"
-                      color="white"
-                      icon={<EditSmall color={colors.blackAndWhite.black900} />}
-                      onClick={() => console.log(`Edit ${dataPoint.month}`)}
-                      shape="square"
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        padding: '4px',
-                        border: `1px solid ${colors.theme.primary400}`
-                      }}
-                    />
-                    <Button
-                      variant="icon"
-                      color="white"
-                      icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
-                      onClick={() => console.log(`Download ${dataPoint.month}`)}
-                      shape="square"
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        padding: '4px',
-                        border: `1px solid ${colors.theme.primary400}`
-                      }}
-                    />
+                    <SimpleTooltip text="Edit valuation">
+                      <Button
+                        variant="icon"
+                        color="white"
+                        icon={<EditSmall color={colors.blackAndWhite.black900} />}
+                        onClick={() => console.log(`Edit ${dataPoint.month}`)}
+                        shape="square"
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          padding: '4px',
+                          border: `1px solid ${colors.theme.primary400}`
+                        }}
+                      />
+                    </SimpleTooltip>
+                    <SimpleTooltip text="Download valuation files">
+                      <Button
+                        variant="icon"
+                        color="white"
+                        icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
+                        onClick={() => console.log(`Download ${dataPoint.month}`)}
+                        shape="square"
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          padding: '4px',
+                          border: `1px solid ${colors.theme.primary400}`
+                        }}
+                      />
+                    </SimpleTooltip>
                   </>
                 )}
               </div>
@@ -850,7 +916,7 @@ const ChartComponent: React.FC = () => {
       }}>
         {/* Separator with margins */}
         <div style={{
-          borderTop: `1px solid ${colors.theme.primary400}`,
+          borderTop: `1px dotted ${colors.theme.primary400}`,
           margin: '0 50px'
         }} />
         {/* Table Header */}
@@ -969,28 +1035,30 @@ const ChartComponent: React.FC = () => {
         {/* Pagination */}
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
           alignItems: 'center',
           padding: '20px 0',
           margin: '0 50px',
-          backgroundColor: colors.blackAndWhite.white
+          backgroundColor: colors.blackAndWhite.white,
+          gap: '12px',
+          borderTop: `1px solid ${colors.blackAndWhite.black100}`
         }}>
-          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
+          <div style={{ ...typography.styles.captionS, color: colors.blackAndWhite.black700 }}>
             10 of 43 Valuations
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button
               variant="icon"
-              color="light"
-              icon={<ArrowDownSmall color={colors.blackAndWhite.black700} style={{ transform: 'rotate(90deg)' }} />}
+              color="white"
+              icon={<ChevronLeftSmall color={colors.blackAndWhite.black700} />}
               onClick={() => console.log('Previous page')}
               shape="square"
               style={{ width: '24px', height: '24px', padding: '4px' }}
             />
             <Button
               variant="icon"
-              color="light"
-              icon={<ArrowDownSmall color={colors.blackAndWhite.black700} style={{ transform: 'rotate(-90deg)' }} />}
+              color="white"
+              icon={<ChevronRightSmall color={colors.blackAndWhite.black700} />}
               onClick={() => console.log('Next page')}
               shape="square"
               style={{ width: '24px', height: '24px', padding: '4px' }}
@@ -1075,6 +1143,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
 
   return (
       <Layout
+        pageType="analytics-valuation-dashboard"
         selectedSidebarItem="analytics"
         selectedSidebarSubitem="valuation"
         onNavigate={createPageNavigationHandler(onNavigateToPage, 'analytics-valuation-dashboard')}
@@ -1089,6 +1158,10 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
             console.log(`Navigate to contract for ${data.programName}`);
             onNavigateToPage?.('contracts-ai-extraction');
           }
+        }}
+        onBackClick={() => {
+          // Navigate back to analytics valuation
+          onNavigateToPage?.('analytics-valuation');
         }}
       >
         {/* Header */}

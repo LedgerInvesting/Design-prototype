@@ -305,7 +305,6 @@ const ReportsContractsExplorerContent: React.FC<ReportsContractsExplorerProps> =
       onShareClick={() => {
         console.log('Share clicked');
       }}
-      isSubPage={true}
       onBackClick={() => {
         // Navigate back to reports explorer
         if (onNavigateToPage) {

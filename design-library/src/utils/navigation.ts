@@ -243,6 +243,35 @@ export const createPageNavigationHandler = (
 /**
  * Breadcrumb helper functions for common navigation patterns
  */
+/**
+ * Determines if a page type is a sub-page (detail/secondary page)
+ * Sub-pages show a back chevron in the sidebar instead of close X
+ * @param pageType - The current page type
+ * @returns true if page is a sub-page, false if it's a main landing page
+ */
+export const isSubPage = (pageType: PageType): boolean => {
+  const subPages: PageType[] = [
+    // Analytics sub-pages
+    'analytics-valuation-dashboard',
+    'analytics-valuation-configuration',
+    'analytics-valuation-status',
+    'analytics-triangle-dashboard',
+
+    // Reports sub-pages
+    'reports-new-transaction-form',
+    'reports-renewal-transaction',
+    'reports-cash-settlement',
+    'reports-contracts-explorer',
+    'reports-insights-program-details',
+
+    // Contracts sub-pages
+    'contracts-ai-extraction',
+    'contracts-upload'
+  ];
+
+  return subPages.includes(pageType);
+};
+
 export const createBreadcrumbs = {
   analytics: {
     valuation: () => [{ label: 'Valuation', isActive: true }],

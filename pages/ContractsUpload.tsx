@@ -414,10 +414,15 @@ export const ContractsUpload: React.FC<ContractsUploadProps> = ({ onNavigateToPa
   return (
     <ThemeProvider initialTheme="contracts">
       <Layout
+        pageType="contracts-upload"
         selectedSidebarItem="contracts"
         selectedSidebarSubitem="upload"
         onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-upload')}
         breadcrumbs={breadcrumbs}
+        onBackClick={() => {
+          // Navigate back to contracts transactions
+          onNavigateToPage?.('contracts-transactions');
+        }}
       >
         <PageContent />
       </Layout>

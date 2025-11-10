@@ -380,10 +380,15 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
   return (
     <ThemeProvider initialTheme="contracts">
       <Layout
+        pageType="contracts-ai-extraction"
         selectedSidebarItem="contracts"
         selectedSidebarSubitem="ai-extraction"
         onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-ai-extraction')}
         breadcrumbs={breadcrumbs}
+        onBackClick={() => {
+          // Navigate back to contracts transactions
+          onNavigateToPage?.('contracts-transactions');
+        }}
       >
         <PageContent />
       </Layout>

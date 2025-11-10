@@ -50,6 +50,7 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
 
   return (
     <Layout
+      pageType="analytics-valuation-configuration"
       selectedSidebarItem="analytics"
       selectedSidebarSubitem="valuation"
       onNavigate={(itemId, subitemId) => {
@@ -72,6 +73,10 @@ const ValuationConfigurationContent: React.FC<ValuationConfigurationProps> = ({
         { label: displayProgramName, onClick: () => onNavigateToPage?.('analytics-valuation-dashboard'), isActive: false },
         { label: 'Configuration', isActive: true }
       ]}
+      onBackClick={() => {
+        // Navigate back to valuation dashboard
+        onNavigateToPage?.('analytics-valuation-dashboard');
+      }}
     >
       {/* Header Section */}
       <div style={{

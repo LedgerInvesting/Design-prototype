@@ -491,6 +491,7 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
 
   return (
     <Layout
+      pageType="analytics-valuation-status"
       selectedSidebarItem="analytics"
       selectedSidebarSubitem="valuation"
       onNavigate={createPageNavigationHandler(onNavigateToPage, 'analytics-valuation-status')}
@@ -499,6 +500,10 @@ const ValuationStatusContent: React.FC<ValuationStatusProps> = ({
         { label: programName, onClick: () => onNavigateToPage?.('analytics-valuation-dashboard'), isActive: false },
         { label: 'Valuation Status', isActive: true }
       ]}
+      onBackClick={() => {
+        // Navigate back to valuation dashboard
+        onNavigateToPage?.('analytics-valuation-dashboard');
+      }}
     >
       {/* Header Section */}
       <div style={{

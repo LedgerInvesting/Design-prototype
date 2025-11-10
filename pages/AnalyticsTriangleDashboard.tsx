@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout, PageHeader } from '@design-library/pages';
-import { Button, DashboardCard, ChartTooltip } from '@design-library/components';
+import { Button, DashboardCard, ChartTooltip, Input, CustomScroll } from '@design-library/components';
 import { typography, borderRadius, useSemanticColors, shadows, spacing } from '@design-library/tokens';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
-import { ChevronRightSmall, ChevronDownExtraSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall, MoreSmall } from '@design-library/icons';
+import { ChevronRightSmall, ChevronDownExtraSmall, AddMedium, CardsGraph, DownloadSmall, CollapseSmall, ExpandSmall, ConfigSmall, MoreSmall, CloseSmall } from '@design-library/icons';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -26,6 +26,7 @@ import { AreaClosed, Circle, Line as VisxLine, LinePath } from '@visx/shape';
 import { Grid } from '@visx/grid';
 import { useTooltip } from '@visx/tooltip';
 import { BoxPlot } from '@visx/stats';
+import { triangleRepository } from './database/mockData';
 
 /**
  * Props for the AnalyticsTriangleDashboard component
@@ -99,6 +100,88 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const [chart4Width, setChart4Width] = useState(600);
   const [chart5Width, setChart5Width] = useState(600);
   const [chart6Width, setChart6Width] = useState(600);
+
+  // Comparison triangle state
+  const [comparisonTriangle, setComparisonTriangle] = useState('');
+  const [comparisonSearchQuery, setComparisonSearchQuery] = useState('');
+  const [isComparisonDropdownOpen, setIsComparisonDropdownOpen] = useState(false);
+  const comparisonInputRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Triangle data from database
+  const [currentTriangleData, setCurrentTriangleData] = useState<any>(null);
+  const [comparisonTriangleData, setComparisonTriangleData] = useState<any>(null);
+  const [availableTriangles, setAvailableTriangles] = useState<{ value: string; label: string }[]>([]);
+
+  // Load current triangle data and available triangles on mount
+  useEffect(() => {
+    const loadTriangleData = async () => {
+      try {
+        // Load current triangle data
+        const currentTriangle = await triangleRepository.findByName(triangleName);
+        if (currentTriangle) {
+          setCurrentTriangleData(currentTriangle.data_json);
+        }
+
+        // Load available triangles for comparison (excluding current)
+        const allTriangles = await triangleRepository.findAllCompleted();
+        setAvailableTriangles(allTriangles.filter(t => t.value !== triangleName));
+      } catch (error) {
+        console.error('Error loading triangle data:', error);
+      }
+    };
+
+    loadTriangleData();
+  }, [triangleName]);
+
+  // Load comparison triangle data when selected
+  useEffect(() => {
+    const loadComparisonData = async () => {
+      if (comparisonTriangle) {
+        try {
+          const triangle = await triangleRepository.findByName(comparisonTriangle);
+          if (triangle) {
+            setComparisonTriangleData(triangle.data_json);
+          }
+        } catch (error) {
+          console.error('Error loading comparison triangle data:', error);
+        }
+      } else {
+        setComparisonTriangleData(null);
+      }
+    };
+
+    loadComparisonData();
+  }, [comparisonTriangle]);
+
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (comparisonInputRef.current && !comparisonInputRef.current.contains(event.target as Node)) {
+        setIsComparisonDropdownOpen(false);
+        setComparisonSearchQuery('');
+      }
+    };
+
+    if (isComparisonDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isComparisonDropdownOpen]);
+
+  // Auto-focus input when dropdown opens
+  useEffect(() => {
+    if (isComparisonDropdownOpen && searchInputRef.current) {
+      // Small delay to ensure the input is rendered
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+    }
+  }, [isComparisonDropdownOpen]);
 
   // Tooltip hooks for @visx charts
   const {
@@ -696,7 +779,11 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   ];
 
   // Render Data Completeness chart (visx)
-  const renderDataCompletenessChart = (containerWidth: number = 600) => {
+  const renderDataCompletenessChart = (containerWidth: number = 600, useComparisonData: boolean = false) => {
+    // Use comparison data if specified, otherwise use current triangle data
+    const dataSource = useComparisonData ? comparisonTriangleData : currentTriangleData;
+    const chartData = dataSource?.data_completeness || dataCompletenessData;
+
     const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 40, bottom: 70, left: 70 };
@@ -845,7 +932,10 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   };
 
   // Render Right Edge chart (visx)
-  const renderRightEdgeChart = (containerWidth: number = 600) => {
+  const renderRightEdgeChart = (containerWidth: number = 600, useComparisonData: boolean = false) => {
+    const dataSource = useComparisonData ? comparisonTriangleData : currentTriangleData;
+    const chartData = dataSource?.right_edge || rightEdgeData;
+
     const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 70, bottom: 70, left: 70 };
@@ -853,19 +943,19 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     const innerHeight = height - margin.top - margin.bottom;
 
     const periodScale = scaleBand<string>({
-      domain: rightEdgeData.map(d => d.period),
+      domain: chartData.map(d => d.period),
       range: [0, innerWidth],
       padding: 0.3,
     });
 
     const premiumScale = scaleLinear<number>({
-      domain: [0, Math.max(...rightEdgeData.map(d => d.premium))],
+      domain: [0, Math.max(...chartData.map(d => d.premium))],
       range: [innerHeight, 0],
       nice: true,
     });
 
     const ratioScale = scaleLinear<number>({
-      domain: [0, Math.max(...rightEdgeData.map(d => Math.max(d.ratioA, d.ratioB)))],
+      domain: [0, Math.max(...chartData.map(d => Math.max(d.ratioA, d.ratioB)))],
       range: [innerHeight, 0],
       nice: true,
     });
@@ -885,7 +975,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             />
 
             {/* Bars */}
-            {rightEdgeData.map((d, i) => (
+            {chartData.map((d, i) => (
               <rect
                 key={i}
                 x={periodScale(d.period)}
@@ -913,7 +1003,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
 
             {/* Line ratioA */}
             <LinePath
-              data={rightEdgeData}
+              data={chartData}
               x={d => (periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
               y={d => ratioScale(d.ratioA)}
               stroke="#F0C32E"
@@ -922,7 +1012,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
 
             {/* Line ratioB */}
             <LinePath
-              data={rightEdgeData}
+              data={chartData}
               x={d => (periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
               y={d => ratioScale(d.ratioB)}
               stroke="#42C172"
@@ -930,7 +1020,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             />
 
             {/* Dots for ratioA */}
-            {rightEdgeData.map((d, i) => (
+            {chartData.map((d, i) => (
               <Circle
                 key={`a-${i}`}
                 cx={(periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
@@ -956,7 +1046,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             ))}
 
             {/* Dots for ratioB */}
-            {rightEdgeData.map((d, i) => (
+            {chartData.map((d, i) => (
               <Circle
                 key={`b-${i}`}
                 cx={(periodScale(d.period) || 0) + periodScale.bandwidth() / 2}
@@ -1093,7 +1183,40 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   };
 
   // Render Heatmap chart using @visx
-  const renderHeatmapChart = (containerWidth: number) => {
+  const renderHeatmapChart = (containerWidth: number, useComparisonData: boolean = false) => {
+    const dataSource = useComparisonData ? comparisonTriangleData : currentTriangleData;
+    const chartData = dataSource?.heatmap || heatmapData;
+
+    // Helper function to interpolate color based on value for this specific dataset
+    const getLocalHeatmapColor = (value: number): string => {
+      const minValue = Math.min(...chartData.map(d => d.value));
+      const maxValue = Math.max(...chartData.map(d => d.value));
+
+      // Normalize value between 0 and 1
+      const normalized = (value - minValue) / (maxValue - minValue);
+
+      // Analytics green gradient - from light to dark
+      const greenColors = [
+        '#e8fcf1', // Lightest green (analytics primary200)
+        '#c3f8db', // Light green
+        '#7fe9b2', // Medium green (analytics primary700)
+        '#42c172', // analytics primary900
+        '#0f9342', // Darkest green
+      ];
+
+      // Determine which two colors to interpolate between
+      const colorIndex = normalized * (greenColors.length - 1);
+      const lowerIndex = Math.floor(colorIndex);
+      const upperIndex = Math.ceil(colorIndex);
+
+      if (lowerIndex === upperIndex) {
+        return greenColors[lowerIndex];
+      }
+
+      // Return the lower color for simplicity
+      return greenColors[lowerIndex];
+    };
+
     const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 40, bottom: 70, left: 70 };
@@ -1144,14 +1267,14 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             )}
 
             {/* Heatmap cells */}
-            {heatmapData.map((cell) => (
+            {chartData.map((cell) => (
               <rect
                 key={`cell-${cell.period}-${cell.lag}`}
                 x={lagScale(cell.lag)}
                 y={periodScale(cell.period)}
                 width={lagScale.bandwidth()}
                 height={periodScale.bandwidth()}
-                fill={getHeatmapColor(cell.value)}
+                fill={getLocalHeatmapColor(cell.value)}
                 rx={4}
                 onMouseEnter={(event) => {
                   const svgRect = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
@@ -1261,7 +1384,17 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   };
 
   // Render Growth Curve chart using @visx
-  const renderGrowthCurveChart = (containerWidth: number) => {
+  const renderGrowthCurveChart = (containerWidth: number, useComparisonData: boolean = false) => {
+    const dataSource = useComparisonData ? comparisonTriangleData : currentTriangleData;
+    const chartData = dataSource?.growth_curve || growthCurveData;
+
+    // Group data by period for rendering
+    const groupedData = {
+      '07-23': chartData.filter(d => d.period === '07-23'),
+      '10-23': chartData.filter(d => d.period === '10-23'),
+      '01-24': chartData.filter(d => d.period === '01-24'),
+    };
+
     const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 40, bottom: 70, left: 70 };
@@ -1296,7 +1429,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             />
 
             {/* Lines for each period */}
-            {Object.entries(groupedGrowthData).map(([period, data]) => (
+            {Object.entries(groupedData).map(([period, data]) => (
               <LinePath
                 key={period}
                 data={data}
@@ -1308,7 +1441,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             ))}
 
             {/* Points for each data point */}
-            {growthCurveData.map((point, i) => (
+            {chartData.map((point, i) => (
               <Circle
                 key={`point-${point.period}-${point.lag}`}
                 cx={lagScale(point.lag)}
@@ -1431,7 +1564,19 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   };
 
   // Render Mountain chart using @visx
-  const renderMountainChart = (containerWidth: number) => {
+  const renderMountainChart = (containerWidth: number, useComparisonData: boolean = false) => {
+    const dataSource = useComparisonData ? comparisonTriangleData : currentTriangleData;
+    const chartData = dataSource?.mountain || mountainChartData;
+
+    // Group mountain data by lag for rendering
+    const groupedData: Record<number, typeof chartData> = {};
+    chartData.forEach(point => {
+      if (!groupedData[point.lag]) {
+        groupedData[point.lag] = [];
+      }
+      groupedData[point.lag].push(point);
+    });
+
     const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 40, bottom: 70, left: 70 };
@@ -1441,15 +1586,15 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     // Scales
     const periodScale = scaleTime<number>({
       domain: [
-        Math.min(...mountainChartData.map(d => d.period)),
-        Math.max(...mountainChartData.map(d => d.period)),
+        Math.min(...chartData.map(d => d.period)),
+        Math.max(...chartData.map(d => d.period)),
       ],
       range: [0, innerWidth],
       nice: true,
     });
 
     const valueScale = scaleLinear<number>({
-      domain: [0, Math.max(...mountainChartData.map(d => d.value))],
+      domain: [0, Math.max(...chartData.map(d => d.value))],
       range: [innerHeight, 0],
       nice: true,
     });
@@ -1457,8 +1602,8 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     // Color scale for different lags
     const colorScale = scaleLinear<string>({
       domain: [
-        Math.min(...mountainChartData.map(d => d.lag)),
-        Math.max(...mountainChartData.map(d => d.lag)),
+        Math.min(...chartData.map(d => d.lag)),
+        Math.max(...chartData.map(d => d.lag)),
       ],
       range: ['#e8fcf1', '#0f9342'], // Light green to dark green
     });
@@ -1470,7 +1615,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     };
 
     // Find terminal points (last point in each lag series)
-    const terminalPoints = Object.entries(groupedMountainData).map(([lag, points]) => {
+    const terminalPoints = Object.entries(groupedData).map(([lag, points]) => {
       const sortedPoints = [...points].sort((a, b) => a.period - b.period);
       return sortedPoints[sortedPoints.length - 1];
     });
@@ -1490,7 +1635,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             />
 
             {/* Lines for each lag */}
-            {Object.entries(groupedMountainData).map(([lag, points]) => {
+            {Object.entries(groupedData).map(([lag, points]) => {
               const sortedPoints = [...points].sort((a, b) => a.period - b.period);
               return (
                 <LinePath
@@ -1633,7 +1778,19 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   };
 
   // Render Age-to-Age chart using @visx
-  const renderAgeToAgeChart = (containerWidth: number) => {
+  const renderAgeToAgeChart = (containerWidth: number, useComparisonData: boolean = false) => {
+    const dataSource = useComparisonData ? comparisonTriangleData : currentTriangleData;
+    const chartData = dataSource?.age_to_age || ageToAgeData;
+
+    // Group data by lag for box plot rendering
+    const groupedData: Record<number, typeof chartData> = {};
+    chartData.forEach(point => {
+      if (!groupedData[point.lag]) {
+        groupedData[point.lag] = [];
+      }
+      groupedData[point.lag].push(point);
+    });
+
     const width = containerWidth;
     const height = 400;
     const margin = { top: 20, right: 40, bottom: 70, left: 70 };
@@ -1641,7 +1798,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     const innerHeight = height - margin.top - margin.bottom;
 
     // Get unique lags and sort them
-    const uniqueLags = Array.from(new Set(ageToAgeData.map(d => d.lag))).sort((a, b) => a - b);
+    const uniqueLags = Array.from(new Set(chartData.map(d => d.lag))).sort((a, b) => a - b);
 
     // Scales
     const lagScale = scaleBand<number>({
@@ -1651,7 +1808,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     });
 
     const factorScale = scalePower<number>({
-      domain: [0, Math.max(...ageToAgeData.map(d => d.factor))],
+      domain: [0, Math.max(...chartData.map(d => d.factor))],
       range: [innerHeight, 0],
       nice: true,
       exponent: 0.2,
@@ -1687,7 +1844,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             />
 
             {/* Scatter points for all data */}
-            {ageToAgeData.map((point, i) => (
+            {chartData.map((point, i) => (
               <Circle
                 key={`point-${point.lag}-${point.period}-${i}`}
                 cx={(lagScale(point.lag) || 0) + lagScale.bandwidth() / 2}
@@ -1718,7 +1875,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             ))}
 
             {/* Box plots for each lag */}
-            {Object.entries(groupedAgeToAgeData).map(([lag, points]) => {
+            {Object.entries(groupedData).map(([lag, points]) => {
               const factors = points.map(p => p.factor);
               const stats = calculateQuartiles(factors);
 
@@ -1845,21 +2002,67 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
     );
   };
 
+  // Helper function to generate varied data for different triangles
+  const getTriangleDataModifier = (triangleId: string) => {
+    // Generate a consistent seed from the triangle ID
+    const hash = triangleId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const seed = hash % 100;
+
+    return {
+      // Multiplier for values (0.6 to 1.4 range)
+      valueMultiplier: 0.6 + (seed % 80) / 100,
+      // Offset for values (-20 to +20)
+      valueOffset: (seed % 40) - 20,
+      // Pattern shift (0 to 5)
+      patternShift: seed % 6,
+    };
+  };
+
+  // Get modified data based on triangle ID - this simulates different triangles having different data
+  const getModifiedChartData = (baseData: any[], triangleId: string, dataType: 'value' | 'percentage' | 'factor' = 'value') => {
+    const modifier = getTriangleDataModifier(triangleId);
+
+    return baseData.map(item => {
+      const modifiedItem = { ...item };
+
+      // Modify numeric values based on data type
+      if (dataType === 'percentage') {
+        // For percentages (0-100), apply gentler modifications
+        if ('completeness' in modifiedItem) modifiedItem.completeness = Math.min(100, Math.max(0, modifiedItem.completeness * modifier.valueMultiplier));
+        if ('value' in modifiedItem && typeof modifiedItem.value === 'number') {
+          modifiedItem.value = Math.min(100, Math.max(0, modifiedItem.value * modifier.valueMultiplier));
+        }
+      } else if (dataType === 'factor') {
+        // For factors, keep them reasonable
+        if ('factor' in modifiedItem) modifiedItem.factor = Math.max(0.5, Math.min(2.5, modifiedItem.factor * modifier.valueMultiplier));
+      } else {
+        // For regular values
+        if ('value' in modifiedItem && typeof modifiedItem.value === 'number') {
+          modifiedItem.value = Math.max(0, Math.round(modifiedItem.value * modifier.valueMultiplier + modifier.valueOffset));
+        }
+        if ('paid' in modifiedItem) modifiedItem.paid = Math.max(0, Math.round(modifiedItem.paid * modifier.valueMultiplier));
+        if ('incurred' in modifiedItem) modifiedItem.incurred = Math.max(0, Math.round(modifiedItem.incurred * modifier.valueMultiplier));
+      }
+
+      return modifiedItem;
+    });
+  };
+
   // Render chart based on selection
-  const renderChart = (chartType: string, containerWidth: number = 600) => {
+  const renderChart = (chartType: string, containerWidth: number = 600, useComparisonData: boolean = false) => {
     switch (chartType) {
       case 'data-completeness':
-        return renderDataCompletenessChart(containerWidth);
+        return renderDataCompletenessChart(containerWidth, useComparisonData);
       case 'right-edge':
-        return renderRightEdgeChart(containerWidth);
+        return renderRightEdgeChart(containerWidth, useComparisonData);
       case 'heatmap':
-        return renderHeatmapChart(containerWidth);
+        return renderHeatmapChart(containerWidth, useComparisonData);
       case 'growth-curve':
-        return renderGrowthCurveChart(containerWidth);
+        return renderGrowthCurveChart(containerWidth, useComparisonData);
       case 'mountain':
-        return renderMountainChart(containerWidth);
+        return renderMountainChart(containerWidth, useComparisonData);
       case 'age-to-age':
-        return renderAgeToAgeChart(containerWidth);
+        return renderAgeToAgeChart(containerWidth, useComparisonData);
       default:
         return (
           <div style={{ padding: '20px 30px', height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -2105,12 +2308,83 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         ]}
       />
 
-      {/* Action Buttons */}
-      <div style={{
-        display: 'flex',
-        gap: '12px',
-        marginBottom: '40px'
-      }}>
+      {/* Comparison Header Section */}
+      {comparisonTriangle ? (
+        // Comparison mode - show both triangle names
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: '40px',
+          gap: '40px',
+          padding: '0 2px', // Add slight padding to prevent border clipping
+        }}>
+          {/* Left side - Current triangle name */}
+          <div style={{
+            ...typography.styles.bodyM,
+            color: colors.blackAndWhite.black500,
+            fontWeight: typography.fontWeight.medium,
+            width: 'calc(50% - 20px)', // Match chart card width
+          }}>
+            {triangleName}
+          </div>
+
+          {/* Right side - Comparison triangle with X button */}
+          <div style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '5px 5px 5px 15px',
+            borderRadius: borderRadius[8],
+            backgroundColor: colors.blackAndWhite.white,
+            width: 'calc(50% - 20px)', // Match chart card width
+            border: `1px dashed ${colors.blackAndWhite.black500}`,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+              <span style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black500,
+              }}>
+                Comparing with:
+              </span>
+              <span style={{
+                ...typography.styles.bodyM,
+                color: colors.blackAndWhite.black900,
+              }}>
+                {availableTriangles.find(t => t.value === comparisonTriangle)?.label || comparisonTriangle}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                setComparisonTriangle('');
+                setComparisonSearchQuery('');
+              }}
+              style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: borderRadius[8],
+                backgroundColor: colors.theme.primary200,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: 'none',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+              type="button"
+            >
+              <CloseSmall color={colors.blackAndWhite.black900} />
+            </button>
+          </div>
+        </div>
+      ) : (
+        // Normal mode - show action buttons
+        <div style={{
+          display: 'flex',
+          gap: '12px',
+          marginBottom: '40px'
+        }}>
         <button
           onClick={() => console.log('Aggregate clicked')}
           style={{
@@ -2118,9 +2392,9 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             alignItems: 'center',
             justifyContent: 'center',
             gap: '10px',
-            padding: '10px 20px',
+            padding: '5px 15px 5px 5px',
             borderRadius: borderRadius[8],
-            border: `1px dotted ${colors.theme.primary400}`,
+            border: `1px dashed ${colors.theme.primary400}`,
             backgroundColor: colors.blackAndWhite.white,
             cursor: 'pointer',
             transition: 'all 0.2s ease',
@@ -2148,43 +2422,130 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           <span>Aggregate with another triangle</span>
         </button>
 
-        <button
-          onClick={() => console.log('Compare clicked')}
+        {/* Comparison Triangle Button/Input */}
+        <div
+          ref={comparisonInputRef}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '10px',
-            padding: '10px 20px',
-            borderRadius: borderRadius[8],
-            border: `1px dotted ${colors.theme.primary400}`,
-            backgroundColor: colors.blackAndWhite.white,
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            fontFamily: typography.styles.bodyM.fontFamily.join(', '),
-            fontSize: typography.styles.bodyM.fontSize,
-            fontWeight: typography.styles.bodyM.fontWeight,
-            lineHeight: typography.styles.bodyM.lineHeight,
-            letterSpacing: typography.styles.bodyM.letterSpacing,
-            color: colors.blackAndWhite.black700,
+            position: 'relative',
+            width: isComparisonDropdownOpen ? '400px' : 'auto',
+            maxWidth: '100%',
+            transition: 'width 0.3s ease'
           }}
-          type="button"
         >
-          <div style={{
-            width: '24px',
-            height: '24px',
-            borderRadius: borderRadius[8],
-            backgroundColor: colors.theme.primary200,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}>
-            <AddMedium color={colors.blackAndWhite.black900} style={{ width: '12px', height: '12px' }} />
-          </div>
-          <span>Compare with another triangle</span>
-        </button>
-      </div>
+          {!isComparisonDropdownOpen ? (
+            // Button state
+            <button
+              onClick={() => setIsComparisonDropdownOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                padding: '5px 15px 5px 5px',
+                borderRadius: borderRadius[8],
+                border: `1px dashed ${colors.theme.primary400}`,
+                backgroundColor: colors.blackAndWhite.white,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+                fontSize: typography.styles.bodyM.fontSize,
+                fontWeight: typography.styles.bodyM.fontWeight,
+                lineHeight: typography.styles.bodyM.lineHeight,
+                letterSpacing: typography.styles.bodyM.letterSpacing,
+                color: colors.blackAndWhite.black700,
+              }}
+              type="button"
+            >
+              <div style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: borderRadius[8],
+                backgroundColor: colors.theme.primary200,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <AddMedium color={colors.blackAndWhite.black900} style={{ width: '12px', height: '12px' }} />
+              </div>
+              <span>Compare with another triangle</span>
+            </button>
+          ) : (
+            // Input state
+            <div style={{ position: 'relative', marginTop: '-24px' }}>
+              <Input
+                ref={searchInputRef}
+                label=""
+                placeholder="Select a triangle to compare..."
+                value={comparisonSearchQuery}
+                onChange={(e) => {
+                  setComparisonSearchQuery(e.target.value);
+                }}
+                onFocus={() => setIsComparisonDropdownOpen(true)}
+                state="active"
+              />
+            </div>
+          )}
+
+          {/* Dropdown List */}
+          {isComparisonDropdownOpen && (
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              backgroundColor: colors.blackAndWhite.white,
+              border: `1px solid ${colors.theme.primary400}`,
+              borderRadius: borderRadius[8],
+              marginTop: spacing[1],
+              zIndex: 1000,
+              boxShadow: shadows.md,
+              padding: '10px',
+              maxHeight: '300px',
+              overflow: 'hidden'
+            }}>
+              <CustomScroll maxHeight="280px" scrollClassName="comparison-dropdown-scroll">
+                {availableTriangles
+                  .filter(triangle =>
+                    triangle.label.toLowerCase().includes(comparisonSearchQuery.toLowerCase())
+                  )
+                  .map((triangle) => (
+                    <div
+                      key={triangle.value}
+                      onClick={() => {
+                        setComparisonTriangle(triangle.value);
+                        setComparisonSearchQuery('');
+                        setIsComparisonDropdownOpen(false);
+                        console.log('Selected triangle for comparison:', triangle.value);
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                      }}
+                      style={{
+                        padding: '12px 10px',
+                        borderRadius: borderRadius[4],
+                        fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+                        fontSize: typography.styles.bodyM.fontSize,
+                        fontWeight: typography.styles.bodyM.fontWeight,
+                        lineHeight: typography.styles.bodyM.lineHeight,
+                        color: colors.blackAndWhite.black900,
+                        backgroundColor: 'transparent',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.15s ease',
+                      }}
+                    >
+                      {triangle.label}
+                    </div>
+                  ))}
+              </CustomScroll>
+            </div>
+          )}
+        </div>
+        </div>
+      )}
 
       {/* Chart Cards */}
       <div style={{
@@ -2192,15 +2553,24 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         flexWrap: 'wrap',
         gap: '40px',
         width: '100%',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        alignItems: 'flex-start',
       }}>
+        {/* Left side - Current triangle charts */}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '40px',
+          width: comparisonTriangle ? 'calc(50% - 20px)' : '100%',
+          transition: 'width 0.3s ease',
+        }}>
         {/* First Chart Card */}
         {isCard1Visible && (
           <div
             ref={card1WrapperRef}
             style={{
               position: 'relative',
-              width: isCard1Expanded ? '100%' : 'calc(50% - 20px)',
+              width: isCard1Expanded ? '100%' : (comparisonTriangle ? '100%' : 'calc(50% - 20px)'),
               transition: 'width 0.3s ease'
             }}
           >
@@ -2226,7 +2596,24 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
-            actions={[
+            actions={comparisonTriangle ? [
+              // Hide expand button in comparison mode
+              {
+                type: 'icon',
+                icon: <div ref={chart1ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart1ButtonRef.current) {
+                    const rect = chart1ButtonRef.current.getBoundingClientRect();
+                    setChart1MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200,
+                    });
+                  }
+                  setIsChart1MenuOpen(!isChart1MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ] : [
               {
                 type: 'icon',
                 icon: isCard1Expanded
@@ -2277,7 +2664,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           ref={card2WrapperRef}
           style={{
             position: 'relative',
-            width: isCard2Expanded ? '100%' : 'calc(50% - 20px)',
+            width: isCard2Expanded ? '100%' : (comparisonTriangle ? '100%' : 'calc(50% - 20px)'),
             transition: 'width 0.3s ease'
           }}
         >
@@ -2303,7 +2690,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
-            actions={[
+            actions={comparisonTriangle ? [
+              {
+                type: 'icon',
+                icon: <div ref={chart2ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart2ButtonRef.current) {
+                    const rect = chart2ButtonRef.current.getBoundingClientRect();
+                    setChart2MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200,
+                    });
+                  }
+                  setIsChart2MenuOpen(!isChart2MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ] : [
               {
                 type: 'icon',
                 icon: isCard2Expanded
@@ -2354,7 +2757,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           ref={card3WrapperRef}
           style={{
             position: 'relative',
-            width: isCard3Expanded ? '100%' : 'calc(50% - 20px)',
+            width: isCard3Expanded ? '100%' : (comparisonTriangle ? '100%' : 'calc(50% - 20px)'),
             transition: 'width 0.3s ease'
           }}
         >
@@ -2380,7 +2783,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
-            actions={[
+            actions={comparisonTriangle ? [
+              {
+                type: 'icon',
+                icon: <div ref={chart3ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart3ButtonRef.current) {
+                    const rect = chart3ButtonRef.current.getBoundingClientRect();
+                    setChart3MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200,
+                    });
+                  }
+                  setIsChart3MenuOpen(!isChart3MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ] : [
               {
                 type: 'icon',
                 icon: isCard3Expanded
@@ -2431,7 +2850,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           ref={card4WrapperRef}
           style={{
             position: 'relative',
-            width: isCard4Expanded ? '100%' : 'calc(50% - 20px)',
+            width: isCard4Expanded ? '100%' : (comparisonTriangle ? '100%' : 'calc(50% - 20px)'),
             transition: 'width 0.3s ease'
           }}
         >
@@ -2457,7 +2876,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
-            actions={[
+            actions={comparisonTriangle ? [
+              {
+                type: 'icon',
+                icon: <div ref={chart4ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart4ButtonRef.current) {
+                    const rect = chart4ButtonRef.current.getBoundingClientRect();
+                    setChart4MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200,
+                    });
+                  }
+                  setIsChart4MenuOpen(!isChart4MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ] : [
               {
                 type: 'icon',
                 icon: isCard4Expanded
@@ -2508,7 +2943,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           ref={card5WrapperRef}
           style={{
             position: 'relative',
-            width: isCard5Expanded ? '100%' : 'calc(50% - 20px)',
+            width: isCard5Expanded ? '100%' : (comparisonTriangle ? '100%' : 'calc(50% - 20px)'),
             transition: 'width 0.3s ease'
           }}
         >
@@ -2534,7 +2969,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
-            actions={[
+            actions={comparisonTriangle ? [
+              {
+                type: 'icon',
+                icon: <div ref={chart5ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart5ButtonRef.current) {
+                    const rect = chart5ButtonRef.current.getBoundingClientRect();
+                    setChart5MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200,
+                    });
+                  }
+                  setIsChart5MenuOpen(!isChart5MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ] : [
               {
                 type: 'icon',
                 icon: isCard5Expanded
@@ -2585,7 +3036,7 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
           ref={card6WrapperRef}
           style={{
             position: 'relative',
-            width: isCard6Expanded ? '100%' : 'calc(50% - 20px)',
+            width: isCard6Expanded ? '100%' : (comparisonTriangle ? '100%' : 'calc(50% - 20px)'),
             transition: 'width 0.3s ease'
           }}
         >
@@ -2611,7 +3062,23 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
               placeholder: 'Chart'
             }}
             icon={<CardsGraph />}
-            actions={[
+            actions={comparisonTriangle ? [
+              {
+                type: 'icon',
+                icon: <div ref={chart6ButtonRef}><MoreSmall color={colors.blackAndWhite.black900} /></div>,
+                onClick: () => {
+                  if (chart6ButtonRef.current) {
+                    const rect = chart6ButtonRef.current.getBoundingClientRect();
+                    setChart6MenuPosition({
+                      top: rect.bottom + 8,
+                      left: rect.right - 200,
+                    });
+                  }
+                  setIsChart6MenuOpen(!isChart6MenuOpen);
+                },
+                color: 'invisible'
+              }
+            ] : [
               {
                 type: 'icon',
                 icon: isCard6Expanded
@@ -2657,17 +3124,228 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
         )}
 
         {/* Add Another Graph Button - disable when all 6 cards are visible */}
-        <Button
-          variant="tertiary"
-          onClick={handleAddAnotherGraph}
-          disabled={isCard1Visible && isCard2Visible && isCard3Visible && isCard4Visible && isCard5Visible && isCard6Visible}
-          style={{
-            width: '100%',
-            height: '44px'
-          }}
-        >
-          Add another Graph
-        </Button>
+        {!comparisonTriangle && (
+          <Button
+            variant="tertiary"
+            onClick={handleAddAnotherGraph}
+            disabled={isCard1Visible && isCard2Visible && isCard3Visible && isCard4Visible && isCard5Visible && isCard6Visible}
+            style={{
+              width: '100%',
+              height: '44px'
+            }}
+          >
+            Add another Graph
+          </Button>
+        )}
+        </div>
+
+        {/* Right side - Comparison triangle charts */}
+        {comparisonTriangle && (
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '40px',
+            width: 'calc(50% - 20px)',
+            transition: 'width 0.3s ease',
+          }}>
+            {/* Comparison Chart 1 */}
+            {isCard1Visible && (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  transition: 'width 0.3s ease'
+                }}
+              >
+                <DashboardCard
+                  titleDropdown={{
+                    options: allChartOptions,
+                    value: selectedChart1,
+                    onChange: () => {}, // Read-only for comparison
+                    placeholder: 'Chart'
+                  }}
+                  icon={<CardsGraph />}
+                  actions={[]}
+                  width="100%"
+                  style={{
+                    border: `1px dashed ${colors.blackAndWhite.black500}`,
+                  }}
+                >
+                  <div style={{ width: '100%' }}>
+                    {renderChart(selectedChart1, chart1Width, true)}
+                  </div>
+                </DashboardCard>
+              </div>
+            )}
+
+            {/* Comparison Chart 2 */}
+            {isCard2Visible && (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  transition: 'width 0.3s ease'
+                }}
+              >
+                <DashboardCard
+                  titleDropdown={{
+                    options: allChartOptions,
+                    value: selectedChart2,
+                    onChange: () => {},
+                    placeholder: 'Chart'
+                  }}
+                  icon={<CardsGraph />}
+                  actions={[]}
+                  width="100%"
+                  style={{
+                    border: `1px dashed ${colors.blackAndWhite.black500}`,
+                  }}
+                >
+                  <div style={{ width: '100%' }}>
+                    {renderChart(selectedChart2, chart2Width, true)}
+                  </div>
+                </DashboardCard>
+              </div>
+            )}
+
+            {/* Comparison Chart 3 */}
+            {isCard3Visible && (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  transition: 'width 0.3s ease'
+                }}
+              >
+                <DashboardCard
+                  titleDropdown={{
+                    options: allChartOptions,
+                    value: selectedChart3,
+                    onChange: () => {},
+                    placeholder: 'Chart'
+                  }}
+                  icon={<CardsGraph />}
+                  actions={[]}
+                  width="100%"
+                  style={{
+                    border: `1px dashed ${colors.blackAndWhite.black500}`,
+                  }}
+                >
+                  <div style={{ width: '100%' }}>
+                    {renderChart(selectedChart3, chart3Width, true)}
+                  </div>
+                </DashboardCard>
+              </div>
+            )}
+
+            {/* Comparison Chart 4 */}
+            {isCard4Visible && (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  transition: 'width 0.3s ease'
+                }}
+              >
+                <DashboardCard
+                  titleDropdown={{
+                    options: allChartOptions,
+                    value: selectedChart4,
+                    onChange: () => {},
+                    placeholder: 'Chart'
+                  }}
+                  icon={<CardsGraph />}
+                  actions={[]}
+                  width="100%"
+                  style={{
+                    border: `1px dashed ${colors.blackAndWhite.black500}`,
+                  }}
+                >
+                  <div style={{ width: '100%' }}>
+                    {renderChart(selectedChart4, chart4Width, true)}
+                  </div>
+                </DashboardCard>
+              </div>
+            )}
+
+            {/* Comparison Chart 5 */}
+            {isCard5Visible && (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  transition: 'width 0.3s ease'
+                }}
+              >
+                <DashboardCard
+                  titleDropdown={{
+                    options: allChartOptions,
+                    value: selectedChart5,
+                    onChange: () => {},
+                    placeholder: 'Chart'
+                  }}
+                  icon={<CardsGraph />}
+                  actions={[]}
+                  width="100%"
+                  style={{
+                    border: `1px dashed ${colors.blackAndWhite.black500}`,
+                  }}
+                >
+                  <div style={{ width: '100%' }}>
+                    {renderChart(selectedChart5, chart5Width, true)}
+                  </div>
+                </DashboardCard>
+              </div>
+            )}
+
+            {/* Comparison Chart 6 */}
+            {isCard6Visible && (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  transition: 'width 0.3s ease'
+                }}
+              >
+                <DashboardCard
+                  titleDropdown={{
+                    options: allChartOptions,
+                    value: selectedChart6,
+                    onChange: () => {},
+                    placeholder: 'Chart'
+                  }}
+                  icon={<CardsGraph />}
+                  actions={[]}
+                  width="100%"
+                  style={{
+                    border: `1px dashed ${colors.blackAndWhite.black500}`,
+                  }}
+                >
+                  <div style={{ width: '100%' }}>
+                    {renderChart(selectedChart6, chart6Width, true)}
+                  </div>
+                </DashboardCard>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Add Another Graph Button - spans full width in comparison mode */}
+        {comparisonTriangle && (
+          <div style={{ width: '100%' }}>
+            <Button
+              variant="tertiary"
+              onClick={handleAddAnotherGraph}
+              disabled={isCard1Visible && isCard2Visible && isCard3Visible && isCard4Visible && isCard5Visible && isCard6Visible}
+              style={{
+                width: '100%',
+                height: '44px'
+              }}
+            >
+              Add another Graph
+            </Button>
+          </div>
+        )}
       </div>
     </Layout>
   );

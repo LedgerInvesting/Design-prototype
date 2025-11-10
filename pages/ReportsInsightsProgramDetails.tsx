@@ -151,7 +151,7 @@ const ReportsInsightsProgramDetails: React.FC<ReportsInsightsProgramDetailsProps
   return (
     <Layout
       breadcrumbs={breadcrumbs}
-      pageType="reports"
+      pageType="reports-insights-program-details"
       selectedSidebarItem="reports"
       selectedSidebarSubitem="insights-explorer"
       onNavigate={navigationHandler}
@@ -160,7 +160,6 @@ const ReportsInsightsProgramDetails: React.FC<ReportsInsightsProgramDetailsProps
         actionText: 'Explore contract',
         onClick: () => onNavigateToPage?.('contracts-ai-extraction')
       }}
-      isSubPage={true}
       onBackClick={() => {
         // Navigate back to insights explorer
         if (onNavigateToPage) {
