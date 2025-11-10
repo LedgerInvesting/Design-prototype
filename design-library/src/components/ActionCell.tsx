@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { typography, borderRadius, shadows, useSemanticColors, colors as staticColors } from '../tokens';
 import { CheckSmall, UploadSmall, ConfigSmall, CalculatorSmall, DownloadSmall, AddSmall, PlaySmall } from '../icons';
 
@@ -7,6 +8,11 @@ export type ActionType = 'upload' | 'validate' | 'generate' | 'setup' | 'downloa
 interface ActionConfig {
   icon: React.ReactNode;
   text: string;
+}
+
+export interface SecondaryAction {
+  label: string;
+  onClick: () => void;
 }
 
 export interface ActionCellProps {
@@ -18,6 +24,9 @@ export interface ActionCellProps {
   text?: string;
   iconBackgroundColor?: string;
   iconColor?: string;
+  // Secondary actions menu
+  showSecondaryMenu?: boolean;
+  secondaryActions?: SecondaryAction[];
 }
 
 export const ActionCell: React.FC<ActionCellProps> = ({
@@ -28,9 +37,25 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   text: customText,
   iconBackgroundColor: customIconBg,
   iconColor: customIconColor,
+  showSecondaryMenu = false,
+  secondaryActions = [],
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const dotsRef = useRef<HTMLDivElement>(null);
   const colors = useSemanticColors();
+
+  // Update menu position when it opens
+  useEffect(() => {
+    if (isMenuOpen && dotsRef.current) {
+      const rect = dotsRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + 4,
+        left: rect.right - 180 // Align right edge of menu with right edge of dots
+      });
+    }
+  }, [isMenuOpen]);
 
   const actionConfigs: Record<ActionType, ActionConfig> = {
     upload: {
@@ -89,7 +114,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     height: '32px', // Fill more of the cell height (cell is ~45px, padding is 6px top/bottom = 33px available)
-    width: '100%',
+    flex: 1, // Take available space
     boxSizing: 'border-box' as const,
   };
 
@@ -126,27 +151,131 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     flex: 1, // Take available space
   };
 
+  const handleSecondaryClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const threeDotStyles = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '22px',
+    height: '22px',
+    cursor: 'pointer',
+    flexShrink: 0,
+  };
+
+  const dotStyles = {
+    width: '3px',
+    height: '3px',
+    borderRadius: '50%',
+    backgroundColor: colors.blackAndWhite.black900,
+    margin: '0 1px',
+  };
+
+  const menuStyles: React.CSSProperties = {
+    position: 'fixed' as const,
+    top: `${menuPosition.top}px`,
+    left: `${menuPosition.left}px`,
+    backgroundColor: colors.blackAndWhite.white,
+    border: 'none',
+    borderRadius: borderRadius[8],
+    boxShadow: shadows.medium,
+    zIndex: 10000,
+    minWidth: '180px',
+    padding: '10px',
+  };
+
+  const menuItemStyles = {
+    padding: '12px 10px',
+    cursor: 'pointer',
+    borderRadius: borderRadius[4],
+    fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+    fontSize: typography.styles.bodyM.fontSize,
+    fontWeight: typography.styles.bodyM.fontWeight,
+    lineHeight: typography.styles.bodyM.lineHeight,
+    color: colors.blackAndWhite.black900,
+    transition: 'background-color 0.2s ease',
+  };
+
   return (
-    <div
-      className={className}
-      style={containerStyles}
-      onClick={handleClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
-      }}
-      title={displayText} // Tooltip for full text if truncated
-    >
-      <span style={textStyles}>{displayText}</span>
-      <div style={iconContainerStyles}>
-        {displayIcon}
+    <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div
+        className={className}
+        style={containerStyles}
+        onClick={handleClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        title={displayText} // Tooltip for full text if truncated
+      >
+        <span style={textStyles}>{displayText}</span>
+        <div style={iconContainerStyles}>
+          {displayIcon}
+        </div>
       </div>
+
+      {/* 3-dot menu button - outside main button */}
+      {showSecondaryMenu && (
+        <div
+          ref={dotsRef}
+          style={threeDotStyles}
+          onClick={handleSecondaryClick}
+          role="button"
+          tabIndex={0}
+        >
+          <div style={dotStyles} />
+          <div style={dotStyles} />
+          <div style={dotStyles} />
+        </div>
+      )}
+
+      {/* Dropdown menu - rendered in portal */}
+      {isMenuOpen && showSecondaryMenu && typeof document !== 'undefined' && createPortal(
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 9999,
+            }}
+            onClick={() => setIsMenuOpen(false)}
+          />
+          <div style={menuStyles}>
+            {secondaryActions.map((action, index) => (
+              <div
+                key={index}
+                style={menuItemStyles}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  action.onClick();
+                  setIsMenuOpen(false);
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.theme.primary200;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                {action.label}
+              </div>
+            ))}
+          </div>
+        </>,
+        document.body
+      )}
     </div>
   );
 };

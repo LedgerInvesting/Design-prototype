@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { typography, borderRadius, shadows, useSemanticColors, colors } from '../tokens';
 import { SearchMedium, ChevronLeftSmall, ChevronRightSmall, ChevronBottomSmall } from '../icons';
 import { DocumentCell } from './DocumentCell';
-import { ActionCell, ActionType } from './ActionCell';
+import { ActionCell, ActionType, SecondaryAction } from './ActionCell';
 import { CustomCell, CustomCellElement } from './CustomCell';
 import { StatusCell, StatusType } from './StatusCell';
 import { Selector } from './Selector';
@@ -29,6 +29,8 @@ export interface TableColumn {
     text?: string;
     iconBackgroundColor?: string;
     iconColor?: string;
+    showSecondaryMenu?: boolean;
+    secondaryActions?: SecondaryAction[];
   }; // For custom action cell styling
   customCellProps?: {
     alignment?: 'left' | 'center' | 'right';
@@ -75,7 +77,7 @@ export interface TableHeaderAction {
 
 // Compact Table Header Component (Contracts/Transactions style)
 export interface CompactTableHeaderProps {
-  title?: string;
+  title?: React.ReactNode;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   showSearch?: boolean;
@@ -379,7 +381,7 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
         {/* Right Section: Documents Count + Pagination */}
         <div style={rightSectionStyles}>
           <span style={documentsCountStyles}>
-            {startItem}-{endItem} of {totalItems} documents
+            {startItem}-{endItem} of {totalItems} valuations
           </span>
           <button
             style={currentPage === 1 ? disabledNavButtonStyles : navButtonStyles}
@@ -407,7 +409,7 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
 
 // Table Header Component
 export interface TableHeaderProps {
-  title?: string;
+  title?: React.ReactNode;
   showSearch?: boolean;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
@@ -689,7 +691,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           )}
           {showPagination && (
             <span style={paginationStyles}>
-              {startItem}-{endItem} of {totalItems} documents
+              {startItem}-{endItem} of {totalItems} valuations
             </span>
           )}
         </div>
@@ -940,6 +942,8 @@ export const TableBody: React.FC<TableBodyProps> = ({
                 text={column.actionCellProps?.text}
                 iconBackgroundColor={column.actionCellProps?.iconBackgroundColor}
                 iconColor={column.actionCellProps?.iconColor}
+                showSecondaryMenu={column.actionCellProps?.showSecondaryMenu}
+                secondaryActions={column.actionCellProps?.secondaryActions}
               />
             </div>
           );
@@ -973,6 +977,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
             'cancelled': 'error',
             'draft': 'ready',
             'done': 'done',
+            'complete': 'done',
             'ready': 'ready',
             'processing': 'processing',
             'error': 'error',
@@ -1205,9 +1210,12 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
     backgroundColor: colors.blackAndWhite.white,
     borderBottomLeftRadius: borderRadius[8],
     borderBottomRightRadius: borderRadius[8],
-    border: `1px solid ${colors.theme.primary400}`,
+    borderLeft: `1px solid ${colors.theme.primary400}`,
+    borderRight: `1px solid ${colors.theme.primary400}`,
+    borderBottom: `1px solid ${colors.theme.primary400}`,
     borderTop: `1px solid ${colors.theme.primary400}`,
     gap: '50px',
+    boxSizing: 'border-box' as const,
   };
 
   const navButtonStyles = {
@@ -1352,7 +1360,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
 export interface TableProps {
   columns: TableColumn[];
   data: TableRow[];
-  title?: string;
+  title?: React.ReactNode;
   showHeader?: boolean;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
