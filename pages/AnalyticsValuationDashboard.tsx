@@ -842,7 +842,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'flex-end',
-                gap: '4px',
+                gap: '7px',
                 borderRight: `1px dashed ${colors.theme.primary450}`,
                 borderLeft: index === 0 ? `1px dashed ${colors.theme.primary450}` : 'none', // Add left border to first button section
                 paddingRight: '8px',
@@ -851,8 +851,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                 transition: selectedPeriod === 'complete' ? 'flex 0.3s ease, opacity 0.2s ease' : 'opacity 0.2s ease', // Smooth expansion
                 overflow: 'hidden' // Prevent content overflow during transitions
               }}
-              onMouseEnter={() => selectedPeriod === 'complete' ? setHoveredIndex(index) : null}
-              onMouseLeave={() => selectedPeriod === 'complete' ? setHoveredIndex(null) : null}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
             >
               {/* Date label - Show always for Monthly/Annual, only on hover for Complete */}
               <div style={{
@@ -893,12 +893,23 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                   // Other months - Edit/Download buttons
                   <>
                     <SimpleTooltip text="Edit valuation">
-                      <div style={{
-                        borderRadius: '4px',
-                        border: `1px solid ${hoveredIndex === index ? colors.theme.primary450 : colors.theme.primary400}`,
-                        boxShadow: hoveredIndex === index ? shadows.small : 'none',
-                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
-                      }}>
+                      <div
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary450}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = shadows.small;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary400}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                        }}
+                        style={{
+                          display: 'inline-flex',
+                          borderRadius: '4px',
+                          border: `1px solid ${colors.theme.primary400}`,
+                          padding: '2px',
+                          transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                        }}
+                      >
                         <Button
                           variant="icon"
                           color="white"
@@ -909,25 +920,45 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                             width: '24px',
                             height: '24px',
                             padding: '4px',
-                            border: 'none'
+                            border: 'none',
+                            borderRadius: '2px'
                           }}
                         />
                       </div>
                     </SimpleTooltip>
                     <SimpleTooltip text="Download valuation files">
-                      <Button
-                        variant="icon"
-                        color="white"
-                        icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
-                        onClick={() => console.log(`Download ${dataPoint.month}`)}
-                        shape="square"
-                        style={{
-                          width: '24px',
-                          height: '24px',
-                          padding: '4px',
-                          border: `1px solid ${colors.theme.primary400}`
+                      <div
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary450}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = shadows.small;
                         }}
-                      />
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary400}`;
+                          (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                        }}
+                        style={{
+                          display: 'inline-flex',
+                          borderRadius: '4px',
+                          border: `1px solid ${colors.theme.primary400}`,
+                          padding: '2px',
+                          transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                        }}
+                      >
+                        <Button
+                          variant="icon"
+                          color="white"
+                          icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
+                          onClick={() => console.log(`Download ${dataPoint.month}`)}
+                          shape="square"
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            padding: '4px',
+                            border: 'none',
+                            borderRadius: '2px'
+                          }}
+                        />
+                      </div>
                     </SimpleTooltip>
                   </>
                 )}
