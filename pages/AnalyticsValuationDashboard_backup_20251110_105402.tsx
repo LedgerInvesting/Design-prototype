@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
-import { Button, DashboardCard, ChartTooltip, AppActionButton, Table } from '@design-library/components';
+import { Button, DashboardCard, ChartTooltip, AppActionButton } from '@design-library/components';
 import { Dropdown } from '@design-library/components/Dropdown';
 import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall, ChevronLeftSmall, ChevronRightSmall, CalendarTable, StatusTable, AmmountTable } from '@design-library/icons';
+import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall, ChevronLeftSmall, ChevronRightSmall } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 import { AddTriangleModal } from './AddTriangleModal';
 import { useSettings } from '@design-library/contexts';
@@ -386,11 +386,7 @@ const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, offic
 };
 
 
-interface ChartComponentProps {
-  onNavigateToPage?: NavigationHandler;
-}
-
-const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => {
+const ChartComponent: React.FC = () => {
   const colors = useSemanticColors();
   const [selectedPeriod, setSelectedPeriod] = useState('monthly');
   const [monthlyOffset, setMonthlyOffset] = useState(0); // Initialize to 0, will be set correctly in useEffect
@@ -541,13 +537,26 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
       overflow: 'visible',
       outline: 'none',
     }}>
-      {/* Legend and Time Period Controls (Header) */}
+      {/* Header */}
       <div style={{
-        padding: '20px 30px 20px 30px',
+        padding: '20px 30px',
+        borderBottom: `1px solid ${colors.theme.primary400}`,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <CardsGraph color="#8b68f5" />
+          <div style={{ ...typography.styles.bodyL, color: colors.blackAndWhite.black900 }}>
+            Valuation runs over time
+          </div>
+        </div>
+      </div>
+
+      {/* Legend and Time Period Controls */}
+      <div style={{
+        padding: '20px 30px',
+        paddingBottom: '50px', // Add extra 30px spacing to the chart below
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: `1px solid ${colors.theme.primary400}`,
       }}>
         {/* Color Legend */}
         <div style={{
@@ -648,50 +657,20 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
       </div>
 
       {/* Chart */}
-      <div
-        style={{
-          height: '421px',
-          overflow: 'visible',
-          outline: 'none',
+      <div 
+        style={{ 
+          height: '421px', 
+          overflow: 'visible', 
+          outline: 'none', 
           position: 'relative',
           cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default',
-          userSelect: 'none', // Prevent text selection during drag
-          paddingTop: '30px'
+          userSelect: 'none' // Prevent text selection during drag
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp} // Stop dragging if mouse leaves chart
       >
-        {/* Diagonal line pattern overlay for "New" section - Must be first to render behind */}
-        <div style={{
-          position: 'absolute',
-          top: '80px', // Start below buttons (25px + 55px = 80px from top)
-          left: '75px',
-          right: '50px',
-          bottom: '60px', // Stop before X-axis baseline (30px chart margin + 30px adjustment)
-          pointerEvents: 'none',
-          zIndex: 0, // Behind chart lines but above background
-          display: 'flex'
-        }}>
-          {/* Spacer divs for all sections except the last one */}
-          {finalButtonData.slice(0, -1).map((_, index) => (
-            <div key={`spacer-${index}`} style={{ flex: 1 }} />
-          ))}
-          {/* Pattern overlay for the last section only */}
-          <div style={{
-            flex: 1,
-            background: `repeating-linear-gradient(
-              45deg,
-              ${colors.theme.primary450},
-              ${colors.theme.primary450} 1px,
-              transparent 1px,
-              transparent 4px
-            )`,
-            opacity: 0.3 // 30% opacity for subtle pattern
-          }} />
-        </div>
-
         <ResponsiveContainer 
           width="100%" 
           height="100%" 
@@ -701,11 +680,11 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
             cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default'
           }}
         >
-          <ComposedChart
-            data={finalChartData}
-            margin={{ top: 50, right: 50, left: 15, bottom: 30 }}
-            style={{
-              overflow: 'visible',
+          <ComposedChart 
+            data={finalChartData} 
+            margin={{ top: 50, right: 50, left: 15, bottom: 30 }} 
+            style={{ 
+              overflow: 'visible', 
               outline: 'none',
               cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default'
             }}
@@ -795,8 +774,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
               dataKey="mean"
               stroke="#0f9342"
               strokeWidth={2}
-              dot={{ fill: '#0f9342', r: 6, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
-              activeDot={{ r: 6, fill: '#0f9342', stroke: colors.blackAndWhite.white, strokeWidth: 2, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
+              dot={{ fill: '#0f9342', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#0f9342', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
               connectNulls={false}
             />
             <Line
@@ -805,8 +784,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
               stroke="#ffd028"
               strokeWidth={2}
               strokeDasharray="5 5"
-              dot={{ fill: '#ffd028', r: 6, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
-              activeDot={{ r: 6, fill: '#ffd028', stroke: colors.blackAndWhite.white, strokeWidth: 2, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
+              dot={{ fill: '#ffd028', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#ffd028', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
               connectNulls={false}
             />
             <Line
@@ -814,8 +793,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
               dataKey="paid"
               stroke="#8b68f5"
               strokeWidth={2}
-              dot={{ fill: '#8b68f5', r: 6, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
-              activeDot={{ r: 6, fill: '#8b68f5', stroke: colors.blackAndWhite.white, strokeWidth: 2, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
+              dot={{ fill: '#8b68f5', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#8b68f5', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
               connectNulls={false}
             />
 
@@ -826,7 +805,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
         {/* Date labels and Edit/Download buttons positioned above chart data */}
         <div style={{
           position: 'absolute',
-          top: '25px', // 30px from card header line
+          top: '-5px', // Back to original position above chart
           left: '75px', // Same alignment as chart data
           right: '50px', // Same alignment as chart data
           height: '55px', // More height for date + buttons
@@ -897,7 +876,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                         variant="icon"
                         color="white"
                         icon={<EditSmall color={colors.blackAndWhite.black900} />}
-                        onClick={() => onNavigateToPage?.('analytics-valuation-edit')}
+                        onClick={() => console.log(`Edit ${dataPoint.month}`)}
                         shape="square"
                         style={{
                           width: '24px',
@@ -929,6 +908,163 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
           ))}
         </div>
 
+      </div>
+      
+      {/* Valuation Data Table */}
+      <div style={{
+        padding: '0'
+      }}>
+        {/* Separator with margins */}
+        <div style={{
+          borderTop: `1px dotted ${colors.theme.primary400}`,
+          margin: '0 50px'
+        }} />
+        {/* Table Header */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 120px',
+          gap: '16px',
+          padding: '16px 0',
+          margin: '0 50px',
+          backgroundColor: colors.blackAndWhite.white,
+          borderBottom: `1px solid ${colors.theme.primary400}`
+        }}>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Date</div>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Loss modeling</div>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Paid Loss Ratio</div>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Reported Loss Ratio</div>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Expected loss ratio</div>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500 }}>Current Written Premium</div>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black500, fontWeight: 500, textAlign: 'right' }}>Actions</div>
+        </div>
+        
+        {/* Table Rows */}
+        {[
+          { date: 'Jan, 2025', paid: '75%', reported: '62%', expected: '112%', premium: '$20,107,359' },
+          { date: 'Dec, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$21,542,987' },
+          { date: 'Nov, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$19,876,421' },
+          { date: 'Oct, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$22,345,789' },
+          { date: 'Sep, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$18,901,234' },
+          { date: 'Aug, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$20,456,890' },
+          { date: 'Jul, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$21,123,567' },
+          { date: 'Jun, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$19,567,234' },
+          { date: 'May, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$22,789,654' },
+          { date: 'Apr, 2024', paid: '89%', reported: '45%', expected: '103%', premium: '$18,234,901' }
+        ].map((row, index) => (
+          <div key={index} style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 120px',
+            gap: '16px',
+            padding: '16px 0',
+            margin: '0 50px',
+            backgroundColor: colors.blackAndWhite.white,
+            borderBottom: index < 9 ? `1px solid ${colors.theme.primary400}` : 'none',
+            alignItems: 'center'
+          }}>
+            {/* Date */}
+            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black900 }}>
+              {row.date}
+            </div>
+            
+            {/* Loss modeling */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: colors.theme.primary400
+              }} />
+              <span style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
+                Complete
+              </span>
+            </div>
+            
+            {/* Paid Loss Ratio */}
+            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
+              {row.paid}
+            </div>
+            
+            {/* Reported Loss Ratio */}
+            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
+              {row.reported}
+            </div>
+            
+            {/* Expected Loss Ratio */}
+            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
+              {row.expected}
+            </div>
+            
+            {/* Current Written Premium */}
+            <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
+              {row.premium}
+            </div>
+            
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <Button
+                variant="icon"
+                color="white"
+                icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
+                onClick={() => console.log(`Download ${row.date}`)}
+                shape="square"
+                style={{
+                  minWidth: 'auto',
+                  width: '32px',
+                  height: '32px',
+                  padding: '6px',
+                  backgroundColor: colors.blackAndWhite.white,
+                  border: `1px solid ${colors.theme.primary400}`,
+                  borderRadius: borderRadius[8],
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              />
+              <Button
+                variant="small"
+                color="white"
+                showIcon={false}
+                onClick={() => console.log(`Edit ${row.date}`)}
+              >
+                Edit
+              </Button>
+            </div>
+          </div>
+        ))}
+        
+        {/* Pagination */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          padding: '20px 0',
+          margin: '0 50px',
+          backgroundColor: colors.blackAndWhite.white,
+          gap: '12px',
+          borderTop: `1px solid ${colors.blackAndWhite.black100}`
+        }}>
+          <div style={{ ...typography.styles.captionS, color: colors.blackAndWhite.black700 }}>
+            10 of 43 Valuations
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button
+              variant="icon"
+              color="white"
+              icon={<ChevronLeftSmall color={colors.blackAndWhite.black700} />}
+              onClick={() => console.log('Previous page')}
+              shape="square"
+              style={{ width: '24px', height: '24px', padding: '4px' }}
+            />
+            <Button
+              variant="icon"
+              color="white"
+              icon={<ChevronRightSmall color={colors.blackAndWhite.black700} />}
+              onClick={() => console.log('Next page')}
+              shape="square"
+              style={{ width: '24px', height: '24px', padding: '4px' }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1048,7 +1184,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
                 <span style={{ color: colors.blackAndWhite.black900 }}>{data.programName}</span>
                 <span style={{ color: colors.blackAndWhite.black500 }}> valuation.</span>
               </div>
-              <div style={{ color: colors.blackAndWhite.black500 }}>Review and <span style={{ color: colors.blackAndWhite.black500 }}>edit</span> the monthly values.</div>
+              <div style={{ color: colors.blackAndWhite.black500 }}>Review and <span style={{ color: colors.blackAndWhite.black900 }}>edit</span> the monthly values.</div>
             </h1>
           </div>
           <Button
@@ -1069,104 +1205,7 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
         </div>
 
         {/* Chart Section */}
-        <ChartComponent onNavigateToPage={onNavigateToPage} />
-
-        {/* Valuation Data Table */}
-        <div style={{ marginTop: '40px' }}>
-          <Table
-            title={
-              <>
-                All Valuations <span style={{ color: '#0f9342' }}>(10)</span>
-              </>
-            }
-            showSearch={false}
-            showHeader={true}
-            columns={[
-              {
-                key: 'date',
-                title: 'Date',
-                icon: <CalendarTable color={colors.theme.primary450} />,
-                align: 'left',
-                render: (value) => (
-                  <span style={{ color: colors.blackAndWhite.black900 }}>{value}</span>
-                )
-              },
-              {
-                key: 'lossModeling',
-                title: 'Loss modeling',
-                icon: <StatusTable color={colors.theme.primary450} />,
-                align: 'left',
-                cellType: 'status'
-              },
-              {
-                key: 'paidLossRatio',
-                title: 'Paid Loss Ratio',
-                icon: <AmmountTable color={colors.theme.primary450} />,
-                align: 'left'
-              },
-              {
-                key: 'reportedLossRatio',
-                title: 'Reported Loss Ratio',
-                icon: <AmmountTable color={colors.theme.primary450} />,
-                align: 'left'
-              },
-              {
-                key: 'expectedLossRatio',
-                title: 'Expected loss ratio',
-                icon: <AmmountTable color={colors.theme.primary450} />,
-                align: 'left'
-              },
-              {
-                key: 'currentWrittenPremium',
-                title: 'Current Written Premium',
-                icon: <AmmountTable color={colors.theme.primary450} />,
-                align: 'left'
-              },
-              {
-                key: 'actions',
-                title: 'Actions',
-                align: 'left',
-                headerAlign: 'left',
-                cellType: 'action' as const,
-                actionType: 'custom' as const,
-                actionCellProps: {
-                  icon: <EditSmall color={colors.blackAndWhite.black900} />,
-                  text: 'Edit',
-                  iconBackgroundColor: colors.theme.primary500,
-                  iconColor: colors.blackAndWhite.black900,
-                  showSecondaryMenu: true,
-                  secondaryActions: [
-                    {
-                      label: 'Download as Format 1',
-                      onClick: () => console.log('Download as Format 1 clicked')
-                    },
-                    {
-                      label: 'Download as Format 2',
-                      onClick: () => console.log('Download as Format 2 clicked')
-                    }
-                  ]
-                },
-                onAction: (actionType: string, text: string) => {
-                  console.log(`Edit action clicked from table`);
-                }
-              }
-            ]}
-            data={[
-              { date: 'Jan, 2025', lossModeling: 'Complete', paidLossRatio: '75%', reportedLossRatio: '62%', expectedLossRatio: '103%', currentWrittenPremium: '$20,107,359', actions: 'custom' },
-              { date: 'Dec, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$21,542,987', actions: 'custom' },
-              { date: 'Nov, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$19,876,421', actions: 'custom' },
-              { date: 'Oct, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$22,345,789', actions: 'custom' },
-              { date: 'Sep, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$18,901,234', actions: 'custom' },
-              { date: 'Aug, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$20,456,890', actions: 'custom' },
-              { date: 'Jul, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$21,123,567', actions: 'custom' },
-              { date: 'Jun, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$19,567,234', actions: 'custom' },
-              { date: 'May, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$22,789,654', actions: 'custom' },
-              { date: 'Apr, 2024', lossModeling: 'Complete', paidLossRatio: '89%', reportedLossRatio: '45%', expectedLossRatio: '103%', currentWrittenPremium: '$18,234,901', actions: 'custom' }
-            ]}
-            showFooterPagination={true}
-            onPageChange={(page) => console.log('Page changed to:', page)}
-          />
-        </div>
+        <ChartComponent />
       </Layout>
   );
 };

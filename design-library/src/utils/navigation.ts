@@ -19,6 +19,8 @@ export type PageType =
   | 'analytics-valuation-dashboard'
   | 'analytics-valuation-configuration'
   | 'analytics-valuation-status'
+  | 'analytics-valuation-edit'
+  | 'analytics-add-valuation-data'
   | 'analytics-triangle'
   | 'analytics-triangle-dashboard'
   | 'marketplace-offerings';
@@ -255,6 +257,7 @@ export const isSubPage = (pageType: PageType): boolean => {
     'analytics-valuation-dashboard',
     'analytics-valuation-configuration',
     'analytics-valuation-status',
+    'analytics-add-valuation-data',
     'analytics-triangle-dashboard',
 
     // Reports sub-pages
@@ -293,6 +296,11 @@ export const createBreadcrumbs = {
       { label: 'Valuation', onClick: () => onNavigateToPage('analytics-valuation'), isActive: false },
       { label: programName, onClick: () => onNavigateToPage('valuation-dashboard'), isActive: false },
       { label: 'Configuration', isActive: true }
+    ],
+    valuationEdit: (selectedDate: string, programName: string, onNavigateToPage: NavigationHandler) => [
+      { label: 'Analytics', isActive: false },
+      { label: 'Valuation Dashboard', onClick: () => onNavigateToPage('analytics-valuation-dashboard'), isActive: false },
+      { label: `Edit ${selectedDate}`, isActive: true }
     ]
   },
   reports: {

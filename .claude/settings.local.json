@@ -88,7 +88,9 @@
       "Bash(npm cache clean:*)",
       "Bash(npm config:*)",
       "Bash(git fetch:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(echo:*)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

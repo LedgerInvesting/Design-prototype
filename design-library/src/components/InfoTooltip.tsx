@@ -37,6 +37,7 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
   const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 });
   const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // This function is no longer needed as we handle transforms in each position case
   // const getPositionTransform = (pos: string) => { ... }
@@ -257,6 +258,12 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
 
   // Event handlers
   const handleMouseEnter = (e: React.MouseEvent) => {
+    // Clear any pending hide timeout
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
+
     setIsVisible(true);
     if (position === 'follow-mouse') {
       const pos = { x: e.clientX, y: e.clientY };
@@ -277,8 +284,57 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
   };
 
   const handleMouseLeave = () => {
-    setIsVisible(false);
+    // Add a small delay to prevent flickering when moving between icon and tooltip
+    hideTimeoutRef.current = setTimeout(() => {
+      setIsVisible(false);
+    }, 100);
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Track mouse position globally to detect when mouse leaves the icon area
+  useEffect(() => {
+    if (!isVisible || !triggerRef.current) return;
+
+    const handleDocumentMouseMove = (e: MouseEvent) => {
+      if (!triggerRef.current) return;
+
+      const rect = triggerRef.current.getBoundingClientRect();
+      const buffer = 20; // Add a small buffer zone
+
+      const isOutside = (
+        e.clientX < rect.left - buffer ||
+        e.clientX > rect.right + buffer ||
+        e.clientY < rect.top - buffer ||
+        e.clientY > rect.bottom + buffer
+      );
+
+      if (isOutside) {
+        hideTimeoutRef.current = setTimeout(() => {
+          setIsVisible(false);
+        }, 100);
+      } else {
+        // Mouse is back in the icon area, cancel hide
+        if (hideTimeoutRef.current) {
+          clearTimeout(hideTimeoutRef.current);
+          hideTimeoutRef.current = null;
+        }
+      }
+    };
+
+    document.addEventListener('mousemove', handleDocumentMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleDocumentMouseMove);
+    };
+  }, [isVisible]);
 
   // Create tooltip content
   const tooltipContent = isVisible && (

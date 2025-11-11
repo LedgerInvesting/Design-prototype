@@ -277,7 +277,6 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
               text={tooltipText}
               sections={tooltipSections}
               position="bottom-right"
-              size="small"
             />
           )}
         </div>

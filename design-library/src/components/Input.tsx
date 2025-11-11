@@ -92,7 +92,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       borderRadius: borderRadius[4],
       backgroundColor: colors.blackAndWhite.white,
       border: '1px solid',
-      gap: spacing[2],
+      gap: '2px',
       position: 'relative' as const,
     };
 
@@ -166,12 +166,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   return (
     <div className={className} style={{ display: 'flex', flexDirection: 'column' }}>
       {/* Label with optional tooltip */}
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: spacing[2], 
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing[2],
         marginBottom: spacing[1],
-        height: '20px'
+        minHeight: '20px'
       }}>
         <label style={{
           ...commonTypographyStyles.label(),
@@ -182,12 +182,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           {isOptional && <span style={{ color: colors.blackAndWhite.black500, marginLeft: spacing[1] }}>(Optional)</span>}
         </label>
         {showTooltip && (
-          <InfoTooltip
-            text={tooltipText}
-            sections={tooltipSections}
-            position="bottom-right"
-            size="small"
-          />
+          <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <InfoTooltip
+              text={tooltipText}
+              sections={tooltipSections}
+              position="bottom-right"
+            />
+          </div>
         )}
       </div>
 
@@ -196,13 +197,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         {/* Left symbol */}
         {leftSymbol && (
           <div style={{
-            width: spacing[6],
-            height: '16px',
             display: 'flex',
             alignItems: 'center',
             ...commonTypographyStyles.field(),
             lineHeight: 1.5,
             color: colors.blackAndWhite.black900,
+            flexShrink: 0,
           }}>
             {leftSymbol}
           </div>
