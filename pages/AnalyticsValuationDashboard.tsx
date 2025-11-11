@@ -893,21 +893,26 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                   // Other months - Edit/Download buttons
                   <>
                     <SimpleTooltip text="Edit valuation">
-                      <Button
-                        variant="icon"
-                        color="white"
-                        icon={<EditSmall color={colors.blackAndWhite.black900} />}
-                        onClick={() => onNavigateToPage?.('analytics-valuation-edit')}
-                        shape="square"
-                        style={{
-                          width: '24px',
-                          height: '24px',
-                          padding: '4px',
-                          border: `1px solid ${hoveredIndex === index ? colors.theme.primary450 : colors.theme.primary400}`,
-                          boxShadow: hoveredIndex === index ? shadows.small : 'none',
-                          transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
-                        }}
-                      />
+                      <div style={{
+                        borderRadius: '4px',
+                        border: `1px solid ${hoveredIndex === index ? colors.theme.primary450 : colors.theme.primary400}`,
+                        boxShadow: hoveredIndex === index ? shadows.small : 'none',
+                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                      }}>
+                        <Button
+                          variant="icon"
+                          color="white"
+                          icon={<EditSmall color={colors.blackAndWhite.black900} />}
+                          onClick={() => onNavigateToPage?.('analytics-valuation-edit')}
+                          shape="square"
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            padding: '4px',
+                            border: 'none'
+                          }}
+                        />
+                      </div>
                     </SimpleTooltip>
                     <SimpleTooltip text="Download valuation files">
                       <Button
