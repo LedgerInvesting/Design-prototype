@@ -299,8 +299,8 @@ export const createBreadcrumbs = {
     ],
     valuationEdit: (selectedDate: string, programName: string, onNavigateToPage: NavigationHandler) => [
       { label: 'Analytics', isActive: false },
-      { label: 'Valuation', onClick: () => onNavigateToPage('analytics-valuation-dashboard'), isActive: false },
-      { label: programName, isActive: false },
+      { label: 'Valuation', onClick: () => onNavigateToPage('analytics-valuation'), isActive: false },
+      { label: programName, onClick: () => onNavigateToPage('analytics-valuation-dashboard'), isActive: false },
       { label: `Edit ${selectedDate}`, isActive: true }
     ]
   },
