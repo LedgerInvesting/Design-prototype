@@ -903,7 +903,9 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                           width: '24px',
                           height: '24px',
                           padding: '4px',
-                          border: `1px solid ${colors.theme.primary400}`
+                          border: `1px solid ${hoveredIndex === index ? colors.theme.primary450 : colors.theme.primary400}`,
+                          boxShadow: hoveredIndex === index ? shadows.small : 'none',
+                          transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
                         }}
                       />
                     </SimpleTooltip>
