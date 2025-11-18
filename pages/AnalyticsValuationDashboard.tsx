@@ -5,7 +5,7 @@ import { Button, DashboardCard, ChartTooltip, AppActionButton, Table } from '@de
 import { Dropdown } from '@design-library/components/Dropdown';
 import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
-import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall, ChevronLeftSmall, ChevronRightSmall, CalendarTable, StatusTable, AmmountTable } from '@design-library/icons';
+import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall, ChevronLeftSmall, ChevronRightSmall, CalendarTable, StatusTable, AmmountTable, ChevronRightExtraSmall } from '@design-library/icons';
 import { UploadTrianglesModal } from './UploadTrianglesModal';
 import { AddTriangleModal } from './AddTriangleModal';
 import { useSettings } from '@design-library/contexts';
@@ -397,6 +397,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // For Complete History hover
+  const [openDropdown, setOpenDropdown] = useState<{ month: string; type: 'edit' | 'download'; position: { x: number; y: number } } | null>(null);
+  const [expandedValuation, setExpandedValuation] = useState<number | null>(null); // For download format submenu
 
   // Complete historical data - extends back to Jan 2022 for extensive scrolling
   const completeHistoryData = [
@@ -442,8 +444,28 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
     { month: 'Nov 2024', paid: 30, reported: 78, mean: 92, outerBandBase: 82, outerBandHeight: 20, innerBandBase: 87, innerBandHeight: 10 },
     { month: 'Dec 2024', paid: 35, reported: 80, mean: 95, outerBandBase: 85, outerBandHeight: 20, innerBandBase: 90, innerBandHeight: 10 },
     { month: 'Jan 2025', paid: 60, reported: 80, mean: 98, outerBandBase: 88, outerBandHeight: 20, innerBandBase: 93, innerBandHeight: 10 },
+
+    // February 2025 - 2 valuations
+    { month: 'Feb 2025', paid: 63, reported: 83, mean: 99, outerBandBase: 89, outerBandHeight: 20, innerBandBase: 94, innerBandHeight: 10 },
     { month: 'Feb 2025', paid: 65, reported: 85, mean: 100, outerBandBase: 90, outerBandHeight: 20, innerBandBase: 95, innerBandHeight: 10 },
+
     { month: 'Mar 2025', paid: 70, reported: 88, mean: 102, outerBandBase: 92, outerBandHeight: 20, innerBandBase: 97, innerBandHeight: 10 },
+
+    // April 2025 - 4 valuations
+    { month: 'Apr 2025', paid: 72, reported: 89, mean: 103, outerBandBase: 93, outerBandHeight: 20, innerBandBase: 98, innerBandHeight: 10 },
+    { month: 'Apr 2025', paid: 74, reported: 90, mean: 104, outerBandBase: 94, outerBandHeight: 20, innerBandBase: 99, innerBandHeight: 10 },
+    { month: 'Apr 2025', paid: 76, reported: 91, mean: 105, outerBandBase: 95, outerBandHeight: 20, innerBandBase: 100, innerBandHeight: 10 },
+    { month: 'Apr 2025', paid: 78, reported: 92, mean: 106, outerBandBase: 96, outerBandHeight: 20, innerBandBase: 101, innerBandHeight: 10 },
+
+    { month: 'May 2025', paid: 80, reported: 93, mean: 107, outerBandBase: 97, outerBandHeight: 20, innerBandBase: 102, innerBandHeight: 10 },
+
+    // June 2025 - 6 valuations
+    { month: 'Jun 2025', paid: 82, reported: 94, mean: 108, outerBandBase: 98, outerBandHeight: 20, innerBandBase: 103, innerBandHeight: 10 },
+    { month: 'Jun 2025', paid: 84, reported: 95, mean: 109, outerBandBase: 99, outerBandHeight: 20, innerBandBase: 104, innerBandHeight: 10 },
+    { month: 'Jun 2025', paid: 86, reported: 96, mean: 110, outerBandBase: 100, outerBandHeight: 20, innerBandBase: 105, innerBandHeight: 10 },
+    { month: 'Jun 2025', paid: 88, reported: 97, mean: 111, outerBandBase: 101, outerBandHeight: 20, innerBandBase: 106, innerBandHeight: 10 },
+    { month: 'Jun 2025', paid: 90, reported: 98, mean: 112, outerBandBase: 102, outerBandHeight: 20, innerBandBase: 107, innerBandHeight: 10 },
+    { month: 'Jun 2025', paid: 92, reported: 99, mean: 113, outerBandBase: 103, outerBandHeight: 20, innerBandBase: 108, innerBandHeight: 10 },
     
     // Future placeholder
     { month: 'New', paid: null, reported: null, mean: null, outerBandBase: null, outerBandHeight: null, innerBandBase: null, innerBandHeight: null }
@@ -451,10 +473,26 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
 
   // Set correct initial position after component mounts
   useEffect(() => {
-    // Always start with the most recent data visible on the right
-    const initialOffset = Math.max(0, completeHistoryData.length - 9); // Show last 8 months + "New" section
+    // Always start with the most recent months visible on the right
+    const uniqueMonths = Array.from(new Set(completeHistoryData.map(d => d.month)));
+    const initialOffset = Math.max(0, uniqueMonths.length - 7); // Show last 6 months + "New"
     setMonthlyOffset(initialOffset);
   }, []); // Only run once on mount
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (openDropdown) {
+        setOpenDropdown(null);
+        setExpandedValuation(null);
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [openDropdown]);
 
   // Handle drag functionality for Monthly and Annual Views
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -473,10 +511,11 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
       
       // Different max offsets for different views
       let maxOffset;
+      const uniqueMonths = Array.from(new Set(completeHistoryData.map(d => d.month)));
       if (selectedPeriod === 'monthly') {
-        maxOffset = completeHistoryData.length - 9; // Reserve space for 8 months + New
+        maxOffset = uniqueMonths.length - 7; // Reserve space for 6 months + New
       } else if (selectedPeriod === 'annual') {
-        maxOffset = completeHistoryData.length - 13; // Reserve space for 12 months + New
+        maxOffset = uniqueMonths.length - 13; // Reserve space for 12 months + New
       }
       
       const newOffset = Math.max(0, Math.min(maxOffset, monthlyOffset + direction));
@@ -492,45 +531,76 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
     setIsDragging(false);
   };
 
+  // Helper function to group data by month and mark last occurrence
+  const processChartData = (data: typeof completeHistoryData) => {
+    // Create a map to track month occurrences and find last index for each month
+    const monthLastIndex = new Map<string, number>();
+    data.forEach((item, index) => {
+      monthLastIndex.set(item.month, index);
+    });
+
+    // Add metadata to each data point
+    return data.map((item, index) => {
+      const isLastOfMonth = monthLastIndex.get(item.month) === index;
+      return {
+        ...item,
+        displayMonth: isLastOfMonth ? item.month : '', // Only show month label on last occurrence
+        isLastOfMonth
+      };
+    });
+  };
+
   // Get current data based on selected period and offset
   let finalChartData, finalButtonData, finalDataLength, finalAddButtonIndex;
-  
+
   if (selectedPeriod === 'monthly') {
-    // Monthly View: Show 8 months of data in space for 6, creating cropped overflow effect
-    const startIndex = monthlyOffset;
-    const endIndex = Math.min(startIndex + 8, completeHistoryData.length - 1); // Show 8 months instead of 6
-    const monthlyData = completeHistoryData.slice(startIndex, endIndex);
-    
-    // Add "New" section if we're showing the latest data (near the end)
-    if (endIndex >= completeHistoryData.length - 1) {
-      monthlyData.push(completeHistoryData[completeHistoryData.length - 1]); // Add "New"
+    // Monthly View: Show 6 months of data
+    // First, we need to find which months to show based on offset
+    const uniqueMonths = Array.from(new Set(completeHistoryData.map(d => d.month)));
+    const startMonthIndex = Math.max(0, Math.min(monthlyOffset, uniqueMonths.length - 7)); // Show 6 months + "New"
+    const endMonthIndex = Math.min(startMonthIndex + 6, uniqueMonths.length - 1);
+
+    // Include "New" in months to show if we're at the end
+    const monthsToShow = uniqueMonths.slice(startMonthIndex, endMonthIndex + 1);
+    if (endMonthIndex >= uniqueMonths.length - 1 && !monthsToShow.includes('New')) {
+      monthsToShow.push('New');
     }
-    
-    finalChartData = monthlyData;
-    finalButtonData = monthlyData.slice(1); // Skip first for buttons
-    finalDataLength = monthlyData.length;
-    finalAddButtonIndex = monthlyData.length - 2; // Second to last is "New" for buttons
+
+    // Filter data to only include selected months
+    const monthlyData = completeHistoryData.filter(d => monthsToShow.includes(d.month));
+
+    const processedData = processChartData(monthlyData);
+    finalChartData = processedData;
+    finalButtonData = processedData.slice(1); // Skip first for buttons
+    finalDataLength = processedData.length;
+    finalAddButtonIndex = processedData.length - 2; // Second to last is "New" for buttons
   } else if (selectedPeriod === 'annual') {
-    // Annual Summary: Show 12 months of data, draggable through history
-    const startIndex = monthlyOffset;
-    const endIndex = Math.min(startIndex + 12, completeHistoryData.length - 1); // Show exactly 12 months
-    const annualData = completeHistoryData.slice(startIndex, endIndex);
-    
-    // Add "New" section if we're showing the latest data (near the end)
-    if (endIndex >= completeHistoryData.length - 1) {
-      annualData.push(completeHistoryData[completeHistoryData.length - 1]); // Add "New"
+    // Annual: Show 12 months of data for much tighter spacing
+    const uniqueMonths = Array.from(new Set(completeHistoryData.map(d => d.month)));
+    const startMonthIndex = Math.max(0, Math.min(monthlyOffset, uniqueMonths.length - 13)); // Show 12 months + "New"
+    const endMonthIndex = Math.min(startMonthIndex + 12, uniqueMonths.length - 1);
+
+    // Include "New" in months to show if we're at the end
+    const monthsToShow = uniqueMonths.slice(startMonthIndex, endMonthIndex + 1);
+    if (endMonthIndex >= uniqueMonths.length - 1 && !monthsToShow.includes('New')) {
+      monthsToShow.push('New');
     }
-    
-    finalChartData = annualData;
-    finalButtonData = annualData.slice(1);
-    finalDataLength = annualData.length;
-    finalAddButtonIndex = annualData.length - 2;
+
+    // Filter data to only include selected months
+    const annualData = completeHistoryData.filter(d => monthsToShow.includes(d.month));
+
+    const processedData = processChartData(annualData);
+    finalChartData = processedData;
+    finalButtonData = processedData.slice(1); // Skip first for buttons
+    finalDataLength = processedData.length;
+    finalAddButtonIndex = processedData.length - 2; // Second to last is "New" for buttons
   } else if (selectedPeriod === 'complete') {
     // Complete History: Show all data
-    finalChartData = completeHistoryData;
-    finalButtonData = completeHistoryData.slice(1);
-    finalDataLength = completeHistoryData.length;
-    finalAddButtonIndex = completeHistoryData.length - 2;
+    const processedData = processChartData(completeHistoryData);
+    finalChartData = processedData;
+    finalButtonData = processedData.slice(1);
+    finalDataLength = processedData.length;
+    finalAddButtonIndex = processedData.length - 2;
   }
 
   return (
@@ -633,10 +703,11 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
             onChange={(value) => {
               setSelectedPeriod(value);
               // Reset to show newest data when changing view
+              const uniqueMonths = Array.from(new Set(completeHistoryData.map(d => d.month)));
               if (value === 'monthly') {
-                setMonthlyOffset(Math.max(0, completeHistoryData.length - 9)); // Last 8 months + "New"
+                setMonthlyOffset(Math.max(0, uniqueMonths.length - 7)); // Last 6 months + "New"
               } else if (value === 'annual') {
-                setMonthlyOffset(Math.max(0, completeHistoryData.length - 13)); // Last 12 months + "New"
+                setMonthlyOffset(Math.max(0, uniqueMonths.length - 13)); // Last 12 months + "New"
               } else {
                 setMonthlyOffset(0); // Complete history starts from beginning
               }
@@ -664,62 +735,65 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
         onMouseLeave={handleMouseUp} // Stop dragging if mouse leaves chart
       >
         {/* Diagonal line pattern overlay for "New" section - Must be first to render behind */}
-        <div style={{
-          position: 'absolute',
-          top: '80px', // Start below buttons (25px + 55px = 80px from top)
-          left: '75px',
-          right: '50px',
-          bottom: '60px', // Stop before X-axis baseline (30px chart margin + 30px adjustment)
-          pointerEvents: 'none',
-          zIndex: 0, // Behind chart lines but above background
-          display: 'flex'
-        }}>
-          {/* Spacer divs for all sections except the last one */}
-          {finalButtonData.slice(0, -1).map((_, index) => (
-            <div key={`spacer-${index}`} style={{ flex: 1 }} />
-          ))}
-          {/* Pattern overlay for the last section only */}
+        {finalChartData.some(d => d.month === 'New') && (
           <div style={{
-            flex: 1,
-            background: `repeating-linear-gradient(
-              45deg,
-              ${colors.theme.primary450},
-              ${colors.theme.primary450} 1px,
-              transparent 1px,
-              transparent 4px
-            )`,
-            opacity: 0.3 // 30% opacity for subtle pattern
-          }} />
-        </div>
+            position: 'absolute',
+            top: '80px', // Start below buttons (50px top margin from chart)
+            left: '15px', // Match chart's left margin exactly
+            right: '50px', // Match chart's right margin exactly
+            bottom: '60px', // Stop before X-axis baseline (30px chart margin + 30px adjustment)
+            pointerEvents: 'none',
+            zIndex: 0, // Behind chart lines but above background
+            display: 'flex'
+          }}>
+            {/* Spacer divs matching finalChartData (all data points) */}
+            {finalChartData.slice(0, -1).map((_, index) => (
+              <div key={`spacer-${index}`} style={{ flex: 1 }} />
+            ))}
+            {/* Pattern overlay for the last section only (the "New" section) */}
+            <div style={{
+              flex: 1,
+              background: `repeating-linear-gradient(
+                45deg,
+                ${colors.theme.primary450},
+                ${colors.theme.primary450} 1px,
+                transparent 1px,
+                transparent 4px
+              )`,
+              opacity: 0.3 // 30% opacity for subtle pattern
+            }} />
+          </div>
+        )}
 
-        <ResponsiveContainer 
-          width="100%" 
-          height="100%" 
-          style={{ 
-            overflow: 'visible', 
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          style={{
+            overflow: 'visible',
             outline: 'none',
             cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default'
           }}
         >
-          <ComposedChart
-            data={finalChartData}
-            margin={{ top: 50, right: 50, left: 15, bottom: 30 }}
-            style={{
-              overflow: 'visible',
-              outline: 'none',
-              cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default'
-            }}
-          >
+            <ComposedChart
+              data={finalChartData}
+              margin={{ top: 50, right: 50, left: 15, bottom: 30 }}
+              style={{
+                overflow: 'visible',
+                outline: 'none',
+                cursor: (selectedPeriod === 'monthly' || selectedPeriod === 'annual') ? (isDragging ? 'grabbing' : 'move') : 'default'
+              }}
+            >
             <CartesianGrid strokeDasharray="3 3" stroke={colors.theme.primary450} />
 
             <XAxis
-              dataKey="month"
+              dataKey="displayMonth"
               stroke={colors.theme.primary450}
               axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
               tickLine={{ stroke: colors.theme.primary450, strokeWidth: 1 }}
               tickSize={4}
               tick={{ fontSize: 0 }}
               interval={0}
+              type="category"
               label={{
                 value: 'Evaluation Date',
                 position: 'insideBottom',
@@ -741,6 +815,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
               }}
               domain={[0, 120]}
               ticks={[0, 20, 40, 60, 80, 100, 120]}
+              allowDataOverflow={true}
             />
 
             {/* Outer uncertainty band (±10%, lighter) */}
@@ -822,7 +897,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
             <Tooltip content={<ChartTooltip />} cursor={false} />
           </ComposedChart>
         </ResponsiveContainer>
-        
+
         {/* Date labels and Edit/Download buttons positioned above chart data */}
         <div style={{
           position: 'absolute',
@@ -833,47 +908,58 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
           display: 'flex',
           zIndex: 2
         }}>
-          {finalButtonData.map((dataPoint, index) => (
-            <div
-              key={index}
-              style={{
-                flex: selectedPeriod === 'complete' ? (hoveredIndex === index ? 3 : 0.5) : 1, // Expand hovered section, compact others
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'flex-end',
-                gap: '7px',
-                borderRight: `1px dashed ${colors.theme.primary450}`,
-                borderLeft: index === 0 ? `1px dashed ${colors.theme.primary450}` : 'none', // Add left border to first button section
-                paddingRight: '8px',
-                minHeight: '55px', // Ensure consistent height
-                position: 'relative',
-                transition: selectedPeriod === 'complete' ? 'flex 0.3s ease, opacity 0.2s ease' : 'opacity 0.2s ease', // Smooth expansion
-                overflow: 'hidden' // Prevent content overflow during transitions
-              }}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {/* Date label - Show always for Monthly/Annual, only on hover for Complete */}
-              <div style={{
-                ...typography.styles.dataXS,
-                color: colors.blackAndWhite.black900,
-                fontSize: '10px',
-                marginTop: '-6px',
-                opacity: selectedPeriod === 'complete' ? (hoveredIndex === index ? 1 : 0) : 1,
-                transition: 'opacity 0.2s ease'
-              }}>
-                {dataPoint.month}
-              </div>
-              
-              {/* Buttons - Show always for Monthly/Annual, only on hover for Complete */}
-              <div style={{
-                display: 'flex',
-                gap: '2px',
-                opacity: selectedPeriod === 'complete' ? (hoveredIndex === index ? 1 : 0) : 1,
-                transition: 'opacity 0.2s ease'
-              }}>
-                {dataPoint.month === 'New' ? (
+          {finalButtonData.map((dataPoint, index) => {
+            const showMonthLabel = dataPoint.isLastOfMonth || dataPoint.month === 'New';
+            const showButtons = dataPoint.isLastOfMonth || dataPoint.month === 'New';
+
+            // Get all valuations for this month
+            const monthValuations = finalChartData.filter(d => d.month === dataPoint.month && d.month !== 'New');
+            const hasMultipleValuations = monthValuations.length > 1;
+
+            return (
+              <div
+                key={index}
+                style={{
+                  flex: selectedPeriod === 'complete' ? (hoveredIndex === index ? 3 : 0.5) : 1, // Expand hovered section, compact others
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'flex-end',
+                  gap: '7px',
+                  borderRight: showMonthLabel ? `1px dashed ${colors.theme.primary450}` : 'none',
+                  borderLeft: index === 0 ? `1px dashed ${colors.theme.primary450}` : 'none', // Add left border to first button section
+                  paddingRight: '8px',
+                  minHeight: '55px', // Ensure consistent height
+                  position: 'relative',
+                  transition: selectedPeriod === 'complete' ? 'flex 0.3s ease, opacity 0.2s ease' : 'opacity 0.2s ease', // Smooth expansion
+                  overflow: 'hidden' // Prevent content overflow during transitions
+                }}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {/* Date label - Only show for last occurrence of each month */}
+                {showMonthLabel && (
+                  <div style={{
+                    ...typography.styles.dataXS,
+                    color: colors.blackAndWhite.black900,
+                    fontSize: '10px',
+                    marginTop: '-6px',
+                    opacity: selectedPeriod === 'complete' ? (hoveredIndex === index ? 1 : 0) : 1,
+                    transition: 'opacity 0.2s ease'
+                  }}>
+                    {dataPoint.month}
+                  </div>
+                )}
+
+              {/* Buttons - Only show for last occurrence of each month */}
+              {showButtons && (
+                <div style={{
+                  display: 'flex',
+                  gap: '2px',
+                  opacity: selectedPeriod === 'complete' ? (hoveredIndex === index ? 1 : 0) : 1,
+                  transition: 'opacity 0.2s ease'
+                }}>
+                  {dataPoint.month === 'New' ? (
                   // Last data month - Single add button without text
                   <Button
                     variant="icon"
@@ -893,81 +979,295 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
                   // Other months - Edit/Download buttons
                   <>
                     <SimpleTooltip text="Edit valuation">
-                      <div
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary450}`;
-                          (e.currentTarget as HTMLElement).style.boxShadow = shadows.small;
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary400}`;
-                          (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-                        }}
-                        style={{
-                          display: 'inline-flex',
-                          borderRadius: '4px',
-                          border: `1px solid ${colors.theme.primary400}`,
-                          padding: '2px',
-                          transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
-                        }}
-                      >
-                        <Button
-                          variant="icon"
-                          color="white"
-                          icon={<EditSmall color={colors.blackAndWhite.black900} />}
-                          onClick={() => onNavigateToPage?.('analytics-valuation-edit')}
-                          shape="square"
-                          style={{
-                            width: '24px',
-                            height: '24px',
-                            padding: '4px',
-                            border: 'none',
-                            borderRadius: '2px'
+                      <div style={{ position: 'relative' }}>
+                        <div
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary450}`;
+                            (e.currentTarget as HTMLElement).style.boxShadow = shadows.small;
                           }}
-                        />
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary400}`;
+                            (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                          }}
+                          style={{
+                            display: 'inline-flex',
+                            borderRadius: '4px',
+                            border: `1px solid ${colors.theme.primary400}`,
+                            padding: '2px',
+                            transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                          }}
+                        >
+                          <Button
+                            variant="icon"
+                            color="white"
+                            icon={<EditSmall color={colors.blackAndWhite.black900} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (hasMultipleValuations) {
+                                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                setOpenDropdown(openDropdown?.month === dataPoint.month && openDropdown?.type === 'edit'
+                                  ? null
+                                  : {
+                                      month: dataPoint.month,
+                                      type: 'edit',
+                                      position: { x: rect.right, y: rect.bottom + 4 }
+                                    });
+                              } else {
+                                onNavigateToPage?.('analytics-valuation-edit');
+                              }
+                            }}
+                            shape="square"
+                            style={{
+                              width: '24px',
+                              height: '24px',
+                              padding: '4px',
+                              border: 'none',
+                              borderRadius: '2px'
+                            }}
+                          />
+                        </div>
+
                       </div>
                     </SimpleTooltip>
                     <SimpleTooltip text="Download valuation files">
-                      <div
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary450}`;
-                          (e.currentTarget as HTMLElement).style.boxShadow = shadows.small;
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary400}`;
-                          (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-                        }}
-                        style={{
-                          display: 'inline-flex',
-                          borderRadius: '4px',
-                          border: `1px solid ${colors.theme.primary400}`,
-                          padding: '2px',
-                          transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
-                        }}
-                      >
-                        <Button
-                          variant="icon"
-                          color="white"
-                          icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
-                          onClick={() => console.log(`Download ${dataPoint.month}`)}
-                          shape="square"
-                          style={{
-                            width: '24px',
-                            height: '24px',
-                            padding: '4px',
-                            border: 'none',
-                            borderRadius: '2px'
+                      <div style={{ position: 'relative' }}>
+                        <div
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary450}`;
+                            (e.currentTarget as HTMLElement).style.boxShadow = shadows.small;
                           }}
-                        />
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.border = `1px solid ${colors.theme.primary400}`;
+                            (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                          }}
+                          style={{
+                            display: 'inline-flex',
+                            borderRadius: '4px',
+                            border: `1px solid ${colors.theme.primary400}`,
+                            padding: '2px',
+                            transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                          }}
+                        >
+                          <Button
+                            variant="icon"
+                            color="white"
+                            icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                              setOpenDropdown(openDropdown?.month === dataPoint.month && openDropdown?.type === 'download'
+                                ? null
+                                : {
+                                    month: dataPoint.month,
+                                    type: 'download',
+                                    position: { x: rect.right, y: rect.bottom + 4 }
+                                  });
+                            }}
+                            shape="square"
+                            style={{
+                              width: '24px',
+                              height: '24px',
+                              padding: '4px',
+                              border: 'none',
+                              borderRadius: '2px'
+                            }}
+                          />
+                        </div>
+
                       </div>
                     </SimpleTooltip>
                   </>
-                )}
+                  )}
+                </div>
+              )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>
+
+      {/* Portal-based Dropdown - Renders above all other content */}
+      {openDropdown && typeof document !== 'undefined' && createPortal(
+        <>
+          {/* Backdrop to close dropdown on outside click */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 9999,
+            }}
+            onClick={() => {
+              setOpenDropdown(null);
+              setExpandedValuation(null);
+            }}
+          />
+          {(() => {
+            // Find the month valuations for the dropdown
+            const monthValuations = finalChartData.filter(d => d.month === openDropdown.month && d.month !== 'New');
+            const isDownloadDropdown = openDropdown.type === 'download';
+
+            // Helper function to generate dates for valuations in a month
+            const generateDateLabel = (monthStr: string, index: number, total: number) => {
+              // Extract month and year from string like "Feb 2025"
+              const parts = monthStr.split(' ');
+              const monthName = parts[0];
+              const year = parts[1];
+
+              // For months with multiple valuations, distribute dates evenly
+              // For example, if Feb has 2 valuations, use 1st and 15th
+              // If Apr has 4 valuations, use 1st, 10th, 20th, 28th
+              const daysInMonth: { [key: string]: number } = {
+                'Jan': 31, 'Feb': 28, 'Mar': 31, 'Apr': 30, 'May': 31, 'Jun': 30,
+                'Jul': 31, 'Aug': 31, 'Sep': 30, 'Oct': 31, 'Nov': 30, 'Dec': 31
+              };
+
+              const maxDay = daysInMonth[monthName] || 30;
+              const day = Math.floor((index * maxDay) / total) + 1;
+
+              // Format day with suffix (1st, 2nd, 3rd, 4th, etc.)
+              const daySuffix = (d: number) => {
+                if (d >= 11 && d <= 13) return 'th';
+                switch (d % 10) {
+                  case 1: return 'st';
+                  case 2: return 'nd';
+                  case 3: return 'rd';
+                  default: return 'th';
+                }
+              };
+
+              return `${day}${daySuffix(day)} ${monthName}`;
+            };
+
+            return (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: 'fixed',
+                  left: openDropdown.position.x - 180, // Align to right edge
+                  top: openDropdown.position.y,
+                  backgroundColor: colors.blackAndWhite.white,
+                  border: 'none',
+                  borderRadius: borderRadius[8],
+                  boxShadow: shadows.medium,
+                  minWidth: '180px',
+                  padding: '10px',
+                  zIndex: 10000,
+                }}
+              >
+              {monthValuations.map((valuation, vIndex) => (
+                <div key={vIndex}>
+                  {/* Valuation Item */}
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (openDropdown.type === 'edit') {
+                        onNavigateToPage?.('analytics-valuation-edit');
+                        setOpenDropdown(null);
+                        setExpandedValuation(null);
+                      } else {
+                        // For download, toggle submenu
+                        setExpandedValuation(expandedValuation === vIndex ? null : vIndex);
+                      }
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isDownloadDropdown || expandedValuation !== vIndex) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = colors.theme.primary200;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isDownloadDropdown || expandedValuation !== vIndex) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                      }
+                    }}
+                    style={{
+                      padding: '12px 10px',
+                      cursor: 'pointer',
+                      borderRadius: borderRadius[4],
+                      ...typography.styles.bodyM,
+                      color: colors.blackAndWhite.black900,
+                      transition: 'background-color 0.2s ease',
+                      backgroundColor: (isDownloadDropdown && expandedValuation === vIndex) ? colors.theme.primary200 : 'transparent',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: (isDownloadDropdown && expandedValuation === vIndex) ? '4px' : '0'
+                    }}
+                  >
+                    <span>
+                      {generateDateLabel(openDropdown.month, vIndex, monthValuations.length)}
+                    </span>
+                    {isDownloadDropdown && (
+                      <ChevronRightExtraSmall color={colors.blackAndWhite.black900} />
+                    )}
+                  </div>
+
+                  {/* Format Submenu for Download */}
+                  {isDownloadDropdown && expandedValuation === vIndex && (
+                    <div style={{
+                      marginBottom: vIndex < monthValuations.length - 1 ? '4px' : '0'
+                    }}>
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log(`Download ${openDropdown.month} - Valuation #${vIndex + 1} - Format 1`);
+                          setOpenDropdown(null);
+                          setExpandedValuation(null);
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = colors.theme.primary200;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                        }}
+                        style={{
+                          padding: '12px 10px 12px 24px',
+                          cursor: 'pointer',
+                          borderRadius: borderRadius[4],
+                          ...typography.styles.bodyM,
+                          color: colors.blackAndWhite.black900,
+                          transition: 'background-color 0.2s ease'
+                        }}
+                      >
+                        Format 1
+                      </div>
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log(`Download ${openDropdown.month} - Valuation #${vIndex + 1} - Format 2`);
+                          setOpenDropdown(null);
+                          setExpandedValuation(null);
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = colors.theme.primary200;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                        }}
+                        style={{
+                          padding: '12px 10px 12px 24px',
+                          cursor: 'pointer',
+                          borderRadius: borderRadius[4],
+                          ...typography.styles.bodyM,
+                          color: colors.blackAndWhite.black900,
+                          transition: 'background-color 0.2s ease'
+                        }}
+                      >
+                        Format 2
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+              </div>
+            );
+          })()}
+        </>,
+        document.body
+      )}
     </div>
   );
 };
