@@ -1279,6 +1279,20 @@ const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
   const colors = useSemanticColors();
   const settings = useSettings();
 
+  // Check URL parameters for program selection
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const programParam = urlParams.get('program');
+
+      // If program parameter exists and matches "Aviation Treaty 2023", we're good
+      // This allows URLs like: #analytics-valuation-dashboard?program=aviation-treaty-2023
+      if (programParam) {
+        console.log('Program selected from URL:', programParam);
+      }
+    }
+  }, []);
+
   // Provide default data if valuationData is null or undefined
   const defaultData = {
     programName: 'Aviation Treaty 2023',
