@@ -856,28 +856,24 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
                   showIcon={false}
                   disabled={!selectedFile}
                   onClick={() => {
-                    // Handle fake upload
-                    if (selectedFile && addModalContext) {
-                      const fileKey = `${addModalContext.type}-${addModalContext.month}`;
+                    // Handle upload and navigate to configuration page
+                    if (selectedFile && addModalContext && onNavigateToPage) {
+                      // Prepare upload data
+                      const uploadInfo = {
+                        fileName: selectedFile.name,
+                        documentType: documentType === 'policy' ? 'Policy' : 'Claim',
+                        month: addModalContext.month,
+                        year: '2025'
+                      };
 
-                      // Close modal first
+                      // Close modal
                       setIsAddModalOpen(false);
                       setSelectedFile(null);
 
-                      // Start animation
-                      setAnimatingCells(prev => new Set([...prev, fileKey]));
+                      // Navigate to configuration page with data
+                      onNavigateToPage('reports-bdx-configuration', uploadInfo);
 
-                      // Complete upload and stop animation after delay
-                      setTimeout(() => {
-                        setUploadedFiles(prev => new Set([...prev, fileKey]));
-                        setAnimatingCells(prev => {
-                          const newSet = new Set(prev);
-                          newSet.delete(fileKey);
-                          return newSet;
-                        });
-                      }, 700); // Total animation duration
-
-                      console.log('File added:', selectedFile.name, 'for', addModalContext);
+                      console.log('Navigating to configuration with data:', uploadInfo);
                     }
                   }}
                 >

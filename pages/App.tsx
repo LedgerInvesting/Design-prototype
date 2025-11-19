@@ -19,6 +19,7 @@ import { AnalyticsAddValuationData } from './AnalyticsAddValuationData';
 import { AnalyticsTriangle } from './AnalyticsTriangle';
 import { AnalyticsTriangleDashboard } from './AnalyticsTriangleDashboard';
 import { ReportsBDXUpload } from './ReportsBDXUpload';
+import { ReportsBDXConfiguration } from './ReportsBDXConfiguration';
 import { MarketplaceOfferings } from './MarketplaceOfferings';
 import ReportsInsightsProgramDetails from './ReportsInsightsProgramDetails';
 
@@ -27,7 +28,7 @@ import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'marketplace-offerings';
+type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-bdx-configuration' | 'marketplace-offerings';
 
 // Inner component that uses settings
 function AppContent() {
@@ -77,6 +78,9 @@ function AppContent() {
       } else if (page === 'reports-cash-settlement') {
         console.log('Setting currentEntityData:', data);
         setCurrentEntityData(data);
+      } else if (page === 'reports-bdx-configuration') {
+        console.log('Setting BDX configuration data:', data);
+        setValuationData(data);
       } else {
         setValuationData(data);
       }
@@ -129,6 +133,8 @@ function AppContent() {
         return <AnalyticsTriangleDashboard onNavigateToPage={setPage} triangleName={triangleData?.triangleName} />;
       case 'reports-bdx-upload':
         return <ReportsBDXUpload onNavigateToPage={setPage} onInboxClick={() => console.log('Inbox clicked')} />;
+      case 'reports-bdx-configuration':
+        return <ReportsBDXConfiguration onNavigateToPage={setPage} uploadData={valuationData} />;
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:

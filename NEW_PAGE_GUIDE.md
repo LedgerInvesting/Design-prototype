@@ -403,10 +403,11 @@ return (
 
 **How it works:**
 - When navigating between pages, the Layout component detects the change
-- Content starts at **102% scale** and **95% opacity**
-- Smoothly animates to **100% scale** and **100% opacity** over 300ms
+- Content starts at **101% scale** (subtle zoom effect)
+- Smoothly animates to **100% scale** over 500ms
 - Uses `cubic-bezier(0.25, 0.8, 0.25, 1)` for a professional easing effect
 - Animation is triggered by changes in `selectedSidebarItem`, `selectedSidebarSubitem`, or `breadcrumbs`
+- Double `requestAnimationFrame` ensures smooth rendering without jumps
 
 **What you need to do:**
 - **NOTHING!** Just wrap your content in `<Layout>` and the animation happens automatically
@@ -434,8 +435,8 @@ export const YourPage: React.FC = ({ onNavigateToPage }) => {
   return (
     <Layout {...props}>
       <div style={{
-        transform: 'scale(1.02)',  // DON'T DO THIS
-        animation: 'fadeIn 0.3s'    // DON'T DO THIS
+        transform: 'scale(1.01)',  // DON'T DO THIS
+        animation: 'fadeIn 0.5s'    // DON'T DO THIS
       }}>
         <YourPageContent />
       </div>
@@ -448,10 +449,9 @@ export const YourPage: React.FC = ({ onNavigateToPage }) => {
 ```tsx
 // These styles are already in Layout component - DO NOT duplicate
 contentAreaStyles = {
-  opacity: isAnimating ? 0.95 : 1,                    // Start faded, end fully visible
-  transform: isAnimating ? 'scale(1.02)' : 'scale(1)', // Start larger, zoom down to normal
+  transform: isAnimating ? 'scale(1.01)' : 'scale(1)', // Subtle zoom out effect
   transformOrigin: 'center center',
-  transition: 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'
+  transition: !isAnimating ? 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
 };
 ```
 

@@ -11,6 +11,7 @@ export type PageType =
   | 'reports-renewal-transaction'
   | 'reports-cash-settlement'
   | 'reports-bdx-upload'
+  | 'reports-bdx-configuration'
   | 'reports-contracts-explorer'
   | 'contracts-upload'
   | 'contracts-ai-extraction'
@@ -60,6 +61,7 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
       'reports-renewal-transaction',
       'reports-cash-settlement',
       'reports-bdx-upload',
+      'reports-bdx-configuration',
       'reports-contracts-explorer',
       'contracts-upload',
       'contracts-ai-extraction',

@@ -90,7 +90,8 @@
       "Bash(git fetch:*)",
       "Bash(git branch:*)",
       "Bash(echo:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(del:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
