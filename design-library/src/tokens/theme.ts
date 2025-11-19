@@ -74,9 +74,18 @@ const colors = {
       yellow200: '#f9f6f0', // F9F6F0
     },
   },
+  workbench: {
+    orange700: '#f69e67',
+    orange450: '#d2c8bf',
+    dynamic: {
+      orange400: '#f0e8e1', // F0E8E1
+      orange300: '#f5ede8', // F5EDE8
+      orange200: '#f8f3ef', // F8F3EF
+    },
+  },
 } as const;
 
-export type ProductTheme = 'reports' | 'marketplace' | 'analytics' | 'contracts';
+export type ProductTheme = 'reports' | 'marketplace' | 'analytics' | 'contracts' | 'workbench';
 
 export interface ThemeColors {
   // Essential theme colors only (the ones that need to adapt per product)
@@ -116,6 +125,13 @@ const themeColorMappings: Record<ProductTheme, ThemeColors> = {
     primary400: colors.contracts.dynamic.yellow400,
     primary300: colors.contracts.dynamic.yellow300,
     primary200: colors.contracts.dynamic.yellow200,
+  },
+  workbench: {
+    primary700: colors.workbench.orange700, // main color
+    primary450: colors.workbench.orange450, // column headers, icons
+    primary400: colors.workbench.dynamic.orange400,
+    primary300: colors.workbench.dynamic.orange300,
+    primary200: colors.workbench.dynamic.orange200,
   },
 };
 

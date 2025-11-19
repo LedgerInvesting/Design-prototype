@@ -12,6 +12,7 @@ export type PageType =
   | 'reports-cash-settlement'
   | 'reports-bdx-upload'
   | 'reports-bdx-configuration'
+  | 'reports-cession-statement'
   | 'reports-contracts-explorer'
   | 'contracts-upload'
   | 'contracts-ai-extraction'
@@ -62,6 +63,7 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
       'reports-cash-settlement',
       'reports-bdx-upload',
       'reports-bdx-configuration',
+      'reports-cession-statement',
       'reports-contracts-explorer',
       'contracts-upload',
       'contracts-ai-extraction',
@@ -268,6 +270,8 @@ export const isSubPage = (pageType: PageType): boolean => {
     'reports-cash-settlement',
     'reports-contracts-explorer',
     'reports-insights-program-details',
+    'reports-bdx-configuration',
+    'reports-cession-statement',
 
     // Contracts sub-pages
     'contracts-ai-extraction',

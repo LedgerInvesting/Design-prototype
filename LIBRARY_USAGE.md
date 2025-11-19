@@ -79,6 +79,16 @@ colors.contracts.dynamic.yellow300  // #f3f1ea
 colors.contracts.dynamic.yellow200  // #f9f8f3
 ```
 
+**Workbench (Orange):**
+```tsx
+colors.workbench.orange700  // #f69e67 (MAIN)
+colors.workbench.orange450  // #d2c8bf
+
+colors.workbench.dynamic.orange400  // #f0e8e1
+colors.workbench.dynamic.orange300  // #f5ede8
+colors.workbench.dynamic.orange200  // #f8f3ef
+```
+
 #### Theme-Aware Colors (Use with useSemanticColors())
 
 ```tsx
@@ -673,6 +683,7 @@ const PageContent = () => {
 - `"analytics"` - Green theme
 - `"marketplace"` - Violet theme
 - `"contracts"` - Yellow theme
+- `"workbench"` - Orange theme
 
 ---
 

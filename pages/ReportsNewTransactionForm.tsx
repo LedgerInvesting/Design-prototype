@@ -25,7 +25,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
   renewalData
 }) => {
   const colors = useSemanticColors();
-  const [activeTab, setActiveTab] = useState<string>('basic-info');
+  const [activeTab, setActiveTab] = useState<string>(renewalData?.initialTab || 'basic-info');
   const [formData, setFormData] = useState({
     transactionName: renewalData?.transactionName || '',
     reinsurerName: renewalData?.reinsurerName || '',

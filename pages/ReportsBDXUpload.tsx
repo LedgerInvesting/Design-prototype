@@ -150,12 +150,21 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
     },
   };
 
-  // Handle Add button clicks
+  // Handle Add button clicks - navigate directly to configuration page
   const handleAddClick = (month: string, type: string) => {
-    setAddModalContext({ month, type });
-    setSelectedFile(null); // Reset file when opening modal
-    setDocumentType('policy'); // Reset document type when opening modal
-    setIsAddModalOpen(true);
+    if (onNavigateToPage) {
+      // Prepare empty upload data for new configuration
+      const uploadInfo = {
+        fileName: undefined,
+        documentType: type,
+        month: month,
+        year: '2025',
+        openModal: true // Open the import modal when navigating from Add button
+      };
+
+      // Navigate to configuration page
+      onNavigateToPage('reports-bdx-configuration', uploadInfo);
+    }
   };
 
   // File handling function

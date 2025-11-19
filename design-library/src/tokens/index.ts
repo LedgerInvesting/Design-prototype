@@ -254,6 +254,18 @@ export const colors = {
       yellow200: '#f9f6f0', // F9F6F0
     },
   },
+  // @deprecated Use the Theme System instead: useSemanticColors() hook
+  workbench: {
+    // Main colors
+    orange700: '#f69e67', // main color
+    orange450: '#d2c8bf',
+    // Dynamic colors
+    dynamic: {
+      orange400: '#f0e8e1', // F0E8E1
+      orange300: '#f5ede8', // F5EDE8
+      orange200: '#f8f3ef', // F8F3EF
+    },
+  },
 } as const;
 
 export const spacing = {

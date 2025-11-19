@@ -203,9 +203,9 @@ export const MinusExtraSmall: React.FC<ExtraSmallIconProps> = ({
   </svg>
 );
 
-export const SearchExtraSmall: React.FC<ExtraSmallIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const SearchExtraSmall: React.FC<ExtraSmallIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg
     width={ICON_SIZES.extraSmall}
@@ -217,6 +217,22 @@ export const SearchExtraSmall: React.FC<ExtraSmallIconProps> = ({
   >
     <path d="M4.5 5.5L6.5 7.5" stroke={color} strokeWidth="2"/>
     <circle cx="3" cy="4" r="2" stroke={color} strokeWidth="2"/>
+  </svg>
+);
+
+export const CheckExtraSmall: React.FC<ExtraSmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg
+    width={ICON_SIZES.extraSmall}
+    height={ICON_SIZES.extraSmall}
+    viewBox="0 0 8 8"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M0.75 3.25942L3.07143 5.66683L7.25 1.3335" stroke={color} strokeWidth="1.6"/>
   </svg>
 );
 
@@ -1690,6 +1706,28 @@ export const KLogo: React.FC<LogoIconProps> = ({
   </svg>
 );
 
+export const WorkbenchLogo: React.FC<LogoIconProps> = ({
+  color = '#F69E67',
+  className
+}) => (
+  <svg width={ICON_SIZES.logo} height={ICON_SIZES.logo} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <g clipPath="url(#clip0_2299_25)">
+      <path d="M5.5149 10.6639C5.97695 10.8529 6.48202 10.9587 7.01208 10.9587C7.53262 10.9587 8.02886 10.8562 8.48414 10.6736V13.9277H5.5149V10.6639Z" fill={color}/>
+      <path d="M13.9277 9.28573L12.4431 11.8566L9.44198 10.1237C10.2341 9.5067 10.7853 8.59624 10.9314 7.55476L13.9277 9.28573Z" fill={color}/>
+      <path d="M3.08983 7.54123C3.23232 8.58338 3.78116 9.49544 4.57058 10.115L1.58975 11.8372L0.105128 9.2664L3.08983 7.54123Z" fill={color}/>
+      <path d="M8.99157 8.97935H5.03259V5.02065H8.99157V8.97935Z" fill={color}/>
+      <path d="M4.57155 3.8831C3.78205 4.50206 3.23401 5.41428 3.0908 6.45587L0.0722656 4.71427L1.55688 2.14343L4.57155 3.8831Z" fill={color}/>
+      <path d="M13.8949 4.7336L10.9314 6.44234C10.7847 5.40184 10.2336 4.49178 9.44198 3.87537L12.4103 2.16276L13.8949 4.7336Z" fill={color}/>
+      <path d="M8.48414 3.32544C8.02895 3.14295 7.53249 3.04129 7.01208 3.04129C6.48215 3.04129 5.97686 3.14622 5.5149 3.3351V0.0722656H8.48414V3.32544Z" fill={color}/>
+    </g>
+    <defs>
+      <clipPath id="clip0_2299_25">
+        <rect width="14" height="14" fill="white"/>
+      </clipPath>
+    </defs>
+  </svg>
+);
+
 // Card Icons (15x18px) - Used beside card titles
 export const CardsCheck: React.FC<CardIconProps> = ({
   color = 'currentColor',
@@ -1857,6 +1895,7 @@ export const icons = {
     reports: ReportsLogo,
     analytics: AnalyticsLogo,
     contracts: ContractsLogo,
+    workbench: WorkbenchLogo,
   },
   cards: {
     // Card icons used beside card titles (15x18px)

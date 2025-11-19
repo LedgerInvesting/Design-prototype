@@ -27,6 +27,8 @@ export interface FormDropdownProps {
   tooltipSections?: InfoTooltipSection[];
   /** Error/warning message */
   helperText?: string;
+  /** Label position - 'top' (default) or 'left' */
+  labelPosition?: 'top' | 'left';
   /** Change handler */
   onChange?: (value: string) => void;
   /** Focus handler */
@@ -49,6 +51,7 @@ export const FormDropdown = forwardRef<HTMLDivElement, FormDropdownProps>(({
   tooltipText,
   tooltipSections,
   helperText,
+  labelPosition = 'top',
   onChange,
   onFocus,
   onBlur,
@@ -230,18 +233,25 @@ export const FormDropdown = forwardRef<HTMLDivElement, FormDropdownProps>(({
   };
 
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className={className} style={{
+      display: 'flex',
+      flexDirection: labelPosition === 'left' ? 'row' : 'column',
+      alignItems: labelPosition === 'left' ? 'center' : 'stretch',
+      gap: labelPosition === 'left' ? spacing[3] : '0'
+    }}>
       {/* Label with optional tooltip */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         gap: spacing[2],
-        marginBottom: spacing[1],
-        height: '20px'
+        marginBottom: labelPosition === 'left' ? '0' : spacing[1],
+        height: '20px',
+        flexShrink: 0
       }}>
         <label style={{
           ...commonTypographyStyles.label(),
           color: colors.blackAndWhite.black900,
+          whiteSpace: 'nowrap'
         }}>
           {label}
         </label>
@@ -256,7 +266,7 @@ export const FormDropdown = forwardRef<HTMLDivElement, FormDropdownProps>(({
       </div>
 
       {/* Dropdown container */}
-      <div ref={dropdownRef} style={{ position: 'relative' }}>
+      <div ref={dropdownRef} style={{ position: 'relative', flex: labelPosition === 'left' ? 1 : 'initial' }}>
         <div
           ref={ref}
           style={containerStyles}

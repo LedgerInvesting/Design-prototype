@@ -26,6 +26,10 @@ export interface FileUploadBoxProps {
     primary400?: string;
     primary200?: string;
   };
+  /** Whether to show file specifications (default: false) */
+  showFileSpecs?: boolean;
+  /** Array of file specification strings or array of arrays for multi-line specs (e.g., [['Spec 1', 'Spec 2'], ['Spec 3']]) */
+  fileSpecs?: string[] | string[][];
 }
 
 /**
@@ -55,6 +59,8 @@ export const FileUploadBox: React.FC<FileUploadBoxProps> = ({
   minHeight = '99px',
   placeholderText = 'Drop File here to get started or',
   themeColors,
+  showFileSpecs = false,
+  fileSpecs = [],
 }) => {
   const colors = useSemanticColors();
 
@@ -223,6 +229,30 @@ export const FileUploadBox: React.FC<FileUploadBoxProps> = ({
           browse
         </span>
       </div>
+
+      {/* File Specifications */}
+      {showFileSpecs && fileSpecs.length > 0 && (
+        <div style={{
+          ...typography.styles.bodyS,
+          color: colors.blackAndWhite.black500,
+          lineHeight: '110%',
+          textAlign: 'center',
+          width: '100%',
+          marginTop: '-5px'
+        }}>
+          {Array.isArray(fileSpecs[0])
+            ? // Multi-line specs (array of arrays)
+              (fileSpecs as string[][]).map((line, index) => (
+                <React.Fragment key={index}>
+                  {line.join(' · ')}
+                  {index < fileSpecs.length - 1 && <br />}
+                </React.Fragment>
+              ))
+            : // Single line specs (array of strings)
+              (fileSpecs as string[]).join(' · ')
+          }
+        </div>
+      )}
     </div>
   );
 };
