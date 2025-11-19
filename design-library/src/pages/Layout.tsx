@@ -171,16 +171,18 @@ export const Layout: React.FC<LayoutProps> = ({
     const newKey = `${selectedSidebarItem}-${selectedSidebarSubitem}-${breadcrumbs?.length || 0}`;
 
     if (newKey !== contentKey) {
-      // Start animation: content scales down and fades slightly
-      setIsAnimating(true);
+      // Update content key first
       setContentKey(newKey);
 
-      // After a short delay, end animation to show full content
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-      }, 20); // Very short delay to trigger the animation
+      // Start animation: immediately jump to 1.02 scale
+      setIsAnimating(true);
 
-      return () => clearTimeout(timer);
+      // Use double requestAnimationFrame to ensure the scale(1.02) is rendered before transitioning
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(false);
+        });
+      });
     }
   }, [selectedSidebarItem, selectedSidebarSubitem, breadcrumbs, contentKey, isFirstRender]);
 
@@ -208,11 +210,12 @@ export const Layout: React.FC<LayoutProps> = ({
     padding: formMode ? '40px 60px 60px 60px' : '40px 60px 60px 60px', // Standard padding (will be overridden by inline marginTop)
     overflow: 'hidden', // Prevent any content from overflowing
     boxSizing: 'border-box', // Include padding in width calculation
-    // Page transition animation - start at 102% and zoom down to 100% (only in nav mode)
-    opacity: (!formMode && isAnimating) ? 0.95 : 1,
-    transform: (!formMode && isAnimating) ? 'scale(1.02)' : 'scale(1)',
+    // Page transition animation - subtle zoom out effect (only in nav mode)
+    opacity: !formMode ? (isAnimating ? 1 : 1) : 1,
+    transform: !formMode ? (isAnimating ? 'scale(1.01)' : 'scale(1)') : 'scale(1)',
     transformOrigin: 'center center', // Ensure scaling from center
-    transition: !formMode ? 'opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none',
+    // Only apply transition when zooming out (isAnimating false), not when starting
+    transition: !formMode && !isAnimating ? 'opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none',
   };
 
   return (
