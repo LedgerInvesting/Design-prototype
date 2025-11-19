@@ -74,60 +74,70 @@ const CessionMetricRow: React.FC<CessionMetricRowProps> = ({
   months
 }) => {
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>, month: string) => {
+    // Only allow editing March (last month)
+    if (month !== 'March') return;
+
     // Only allow numbers, commas, and periods
     const newValue = e.target.value.replace(/[^0-9.,]/g, '');
     onChangeMonth(month, newValue);
   };
 
-  const renderInputField = (month: string, isFirst: boolean) => (
-    <div style={{
-      minWidth: '200px',
-      width: '200px',
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 20px',
-      height: '100%',
-      position: 'relative'
-    }}>
-      {!isFirst && (
-        <div style={{
-          position: 'absolute',
-          left: 0,
-          top: '10px',
-          bottom: '10px',
-          width: '1px',
-          backgroundColor: semanticColors.theme.primary400
-        }} />
-      )}
+  const renderInputField = (month: string, isFirst: boolean) => {
+    const isEditable = month === 'March';
+    const textColor = isEditable ? semanticColors.blackAndWhite.black900 : semanticColors.blackAndWhite.black500;
+
+    return (
       <div style={{
+        minWidth: '200px',
+        width: '200px',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        width: '100%'
+        padding: '0 20px',
+        height: '100%',
+        position: 'relative'
       }}>
-        <span style={{
-          ...typography.styles.bodyS,
-          color: semanticColors.blackAndWhite.black900
-        }}>$</span>
-        <input
-          type="text"
-          value={monthValues[month] || ''}
-          onChange={(e) => handleValueChange(e, month)}
-          placeholder="Type value"
-          style={{
-            border: 'none',
-            outline: 'none',
-            background: 'transparent',
-            ...typography.styles.bodyM,
-            color: semanticColors.blackAndWhite.black900,
-            width: '100%',
-            textAlign: 'left'
-          }}
-          className="metric-value-input"
-        />
+        {!isFirst && (
+          <div style={{
+            position: 'absolute',
+            left: 0,
+            top: '10px',
+            bottom: '10px',
+            width: '1px',
+            backgroundColor: semanticColors.theme.primary400
+          }} />
+        )}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          width: '100%'
+        }}>
+          <span style={{
+            ...typography.styles.bodyS,
+            color: textColor
+          }}>$</span>
+          <input
+            type="text"
+            value={monthValues[month] || ''}
+            onChange={(e) => handleValueChange(e, month)}
+            placeholder="Type value"
+            readOnly={!isEditable}
+            style={{
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              ...typography.styles.bodyM,
+              color: textColor,
+              width: '100%',
+              textAlign: 'left',
+              cursor: isEditable ? 'text' : 'default'
+            }}
+            className="metric-value-input"
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div style={{
@@ -153,12 +163,13 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
   const downloadDropdownRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Month columns - using 6 months to force horizontal scrolling
   const months = ['October', 'November', 'December', 'January', 'February', 'March'];
 
   // Initialize metrics with month-based values
-  // March (last column) should have values from previous screen
+  // March (last column) should have values from previous screen, others have fake data
   const [metrics, setMetrics] = useState<{
     earnedPremium: { [key: string]: string };
     writtenPremium1: { [key: string]: string };
@@ -170,19 +181,82 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
   }>(() => {
     // Populate March (last column) with generated values from previous screen
     const generatedValues = cessionData?.generatedValues;
-    const emptyMonths: { [key: string]: string } = {};
-    months.forEach(month => {
-      emptyMonths[month] = month === 'March' ? '' : '';
+
+    // Generate fake data for previous months based on March values
+    // Each month has slight variations to make it realistic
+    const generateMonthData = (baseValue: string | undefined, monthIndex: number) => {
+      if (!baseValue) return '';
+      const numValue = parseFloat(baseValue.replace(/,/g, ''));
+      if (isNaN(numValue)) return baseValue;
+
+      // Vary the value by month (earlier months have slightly different values)
+      const variance = [0.85, 0.88, 0.92, 0.95, 0.97, 1.0]; // October to March
+      const adjustedValue = numValue * variance[monthIndex];
+      return adjustedValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const monthlyData: { [key: string]: string } = {};
+    months.forEach((month, index) => {
+      monthlyData[month] = month === 'March' ? '' : '';
     });
 
     return {
-      earnedPremium: { ...emptyMonths, 'March': generatedValues?.earnedPremium || '' },
-      writtenPremium1: { ...emptyMonths, 'March': generatedValues?.writtenPremium1 || '' },
-      writtenPremium2: { ...emptyMonths, 'March': generatedValues?.writtenPremium2 || '' },
-      paidLoss: { ...emptyMonths, 'March': generatedValues?.paidLoss || '' },
-      reportedLoss: { ...emptyMonths, 'March': generatedValues?.reportedLoss || '' },
-      ibnr: { ...emptyMonths, 'March': generatedValues?.ibnr || '' },
-      adjustment: { ...emptyMonths, 'March': generatedValues?.adjustment || '' },
+      earnedPremium: {
+        'October': generateMonthData(generatedValues?.earnedPremium, 0),
+        'November': generateMonthData(generatedValues?.earnedPremium, 1),
+        'December': generateMonthData(generatedValues?.earnedPremium, 2),
+        'January': generateMonthData(generatedValues?.earnedPremium, 3),
+        'February': generateMonthData(generatedValues?.earnedPremium, 4),
+        'March': generatedValues?.earnedPremium || ''
+      },
+      writtenPremium1: {
+        'October': generateMonthData(generatedValues?.writtenPremium1, 0),
+        'November': generateMonthData(generatedValues?.writtenPremium1, 1),
+        'December': generateMonthData(generatedValues?.writtenPremium1, 2),
+        'January': generateMonthData(generatedValues?.writtenPremium1, 3),
+        'February': generateMonthData(generatedValues?.writtenPremium1, 4),
+        'March': generatedValues?.writtenPremium1 || ''
+      },
+      writtenPremium2: {
+        'October': generateMonthData(generatedValues?.writtenPremium2, 0),
+        'November': generateMonthData(generatedValues?.writtenPremium2, 1),
+        'December': generateMonthData(generatedValues?.writtenPremium2, 2),
+        'January': generateMonthData(generatedValues?.writtenPremium2, 3),
+        'February': generateMonthData(generatedValues?.writtenPremium2, 4),
+        'March': generatedValues?.writtenPremium2 || ''
+      },
+      paidLoss: {
+        'October': generateMonthData(generatedValues?.paidLoss, 0),
+        'November': generateMonthData(generatedValues?.paidLoss, 1),
+        'December': generateMonthData(generatedValues?.paidLoss, 2),
+        'January': generateMonthData(generatedValues?.paidLoss, 3),
+        'February': generateMonthData(generatedValues?.paidLoss, 4),
+        'March': generatedValues?.paidLoss || ''
+      },
+      reportedLoss: {
+        'October': generateMonthData(generatedValues?.reportedLoss, 0),
+        'November': generateMonthData(generatedValues?.reportedLoss, 1),
+        'December': generateMonthData(generatedValues?.reportedLoss, 2),
+        'January': generateMonthData(generatedValues?.reportedLoss, 3),
+        'February': generateMonthData(generatedValues?.reportedLoss, 4),
+        'March': generatedValues?.reportedLoss || ''
+      },
+      ibnr: {
+        'October': generateMonthData(generatedValues?.ibnr, 0),
+        'November': generateMonthData(generatedValues?.ibnr, 1),
+        'December': generateMonthData(generatedValues?.ibnr, 2),
+        'January': generateMonthData(generatedValues?.ibnr, 3),
+        'February': generateMonthData(generatedValues?.ibnr, 4),
+        'March': generatedValues?.ibnr || ''
+      },
+      adjustment: {
+        'October': generateMonthData(generatedValues?.adjustment, 0),
+        'November': generateMonthData(generatedValues?.adjustment, 1),
+        'December': generateMonthData(generatedValues?.adjustment, 2),
+        'January': generateMonthData(generatedValues?.adjustment, 3),
+        'February': generateMonthData(generatedValues?.adjustment, 4),
+        'March': generatedValues?.adjustment || ''
+      },
     };
   });
 
@@ -219,6 +293,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [isDownloadDropdownOpen]);
+
+  // Scroll to the last month (March) when page loads
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      // Scroll to the far right to show the last month
+      scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth;
+    }
+  }, []);
 
   // Add CSS for placeholder styling and custom horizontal scrollbar
   React.useEffect(() => {
@@ -320,11 +402,10 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '8px',
-                padding: '8px 12px 8px 20px',
+                gap: '12px',
+                padding: '8px 22px 8px 20px',
                 height: '44px',
-                minWidth: '187px',
+                width: 'fit-content',
                 backgroundColor: semanticColors.blackAndWhite.black900,
                 border: 'none',
                 borderRadius: borderRadius[4],
@@ -334,6 +415,12 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               }}
             >
               <span>Download</span>
+              <div style={{
+                width: '1px',
+                height: '24px',
+                backgroundColor: semanticColors.blackAndWhite.black800,
+                flexShrink: 0
+              }} />
               <div style={{
                 transform: isDownloadDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 transition: 'transform 0.2s ease',
@@ -876,6 +963,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
 
             {/* Right: Scrollable Months Column */}
             <div
+              ref={scrollContainerRef}
               className="custom-horizontal-scroll"
               style={{
                 flex: 1,
@@ -995,6 +1083,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   const paidLoss = parseFloat(metrics.paidLoss[month]?.replace(/,/g, '') || '0');
                   const lossReserves = reportedLoss - paidLoss;
                   const hasValue = reportedLoss > 0 || paidLoss > 0;
+                  const isEditable = month === 'March';
 
                   return (
                     <div key={month} style={{
@@ -1042,6 +1131,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   const ibnr = parseFloat(metrics.ibnr[month]?.replace(/,/g, '') || '0');
                   const incurredLoss = reportedLoss + ibnr;
                   const hasValue = reportedLoss > 0 || ibnr > 0;
+                  const isEditable = month === 'March';
 
                   return (
                     <div key={month} style={{
