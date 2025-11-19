@@ -46,6 +46,7 @@ function AppContent() {
   const [programDetailsData, setProgramDetailsData] = useState<any>(null);
   const [triangleData, setTriangleData] = useState<any>(null);
   const [currentEntityData, setCurrentEntityData] = useState<any>(null);
+  const [cessionData, setCessionData] = useState<any>(null);
 
   // Listen to browser back/forward buttons
   useEffect(() => {
@@ -82,6 +83,9 @@ function AppContent() {
       } else if (page === 'reports-bdx-configuration') {
         console.log('Setting BDX configuration data:', data);
         setValuationData(data);
+      } else if (page === 'reports-cession-statement') {
+        console.log('Setting cession data:', data);
+        setCessionData(data);
       } else {
         setValuationData(data);
       }
@@ -137,7 +141,7 @@ function AppContent() {
       case 'reports-bdx-configuration':
         return <ReportsBDXConfiguration onNavigateToPage={setPage} uploadData={valuationData} />;
       case 'reports-cession-statement':
-        return <ReportsCessionStatement onNavigateToPage={setPage} />;
+        return <ReportsCessionStatement onNavigateToPage={setPage} cessionData={cessionData} />;
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:

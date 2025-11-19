@@ -643,7 +643,18 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               onClick={() => {
                 console.log('Generate Cession clicked, all fields filled:', allFieldsFilled);
                 if (onNavigateToPage) {
-                  onNavigateToPage('reports-cession-statement');
+                  // Pass the metrics values to the cession statement page
+                  onNavigateToPage('reports-cession-statement', {
+                    generatedValues: {
+                      earnedPremium: metrics.earnedPremium.value,
+                      writtenPremium1: metrics.writtenPremium1.value,
+                      writtenPremium2: metrics.writtenPremium2.value,
+                      paidLoss: metrics.paidLoss.value,
+                      reportedLoss: metrics.reportedLoss.value,
+                      ibnr: metrics.ibnr.value,
+                      adjustment: metrics.adjustment.value,
+                    }
+                  });
                 }
               }}
             >

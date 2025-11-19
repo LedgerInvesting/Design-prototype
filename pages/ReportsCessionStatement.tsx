@@ -6,48 +6,99 @@ import { createPageNavigationHandler, type NavigationHandler } from '@design-lib
 
 interface ReportsCessionStatementProps {
   onNavigateToPage?: NavigationHandler;
+  cessionData?: {
+    generatedValues?: {
+      earnedPremium: string;
+      writtenPremium1: string;
+      writtenPremium2: string;
+      paidLoss: string;
+      reportedLoss: string;
+      ibnr: string;
+      adjustment: string;
+    };
+  };
 }
 
-// Helper component for metric rows with input fields
-interface CessionMetricRowProps {
+// Helper component for metric name cells (left column)
+interface CessionMetricNameCellProps {
   metricName: string;
   semanticColors: any;
   showBorder: boolean;
-  valueColumn1?: string;
-  valueColumn2?: string;
-  valueColumn3?: string;
-  onChangeColumn1?: (value: string) => void;
-  onChangeColumn2?: (value: string) => void;
-  onChangeColumn3?: (value: string) => void;
+}
+
+const CessionMetricNameCell: React.FC<CessionMetricNameCellProps> = ({
+  metricName,
+  semanticColors,
+  showBorder
+}) => {
+  return (
+    <div style={{
+      height: '40px',
+      display: 'flex',
+      alignItems: 'center',
+      padding: '0 10px 0 20px',
+      borderBottom: showBorder ? `1px dashed ${semanticColors.theme.primary400}` : 'none'
+    }}>
+      <InfoTooltip
+        text={metricName}
+        variant="small"
+      />
+      <p style={{
+        ...typography.styles.bodyM,
+        color: semanticColors.blackAndWhite.black800,
+        margin: 0,
+        marginLeft: '10px',
+        whiteSpace: 'nowrap',
+        fontWeight: typography.fontWeight.medium
+      }}>
+        {metricName}
+      </p>
+    </div>
+  );
+};
+
+// Helper component for month value rows (right column)
+interface CessionMetricRowProps {
+  semanticColors: any;
+  showBorder: boolean;
+  monthValues: { [key: string]: string };
+  onChangeMonth: (month: string, value: string) => void;
+  months: string[];
 }
 
 const CessionMetricRow: React.FC<CessionMetricRowProps> = ({
-  metricName,
   semanticColors,
   showBorder,
-  valueColumn1 = '',
-  valueColumn2 = '',
-  valueColumn3 = '',
-  onChangeColumn1,
-  onChangeColumn2,
-  onChangeColumn3
+  monthValues,
+  onChangeMonth,
+  months
 }) => {
-  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>, column: 1 | 2 | 3) => {
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>, month: string) => {
     // Only allow numbers, commas, and periods
     const newValue = e.target.value.replace(/[^0-9.,]/g, '');
-    if (column === 1 && onChangeColumn1) onChangeColumn1(newValue);
-    if (column === 2 && onChangeColumn2) onChangeColumn2(newValue);
-    if (column === 3 && onChangeColumn3) onChangeColumn3(newValue);
+    onChangeMonth(month, newValue);
   };
 
-  const renderInputField = (value: string, column: 1 | 2 | 3) => (
+  const renderInputField = (month: string, isFirst: boolean) => (
     <div style={{
-      flex: 1,
+      minWidth: '200px',
+      width: '200px',
       display: 'flex',
       alignItems: 'center',
       padding: '0 20px',
-      borderLeft: `1px solid ${semanticColors.theme.primary400}`
+      height: '100%',
+      position: 'relative'
     }}>
+      {!isFirst && (
+        <div style={{
+          position: 'absolute',
+          left: 0,
+          top: '10px',
+          bottom: '10px',
+          width: '1px',
+          backgroundColor: semanticColors.theme.primary400
+        }} />
+      )}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -60,8 +111,8 @@ const CessionMetricRow: React.FC<CessionMetricRowProps> = ({
         }}>$</span>
         <input
           type="text"
-          value={value}
-          onChange={(e) => handleValueChange(e, column)}
+          value={monthValues[month] || ''}
+          onChange={(e) => handleValueChange(e, month)}
           placeholder="Type value"
           style={{
             border: 'none',
@@ -83,96 +134,76 @@ const CessionMetricRow: React.FC<CessionMetricRowProps> = ({
       height: '40px',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '0 0 0 10px',
       borderBottom: showBorder ? `1px dashed ${semanticColors.theme.primary400}` : 'none'
     }}>
-      {/* Left: Metric Name */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px',
-        padding: '0 10px',
-        width: '400px',
-        flexShrink: 0
-      }}>
-        <InfoTooltip
-          text={metricName}
-          variant="small"
-        />
-        <p style={{
-          ...typography.styles.bodyM,
-          color: semanticColors.blackAndWhite.black800,
-          margin: 0
-        }}>
-          {metricName}
-        </p>
-      </div>
-
-      {/* Right: Three Input Fields */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        height: '100%',
-        flex: 1
-      }}>
-        {renderInputField(valueColumn1, 1)}
-        {renderInputField(valueColumn2, 2)}
-        {renderInputField(valueColumn3, 3)}
-      </div>
+      {months.map((month, index) => (
+        <React.Fragment key={month}>
+          {renderInputField(month, index === 0)}
+        </React.Fragment>
+      ))}
     </div>
   );
 };
 
 export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = ({
-  onNavigateToPage
+  onNavigateToPage,
+  cessionData
 }) => {
   const semanticColors = useSemanticColors();
-
-  // Period selection state
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('Month');
-
-  // Download dropdown state
+  const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
   const downloadDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Metric values state
+  // Month columns - using 6 months to force horizontal scrolling
+  const months = ['October', 'November', 'December', 'January', 'February', 'March'];
+
+  // Initialize metrics with month-based values
+  // March (last column) should have values from previous screen
   const [metrics, setMetrics] = useState<{
-    earnedPremium: { col1: string; col2: string; col3: string };
-    writtenPremium1: { col1: string; col2: string; col3: string };
-    writtenPremium2: { col1: string; col2: string; col3: string };
-    paidLoss: { col1: string; col2: string; col3: string };
-    reportedLoss: { col1: string; col2: string; col3: string };
-    ibnr: { col1: string; col2: string; col3: string };
-    adjustment: { col1: string; col2: string; col3: string };
-  }>({
-    earnedPremium: { col1: '', col2: '', col3: '' },
-    writtenPremium1: { col1: '', col2: '', col3: '' },
-    writtenPremium2: { col1: '', col2: '', col3: '' },
-    paidLoss: { col1: '', col2: '', col3: '' },
-    reportedLoss: { col1: '', col2: '', col3: '' },
-    ibnr: { col1: '', col2: '', col3: '' },
-    adjustment: { col1: '', col2: '', col3: '' },
+    earnedPremium: { [key: string]: string };
+    writtenPremium1: { [key: string]: string };
+    writtenPremium2: { [key: string]: string };
+    paidLoss: { [key: string]: string };
+    reportedLoss: { [key: string]: string };
+    ibnr: { [key: string]: string };
+    adjustment: { [key: string]: string };
+  }>(() => {
+    // Populate March (last column) with generated values from previous screen
+    const generatedValues = cessionData?.generatedValues;
+    const emptyMonths: { [key: string]: string } = {};
+    months.forEach(month => {
+      emptyMonths[month] = month === 'March' ? '' : '';
+    });
+
+    return {
+      earnedPremium: { ...emptyMonths, 'March': generatedValues?.earnedPremium || '' },
+      writtenPremium1: { ...emptyMonths, 'March': generatedValues?.writtenPremium1 || '' },
+      writtenPremium2: { ...emptyMonths, 'March': generatedValues?.writtenPremium2 || '' },
+      paidLoss: { ...emptyMonths, 'March': generatedValues?.paidLoss || '' },
+      reportedLoss: { ...emptyMonths, 'March': generatedValues?.reportedLoss || '' },
+      ibnr: { ...emptyMonths, 'March': generatedValues?.ibnr || '' },
+      adjustment: { ...emptyMonths, 'March': generatedValues?.adjustment || '' },
+    };
   });
 
-  // Update individual metric column
+  // Update individual metric for a specific month
   const updateMetric = (
     field: keyof typeof metrics,
-    column: 'col1' | 'col2' | 'col3',
+    month: string,
     value: string
   ) => {
     setMetrics(prev => ({
       ...prev,
       [field]: {
         ...prev[field],
-        [column]: value
+        [month]: value
       }
     }));
   };
 
-  // Check if all fields are filled
+  // Check if all fields are filled (all metrics for all months)
   const allFieldsFilled = Object.values(metrics).every(
-    metric => metric.col1 && metric.col2 && metric.col3
+    metricMonths => months.every(month => metricMonths[month])
   );
 
   // Close dropdown when clicking outside
@@ -189,13 +220,29 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
     }
   }, [isDownloadDropdownOpen]);
 
-  // Add CSS for placeholder styling
+  // Add CSS for placeholder styling and custom horizontal scrollbar
   React.useEffect(() => {
     const style = document.createElement('style');
     style.innerHTML = `
       .metric-value-input::placeholder {
         color: ${semanticColors.blackAndWhite.black300};
         opacity: 1;
+      }
+      .custom-horizontal-scroll::-webkit-scrollbar {
+        height: 6px;
+      }
+      .custom-horizontal-scroll::-webkit-scrollbar-track {
+        background: ${semanticColors.theme.primary200};
+      }
+      .custom-horizontal-scroll::-webkit-scrollbar-thumb {
+        background: ${semanticColors.blackAndWhite.black900};
+        border-radius: 3px;
+      }
+      .custom-horizontal-scroll::-webkit-scrollbar-thumb:hover {
+        background: ${semanticColors.blackAndWhite.black900};
+      }
+      .custom-horizontal-scroll::-webkit-scrollbar-button {
+        display: none;
       }
     `;
     document.head.appendChild(style);
@@ -214,12 +261,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
     ? [
         { label: 'Reports', isActive: false },
         { label: 'BDX Upload', onClick: () => onNavigateToPage('reports-bdx-upload'), isActive: false },
-        { label: 'Cession Statement', isActive: true }
+        { label: 'Cession Summary Generation', onClick: () => onNavigateToPage('reports-bdx-configuration'), isActive: false },
+        { label: 'Cession statement', isActive: true }
       ]
     : [
         { label: 'Reports' },
         { label: 'BDX Upload' },
-        { label: 'Cession Statement' }
+        { label: 'Cession Summary Generation' },
+        { label: 'Cession statement' }
       ];
 
   return (
@@ -239,7 +288,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px'
+        gap: '40px'
       }}>
         {/* Header Section - Title and Button */}
         <div style={{
@@ -267,8 +316,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
           {/* Download Dropdown */}
           <div ref={downloadDropdownRef} style={{ position: 'relative' }}>
             <button
-              onClick={() => !allFieldsFilled ? null : setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
-              disabled={!allFieldsFilled}
+              onClick={() => setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -277,13 +325,12 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                 padding: '8px 12px 8px 20px',
                 height: '44px',
                 minWidth: '187px',
-                backgroundColor: !allFieldsFilled ? semanticColors.blackAndWhite.black300 : semanticColors.blackAndWhite.black900,
+                backgroundColor: semanticColors.blackAndWhite.black900,
                 border: 'none',
                 borderRadius: borderRadius[4],
-                cursor: !allFieldsFilled ? 'not-allowed' : 'pointer',
+                cursor: 'pointer',
                 ...typography.styles.bodyL,
                 color: semanticColors.blackAndWhite.white,
-                opacity: !allFieldsFilled ? 0.6 : 1,
               }}
             >
               <span>Download</span>
@@ -296,7 +343,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                 <ChevronDownExtraSmall color={semanticColors.theme.primary700} />
               </div>
             </button>
-            {isDownloadDropdownOpen && allFieldsFilled && (
+            {isDownloadDropdownOpen && (
               <div style={{
                 position: 'absolute',
                 top: '100%',
@@ -352,14 +399,150 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
           </div>
         </div>
 
-        {/* Data Detail Level */}
-        <p style={{
-          ...typography.styles.bodyL,
-          margin: 0
+        {/* Stats Card */}
+        <div style={{
+          backgroundColor: semanticColors.blackAndWhite.white,
+          border: `1px solid ${semanticColors.theme.primary400}`,
+          borderRadius: borderRadius[12],
+          padding: '30px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          height: '105px'
         }}>
-          <span style={{ color: semanticColors.blackAndWhite.black500 }}>Data detail level — </span>
-          <span style={{ color: semanticColors.blackAndWhite.black900 }}>Aggregated</span>
-        </p>
+          {/* Reporting Period November 2025 */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            width: '180px',
+            flexShrink: 0
+          }}>
+            <p style={{
+              ...typography.styles.bodyS,
+              color: semanticColors.blackAndWhite.black500,
+              margin: 0
+            }}>
+              Reporting Period
+            </p>
+            <p style={{
+              fontSize: '26px',
+              fontWeight: typography.fontWeight.regular,
+              lineHeight: '1.3',
+              color: semanticColors.blackAndWhite.black900,
+              margin: 0,
+              whiteSpace: 'nowrap'
+            }}>
+              November 2025
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div style={{
+            width: '1px',
+            height: '45px',
+            backgroundColor: semanticColors.theme.primary400,
+            flexShrink: 0
+          }} />
+
+          {/* Written Premium */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            width: '180px',
+            flexShrink: 0
+          }}>
+            <p style={{
+              ...typography.styles.bodyS,
+              color: semanticColors.blackAndWhite.black500,
+              margin: 0
+            }}>
+              Written Premium
+            </p>
+            <p style={{
+              fontSize: '26px',
+              fontWeight: typography.fontWeight.regular,
+              lineHeight: '1.3',
+              color: semanticColors.blackAndWhite.black900,
+              margin: 0,
+              whiteSpace: 'nowrap'
+            }}>
+              $1,500,000
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div style={{
+            width: '1px',
+            height: '45px',
+            backgroundColor: semanticColors.theme.primary400,
+            flexShrink: 0
+          }} />
+
+          {/* Incurred Loss */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            width: '180px',
+            flexShrink: 0
+          }}>
+            <p style={{
+              ...typography.styles.bodyS,
+              color: semanticColors.blackAndWhite.black500,
+              margin: 0
+            }}>
+              Incurred Loss
+            </p>
+            <p style={{
+              fontSize: '26px',
+              fontWeight: typography.fontWeight.regular,
+              lineHeight: '1.3',
+              color: semanticColors.blackAndWhite.black900,
+              margin: 0,
+              whiteSpace: 'nowrap'
+            }}>
+              $1,325,000
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div style={{
+            width: '1px',
+            height: '45px',
+            backgroundColor: semanticColors.theme.primary400,
+            flexShrink: 0
+          }} />
+
+          {/* Loss Ratio */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            width: '180px',
+            flexShrink: 0
+          }}>
+            <p style={{
+              ...typography.styles.bodyS,
+              color: semanticColors.blackAndWhite.black500,
+              margin: 0
+            }}>
+              Loss Ratio
+            </p>
+            <p style={{
+              fontSize: '26px',
+              fontWeight: typography.fontWeight.regular,
+              lineHeight: '1.3',
+              color: semanticColors.blackAndWhite.black900,
+              margin: 0,
+              whiteSpace: 'nowrap'
+            }}>
+              88.33%
+            </p>
+          </div>
+        </div>
 
         {/* Configuration Form */}
         <div style={{
@@ -405,24 +588,25 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
             width: '100%'
           }} />
 
-          {/* Form Content */}
+          {/* Table Container */}
           <div style={{
+            paddingTop: '10px',
             display: 'flex',
-            flexDirection: 'column',
-            gap: '5px',
-            paddingTop: '10px'
+            gap: '5px'
           }}>
-            {/* Header Row */}
+            {/* Left: Fixed Metrics Column */}
             <div style={{
+              width: '400px',
+              minWidth: '400px',
+              flexShrink: 0,
               display: 'flex',
-              alignItems: 'center',
-              padding: '0 0 20px 10px'
+              flexDirection: 'column',
+              gap: '5px'
             }}>
               {/* Metric name header */}
               <div style={{
-                width: '400px',
-                padding: '0 10px 0 10px',
-                flexShrink: 0
+                padding: '0 10px 0 20px',
+                paddingBottom: '20px'
               }}>
                 <p style={{
                   ...typography.styles.bodyL,
@@ -434,58 +618,153 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                 </p>
               </div>
 
-              {/* Right: Column headers */}
+              {/* Premium Metrics */}
               <div style={{
+                backgroundColor: semanticColors.blackAndWhite.white,
+                border: `1px solid ${semanticColors.theme.primary400}`,
+                borderRadius: '4px',
                 display: 'flex',
-                alignItems: 'center',
-                flex: 1
+                flexDirection: 'column'
               }}>
-                {/* Column 1 header */}
+                <CessionMetricNameCell metricName="Earned Premium" semanticColors={semanticColors} showBorder={true} />
+                <CessionMetricNameCell metricName="Written Premium" semanticColors={semanticColors} showBorder={true} />
+                <CessionMetricNameCell metricName="Written Premium" semanticColors={semanticColors} showBorder={false} />
+              </div>
+
+              {/* Loss Metrics */}
+              <div style={{
+                backgroundColor: semanticColors.blackAndWhite.white,
+                border: `1px solid ${semanticColors.theme.primary400}`,
+                borderRadius: '4px',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <CessionMetricNameCell metricName="Paid Loss" semanticColors={semanticColors} showBorder={true} />
+                <CessionMetricNameCell metricName="Reported Loss" semanticColors={semanticColors} showBorder={true} />
+                <CessionMetricNameCell metricName="IBNR" semanticColors={semanticColors} showBorder={false} />
+              </div>
+
+              {/* Calculated Metrics (Loss reserves + Incurred Loss) */}
+              <div style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                border: `1px solid ${semanticColors.theme.primary400}`,
+                borderRadius: '4px',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                {/* Loss reserves */}
                 <div style={{
-                  flex: 1,
-                  padding: '0 20px'
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px',
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
                 }}>
+                  <InfoTooltip
+                    text="Loss reserves"
+                    variant="small"
+                  />
                   <p style={{
-                    ...typography.styles.bodyL,
-                    color: semanticColors.blackAndWhite.black900,
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
                     margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
                     fontWeight: typography.fontWeight.medium
                   }}>
-                    Column 1
+                    Loss reserves
+                  </p>
+                  <p style={{
+                    ...typography.styles.bodyS,
+                    color: semanticColors.blackAndWhite.black500,
+                    margin: 0,
+                    marginLeft: '8px',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    (Reported Loss - Paid Loss)
                   </p>
                 </div>
 
-                {/* Column 2 header */}
+                {/* Incurred Loss */}
                 <div style={{
-                  flex: 1,
-                  padding: '0 20px'
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px'
                 }}>
+                  <InfoTooltip
+                    text="Incurred Loss"
+                    variant="small"
+                  />
                   <p style={{
-                    ...typography.styles.bodyL,
-                    color: semanticColors.blackAndWhite.black900,
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
                     margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
                     fontWeight: typography.fontWeight.medium
                   }}>
-                    Column 2
+                    Incurred Loss
                   </p>
-                </div>
-
-                {/* Column 3 header */}
-                <div style={{
-                  flex: 1,
-                  padding: '0 20px'
-                }}>
                   <p style={{
-                    ...typography.styles.bodyL,
-                    color: semanticColors.blackAndWhite.black900,
+                    ...typography.styles.bodyS,
+                    color: semanticColors.blackAndWhite.black500,
                     margin: 0,
-                    fontWeight: typography.fontWeight.medium
+                    marginLeft: '8px',
+                    whiteSpace: 'nowrap'
                   }}>
-                    Column 3
+                    (Reported Loss + IBNR)
                   </p>
                 </div>
               </div>
+
+              {/* Adjustment Metric */}
+              <div style={{
+                backgroundColor: semanticColors.blackAndWhite.white,
+                border: `1px solid ${semanticColors.theme.primary400}`,
+                borderRadius: '4px',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <CessionMetricNameCell metricName="Adjustment" semanticColors={semanticColors} showBorder={false} />
+              </div>
             </div>
+
+            {/* Right: Scrollable Months Column */}
+            <div
+              className="custom-horizontal-scroll"
+              style={{
+                flex: 1,
+                overflowX: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '5px',
+                paddingBottom: '10px'
+              }}
+            >
+              {/* Month headers */}
+              <div style={{
+                display: 'flex',
+                paddingBottom: '20px',
+                minWidth: `${months.length * 200}px`
+              }}>
+                {months.map((month) => (
+                  <div key={month} style={{
+                    minWidth: '200px',
+                    width: '200px',
+                    padding: '0 20px'
+                  }}>
+                    <p style={{
+                      ...typography.styles.bodyL,
+                      color: semanticColors.blackAndWhite.black900,
+                      margin: 0,
+                      fontWeight: typography.fontWeight.medium
+                    }}>
+                      {month}
+                    </p>
+                  </div>
+                ))}
+              </div>
 
             {/* Premium Container */}
             <div style={{
@@ -493,45 +772,29 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               border: `1px solid ${semanticColors.theme.primary400}`,
               borderRadius: '4px',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              minWidth: `${months.length * 200}px`
             }}>
-              {/* Earned Premium Row */}
               <CessionMetricRow
-                metricName="Earned Premium"
                 semanticColors={semanticColors}
                 showBorder={true}
-                valueColumn1={metrics.earnedPremium.col1}
-                valueColumn2={metrics.earnedPremium.col2}
-                valueColumn3={metrics.earnedPremium.col3}
-                onChangeColumn1={(value) => updateMetric('earnedPremium', 'col1', value)}
-                onChangeColumn2={(value) => updateMetric('earnedPremium', 'col2', value)}
-                onChangeColumn3={(value) => updateMetric('earnedPremium', 'col3', value)}
+                monthValues={metrics.earnedPremium}
+                onChangeMonth={(month, value) => updateMetric('earnedPremium', month, value)}
+                months={months}
               />
-
-              {/* Written Premium Row */}
               <CessionMetricRow
-                metricName="Written Premium"
                 semanticColors={semanticColors}
                 showBorder={true}
-                valueColumn1={metrics.writtenPremium1.col1}
-                valueColumn2={metrics.writtenPremium1.col2}
-                valueColumn3={metrics.writtenPremium1.col3}
-                onChangeColumn1={(value) => updateMetric('writtenPremium1', 'col1', value)}
-                onChangeColumn2={(value) => updateMetric('writtenPremium1', 'col2', value)}
-                onChangeColumn3={(value) => updateMetric('writtenPremium1', 'col3', value)}
+                monthValues={metrics.writtenPremium1}
+                onChangeMonth={(month, value) => updateMetric('writtenPremium1', month, value)}
+                months={months}
               />
-
-              {/* Written Premium Row (duplicate) */}
               <CessionMetricRow
-                metricName="Written Premium"
                 semanticColors={semanticColors}
                 showBorder={false}
-                valueColumn1={metrics.writtenPremium2.col1}
-                valueColumn2={metrics.writtenPremium2.col2}
-                valueColumn3={metrics.writtenPremium2.col3}
-                onChangeColumn1={(value) => updateMetric('writtenPremium2', 'col1', value)}
-                onChangeColumn2={(value) => updateMetric('writtenPremium2', 'col2', value)}
-                onChangeColumn3={(value) => updateMetric('writtenPremium2', 'col3', value)}
+                monthValues={metrics.writtenPremium2}
+                onChangeMonth={(month, value) => updateMetric('writtenPremium2', month, value)}
+                months={months}
               />
             </div>
 
@@ -541,68 +804,154 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               border: `1px solid ${semanticColors.theme.primary400}`,
               borderRadius: '4px',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              minWidth: `${months.length * 200}px`
             }}>
-              {/* Paid Loss Row */}
               <CessionMetricRow
-                metricName="Paid Loss"
                 semanticColors={semanticColors}
                 showBorder={true}
-                valueColumn1={metrics.paidLoss.col1}
-                valueColumn2={metrics.paidLoss.col2}
-                valueColumn3={metrics.paidLoss.col3}
-                onChangeColumn1={(value) => updateMetric('paidLoss', 'col1', value)}
-                onChangeColumn2={(value) => updateMetric('paidLoss', 'col2', value)}
-                onChangeColumn3={(value) => updateMetric('paidLoss', 'col3', value)}
+                monthValues={metrics.paidLoss}
+                onChangeMonth={(month, value) => updateMetric('paidLoss', month, value)}
+                months={months}
               />
-
-              {/* Reported Loss Row */}
               <CessionMetricRow
-                metricName="Reported Loss"
                 semanticColors={semanticColors}
                 showBorder={true}
-                valueColumn1={metrics.reportedLoss.col1}
-                valueColumn2={metrics.reportedLoss.col2}
-                valueColumn3={metrics.reportedLoss.col3}
-                onChangeColumn1={(value) => updateMetric('reportedLoss', 'col1', value)}
-                onChangeColumn2={(value) => updateMetric('reportedLoss', 'col2', value)}
-                onChangeColumn3={(value) => updateMetric('reportedLoss', 'col3', value)}
+                monthValues={metrics.reportedLoss}
+                onChangeMonth={(month, value) => updateMetric('reportedLoss', month, value)}
+                months={months}
               />
-
-              {/* IBNR Row */}
               <CessionMetricRow
-                metricName="IBNR"
                 semanticColors={semanticColors}
                 showBorder={false}
-                valueColumn1={metrics.ibnr.col1}
-                valueColumn2={metrics.ibnr.col2}
-                valueColumn3={metrics.ibnr.col3}
-                onChangeColumn1={(value) => updateMetric('ibnr', 'col1', value)}
-                onChangeColumn2={(value) => updateMetric('ibnr', 'col2', value)}
-                onChangeColumn3={(value) => updateMetric('ibnr', 'col3', value)}
+                monthValues={metrics.ibnr}
+                onChangeMonth={(month, value) => updateMetric('ibnr', month, value)}
+                months={months}
               />
             </div>
 
-            {/* Adjustments Container */}
+            {/* Calculated Metrics Container (Loss reserves + Incurred Loss) */}
+            <div style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              border: `1px solid ${semanticColors.theme.primary400}`,
+              borderRadius: '4px',
+              display: 'flex',
+              flexDirection: 'column',
+              minWidth: `${months.length * 200}px`
+            }}>
+              {/* Loss reserves row */}
+              <div style={{
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+              }}>
+                {months.map((month, index) => {
+                  const reportedLoss = parseFloat(metrics.reportedLoss[month]?.replace(/,/g, '') || '0');
+                  const paidLoss = parseFloat(metrics.paidLoss[month]?.replace(/,/g, '') || '0');
+                  const lossReserves = reportedLoss - paidLoss;
+                  const hasValue = reportedLoss > 0 || paidLoss > 0;
+
+                  return (
+                    <div key={month} style={{
+                      width: '200px',
+                      minWidth: '200px',
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '0 20px',
+                      position: 'relative'
+                    }}>
+                      {index !== 0 && (
+                        <div style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: '10px',
+                          bottom: '10px',
+                          width: '1px',
+                          backgroundColor: semanticColors.theme.primary400
+                        }} />
+                      )}
+                      <span style={{ ...typography.styles.bodyS, color: semanticColors.blackAndWhite.black500 }}>$</span>
+                      <p style={{
+                        ...typography.styles.bodyM,
+                        color: hasValue ? semanticColors.blackAndWhite.black500 : semanticColors.blackAndWhite.black300,
+                        margin: 0,
+                        textAlign: 'left'
+                      }}>
+                        {hasValue ? lossReserves.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'Value will be calculated'}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Incurred Loss row */}
+              <div style={{
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                {months.map((month, index) => {
+                  const reportedLoss = parseFloat(metrics.reportedLoss[month]?.replace(/,/g, '') || '0');
+                  const ibnr = parseFloat(metrics.ibnr[month]?.replace(/,/g, '') || '0');
+                  const incurredLoss = reportedLoss + ibnr;
+                  const hasValue = reportedLoss > 0 || ibnr > 0;
+
+                  return (
+                    <div key={month} style={{
+                      width: '200px',
+                      minWidth: '200px',
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '0 20px',
+                      position: 'relative'
+                    }}>
+                      {index !== 0 && (
+                        <div style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: '10px',
+                          bottom: '10px',
+                          width: '1px',
+                          backgroundColor: semanticColors.theme.primary400
+                        }} />
+                      )}
+                      <span style={{ ...typography.styles.bodyS, color: semanticColors.blackAndWhite.black500 }}>$</span>
+                      <p style={{
+                        ...typography.styles.bodyM,
+                        color: hasValue ? semanticColors.blackAndWhite.black500 : semanticColors.blackAndWhite.black300,
+                        margin: 0,
+                        textAlign: 'left'
+                      }}>
+                        {hasValue ? incurredLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'Value will be calculated'}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Adjustment Container */}
             <div style={{
               backgroundColor: semanticColors.blackAndWhite.white,
               border: `1px solid ${semanticColors.theme.primary400}`,
               borderRadius: '4px',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              minWidth: `${months.length * 200}px`
             }}>
-              {/* Adjustment Row */}
               <CessionMetricRow
-                metricName="Adjustement"
                 semanticColors={semanticColors}
                 showBorder={false}
-                valueColumn1={metrics.adjustment.col1}
-                valueColumn2={metrics.adjustment.col2}
-                valueColumn3={metrics.adjustment.col3}
-                onChangeColumn1={(value) => updateMetric('adjustment', 'col1', value)}
-                onChangeColumn2={(value) => updateMetric('adjustment', 'col2', value)}
-                onChangeColumn3={(value) => updateMetric('adjustment', 'col3', value)}
+                monthValues={metrics.adjustment}
+                onChangeMonth={(month, value) => updateMetric('adjustment', month, value)}
+                months={months}
               />
+            </div>
             </div>
           </div>
         </div>
