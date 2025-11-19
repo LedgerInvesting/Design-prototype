@@ -626,9 +626,71 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                 display: 'flex',
                 flexDirection: 'column'
               }}>
-                <CessionMetricNameCell metricName="Earned Premium" semanticColors={semanticColors} showBorder={true} />
-                <CessionMetricNameCell metricName="Written Premium" semanticColors={semanticColors} showBorder={true} />
-                <CessionMetricNameCell metricName="Written Premium" semanticColors={semanticColors} showBorder={false} />
+                <div style={{
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px',
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                }}>
+                  <InfoTooltip
+                    text="Premium earned during the reporting period"
+                    variant="small"
+                  />
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
+                    margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Earned Premium
+                  </p>
+                </div>
+                <div style={{
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px',
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                }}>
+                  <InfoTooltip
+                    text="Total premium written during the reporting period"
+                    variant="small"
+                  />
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
+                    margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Written Premium
+                  </p>
+                </div>
+                <div style={{
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px'
+                }}>
+                  <InfoTooltip
+                    text="Total premium written during the reporting period"
+                    variant="small"
+                  />
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
+                    margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Written Premium
+                  </p>
+                </div>
               </div>
 
               {/* Loss Metrics */}
@@ -639,9 +701,71 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                 display: 'flex',
                 flexDirection: 'column'
               }}>
-                <CessionMetricNameCell metricName="Paid Loss" semanticColors={semanticColors} showBorder={true} />
-                <CessionMetricNameCell metricName="Reported Loss" semanticColors={semanticColors} showBorder={true} />
-                <CessionMetricNameCell metricName="IBNR" semanticColors={semanticColors} showBorder={false} />
+                <div style={{
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px',
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                }}>
+                  <InfoTooltip
+                    text="Losses actually paid out during the reporting period"
+                    variant="small"
+                  />
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
+                    margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Paid Loss
+                  </p>
+                </div>
+                <div style={{
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px',
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                }}>
+                  <InfoTooltip
+                    text="Losses reported but not yet paid during the period"
+                    variant="small"
+                  />
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
+                    margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Reported Loss
+                  </p>
+                </div>
+                <div style={{
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px'
+                }}>
+                  <InfoTooltip
+                    text="Incurred But Not Reported loss reserves"
+                    variant="small"
+                  />
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
+                    margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    IBNR
+                  </p>
+                </div>
               </div>
 
               {/* Calculated Metrics (Loss reserves + Incurred Loss) */}
@@ -661,7 +785,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   borderBottom: `1px dashed ${semanticColors.theme.primary400}`
                 }}>
                   <InfoTooltip
-                    text="Loss reserves"
+                    text="Reserved amount for known and reported losses"
                     variant="small"
                   />
                   <p style={{
@@ -693,7 +817,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   padding: '0 10px 0 20px'
                 }}>
                   <InfoTooltip
-                    text="Incurred Loss"
+                    text="Total incurred losses (Paid Loss + Loss Reserves + IBNR)"
                     variant="small"
                   />
                   <p style={{
@@ -726,7 +850,27 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                 display: 'flex',
                 flexDirection: 'column'
               }}>
-                <CessionMetricNameCell metricName="Adjustment" semanticColors={semanticColors} showBorder={false} />
+                <div style={{
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 10px 0 20px'
+                }}>
+                  <InfoTooltip
+                    text="Any adjustments or corrections to reported values"
+                    variant="small"
+                  />
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black800,
+                    margin: 0,
+                    marginLeft: '10px',
+                    whiteSpace: 'nowrap',
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Adjustment
+                  </p>
+                </div>
               </div>
             </div>
 

@@ -19,7 +19,7 @@ import { AnalyticsAddValuationData } from './AnalyticsAddValuationData';
 import { AnalyticsTriangle } from './AnalyticsTriangle';
 import { AnalyticsTriangleDashboard } from './AnalyticsTriangleDashboard';
 import { ReportsBDXUpload } from './ReportsBDXUpload';
-import { ReportsBDXConfiguration } from './ReportsBDXConfiguration';
+import { ReportsCessionSummaryGeneration } from './ReportsCessionSummaryGeneration';
 import { ReportsCessionStatement } from './ReportsCessionStatement';
 import { MarketplaceOfferings } from './MarketplaceOfferings';
 import ReportsInsightsProgramDetails from './ReportsInsightsProgramDetails';
@@ -139,7 +139,7 @@ function AppContent() {
       case 'reports-bdx-upload':
         return <ReportsBDXUpload onNavigateToPage={setPage} onInboxClick={() => console.log('Inbox clicked')} />;
       case 'reports-bdx-configuration':
-        return <ReportsBDXConfiguration onNavigateToPage={setPage} uploadData={valuationData} />;
+        return <ReportsCessionSummaryGeneration onNavigateToPage={setPage} uploadData={valuationData} />;
       case 'reports-cession-statement':
         return <ReportsCessionStatement onNavigateToPage={setPage} cessionData={cessionData} />;
       case 'marketplace-offerings':

@@ -6,7 +6,7 @@ import { CheckExtraSmall, XExtraSmall, WorkbenchLogo, StatusWarning } from '@des
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
 import { BDXProcessingModal } from './BDXProcessingModal';
 
-interface ReportsBDXConfigurationProps {
+interface ReportsCessionSummaryGenerationProps {
   onNavigateToPage?: NavigationHandler;
   uploadData?: {
     fileName?: string;
@@ -20,6 +20,7 @@ interface ReportsBDXConfigurationProps {
 // Helper component for metric rows
 interface MetricRowProps {
   metricName: string;
+  tooltipText: string;
   tagging: 'Incremental' | 'Cumulative';
   expenses: 'Included' | 'Excluded';
   recoveries: 'Included' | 'Excluded';
@@ -32,6 +33,7 @@ interface MetricRowProps {
 
 const MetricRow: React.FC<MetricRowProps> = ({
   metricName,
+  tooltipText,
   tagging,
   expenses,
   recoveries,
@@ -120,7 +122,7 @@ const MetricRow: React.FC<MetricRowProps> = ({
         flexShrink: 0
       }}>
         <InfoTooltip
-          text={metricName}
+          text={tooltipText}
           variant="small"
         />
         <p style={{
@@ -346,54 +348,7 @@ const CalculatedRow: React.FC<CalculatedRowProps> = ({
   );
 };
 
-// Korra Workbench Badge component (similar to ContractsAI badge)
-const KorraWorkbenchBadge = React.memo(() => {
-  const badgeColors = useSemanticColors();
-  return (
-    <div style={{
-      position: 'absolute',
-      top: '10px',
-      right: '40px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '4px',
-      backgroundColor: badgeColors.theme.primary700,
-      padding: '5px 6px 5px 5px',
-      borderRadius: borderRadius[8],
-      zIndex: 2
-    }}>
-      <div style={{
-        width: '16px',
-        height: '16px',
-        backgroundColor: colors.blackAndWhite.black900,
-        borderRadius: '4px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-        <div style={{
-          width: '10px',
-          height: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <WorkbenchLogo color={badgeColors.theme.primary700} />
-        </div>
-      </div>
-      <span style={{
-        ...typography.styles.bodyS,
-        color: colors.blackAndWhite.black800,
-        fontWeight: 500
-      }}>
-        Korra Workbench
-      </span>
-    </div>
-  );
-});
-KorraWorkbenchBadge.displayName = 'KorraWorkbenchBadge';
-
-// Modal Content Wrapper Component to use workbench theme colors
+// Modal Content Wrapper Component
 const ModalContentWrapper: React.FC<{
   selectedFile: File | null;
   handleFileSelect: (file: File) => void;
@@ -430,7 +385,7 @@ const ModalContentWrapper: React.FC<{
   );
 };
 
-export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = ({
+export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGenerationProps> = ({
   onNavigateToPage,
   uploadData
 }) => {
@@ -574,12 +529,12 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
     ? [
         { label: 'Reports', isActive: false },
         { label: 'BDX Upload', onClick: () => onNavigateToPage('reports-bdx-upload'), isActive: false },
-        { label: 'Configure Bordereau', isActive: true }
+        { label: 'Cession Summary Generation', isActive: true }
       ]
     : [
         { label: 'Reports' },
         { label: 'BDX Upload' },
-        { label: 'Configure Bordereau' }
+        { label: 'Cession Summary Generation' }
       ];
 
   return (
@@ -897,6 +852,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               {/* Earned Premium Row */}
               <MetricRow
                 metricName="Earned Premium"
+                tooltipText="Premium earned during the reporting period"
                 tagging="Incremental"
                 expenses="Included"
                 recoveries="Excluded"
@@ -910,6 +866,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               {/* Written Premium Row */}
               <MetricRow
                 metricName="Written Premium"
+                tooltipText="Total premium written during the reporting period"
                 tagging="Cumulative"
                 expenses="Excluded"
                 recoveries="Included"
@@ -923,6 +880,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               {/* Written Premium Row (duplicate) */}
               <MetricRow
                 metricName="Written Premium"
+                tooltipText="Total premium written during the reporting period"
                 tagging="Incremental"
                 expenses="Included"
                 recoveries="Excluded"
@@ -945,6 +903,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               {/* Paid Loss Row */}
               <MetricRow
                 metricName="Paid Loss"
+                tooltipText="Losses actually paid out during the reporting period"
                 tagging="Incremental"
                 expenses="Included"
                 recoveries="Excluded"
@@ -958,6 +917,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               {/* Reported Loss Row */}
               <MetricRow
                 metricName="Reported Loss"
+                tooltipText="Losses reported but not yet paid during the period"
                 tagging="Cumulative"
                 expenses="Included"
                 recoveries="Excluded"
@@ -971,6 +931,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               {/* IBNR Row */}
               <MetricRow
                 metricName="IBNR"
+                tooltipText="Incurred But Not Reported loss reserves"
                 tagging="Incremental"
                 expenses="Excluded"
                 recoveries="Included"
@@ -1007,7 +968,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
                   flexShrink: 0
                 }}>
                   <InfoTooltip
-                    text="Loss reserves"
+                    text="Reserved amount for known and reported losses"
                     variant="small"
                   />
                   <p style={{
@@ -1074,7 +1035,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
                   flexShrink: 0
                 }}>
                   <InfoTooltip
-                    text="Incurred Loss"
+                    text="Total incurred losses (Paid Loss + Loss Reserves + IBNR)"
                     variant="small"
                   />
                   <p style={{
@@ -1127,6 +1088,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               {/* Adjustment Row */}
               <MetricRow
                 metricName="Adjustement"
+                tooltipText="Any adjustments or corrections to reported values"
                 tagging="Cumulative"
                 expenses="Included"
                 recoveries="Excluded"
@@ -1166,7 +1128,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
 
       {/* Import File Modal */}
       {isImportModalOpen && (
-        <ThemeProvider initialTheme="workbench">
+        <ThemeProvider initialTheme="reports">
           <Modal
             isOpen={isImportModalOpen}
             onClose={() => {
@@ -1238,8 +1200,6 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
               </div>
             }
           >
-            {/* Korra Workbench Badge - positioned absolutely relative to modal container */}
-            <KorraWorkbenchBadge />
             <ModalContentWrapper
               selectedFile={selectedFile}
               handleFileSelect={handleFileSelect}
@@ -1251,7 +1211,7 @@ export const ReportsBDXConfiguration: React.FC<ReportsBDXConfigurationProps> = (
 
       {/* BDX Processing Modal */}
       {isProcessingModalOpen && selectedFile && (
-        <ThemeProvider initialTheme="workbench">
+        <ThemeProvider initialTheme="reports">
           <BDXProcessingModal
             isOpen={isProcessingModalOpen}
             fileName={selectedFile.name}
