@@ -272,6 +272,40 @@ export const CumulativeExtraSmall: React.FC<ExtraSmallIconProps> = ({
   </svg>
 );
 
+export const EditContractsExtraSmall: React.FC<ExtraSmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg
+    width={ICON_SIZES.extraSmall}
+    height={ICON_SIZES.extraSmall}
+    viewBox="0 0 10 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M0.983873 6.47666L0.0309146 9.26348C-0.118408 9.70015 0.298668 10.1181 0.735395 9.96936L3.52472 9.01964C3.76615 8.93744 3.9855 8.80089 4.16586 8.62051L4.44713 8.33924L1.66444 5.55526L1.38244 5.83727C1.20255 6.01717 1.06621 6.23589 0.983873 6.47666Z" fill={color}/>
+    <path d="M6.10785 1.10988L1.66444 5.55526L4.44713 8.33924L8.89054 3.89386L6.10785 1.10988Z" fill={color}/>
+    <path d="M6.72917 0.488291L6.10785 1.10988L8.89054 3.89386L9.512 3.27213C10.1627 2.62114 10.1627 1.56572 9.51199 0.914738L9.08572 0.488274C8.43498 -0.162765 7.3799 -0.162757 6.72917 0.488291Z" fill={color}/>
+  </svg>
+);
+
+export const LookExtraSmall: React.FC<ExtraSmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg
+    width={ICON_SIZES.extraSmall}
+    height={ICON_SIZES.extraSmall}
+    viewBox="0 0 10 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path fillRule="evenodd" clipRule="evenodd" d="M5 9C7.34665 9 9.09402 6.74235 9.81808 5.61927C10.0606 5.24304 10.0606 4.75696 9.81808 4.38073C9.09402 3.25766 7.34665 1 5 1C2.65335 1 0.90598 3.25766 0.181922 4.38073C-0.0606408 4.75696 -0.0606408 5.24304 0.181922 5.61927C0.90598 6.74235 2.65335 9 5 9ZM5.00024 6.33333C5.69028 6.33333 6.24967 5.73638 6.24967 5C6.24967 4.26362 5.69028 3.66667 5.00024 3.66667C4.31021 3.66667 3.75082 4.26362 3.75082 5C3.75082 5.73638 4.31021 6.33333 5.00024 6.33333Z" fill={color}/>
+  </svg>
+);
+
 // Small Icons (12x12px) - Auto-generated from SVG files
 
 export const AddSmall: React.FC<SmallIconProps> = ({ 

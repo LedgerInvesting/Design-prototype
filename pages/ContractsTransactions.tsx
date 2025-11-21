@@ -362,8 +362,8 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       align: 'left' as const,
       headerAlign: 'left' as const,
       hoverIcon: 'config' as const,
-      onDownload: (filename: string) => {
-        onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+      onDownload: (filename: string, rowData?: any) => {
+        onNavigateToPage && onNavigateToPage('contracts-contracts-list', { transactionName: rowData?.transactionName || filename });
       },
     },
     {
@@ -404,11 +404,11 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       headerAlign: 'left' as const,
       cellType: 'action' as const,
       actionType: 'upload' as const,
-      onAction: (actionType: string, text: string) => {
+      onAction: (actionType: string, text: string, rowData?: any) => {
         if (actionType === 'upload') {
-          onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+          onNavigateToPage && onNavigateToPage('contracts-contracts-list', { transactionName: rowData?.transactionName });
         } else if (actionType === 'setup') {
-          onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+          onNavigateToPage && onNavigateToPage('contracts-contracts-list', { transactionName: rowData?.transactionName });
         }
       },
     },
@@ -507,9 +507,9 @@ export const ContractsTransactions: React.FC<TransactionManagementProps> = ({ on
         }}
         onContinue={(inputMethod) => {
           if (inputMethod === 'enter-manually') {
-            onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+            onNavigateToPage && onNavigateToPage('contracts-contracts-list');
           } else if (inputMethod === 'upload-pdf') {
-            onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+            onNavigateToPage && onNavigateToPage('contracts-contracts-list');
           }
         }}
       />

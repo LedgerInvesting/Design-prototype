@@ -9,6 +9,7 @@ import { ReportsRenewalTransaction } from './ReportsRenewalTransaction';
 import { ReportsContractsExplorer } from './ReportsContractsExplorer';
 import { ContractsUpload } from './ContractsUpload';
 import { ContractsAIExtraction } from './ContractsAIExtraction';
+import { ContractsContractsList } from './ContractsContractsList';
 import { ContractsTransactions } from './ContractsTransactions';
 import { AnalyticsValuation } from './AnalyticsValuation';
 import { AnalyticsValuationDashboard } from './AnalyticsValuationDashboard';
@@ -29,7 +30,7 @@ import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-bdx-configuration' | 'reports-cession-statement' | 'marketplace-offerings';
+type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-contracts-list' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-bdx-configuration' | 'reports-cession-statement' | 'marketplace-offerings';
 
 // Inner component that uses settings
 function AppContent() {
@@ -47,6 +48,7 @@ function AppContent() {
   const [triangleData, setTriangleData] = useState<any>(null);
   const [currentEntityData, setCurrentEntityData] = useState<any>(null);
   const [cessionData, setCessionData] = useState<any>(null);
+  const [contractsTransactionData, setContractsTransactionData] = useState<any>(null);
 
   // Listen to browser back/forward buttons
   useEffect(() => {
@@ -86,6 +88,9 @@ function AppContent() {
       } else if (page === 'reports-cession-statement') {
         console.log('Setting cession data:', data);
         setCessionData(data);
+      } else if (page === 'contracts-contracts-list') {
+        console.log('Setting contracts transaction data:', data);
+        setContractsTransactionData(data);
       } else {
         setValuationData(data);
       }
@@ -118,6 +123,8 @@ function AppContent() {
         return <ContractsUpload onNavigateToPage={setPage} />;
       case 'contracts-ai-extraction':
         return <ContractsAIExtraction onNavigateToPage={setPage} />;
+      case 'contracts-contracts-list':
+        return <ContractsContractsList onNavigateToPage={setPage} transactionData={contractsTransactionData} />;
       case 'contracts-transactions':
         return <ContractsTransactions onNavigateToPage={setPage} />;
       case 'analytics-valuation':
@@ -157,7 +164,7 @@ function AppContent() {
     if (page === 'marketplace-offerings') {
       return 'marketplace';
     }
-    if (page === 'reports-contracts-explorer' || page === 'contracts-upload' || page === 'contracts-ai-extraction' || page === 'contracts-transactions') {
+    if (page === 'reports-contracts-explorer' || page === 'contracts-upload' || page === 'contracts-ai-extraction' || page === 'contracts-contracts-list' || page === 'contracts-transactions') {
       return 'contracts';
     }
     // Default to reports theme for all other pages

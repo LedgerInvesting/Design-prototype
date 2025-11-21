@@ -20,10 +20,10 @@ export interface TableColumn {
   align?: 'left' | 'center' | 'right';
   headerAlign?: 'left' | 'center' | 'right'; // Alignment for column header text
   cellType?: CellType;
-  onDownload?: (filename: string) => void; // For document cells
+  onDownload?: (filename: string, rowData?: any) => void; // For document cells
   hoverIcon?: 'download' | 'config' | 'open'; // For document cells hover icon
   actionType?: ActionType; // For action cells (edit, upload, validate, add, delete, plus)
-  onAction?: (actionType: ActionType, text: string) => void; // For action cells
+  onAction?: (actionType: ActionType, text: string, rowData?: any) => void; // For action cells
   actionCellProps?: {
     icon?: React.ReactNode;
     text?: string;
@@ -919,7 +919,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
             <div data-cell-type="document" style={{ cursor: 'pointer', height: '100%', display: 'flex' }}>
               <DocumentCell
                 filename={value}
-                onDownload={column.onDownload || ((filename) => console.log('Download:', filename))}
+                onDownload={column.onDownload ? (filename) => column.onDownload!(filename, row) : ((filename) => console.log('Download:', filename))}
                 hoverIcon={column.hoverIcon}
               />
             </div>
@@ -937,7 +937,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
             <div data-cell-type="action" style={{ cursor: 'pointer' }}>
               <ActionCell
                 actionType={actionType}
-                onClick={column.onAction || ((actionType, text) => console.log('Action:', actionType, text))}
+                onClick={column.onAction ? (actionType, text) => column.onAction!(actionType, text, row) : ((actionType, text) => console.log('Action:', actionType, text))}
                 icon={column.actionCellProps?.icon}
                 text={column.actionCellProps?.text}
                 iconBackgroundColor={column.actionCellProps?.iconBackgroundColor}
