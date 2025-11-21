@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeProvider, ProductTheme } from '../src/tokens/ThemeProvider';
-import type { Decorator } from '@storybook/react';
+import type { Decorator } from '@storybook/react-vite';
 
 // Global decorator that wraps all stories with ThemeProvider
 export const withThemeProvider: Decorator = (Story, context) => {

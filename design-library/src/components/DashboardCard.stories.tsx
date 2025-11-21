@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState } from 'react';
 import { DashboardCard } from './DashboardCard';
 import { CardsText, CardsGraph, DownloadMedium, SettingsMedium, ReloadMedium, ListMedium } from '../icons';

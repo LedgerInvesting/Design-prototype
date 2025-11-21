@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 import { colors, typography, spacing, borderRadius, shadows } from './index';
 import { icons } from '../icons/index';

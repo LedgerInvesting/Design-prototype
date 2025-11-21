@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TableColumnHeader } from './Table';
 import { DocumentTable, TextTable, CalendarTable, StatusTable, AmmountTable } from '../icons';
 import { colors } from '../tokens';

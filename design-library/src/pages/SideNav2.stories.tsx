@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SideNav2 } from './SideNav2';
 
 const meta: Meta<typeof SideNav2> = {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TopNav } from './TopNav';
 import { colors } from '../tokens';
 import { PrototypeSettingsProvider } from '../contexts/PrototypeSettingsContext';

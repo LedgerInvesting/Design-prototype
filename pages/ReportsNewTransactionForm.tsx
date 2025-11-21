@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FormLayout } from '@design-library/pages';
-import { FormTabs, FormTab, Input, FormDropdown, DatePicker, Button, ButtonSelector, Selector } from '@design-library/components';
-import { typography, spacing, borderRadius, useSemanticColors } from '@design-library/tokens';
+import { FormTabs, FormTab, Input, FormDropdown, DatePicker, Button, ButtonSelector, Selector, MenuDropdown, InfoTooltip } from '@design-library/components';
+import { typography, spacing, borderRadius, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 import { PlusExtraSmall, icons } from '@design-library/icons';
 import { ConnectBankAPIModal } from './ConnectBankAPIModal';
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
@@ -28,8 +28,9 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
   const [activeTab, setActiveTab] = useState<string>(renewalData?.initialTab || 'basic-info');
   const [formData, setFormData] = useState({
     transactionName: renewalData?.transactionName || '',
-    reinsurerName: renewalData?.reinsurerName || '',
+    policyGroupId: renewalData?.policyGroupId || '',
     cedingReinsurer: renewalData?.cedingReinsurer || '',
+    reinsurerName: renewalData?.reinsurerName || '',
     subjectBusiness: renewalData?.subjectBusiness || '',
     riskPeriodStart: renewalData?.riskPeriodStart || '',
     riskPeriodEnd: renewalData?.riskPeriodEnd || '',
@@ -39,9 +40,30 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
   const [requirements, setRequirements] = useState<Array<{ id: number }>>([]);
   const [frequencyValue, setFrequencyValue] = useState<string>('');
   const [coverageLayers, setCoverageLayers] = useState<Array<{ id: number }>>([]);
+  const [dataDetailLevel, setDataDetailLevel] = useState<string>('');
   const [profitCommissionTiers, setProfitCommissionTiers] = useState<Array<{ id: number }>>([]);
   const [policyLimits, setPolicyLimits] = useState<Array<{ id: number }>>([]);
   const [brokerInfo, setBrokerInfo] = useState<Array<{ id: number }>>([]);
+
+  // Aggregated metrics state
+  const [aggregatedMetrics, setAggregatedMetrics] = useState<Record<string, { tagging: string; expenses: string; recoveries: string }>>({
+    'Earned Premium': { tagging: '', expenses: '', recoveries: '' },
+    'Written Premium': { tagging: '', expenses: '', recoveries: '' },
+    'Collected Premium': { tagging: '', expenses: '', recoveries: '' },
+    'Paid Loss': { tagging: '', expenses: '', recoveries: '' },
+    'Reported Loss': { tagging: '', expenses: '', recoveries: '' },
+    'Adjustments': { tagging: '', expenses: '', recoveries: '' },
+  });
+
+  const updateAggregatedMetric = (metricName: string, field: 'tagging' | 'expenses' | 'recoveries', value: string) => {
+    setAggregatedMetrics(prev => ({
+      ...prev,
+      [metricName]: {
+        ...prev[metricName],
+        [field]: value,
+      },
+    }));
+  };
 
   // Bank API Modal state
   const [isBankAPIModalOpen, setIsBankAPIModalOpen] = useState(false);
@@ -192,8 +214,8 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           <Input
             label="Policy Group ID"
             placeholder="Enter policy group ID"
-            value={formData.reinsurerName}
-            onChange={(e) => handleInputChange('reinsurerName', e.target.value)}
+            value={formData.policyGroupId}
+            onChange={(e) => handleInputChange('policyGroupId', e.target.value)}
           />
         </div>
 
@@ -204,6 +226,10 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
             placeholder="Select ceding (re) insurer"
             value={formData.cedingReinsurer}
             options={[
+              // If we have a value from renewalData that's not in the list, add it as the first option
+              ...(renewalData?.cedingReinsurer && !['lloyds', 'swiss-re', 'munich-re', 'hannover-re', 'scor-se', 'berkshire-hathaway', 'renaissance-re', 'partner-re', 'everest-re', 'trans-re', 'arch-capital', 'argo-group', 'aspen-re', 'axis-capital', 'beazley', 'canopius', 'catlin', 'cna-hardy', 'endurance', 'hiscox', 'lancashire', 'markel', 'validus-re', 'xl-catlin', 'zurich-re', 'abc-insurance', 'xyz-insurance', 'def-mutual', 'ghi-insurance', 'jkl-insurance', 'mno-reinsurance', 'pqr-global', 'stu-capital'].includes(renewalData.cedingReinsurer.toLowerCase().replace(/\s+/g, '-'))
+                ? [{ value: renewalData.cedingReinsurer, label: renewalData.cedingReinsurer }]
+                : []),
               { value: 'lloyds', label: "Lloyd's of London" },
               { value: 'swiss-re', label: 'Swiss Re' },
               { value: 'munich-re', label: 'Munich Re' },
@@ -243,8 +269,12 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           <FormDropdown
             label="Reinsurer"
             placeholder="Select reinsurer"
-            value={formData.subjectBusiness}
+            value={formData.reinsurerName}
             options={[
+              // If we have a value from renewalData that's not in the list, add it as the first option
+              ...(renewalData?.reinsurerName && !['lloyds', 'swiss-re', 'munich-re', 'hannover-re', 'scor-se', 'berkshire-hathaway', 'renaissance-re', 'partner-re', 'everest-re', 'trans-re', 'arch-capital', 'argo-group', 'aspen-re', 'axis-capital', 'beazley', 'canopius', 'catlin', 'cna-hardy', 'endurance', 'hiscox', 'lancashire', 'markel', 'validus-re', 'xl-catlin', 'zurich-re', 'abc-insurance', 'xyz-insurance', 'def-mutual', 'ghi-insurance', 'jkl-insurance', 'mno-reinsurance', 'pqr-global', 'stu-capital'].includes(renewalData.reinsurerName.toLowerCase().replace(/\s+/g, '-'))
+                ? [{ value: renewalData.reinsurerName, label: renewalData.reinsurerName }]
+                : []),
               { value: 'lloyds', label: "Lloyd's of London" },
               { value: 'swiss-re', label: 'Swiss Re' },
               { value: 'munich-re', label: 'Munich Re' },
@@ -279,7 +309,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               { value: 'pqr-global', label: 'PQR Global Re' },
               { value: 'stu-capital', label: 'STU Capital Re' },
             ]}
-            onChange={(value) => handleInputChange('subjectBusiness', value)}
+            onChange={(value) => handleInputChange('reinsurerName', value)}
           />
         </div>
 
@@ -745,157 +775,49 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
     };
 
     return (
-      <div style={formContainerStyles}>
+      <>
         {/* Reporting Configuration Section */}
-        <h3 style={sectionTitleStyles}>Reporting Configuration</h3>
-        
-        {/* First Row: Reporting Frequency & Business Scope */}
-        <div style={formGridStyles}>
-          <FormDropdown
-            label="Reporting Frequency"
-            placeholder="Select frequency"
-            value=""
-            options={[
-              { value: 'monthly', label: 'Monthly' },
-              { value: 'quarterly', label: 'Quarterly' },
-            ]}
-            onChange={(value) => console.log('Reporting Frequency:', value)}
-          />
-          <FormDropdown
-            label="Business Scope"
-            placeholder="Select scope"
-            value=""
-            options={[
-              { value: 'entire-subject-business', label: 'Entire subject business' },
-              { value: 'by-policy-groups', label: 'By policy groups (market segments)' },
-            ]}
-            onChange={(value) => console.log('Business Scope:', value)}
-          />
-        </div>
+        <div style={formContainerStyles}>
+          <h3 style={sectionTitleStyles}>Reporting Configuration</h3>
 
-        {/* Second Row: Data Format & Data Level */}
-        <div style={formGridStyles}>
-          <FormDropdown
-            label="Data Format"
-            placeholder="Select format"
-            value=""
-            options={[
-              { value: 'incremental', label: 'Incremental' },
-              { value: 'cumulative', label: 'Cumulative' },
-              { value: 'transactional', label: 'Transactional' },
-            ]}
-            onChange={(value) => console.log('Data Format:', value)}
-          />
-          <FormDropdown
-            label="Data Level"
-            placeholder="Select level"
-            value=""
-            options={[
-              { value: 'aggregated-level', label: 'Aggregated level' },
-              { value: 'detailed-level-policies', label: 'Detailed level (by policies)' },
-              { value: 'detailed-level-claims', label: 'Detailed level (by claims)' },
-            ]}
-            onChange={(value) => console.log('Data Level:', value)}
-          />
-        </div>
-
-        {/* Division Line */}
-        <div style={{
-          width: '100%',
-          height: '1px',
-          backgroundColor: colors.theme.primary400,
-          margin: '32px 0',
-        }}></div>
-
-        {/* Requirements Section */}
-        <h3 style={requirementHeaderStyles}>Data Level</h3>
-
-        {/* First Data Level */}
-        <h4 style={{
-          ...typography.styles.bodyM,
-          color: colors.blackAndWhite.black900,
-          marginBottom: spacing[1],
-          marginTop: '0',
-        }}>Data Level 1</h4>
-
-        <div style={{
-          backgroundColor: colors.blackAndWhite.white,
-          border: `1px solid ${colors.theme.primary400}`,
-          borderRadius: borderRadius[8],
-          padding: '24px',
-          marginBottom: '24px',
-          position: 'relative',
-        }}>
-          {/* Requirement Name & Expected Files Per Period */}
+          {/* Row: Data Detail Level & Reporting Frequency */}
           <div style={formGridStyles}>
-            <Input
-              label="Requirement Name"
-              placeholder="Type your name"
-              value=""
-              onChange={(e) => console.log('Requirement 1 Name:', e.target.value)}
+            <FormDropdown
+              label="Data Detail Level"
+              placeholder="Select level"
+              value={dataDetailLevel}
+              options={[
+                { value: 'detail', label: 'Detail' },
+                { value: 'aggregate', label: 'Aggregate' },
+              ]}
+              onChange={(value) => setDataDetailLevel(value)}
             />
             <FormDropdown
-              label="Expected Files Per Period"
-              placeholder="Select Form"
+              label="Reporting Frequency"
+              placeholder="Select frequency"
               value=""
               options={[
-                { value: '1', label: '1 File' },
-                { value: '2-5', label: '2-5 Files' },
-                { value: '5+', label: '5+ Files' },
+                { value: 'monthly', label: 'Monthly' },
+                { value: 'quarterly', label: 'Quarterly' },
               ]}
-              onChange={(value) => console.log('Requirement 1 Expected Files:', value)}
+              onChange={(value) => console.log('Reporting Frequency:', value)}
             />
-          </div>
-
-          {/* Content Types Expected */}
-          <div style={{
-            marginBottom: '0',
-          }}>
-            <label style={{
-              ...typography.styles.bodyM,
-              color: colors.blackAndWhite.black900,
-              display: 'block',
-              marginBottom: '12px',
-            }}>
-              Content Types Expected
-            </label>
-            <div style={{
-              display: 'flex',
-              gap: '12px',
-              marginTop: '12px',
-              width: '100%',
-            }}>
-              <ButtonSelector
-                selectorType="checkbox"
-                label="Premium"
-                onChange={(checked) => console.log('Requirement 1 Premium:', checked)}
-                className="full-width-button-selector"
-              />
-              <ButtonSelector
-                selectorType="checkbox"
-                label="Claims"
-                onChange={(checked) => console.log('Requirement 1 Claims:', checked)}
-                className="full-width-button-selector"
-              />
-              <ButtonSelector
-                selectorType="checkbox"
-                label="Exposure"
-                onChange={(checked) => console.log('Requirement 1 Exposure:', checked)}
-                className="full-width-button-selector"
-              />
-            </div>
           </div>
         </div>
 
-        {/* Additional Requirements */}
-        {requirements.map((requirement) => (
-          <div key={requirement.id}>
+        {/* Data Level Section - Separate Box - Only show when Detail is selected */}
+        {dataDetailLevel === 'detail' && (
+          <div style={{ ...formContainerStyles, marginTop: '24px' }}>
+            <h3 style={sectionTitleStyles}>Data Level</h3>
+
+            {/* First Data Level */}
             <h4 style={{
               ...typography.styles.bodyM,
               color: colors.blackAndWhite.black900,
               marginBottom: spacing[1],
               marginTop: '0',
-            }}>Data Level {requirement.id + 1}</h4>
+            }}>Data Level 1</h4>
+
             <div style={{
               backgroundColor: colors.blackAndWhite.white,
               border: `1px solid ${colors.theme.primary400}`,
@@ -904,26 +826,13 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               marginBottom: '24px',
               position: 'relative',
             }}>
-              <Button
-                variant="icon"
-                color="white"
-                shape="square"
-                style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                }}
-                onClick={() => removeRequirement(requirement.id)}
-                icon={<icons.small.close color={colors.blackAndWhite.black900} />}
-              />
-
               {/* Requirement Name & Expected Files Per Period */}
               <div style={formGridStyles}>
                 <Input
                   label="Requirement Name"
                   placeholder="Type your name"
                   value=""
-                  onChange={(e) => console.log(`Requirement ${requirement.id + 1} Name:`, e.target.value)}
+                  onChange={(e) => console.log('Requirement 1 Name:', e.target.value)}
                 />
                 <FormDropdown
                   label="Expected Files Per Period"
@@ -934,13 +843,13 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                     { value: '2-5', label: '2-5 Files' },
                     { value: '5+', label: '5+ Files' },
                   ]}
-                  onChange={(value) => console.log(`Requirement ${requirement.id + 1} Expected Files:`, value)}
+                  onChange={(value) => console.log('Requirement 1 Expected Files:', value)}
                 />
               </div>
 
-              {/* Content Types Expected */}
+              {/* Upload Mode */}
               <div style={{
-                marginBottom: '0',
+                marginBottom: '24px',
               }}>
                 <label style={{
                   ...typography.styles.bodyM,
@@ -948,7 +857,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                   display: 'block',
                   marginBottom: '12px',
                 }}>
-                  Content Types Expected
+                  Upload Mode
                 </label>
                 <div style={{
                   display: 'flex',
@@ -958,40 +867,473 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
                 }}>
                   <ButtonSelector
                     selectorType="checkbox"
-                    label="Premium"
-                    onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Premium:`, checked)}
+                    label="Incremental"
+                    onChange={(checked) => console.log('Requirement 1 Incremental:', checked)}
+                    className="full-width-button-selector"
+                  />
+                  <ButtonSelector
+                    selectorType="checkbox"
+                    label="Cumulative"
+                    onChange={(checked) => console.log('Requirement 1 Cumulative:', checked)}
+                    className="full-width-button-selector"
+                  />
+                </div>
+              </div>
+
+              {/* Data Layout */}
+              <div style={{
+                marginBottom: '24px',
+              }}>
+                <label style={{
+                  ...typography.styles.bodyM,
+                  color: colors.blackAndWhite.black900,
+                  display: 'block',
+                  marginBottom: '12px',
+                }}>
+                  Data Layout
+                </label>
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  marginTop: '12px',
+                  width: '100%',
+                }}>
+                  <ButtonSelector
+                    selectorType="checkbox"
+                    label="Event"
+                    onChange={(checked) => console.log('Requirement 1 Event:', checked)}
+                    className="full-width-button-selector"
+                  />
+                  <ButtonSelector
+                    selectorType="checkbox"
+                    label="Snapshot"
+                    onChange={(checked) => console.log('Requirement 1 Snapshot:', checked)}
+                    className="full-width-button-selector"
+                  />
+                </div>
+              </div>
+
+              {/* Data Type */}
+              <div style={{
+                marginBottom: '0',
+              }}>
+                <label style={{
+                  ...typography.styles.bodyM,
+                  color: colors.blackAndWhite.black900,
+                  display: 'block',
+                  marginBottom: '12px',
+                }}>
+                  Data Type
+                </label>
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  marginTop: '12px',
+                  width: '100%',
+                }}>
+                  <ButtonSelector
+                    selectorType="checkbox"
+                    label="Policy"
+                    onChange={(checked) => console.log('Requirement 1 Policy:', checked)}
                     className="full-width-button-selector"
                   />
                   <ButtonSelector
                     selectorType="checkbox"
                     label="Claims"
-                    onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Claims:`, checked)}
-                    className="full-width-button-selector"
-                  />
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Exposure"
-                    onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Exposure:`, checked)}
+                    onChange={(checked) => console.log('Requirement 1 Claims:', checked)}
                     className="full-width-button-selector"
                   />
                 </div>
               </div>
             </div>
-          </div>
-        ))}
 
-        {/* Add Data Level Button */}
-        <Button
-          variant="tertiary"
-          style={{
-            width: '100%',
-            marginTop: '16px',
-          }}
-          onClick={addRequirement}
-        >
-          Add Data Level
-        </Button>
-      </div>
+            {/* Additional Requirements */}
+            {requirements.map((requirement) => (
+              <div key={requirement.id}>
+                <h4 style={{
+                  ...typography.styles.bodyM,
+                  color: colors.blackAndWhite.black900,
+                  marginBottom: spacing[1],
+                  marginTop: '0',
+                }}>Data Level {requirement.id + 1}</h4>
+                <div style={{
+                  backgroundColor: colors.blackAndWhite.white,
+                  border: `1px solid ${colors.theme.primary400}`,
+                  borderRadius: borderRadius[8],
+                  padding: '24px',
+                  marginBottom: '24px',
+                  position: 'relative',
+                }}>
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                  }}
+                  onClick={() => removeRequirement(requirement.id)}
+                  icon={<icons.small.close color={colors.blackAndWhite.black900} />}
+                />
+
+                {/* Requirement Name & Expected Files Per Period */}
+                <div style={formGridStyles}>
+                  <Input
+                    label="Requirement Name"
+                    placeholder="Type your name"
+                    value=""
+                    onChange={(e) => console.log(`Requirement ${requirement.id + 1} Name:`, e.target.value)}
+                  />
+                  <FormDropdown
+                    label="Expected Files Per Period"
+                    placeholder="Select Form"
+                    value=""
+                    options={[
+                      { value: '1', label: '1 File' },
+                      { value: '2-5', label: '2-5 Files' },
+                      { value: '5+', label: '5+ Files' },
+                    ]}
+                    onChange={(value) => console.log(`Requirement ${requirement.id + 1} Expected Files:`, value)}
+                  />
+                </div>
+
+                {/* Upload Mode */}
+                <div style={{
+                  marginBottom: '24px',
+                }}>
+                  <label style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    display: 'block',
+                    marginBottom: '12px',
+                  }}>
+                    Upload Mode
+                  </label>
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    marginTop: '12px',
+                    width: '100%',
+                  }}>
+                    <ButtonSelector
+                      selectorType="checkbox"
+                      label="Incremental"
+                      onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Incremental:`, checked)}
+                      className="full-width-button-selector"
+                    />
+                    <ButtonSelector
+                      selectorType="checkbox"
+                      label="Cumulative"
+                      onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Cumulative:`, checked)}
+                      className="full-width-button-selector"
+                    />
+                  </div>
+                </div>
+
+                {/* Data Layout */}
+                <div style={{
+                  marginBottom: '24px',
+                }}>
+                  <label style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    display: 'block',
+                    marginBottom: '12px',
+                  }}>
+                    Data Layout
+                  </label>
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    marginTop: '12px',
+                    width: '100%',
+                  }}>
+                    <ButtonSelector
+                      selectorType="checkbox"
+                      label="Event"
+                      onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Event:`, checked)}
+                      className="full-width-button-selector"
+                    />
+                    <ButtonSelector
+                      selectorType="checkbox"
+                      label="Snapshot"
+                      onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Snapshot:`, checked)}
+                      className="full-width-button-selector"
+                    />
+                  </div>
+                </div>
+
+                {/* Data Type */}
+                <div style={{
+                  marginBottom: '0',
+                }}>
+                  <label style={{
+                    ...typography.styles.bodyM,
+                    color: colors.blackAndWhite.black900,
+                    display: 'block',
+                    marginBottom: '12px',
+                  }}>
+                    Data Type
+                  </label>
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    marginTop: '12px',
+                    width: '100%',
+                  }}>
+                    <ButtonSelector
+                      selectorType="checkbox"
+                      label="Policy"
+                      onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Policy:`, checked)}
+                      className="full-width-button-selector"
+                    />
+                    <ButtonSelector
+                      selectorType="checkbox"
+                      label="Claims"
+                      onChange={(checked) => console.log(`Requirement ${requirement.id + 1} Claims:`, checked)}
+                      className="full-width-button-selector"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+            {/* Add Data Level Button */}
+            <Button
+              variant="tertiary"
+              style={{
+                width: '100%',
+                marginTop: '16px',
+              }}
+              onClick={addRequirement}
+            >
+              Add Data Level
+            </Button>
+          </div>
+        )}
+
+        {/* Aggregated Configuration Section - Only show when Aggregate is selected */}
+        {dataDetailLevel === 'aggregate' && (
+          <div style={{ ...formContainerStyles, marginTop: '24px' }}>
+            <h3 style={sectionTitleStyles}>Aggregated Configuration</h3>
+
+            {/* Separator */}
+            <div style={{
+              width: '100%',
+              height: '1px',
+              backgroundColor: colors.theme.primary400,
+              marginBottom: '24px',
+            }} />
+
+            {/* Column Headers */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              marginBottom: '12px',
+              paddingLeft: '20px',
+              paddingRight: '20px',
+            }}>
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                flex: '2',
+              }}>Metric name</span>
+
+              {/* Invisible divider for alignment */}
+              <div style={{ width: '1px' }} />
+
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                flex: '2',
+              }}>Tagging</span>
+
+              {/* Invisible divider for alignment */}
+              <div style={{ width: '1px' }} />
+
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                flex: '2',
+              }}>
+                Expenses
+                <InfoTooltip text="Impacts net ceded loss and expense-sharing calculations under treaty terms" />
+              </span>
+
+              {/* Invisible divider for alignment */}
+              <div style={{ width: '1px' }} />
+
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                flex: '2',
+              }}>
+                Recoveries
+                <InfoTooltip text="Affects how recoveries are applied to ceded amounts and reinsurer share" />
+              </span>
+            </div>
+
+            {/* Metric Rows */}
+            {[
+              { name: 'Earned Premium', tooltip: 'Premium earned during the reporting period' },
+              { name: 'Written Premium', tooltip: 'Total premium written during the reporting period' },
+              { name: 'Collected Premium', tooltip: 'Premium actually collected from policyholders' },
+              { name: 'Paid Loss', tooltip: 'Losses actually paid out during the reporting period' },
+              { name: 'Reported Loss', tooltip: 'Losses reported but not yet paid during the period' },
+              { name: 'Adjustments', tooltip: 'Any adjustments or corrections to reported values' },
+            ].map((metric, index) => (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: colors.blackAndWhite.white,
+                  border: `1px solid ${colors.theme.primary400}`,
+                  borderRadius: borderRadius[8],
+                  padding: '0 20px',
+                  marginBottom: '5px',
+                  height: '45px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  gap: '16px',
+                }}>
+                  {/* Metric Name */}
+                  <div style={{
+                    flex: '2',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}>
+                    <InfoTooltip text={metric.tooltip} />
+                    <span style={{
+                      ...typography.styles.bodyM,
+                      color: colors.blackAndWhite.black900,
+                    }}>{metric.name}</span>
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{
+                    width: '1px',
+                    height: '25px',
+                    backgroundColor: colors.theme.primary400,
+                  }} />
+
+                  {/* Tagging Dropdown */}
+                  <div style={{ flex: '2' }}>
+                    <MenuDropdown
+                      placeholder="Select"
+                      value={aggregatedMetrics[metric.name]?.tagging || ''}
+                      selectedPrefix=""
+                      options={[
+                        { value: 'incremental', label: 'Incremental' },
+                        { value: 'cumulative', label: 'Cumulative' },
+                      ]}
+                      onChange={(value) => updateAggregatedMetric(metric.name, 'tagging', value)}
+                    />
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{
+                    width: '1px',
+                    height: '25px',
+                    backgroundColor: colors.theme.primary400,
+                  }} />
+
+                  {/* Expenses Dropdown */}
+                  <div style={{ flex: '2' }}>
+                    <MenuDropdown
+                      placeholder="Select"
+                      value={aggregatedMetrics[metric.name]?.expenses || ''}
+                      selectedPrefix=""
+                      options={[
+                        { value: 'included', label: 'Included' },
+                        { value: 'excluded', label: 'Excluded' },
+                      ]}
+                      onChange={(value) => updateAggregatedMetric(metric.name, 'expenses', value)}
+                      triggerBackgroundColor={
+                        aggregatedMetrics[metric.name]?.expenses === 'excluded'
+                          ? 'rgba(255, 239, 176, 0.5)'
+                          : aggregatedMetrics[metric.name]?.expenses === 'included'
+                          ? 'rgba(198, 255, 193, 0.5)'
+                          : undefined
+                      }
+                      textColor={
+                        aggregatedMetrics[metric.name]?.expenses === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.expenses === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                      iconColor={
+                        aggregatedMetrics[metric.name]?.expenses === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.expenses === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                    />
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{
+                    width: '1px',
+                    height: '25px',
+                    backgroundColor: colors.theme.primary400,
+                  }} />
+
+                  {/* Recoveries Dropdown */}
+                  <div style={{ flex: '2' }}>
+                    <MenuDropdown
+                      placeholder="Select"
+                      value={aggregatedMetrics[metric.name]?.recoveries || ''}
+                      selectedPrefix=""
+                      options={[
+                        { value: 'included', label: 'Included' },
+                        { value: 'excluded', label: 'Excluded' },
+                      ]}
+                      onChange={(value) => updateAggregatedMetric(metric.name, 'recoveries', value)}
+                      triggerBackgroundColor={
+                        aggregatedMetrics[metric.name]?.recoveries === 'excluded'
+                          ? 'rgba(255, 239, 176, 0.5)'
+                          : aggregatedMetrics[metric.name]?.recoveries === 'included'
+                          ? 'rgba(198, 255, 193, 0.5)'
+                          : undefined
+                      }
+                      textColor={
+                        aggregatedMetrics[metric.name]?.recoveries === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.recoveries === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                      iconColor={
+                        aggregatedMetrics[metric.name]?.recoveries === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.recoveries === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </>
     );
   };
 

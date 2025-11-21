@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DropdownForms } from './DropdownForms';
 
 const meta: Meta<typeof DropdownForms> = {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Separator } from './Separator';
 import { Card, CardHeader, CardContent } from './Card/Card';
 import { spacing, useSemanticColors } from '../tokens';

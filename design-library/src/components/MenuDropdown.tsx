@@ -53,6 +53,10 @@ export interface MenuDropdownProps {
   style?: React.CSSProperties;
   /** Dropdown list minimum width */
   dropdownListMinWidth?: string;
+  /** Custom text color for selected value */
+  textColor?: string;
+  /** Custom icon color for chevron */
+  iconColor?: string;
 }
 
 export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
@@ -76,6 +80,8 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
   selectedPrefix = 'Option',
   style,
   dropdownListMinWidth,
+  textColor,
+  iconColor,
 }, ref) => {
   const [internalState, setInternalState] = useState<'default' | 'active' | 'filled'>(state === 'active' ? 'active' : 'default');
   const [isOpen, setIsOpen] = useState(false);
@@ -299,9 +305,9 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
                   </span>
                 )}
                 <span style={{
-                  color: actualState === 'disabled'
+                  color: textColor || (actualState === 'disabled'
                     ? colors.blackAndWhite.black500
-                    : colors.blackAndWhite.black900
+                    : colors.blackAndWhite.black900)
                 }}>
                   {selectedOption.label}
                 </span>
@@ -323,7 +329,7 @@ export const MenuDropdown = forwardRef<HTMLDivElement, MenuDropdownProps>(({
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
             transition: 'transform 0.2s ease',
           }}>
-            <icons.extraSmall.chevronDown color={colors.blackAndWhite.black700} />
+            <icons.extraSmall.chevronDown color={iconColor || colors.blackAndWhite.black700} />
           </div>
         </div>
 

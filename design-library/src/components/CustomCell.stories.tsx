@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CustomCell } from './CustomCell';
 import type { CustomCellElement } from './CustomCell';
 import { AddSmall, DownloadMedium, CheckMedium, HelpExtraSmall, EditSmall, StatusWarning } from '../icons';

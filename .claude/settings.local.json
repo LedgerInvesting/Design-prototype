@@ -91,7 +91,9 @@
       "Bash(git branch:*)",
       "Bash(echo:*)",
       "Bash(python3:*)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(npx storybook@latest upgrade)",
+      "Bash(npx storybook@latest upgrade:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { MenuDropdown } from './MenuDropdown';
 import { useSemanticColors } from '../tokens';

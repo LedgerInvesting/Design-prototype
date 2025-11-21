@@ -1,9 +1,10 @@
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react-vite';
 import '../src/styles/base.css';
 import { withThemeProvider } from './decorators';
 
 const preview: Preview = {
   decorators: [withThemeProvider],
+
   globalTypes: {
     theme: {
       description: 'Product theme for components',
@@ -21,6 +22,7 @@ const preview: Preview = {
       },
     },
   },
+
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
@@ -32,19 +34,25 @@ const preview: Preview = {
     // Global theme parameter for all stories
     theme: 'reports',
     backgrounds: {
-      default: 'light',
-      values: [
-        {
+      options: {
+        light: {
           name: 'light',
           value: '#ffffff',
         },
-        {
+
+        dark: {
           name: 'dark',
           value: '#333333',
-        },
-      ],
+        }
+      }
     },
   },
+
+  initialGlobals: {
+    backgrounds: {
+      value: 'light'
+    }
+  }
 };
 
 export default preview;

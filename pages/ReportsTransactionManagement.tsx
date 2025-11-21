@@ -367,7 +367,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     return transactions.map(tx => ({
       transactionName: tx.transaction_name,
       cedingCompany: tx.ceding_company_name || 'Unknown',
-      reinsurerName: tx.reinsurer_company_name || 'Unknown', 
+      reinsurerName: tx.reinsurer_company_name || 'Unknown',
       effectiveDate: tx.effective_date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
       expiryDate: tx.expiry_date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
       premium: tx.premium ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(tx.premium) : 'N/A',
@@ -688,9 +688,12 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
     }
   ];
 
+  // Store reference to current table data for use in callbacks
+  const tableDataRef = React.useRef<any[]>([]);
+
   // Column definitions with automatic width optimization using real data
   const dataForColumns = tableData.length > 0 ? tableData : sampleData.slice(0, 5); // Use sample for sizing if no real data yet
-  
+
   const tableColumns = [
     {
       key: 'transactionName',
@@ -702,9 +705,17 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       align: 'left', // First column left-aligned
       headerAlign: 'left',
       hoverIcon: 'config' as const,
-      onDownload: (filename: string) => {
-        // Navigate to new transaction workflow when config is clicked
-        onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
+      onDownload: (transactionName: string) => {
+        // Find the row data for this transaction
+        const rowData = tableDataRef.current.find(row => row.transactionName === transactionName);
+        if (rowData && onNavigateToPage) {
+          // Navigate to form with pre-filled data
+          onNavigateToPage('reports-new-transaction-form', {
+            transactionName: rowData.transactionName,
+            cedingReinsurer: rowData.cedingCompany,
+            reinsurerName: rowData.reinsurerName,
+          });
+        }
       },
     },
     {
@@ -793,6 +804,11 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
   // Determine what data to show
   const displayData = tableData.length > 0 ? tableData : sampleData;
   const isUsingRealData = tableData.length > 0;
+
+  // Update ref when displayData changes
+  React.useEffect(() => {
+    tableDataRef.current = displayData;
+  }, [displayData]);
 
   return (
     <div style={{

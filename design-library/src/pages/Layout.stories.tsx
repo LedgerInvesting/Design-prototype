@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Layout } from './Layout';
 import type { LayoutProps } from './Layout';
 import { colors, typography } from '../tokens';
