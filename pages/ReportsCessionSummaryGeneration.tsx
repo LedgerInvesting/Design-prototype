@@ -77,25 +77,15 @@ const MetricRow: React.FC<MetricRowProps> = ({
       }
     } else if (type === 'expenses' || type === 'recoveries') {
       if (value === 'Included') {
-        // Green - analytics green900
-        const greenBg = colors.success.fill;
-        // Convert hex to rgba with 60% opacity
-        const r = parseInt(greenBg.slice(1, 3), 16);
-        const g = parseInt(greenBg.slice(3, 5), 16);
-        const b = parseInt(greenBg.slice(5, 7), 16);
+        // Green 500 with 50% alpha, green 900 for text/icon
         return {
-          bg: `rgba(${r}, ${g}, ${b}, 0.6)`,
+          bg: 'rgba(198, 255, 193, 0.5)',
           color: colors.analytics.green900
         };
       } else {
-        // Yellow - contracts yellow900
-        const yellowBg = colors.warning.fill;
-        // Convert hex to rgba with 60% opacity
-        const r = parseInt(yellowBg.slice(1, 3), 16);
-        const g = parseInt(yellowBg.slice(3, 5), 16);
-        const b = parseInt(yellowBg.slice(5, 7), 16);
+        // Yellow 500 with 50% alpha, yellow 900 for text/icon
         return {
-          bg: `rgba(${r}, ${g}, ${b}, 0.6)`,
+          bg: 'rgba(255, 239, 176, 0.5)',
           color: colors.contracts.yellow900
         };
       }
@@ -118,7 +108,9 @@ const MetricRow: React.FC<MetricRowProps> = ({
         alignItems: 'center',
         gap: '10px',
         padding: '0 10px',
-        width: '400px',
+        // width: '400px', // Old fixed width
+        // width: '30%', // Responsive percentage
+        width: '32%', // Responsive percentage - adjusted
         flexShrink: 0
       }}>
         <InfoTooltip
@@ -143,7 +135,11 @@ const MetricRow: React.FC<MetricRowProps> = ({
       }}>
         {/* Value Input */}
         <div style={{
-          width: '200px',
+          // width: '200px', // Old fixed width
+          // width: '15%', // Responsive percentage
+          // width: '20%', // Responsive percentage - adjusted
+          width: '26%', // Responsive percentage - adjusted
+          minWidth: '120px', // Minimum width to prevent collapse
           height: '25px',
           display: 'flex',
           alignItems: 'center',
@@ -758,7 +754,9 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
             }}>
               {/* Metric name header */}
               <div style={{
-                width: '400px',
+                // width: '400px', // Old fixed width
+                // width: '30%', // Responsive percentage
+                width: '32%', // Responsive percentage - adjusted
                 padding: '0 10px 0 10px',
                 flexShrink: 0
               }}>
@@ -780,7 +778,11 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               }}>
                 {/* Value header */}
                 <div style={{
-                  width: '200px',
+                  // width: '200px', // Old fixed width
+                  // width: '15%', // Responsive percentage
+                  // width: '20%', // Responsive percentage - adjusted
+                  width: '26%', // Responsive percentage - adjusted
+                  minWidth: '120px', // Minimum width to prevent collapse
                   padding: '0 20px 0 20px',
                   flexShrink: 0
                 }}>
@@ -950,7 +952,8 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               borderRadius: '4px',
               display: 'flex',
               flexDirection: 'column',
-              width: 'fit-content'
+              // width: 'fit-content' // Old - doesn't work with percentage children
+              width: '50%', // Responsive percentage - spans metric name + value columns
             }}>
               <div style={{
                 height: '40px',
@@ -964,7 +967,9 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                   alignItems: 'center',
                   gap: '10px',
                   padding: '0 10px',
-                  width: '400px',
+                  // width: '400px', // Old fixed width
+                  // width: '30%', // Responsive percentage (when parent is full width)
+                  width: '65%', // Responsive percentage (relative to 50% parent wrapper)
                   flexShrink: 0
                 }}>
                   <InfoTooltip
@@ -989,7 +994,10 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
 
                 {/* Value Column */}
                 <div style={{
-                  width: '200px',
+                  // width: '200px', // Old fixed width
+                  // width: '15%', // Responsive percentage (when parent is full width)
+                  width: '35%', // Responsive percentage (relative to 50% parent wrapper)
+                  minWidth: '120px', // Minimum width to prevent collapse
                   height: '25px',
                   display: 'flex',
                   alignItems: 'center',
@@ -1017,7 +1025,8 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               borderRadius: '4px',
               display: 'flex',
               flexDirection: 'column',
-              width: 'fit-content'
+              // width: 'fit-content' // Old - doesn't work with percentage children
+              width: '50%', // Responsive percentage - spans metric name + value columns
             }}>
               <div style={{
                 height: '40px',
@@ -1031,7 +1040,9 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                   alignItems: 'center',
                   gap: '10px',
                   padding: '0 10px',
-                  width: '400px',
+                  // width: '400px', // Old fixed width
+                  // width: '30%', // Responsive percentage (when parent is full width)
+                  width: '65%', // Responsive percentage (relative to 50% parent wrapper)
                   flexShrink: 0
                 }}>
                   <InfoTooltip
@@ -1056,7 +1067,10 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
 
                 {/* Value Column */}
                 <div style={{
-                  width: '200px',
+                  // width: '200px', // Old fixed width
+                  // width: '15%', // Responsive percentage (when parent is full width)
+                  width: '35%', // Responsive percentage (relative to 50% parent wrapper)
+                  minWidth: '120px', // Minimum width to prevent collapse
                   height: '25px',
                   display: 'flex',
                   alignItems: 'center',
