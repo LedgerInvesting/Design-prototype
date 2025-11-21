@@ -236,6 +236,42 @@ export const CheckExtraSmall: React.FC<ExtraSmallIconProps> = ({
   </svg>
 );
 
+export const IncrementalExtraSmall: React.FC<ExtraSmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg
+    width={ICON_SIZES.extraSmall}
+    height={ICON_SIZES.extraSmall}
+    viewBox="0 0 7 7"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M0 3.98584H1.99935V5.98519H0V3.98584Z" fill={color}/>
+    <path d="M1.98438 1.99316H3.98372V3.99251H1.98438V1.99316Z" fill={color}/>
+    <path d="M3.9668 0H5.96614V1.99935H3.9668V0Z" fill={color}/>
+  </svg>
+);
+
+export const CumulativeExtraSmall: React.FC<ExtraSmallIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg
+    width={ICON_SIZES.extraSmall}
+    height={ICON_SIZES.extraSmall}
+    viewBox="0 0 7 7"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <rect y="3.99805" width="2" height="2" fill={color}/>
+    <rect y="1.99854" width="4.00294" height="2" fill={color}/>
+    <rect x="0.015625" width="6" height="2" fill={color}/>
+  </svg>
+);
+
 // Small Icons (12x12px) - Auto-generated from SVG files
 
 export const AddSmall: React.FC<SmallIconProps> = ({ 
@@ -1773,6 +1809,8 @@ export const icons = {
     arrowLeft: ArrowLeftExtraSmall,
     minus: MinusExtraSmall,
     search: SearchExtraSmall,
+    incremental: IncrementalExtraSmall,
+    cumulative: CumulativeExtraSmall,
   },
   small: {
     add: AddSmall,

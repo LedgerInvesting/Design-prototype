@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Layout } from '@design-library/pages';
 import { Button, InfoTooltip, Modal, ButtonSelector, FileUploadBox, colors, typography, useSemanticColors, borderRadius } from '@design-library/components';
 import { ThemeProvider } from '@design-library/tokens';
-import { CheckExtraSmall, XExtraSmall, WorkbenchLogo, StatusWarning } from '@design-library/icons';
+import { CheckExtraSmall, XExtraSmall, IncrementalExtraSmall, CumulativeExtraSmall, WorkbenchLogo, StatusWarning } from '@design-library/icons';
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
 import { BDXProcessingModal } from './BDXProcessingModal';
 
@@ -182,6 +182,11 @@ const MetricRow: React.FC<MetricRowProps> = ({
             backgroundColor: getTagColors('tagging', tagging).bg,
             color: getTagColors('tagging', tagging).color
           }}>
+            {tagging === 'Incremental' ? (
+              <IncrementalExtraSmall color={getTagColors('tagging', tagging).color} />
+            ) : (
+              <CumulativeExtraSmall color={getTagColors('tagging', tagging).color} />
+            )}
             {tagging}
           </div>
         </div>
@@ -1123,7 +1128,7 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
             alignItems: 'center',
             justifyContent: 'center',
             gap: '10px',
-            marginTop: '5px',
+            marginTop: '-30px',
             backgroundColor: colors.warning.fillLight,
             padding: '12px 16px',
             borderRadius: borderRadius[8]

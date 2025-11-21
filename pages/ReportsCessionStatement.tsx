@@ -679,7 +679,7 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
           <div style={{
             paddingTop: '10px',
             display: 'flex',
-            gap: '5px'
+            gap: '0'
           }}>
             {/* Left: Fixed Metrics Column */}
             <div style={{
@@ -709,7 +709,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               <div style={{
                 backgroundColor: semanticColors.blackAndWhite.white,
                 border: `1px solid ${semanticColors.theme.primary400}`,
-                borderRadius: '4px',
+                borderRight: 'none',
+                borderRadius: '4px 0 0 4px',
                 display: 'flex',
                 flexDirection: 'column'
               }}>
@@ -718,7 +719,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   display: 'flex',
                   alignItems: 'center',
                   padding: '0 10px 0 20px',
-                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`,
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Premium earned during the reporting period"
@@ -734,13 +736,22 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     Earned Premium
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
                 <div style={{
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
                   padding: '0 10px 0 20px',
-                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`,
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Total premium written during the reporting period"
@@ -756,12 +767,21 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     Written Premium
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
                 <div style={{
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
-                  padding: '0 10px 0 20px'
+                  padding: '0 10px 0 20px',
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Total premium written during the reporting period"
@@ -777,6 +797,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     Written Premium
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
               </div>
 
@@ -784,7 +812,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               <div style={{
                 backgroundColor: semanticColors.blackAndWhite.white,
                 border: `1px solid ${semanticColors.theme.primary400}`,
-                borderRadius: '4px',
+                borderRight: 'none',
+                borderRadius: '4px 0 0 4px',
                 display: 'flex',
                 flexDirection: 'column'
               }}>
@@ -793,7 +822,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   display: 'flex',
                   alignItems: 'center',
                   padding: '0 10px 0 20px',
-                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`,
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Losses actually paid out during the reporting period"
@@ -809,13 +839,22 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     Paid Loss
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
                 <div style={{
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
                   padding: '0 10px 0 20px',
-                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`,
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Losses reported but not yet paid during the period"
@@ -831,12 +870,21 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     Reported Loss
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
                 <div style={{
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
-                  padding: '0 10px 0 20px'
+                  padding: '0 10px 0 20px',
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Incurred But Not Reported loss reserves"
@@ -852,6 +900,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     IBNR
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
               </div>
 
@@ -859,7 +915,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               <div style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.5)',
                 border: `1px solid ${semanticColors.theme.primary400}`,
-                borderRadius: '4px',
+                borderRight: 'none',
+                borderRadius: '4px 0 0 4px',
                 display: 'flex',
                 flexDirection: 'column'
               }}>
@@ -869,7 +926,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   display: 'flex',
                   alignItems: 'center',
                   padding: '0 10px 0 20px',
-                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`
+                  borderBottom: `1px dashed ${semanticColors.theme.primary400}`,
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Reserved amount for known and reported losses"
@@ -894,6 +952,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     (Reported Loss - Paid Loss)
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
 
                 {/* Incurred Loss */}
@@ -901,7 +967,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
-                  padding: '0 10px 0 20px'
+                  padding: '0 10px 0 20px',
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Total incurred losses (Paid Loss + Loss Reserves + IBNR)"
@@ -926,6 +993,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     (Reported Loss + IBNR)
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
               </div>
 
@@ -933,7 +1008,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
               <div style={{
                 backgroundColor: semanticColors.blackAndWhite.white,
                 border: `1px solid ${semanticColors.theme.primary400}`,
-                borderRadius: '4px',
+                borderRight: 'none',
+                borderRadius: '4px 0 0 4px',
                 display: 'flex',
                 flexDirection: 'column'
               }}>
@@ -941,7 +1017,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
-                  padding: '0 10px 0 20px'
+                  padding: '0 10px 0 20px',
+                  position: 'relative'
                 }}>
                   <InfoTooltip
                     text="Any adjustments or corrections to reported values"
@@ -957,6 +1034,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                   }}>
                     Adjustment
                   </p>
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '10px',
+                    bottom: '10px',
+                    width: '1px',
+                    backgroundColor: semanticColors.theme.primary400
+                  }} />
                 </div>
               </div>
             </div>
@@ -980,11 +1065,14 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                 paddingBottom: '20px',
                 minWidth: `${months.length * 200}px`
               }}>
-                {months.map((month) => (
+                {months.map((month, index) => (
                   <div key={month} style={{
                     minWidth: '200px',
                     width: '200px',
-                    padding: '0 20px'
+                    padding: '0 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
                     <p style={{
                       ...typography.styles.bodyL,
@@ -994,6 +1082,17 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
                     }}>
                       {month}
                     </p>
+                    <span style={{
+                      ...typography.styles.bodyS,
+                      color: index === months.length - 1 ? colors.analytics.green900 : semanticColors.blackAndWhite.black700,
+                      padding: '4px 6px',
+                      border: `1px solid ${index === months.length - 1 ? colors.analytics.green700 : semanticColors.theme.primary400}`,
+                      borderRadius: borderRadius[4],
+                      whiteSpace: 'nowrap',
+                      backgroundColor: index === months.length - 1 ? colors.analytics.green500 : 'transparent'
+                    }}>
+                      {index === months.length - 1 ? 'Current' : 'Historical Data'}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -1002,7 +1101,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
             <div style={{
               backgroundColor: semanticColors.blackAndWhite.white,
               border: `1px solid ${semanticColors.theme.primary400}`,
-              borderRadius: '4px',
+              borderLeft: 'none',
+              borderRadius: '0 4px 4px 0',
               display: 'flex',
               flexDirection: 'column',
               minWidth: `${months.length * 200}px`
@@ -1034,7 +1134,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
             <div style={{
               backgroundColor: semanticColors.blackAndWhite.white,
               border: `1px solid ${semanticColors.theme.primary400}`,
-              borderRadius: '4px',
+              borderLeft: 'none',
+              borderRadius: '0 4px 4px 0',
               display: 'flex',
               flexDirection: 'column',
               minWidth: `${months.length * 200}px`
@@ -1066,7 +1167,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
             <div style={{
               backgroundColor: 'rgba(255, 255, 255, 0.5)',
               border: `1px solid ${semanticColors.theme.primary400}`,
-              borderRadius: '4px',
+              borderLeft: 'none',
+              borderRadius: '0 4px 4px 0',
               display: 'flex',
               flexDirection: 'column',
               minWidth: `${months.length * 200}px`
@@ -1173,7 +1275,8 @@ export const ReportsCessionStatement: React.FC<ReportsCessionStatementProps> = (
             <div style={{
               backgroundColor: semanticColors.blackAndWhite.white,
               border: `1px solid ${semanticColors.theme.primary400}`,
-              borderRadius: '4px',
+              borderLeft: 'none',
+              borderRadius: '0 4px 4px 0',
               display: 'flex',
               flexDirection: 'column',
               minWidth: `${months.length * 200}px`
