@@ -277,8 +277,8 @@ export const EditContractsExtraSmall: React.FC<ExtraSmallIconProps> = ({
   className
 }) => (
   <svg
-    width={ICON_SIZES.extraSmall}
-    height={ICON_SIZES.extraSmall}
+    width={12}
+    height={12}
     viewBox="0 0 10 10"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -295,8 +295,8 @@ export const LookExtraSmall: React.FC<ExtraSmallIconProps> = ({
   className
 }) => (
   <svg
-    width={ICON_SIZES.extraSmall}
-    height={ICON_SIZES.extraSmall}
+    width={12}
+    height={12}
     viewBox="0 0 10 10"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

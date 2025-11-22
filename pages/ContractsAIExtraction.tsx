@@ -71,10 +71,12 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
   const PageContent: React.FC = () => {
     const colors = useSemanticColors();
     const [hoveredItem, setHoveredItem] = useState<number | null>(null);
+    const [selectedItem, setSelectedItem] = useState<number | null>(null);
     const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
-    // Function to scroll to a marker in the preview
+    // Function to scroll to a marker in the preview and select it
     const scrollToMarker = (markerNum: number) => {
+      setSelectedItem(markerNum);
       const markerElement = document.getElementById(`marker-${markerNum}`);
       if (markerElement && scrollContainerRef.current) {
         const container = scrollContainerRef.current.querySelector('.contract-pdf-scroll');
@@ -113,7 +115,6 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
       backgroundColor: colors.theme.primary200,
       borderRadius: borderRadius[16],
       padding: spacing[3],
-      minHeight: '800px',
       position: 'relative',
     };
 
@@ -397,6 +398,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
           padding: spacing[3],
           display: 'flex',
           gap: spacing[4],
+          alignItems: 'flex-start',
         }}>
           {/* PDF Viewer Section - Left Side (60%) */}
           <div style={{ flex: '0 0 60%', display: 'flex', flexDirection: 'column' }}>
@@ -434,12 +436,11 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
                 ...pdfDocumentStyles,
                 position: 'relative',
                 overflow: 'hidden',
-                flex: 1,
                 padding: '10px 10px 0 0',
               }}
             >
               <CustomScroll
-                maxHeight="680px"
+                maxHeight="880px"
                 scrollClassName="contract-pdf-scroll"
                 trackColor="transparent"
                 thumbColor={colors.blackAndWhite.black900}
@@ -455,29 +456,29 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
                   {/* Numbered markers overlay - spread across 5 pages (~800px each) */}
                   {[
                     // Page 1 (0-800px)
-                    { num: 1, top: 85, left: 25 },
-                    { num: 2, top: 180, left: 320 },
-                    { num: 3, top: 350, left: 45 },
-                    { num: 4, top: 520, left: 280 },
+                    { num: 1, top: 85, left: 25, boxWidth: 180, boxHeight: 20 },
+                    { num: 2, top: 180, left: 320, boxWidth: 120, boxHeight: 18 },
+                    { num: 3, top: 350, left: 45, boxWidth: 200, boxHeight: 22 },
+                    { num: 4, top: 520, left: 280, boxWidth: 90, boxHeight: 16 },
                     // Page 2 (800-1600px)
-                    { num: 5, top: 920, left: 35 },
-                    { num: 6, top: 1050, left: 300 },
-                    { num: 7, top: 1250, left: 60 },
-                    { num: 8, top: 1450, left: 250 },
+                    { num: 5, top: 920, left: 35, boxWidth: 280, boxHeight: 60 },
+                    { num: 6, top: 1050, left: 300, boxWidth: 100, boxHeight: 18 },
+                    { num: 7, top: 1250, left: 60, boxWidth: 150, boxHeight: 20 },
+                    { num: 8, top: 1450, left: 250, boxWidth: 130, boxHeight: 18 },
                     // Page 3 (1600-2400px)
-                    { num: 9, top: 1720, left: 40 },
-                    { num: 10, top: 1900, left: 290 },
-                    { num: 11, top: 2100, left: 55 },
-                    { num: 12, top: 2280, left: 310 },
+                    { num: 9, top: 1720, left: 40, boxWidth: 160, boxHeight: 20 },
+                    { num: 10, top: 1900, left: 290, boxWidth: 110, boxHeight: 18 },
+                    { num: 11, top: 2100, left: 55, boxWidth: 190, boxHeight: 22 },
+                    { num: 12, top: 2280, left: 310, boxWidth: 85, boxHeight: 16 },
                     // Page 4 (2400-3200px)
-                    { num: 13, top: 2550, left: 30 },
-                    { num: 14, top: 2750, left: 270 },
-                    { num: 15, top: 2950, left: 50 },
+                    { num: 13, top: 2550, left: 30, boxWidth: 170, boxHeight: 20 },
+                    { num: 14, top: 2750, left: 270, boxWidth: 140, boxHeight: 18 },
+                    { num: 15, top: 2950, left: 50, boxWidth: 210, boxHeight: 24 },
                     // Page 5 (3200-4000px)
-                    { num: 16, top: 3350, left: 35 },
-                    { num: 17, top: 3550, left: 295 },
-                    { num: 18, top: 3750, left: 45 },
-                  ].map(({ num, top, left }) => (
+                    { num: 16, top: 3350, left: 35, boxWidth: 155, boxHeight: 20 },
+                    { num: 17, top: 3550, left: 295, boxWidth: 95, boxHeight: 16 },
+                    { num: 18, top: 3750, left: 45, boxWidth: 185, boxHeight: 22 },
+                  ].map(({ num, top, left, boxWidth, boxHeight }) => (
                     <div
                       key={num}
                       id={`marker-${num}`}
@@ -485,19 +486,41 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
                         position: 'absolute',
                         top: `${top}px`,
                         left: `${left}px`,
-                        width: '16px',
-                        height: '16px',
-                        backgroundColor: colors.theme.primary700,
-                        borderRadius: borderRadius[4],
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        ...typography.styles.bodyS,
-                        color: colors.blackAndWhite.black900,
+                        alignItems: 'flex-start',
+                        gap: '4px',
                         zIndex: 10,
                       }}
                     >
-                      {num}
+                      {/* Number badge */}
+                      <div
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          backgroundColor: colors.theme.primary700,
+                          borderRadius: borderRadius[4],
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          ...typography.styles.bodyS,
+                          color: colors.blackAndWhite.black900,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {num}
+                      </div>
+                      {/* Highlight box - only shown when selected */}
+                      {selectedItem === num && (
+                        <div
+                          style={{
+                            width: `${boxWidth}px`,
+                            height: `${boxHeight}px`,
+                            backgroundColor: 'rgba(252, 220, 106, 0.2)',
+                            border: '1.6px solid #D9B740',
+                            borderRadius: borderRadius[4],
+                          }}
+                        />
+                      )}
                     </div>
                   ))}
                   {/* Contract page images */}
