@@ -4,7 +4,7 @@ import type { BreadcrumbItem } from '@design-library/pages';
 import { Button, Card, CustomScroll } from '@design-library/components';
 import { typography, spacing, borderRadius, shadows, useSemanticColors, ThemeProvider, colors as staticColors } from '@design-library/tokens';
 import { createPageNavigationHandler, createBreadcrumbs } from '@design-library/utils/navigation';
-import { TextTable, DocumentSmall } from '@design-library/icons';
+import { TextTable, DocumentSmall, EditContractsExtraSmall, LookExtraSmall } from '@design-library/icons';
 
 interface ContractsAIExtractionProps {
   onNavigateToPage?: (page: string, data?: any) => void;
@@ -70,6 +70,20 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
 
   const PageContent: React.FC = () => {
     const colors = useSemanticColors();
+    const [hoveredItem, setHoveredItem] = useState<number | null>(null);
+    const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
+    // Function to scroll to a marker in the preview
+    const scrollToMarker = (markerNum: number) => {
+      const markerElement = document.getElementById(`marker-${markerNum}`);
+      if (markerElement && scrollContainerRef.current) {
+        const container = scrollContainerRef.current.querySelector('.contract-pdf-scroll');
+        if (container) {
+          const markerTop = markerElement.offsetTop;
+          container.scrollTo({ top: markerTop - 50, behavior: 'smooth' });
+        }
+      }
+    };
 
     // Page title styles
     const titleStyles: React.CSSProperties = {
@@ -109,7 +123,6 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
       borderTopRightRadius: 0,
       borderBottomLeftRadius: borderRadius[8],
       borderBottomRightRadius: borderRadius[8],
-      minHeight: '700px',
       position: 'relative',
       overflowX: 'hidden',
     };
@@ -171,6 +184,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
         paddingBottom: spacing[2],
         marginBottom: spacing[2],
         borderBottom: `1px dashed ${colors.theme.primary400}`,
+        position: 'relative',
       };
 
       const termLabelStyles: React.CSSProperties = {
@@ -187,30 +201,70 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
         marginLeft: spacing[4],
       };
 
+      const iconsContainerStyles: React.CSSProperties = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing[2],
+        marginLeft: spacing[3],
+      };
+
       return (
         <div style={cardStyles}>
-          {terms.map((term, index) => (
-            <div key={index} style={termRowStyles}>
-              <span style={termLabelStyles}>{startIndex + index}. {term.label}</span>
-              <span style={termValueStyles}>{term.value}</span>
-            </div>
-          ))}
+          {terms.map((term, index) => {
+            const itemIndex = startIndex + index;
+            const isHovered = hoveredItem === itemIndex;
+            return (
+              <div
+                key={index}
+                style={termRowStyles}
+                onMouseEnter={() => setHoveredItem(itemIndex)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <span style={termLabelStyles}>{itemIndex}. {term.label}</span>
+                <span style={termValueStyles}>{term.value}</span>
+                {isHovered && (
+                  <div style={iconsContainerStyles}>
+                    <div
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => console.log('Edit item', itemIndex)}
+                    >
+                      <EditContractsExtraSmall color={colors.blackAndWhite.black700} />
+                    </div>
+                    <div
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => scrollToMarker(itemIndex)}
+                    >
+                      <LookExtraSmall color={colors.blackAndWhite.black700} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       );
     };
 
     // Subject Business card with full text
     const SubjectBusinessCard: React.FC<{ index: number }> = ({ index }) => {
+      const isHovered = hoveredItem === index;
+
       const cardStyles: React.CSSProperties = {
         marginBottom: spacing[2],
         paddingBottom: spacing[2],
         borderBottom: `1px dashed ${colors.theme.primary400}`,
       };
 
+      const headerStyles: React.CSSProperties = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: spacing[5],
+      };
+
       const labelStyles: React.CSSProperties = {
         ...typography.styles.bodyM,
         color: colors.blackAndWhite.black700,
-        marginBottom: spacing[5],
       };
 
       const textStyles: React.CSSProperties = {
@@ -219,9 +273,31 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
         lineHeight: 1.3,
       };
 
+      const iconsContainerStyles: React.CSSProperties = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing[2],
+      };
+
       return (
-        <div style={cardStyles}>
-          <div style={labelStyles}>{index}. Subject Business</div>
+        <div
+          style={cardStyles}
+          onMouseEnter={() => setHoveredItem(index)}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
+          <div style={headerStyles}>
+            <div style={labelStyles}>{index}. Subject Business</div>
+            {isHovered && (
+              <div style={iconsContainerStyles}>
+                <div style={{ cursor: 'pointer' }} onClick={() => console.log('Edit item', index)}>
+                  <EditContractsExtraSmall color={colors.blackAndWhite.black700} />
+                </div>
+                <div style={{ cursor: 'pointer' }} onClick={() => scrollToMarker(index)}>
+                  <LookExtraSmall color={colors.blackAndWhite.black700} />
+                </div>
+              </div>
+            )}
+          </div>
           <div style={textStyles}>
             Liability that may accrue to the Company as a result of loss or losses under Policies produced and underwritten by ACME Insurance Company, classified by the Company as Automobile Liability, including Bodily Injury, Property Damage Liability, Uninsured Motorists, Underinsured Motorists, Medical Payments and Personal Injury Protection, and Automobile Physical Damage business written or renewed during the term of this Agreement, subject to the terms and conditions herein contained.
           </div>
@@ -231,6 +307,8 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
 
     // Coverage Type card
     const CoverageTypeCard: React.FC<{ index: number }> = ({ index }) => {
+      const isHovered = hoveredItem === index;
+
       const cardStyles: React.CSSProperties = {
         paddingBottom: spacing[2],
       };
@@ -251,11 +329,32 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
         color: colors.blackAndWhite.black900,
       };
 
+      const iconsContainerStyles: React.CSSProperties = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing[2],
+        marginLeft: spacing[3],
+      };
+
       return (
-        <div style={cardStyles}>
+        <div
+          style={cardStyles}
+          onMouseEnter={() => setHoveredItem(index)}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
           <div style={termRowStyles}>
             <span style={termLabelStyles}>{index}. Coverage Type</span>
             <span style={termValueStyles}>Risk Attaching</span>
+            {isHovered && (
+              <div style={iconsContainerStyles}>
+                <div style={{ cursor: 'pointer' }} onClick={() => console.log('Edit item', index)}>
+                  <EditContractsExtraSmall color={colors.blackAndWhite.black700} />
+                </div>
+                <div style={{ cursor: 'pointer' }} onClick={() => scrollToMarker(index)}>
+                  <LookExtraSmall color={colors.blackAndWhite.black700} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -329,13 +428,16 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
               </div>
             </div>
             {/* PDF Document Preview */}
-            <div style={{
-              ...pdfDocumentStyles,
-              position: 'relative',
-              overflow: 'hidden',
-              flex: 1,
-              padding: '10px 10px 0 0',
-            }}>
+            <div
+              ref={scrollContainerRef}
+              style={{
+                ...pdfDocumentStyles,
+                position: 'relative',
+                overflow: 'hidden',
+                flex: 1,
+                padding: '10px 10px 0 0',
+              }}
+            >
               <CustomScroll
                 maxHeight="680px"
                 scrollClassName="contract-pdf-scroll"
@@ -348,7 +450,56 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
                   display: 'flex',
                   flexDirection: 'column',
                   paddingRight: '10px',
+                  position: 'relative',
                 }}>
+                  {/* Numbered markers overlay - spread across 5 pages (~800px each) */}
+                  {[
+                    // Page 1 (0-800px)
+                    { num: 1, top: 85, left: 25 },
+                    { num: 2, top: 180, left: 320 },
+                    { num: 3, top: 350, left: 45 },
+                    { num: 4, top: 520, left: 280 },
+                    // Page 2 (800-1600px)
+                    { num: 5, top: 920, left: 35 },
+                    { num: 6, top: 1050, left: 300 },
+                    { num: 7, top: 1250, left: 60 },
+                    { num: 8, top: 1450, left: 250 },
+                    // Page 3 (1600-2400px)
+                    { num: 9, top: 1720, left: 40 },
+                    { num: 10, top: 1900, left: 290 },
+                    { num: 11, top: 2100, left: 55 },
+                    { num: 12, top: 2280, left: 310 },
+                    // Page 4 (2400-3200px)
+                    { num: 13, top: 2550, left: 30 },
+                    { num: 14, top: 2750, left: 270 },
+                    { num: 15, top: 2950, left: 50 },
+                    // Page 5 (3200-4000px)
+                    { num: 16, top: 3350, left: 35 },
+                    { num: 17, top: 3550, left: 295 },
+                    { num: 18, top: 3750, left: 45 },
+                  ].map(({ num, top, left }) => (
+                    <div
+                      key={num}
+                      id={`marker-${num}`}
+                      style={{
+                        position: 'absolute',
+                        top: `${top}px`,
+                        left: `${left}px`,
+                        width: '16px',
+                        height: '16px',
+                        backgroundColor: colors.theme.primary700,
+                        borderRadius: borderRadius[4],
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        ...typography.styles.bodyS,
+                        color: colors.blackAndWhite.black900,
+                        zIndex: 10,
+                      }}
+                    >
+                      {num}
+                    </div>
+                  ))}
                   {/* Contract page images */}
                   {[1, 2, 3, 4, 5].map((pageNum, index) => (
                     <React.Fragment key={pageNum}>
