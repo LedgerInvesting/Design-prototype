@@ -7,7 +7,7 @@ export type PrimaryColor = 'black' | 'white' | 'invisible' | 'main' | 'light' | 
 export type SmallColor = 'black' | 'white' | 'invisible' | 'main' | 'light' | 'green';
 export type IconColor = 'black' | 'main' | 'light' | 'green' | 'white' | 'invisible' | 'primary200';
 export type TertiaryColor = 'white';
-export type SecondaryColor = 'primary200';
+export type SecondaryColor = 'black' | 'white' | 'primary200';
 export type ButtonShape = 'circle' | 'square';
 export type IconPosition = 'left' | 'right';
 
@@ -68,7 +68,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   // Extract variant-specific props with defaults
   const variant = props.variant || 'primary';
   const color = props.color || (variant === 'primary' ? 'black' : variant === 'small' ? 'main' : variant === 'tertiary' ? 'white' : variant === 'secondary' ? 'primary200' : 'main');
-  
+
   // Reset hover state when key props change (fixes Storybook control issues)
   useEffect(() => {
     setIsHovered(false);
@@ -79,12 +79,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   const icon = 'icon' in props ? props.icon : undefined;
   // Get the appropriate arrow icon for primary buttons
   const ArrowIcon = icons.medium.s1ArrowRight;
-  
+
   // Get hover color for sweep animation
   const getHoverColor = (colorKey: string) => {
     switch (colorKey) {
       case 'black':
         return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity
+      case 'black900':
+        return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity for secondary black
       case 'main':
         return 'rgba(255, 255, 255, 0.15)'; // White with 15% opacity
       case 'light':
@@ -114,7 +116,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       if (colorKey === 'white' || colorKey === 'invisible' || colorKey === 'primary200') {
         return { backgroundColor: hoverColor };
       }
-      // For others, blend the colors
+      // For others (including black900), blend the colors
       return {
         backgroundColor: normalColor,
         boxShadow: `inset 0 0 0 1000px ${hoverColor}`,
@@ -126,7 +128,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       transition: 'all 0.2s ease',
     };
   };
-  
+
   // Primary button styles
   const getPrimaryStyles = () => {
     const baseStyles = {
@@ -284,10 +286,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 
   // Secondary button styles
   const getSecondaryStyles = () => {
+    const secondaryColor = variant === 'secondary' ? (color as SecondaryColor) || 'primary200' : 'primary200';
+
     const baseStyles = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      gap: '5px', // Add gap for icon support
       padding: '6px 12px',
       borderRadius: borderRadius.absolute, // Round corners
       border: 'none',
@@ -298,14 +303,31 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       fontWeight: 600,
       lineHeight: typography.styles.bodyS.lineHeight,
       letterSpacing: '1px', // 1px letter spacing
-      textTransform: 'uppercase', // All caps
+      textTransform: 'uppercase' as const, // All caps
     };
 
-    return {
-      ...baseStyles,
-      ...getSimpleBackground(colors.theme.primary200, 'primary200'),
-      color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
-    };
+    // Determine background and text color based on secondaryColor
+    switch (secondaryColor) {
+      case 'black':
+        return {
+          ...baseStyles,
+          ...getSimpleBackground(colors.blackAndWhite.black900, 'black900'),
+          color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.white,
+        };
+      case 'white':
+        return {
+          ...baseStyles,
+          ...getSimpleBackground(colors.blackAndWhite.white, 'white'),
+          color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
+        };
+      case 'primary200':
+      default:
+        return {
+          ...baseStyles,
+          ...getSimpleBackground(colors.theme.primary200, 'primary200'),
+          color: disabled ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900,
+        };
+    }
   };
 
   // Icon button styles
@@ -324,7 +346,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       border: 'none',
     };
 
-    const shapeStyles = shape === 'circle' 
+    const shapeStyles = shape === 'circle'
       ? { borderRadius: borderRadius.absolute }
       : { borderRadius: borderRadius[8] };
 
@@ -503,7 +525,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
   // Render icon for primary buttons
   const renderPrimaryIcon = () => {
     if (!showIcon || variant !== 'primary') return null;
-    
+
     if (icon) {
       // Clone the icon and pass the color prop
       const iconColor = getPrimaryIconColor();
@@ -513,7 +535,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
         </span>
       );
     }
-    
+
     return <ArrowIcon color={getPrimaryIconColor()} />;
   };
 
@@ -598,6 +620,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     }
 
     if (variant === 'secondary') {
+      // Render icon if provided
+      if (icon) {
+        return (
+          <>
+            {icon}
+            <span>{children}</span>
+          </>
+        );
+      }
       return <span>{children}</span>;
     }
 

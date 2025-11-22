@@ -88,7 +88,7 @@ function AppContent() {
       } else if (page === 'reports-cession-statement') {
         console.log('Setting cession data:', data);
         setCessionData(data);
-      } else if (page === 'contracts-contracts-list') {
+      } else if (page === 'contracts-contracts-list' || page === 'contracts-ai-extraction') {
         console.log('Setting contracts transaction data:', data);
         setContractsTransactionData(data);
       } else {
@@ -122,7 +122,7 @@ function AppContent() {
       case 'contracts-upload':
         return <ContractsUpload onNavigateToPage={setPage} />;
       case 'contracts-ai-extraction':
-        return <ContractsAIExtraction onNavigateToPage={setPage} />;
+        return <ContractsAIExtraction onNavigateToPage={setPage} transactionData={contractsTransactionData} />;
       case 'contracts-contracts-list':
         return <ContractsContractsList onNavigateToPage={setPage} transactionData={contractsTransactionData} />;
       case 'contracts-transactions':

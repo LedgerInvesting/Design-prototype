@@ -65,7 +65,7 @@ export const ContractsContractsList: React.FC<ContractsContractsListProps> = ({ 
         headerAlign: 'left' as const,
         onDownload: (filename: string) => {
           // Navigate to AI extraction when clicking on a contract
-          onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+          onNavigateToPage && onNavigateToPage('contracts-ai-extraction', { transactionName });
         },
       },
       {
@@ -130,14 +130,16 @@ export const ContractsContractsList: React.FC<ContractsContractsListProps> = ({ 
         <div style={buttonsContainerStyles}>
           <Button
             variant="secondary"
+            color="white"
             onClick={() => console.log('Run Extraction clicked')}
           >
             Run Extraction
           </Button>
           <Button
             variant="secondary"
+            color="black"
             onClick={() => console.log('Add Contract clicked')}
-            icon={<AddSmall color={colors.contracts.yellow700} />}
+            icon={<AddSmall color={colors.blackAndWhite.white} />}
           >
             Add Contract
           </Button>
@@ -159,7 +161,7 @@ export const ContractsContractsList: React.FC<ContractsContractsListProps> = ({ 
           showFooterPagination={false}
           onRowClick={(row) => {
             // Navigate to AI extraction when clicking on a row
-            onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+            onNavigateToPage && onNavigateToPage('contracts-ai-extraction', { transactionName });
           }}
         />
       </div>
@@ -173,7 +175,7 @@ export const ContractsContractsList: React.FC<ContractsContractsListProps> = ({ 
 
     const handleTabClick = (tab: 'key-terms' | 'contracts') => {
       if (tab === 'key-terms') {
-        onNavigateToPage && onNavigateToPage('contracts-ai-extraction');
+        onNavigateToPage && onNavigateToPage('contracts-ai-extraction', { transactionName });
       }
     };
 
@@ -225,7 +227,7 @@ export const ContractsContractsList: React.FC<ContractsContractsListProps> = ({ 
         pageType="contracts-contracts-list"
         selectedSidebarItem="contracts"
         selectedSidebarSubitem="transactions"
-        onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-contracts-list')}
+        onNavigate={createPageNavigationHandler(onNavigateToPage || (() => { }), 'contracts-contracts-list')}
         breadcrumbs={[
           { label: 'CONTRACTS', isActive: false },
           { label: 'TRANSACTIONS', isActive: true },
