@@ -49,6 +49,7 @@ function AppContent() {
   const [currentEntityData, setCurrentEntityData] = useState<any>(null);
   const [cessionData, setCessionData] = useState<any>(null);
   const [contractsTransactionData, setContractsTransactionData] = useState<any>(null);
+  const [contractsUploadData, setContractsUploadData] = useState<any>(null);
 
   // Listen to browser back/forward buttons
   useEffect(() => {
@@ -88,6 +89,9 @@ function AppContent() {
       } else if (page === 'reports-cession-statement') {
         console.log('Setting cession data:', data);
         setCessionData(data);
+      } else if (page === 'contracts-upload') {
+        console.log('Setting contracts upload data:', data);
+        setContractsUploadData(data);
       } else if (page === 'contracts-contracts-list' || page === 'contracts-ai-extraction') {
         console.log('Setting contracts transaction data:', data);
         setContractsTransactionData(data);
@@ -120,7 +124,7 @@ function AppContent() {
       case 'reports-contracts-explorer':
         return <ReportsContractsExplorer onNavigateToPage={setPage} />;
       case 'contracts-upload':
-        return <ContractsUpload onNavigateToPage={setPage} />;
+        return <ContractsUpload onNavigateToPage={setPage} navigationData={contractsUploadData} />;
       case 'contracts-ai-extraction':
         return <ContractsAIExtraction onNavigateToPage={setPage} transactionData={contractsTransactionData} />;
       case 'contracts-contracts-list':

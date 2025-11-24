@@ -8,6 +8,7 @@ import { DocumentMedium, CloseSmall } from '@design-library/icons';
 
 interface ContractsUploadProps {
   onNavigateToPage?: (page: string, data?: any) => void;
+  navigationData?: { previousPage?: string };
 }
 
 interface UploadedFile {
@@ -16,10 +17,13 @@ interface UploadedFile {
   status: 'processing' | 'done';
 }
 
-export const ContractsUpload: React.FC<ContractsUploadProps> = ({ onNavigateToPage }) => {
+export const ContractsUpload: React.FC<ContractsUploadProps> = ({ onNavigateToPage, navigationData }) => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Determine where to go back to - use previousPage from navigation data or default to contracts-transactions
+  const previousPage = navigationData?.previousPage || 'contracts-transactions';
 
   const breadcrumbs = createBreadcrumbs.contracts.upload();
 
@@ -386,7 +390,7 @@ export const ContractsUpload: React.FC<ContractsUploadProps> = ({ onNavigateToPa
         <div style={actionsContainerStyles}>
           <button
             style={cancelButtonStyles}
-            onClick={() => onNavigateToPage?.('contracts-transactions')}
+            onClick={() => onNavigateToPage?.(previousPage)}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = colors.blackAndWhite.black100;
             }}
@@ -417,11 +421,11 @@ export const ContractsUpload: React.FC<ContractsUploadProps> = ({ onNavigateToPa
         pageType="contracts-upload"
         selectedSidebarItem="contracts"
         selectedSidebarSubitem="upload"
-        onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-upload')}
+        onNavigate={createPageNavigationHandler(onNavigateToPage || (() => { }), 'contracts-upload')}
         breadcrumbs={breadcrumbs}
         onBackClick={() => {
-          // Navigate back to contracts transactions
-          onNavigateToPage?.('contracts-transactions');
+          // Navigate back to previous page
+          onNavigateToPage?.(previousPage);
         }}
       >
         <PageContent />

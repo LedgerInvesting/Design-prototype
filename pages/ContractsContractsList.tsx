@@ -138,7 +138,7 @@ export const ContractsContractsList: React.FC<ContractsContractsListProps> = ({ 
           <Button
             variant="secondary"
             color="black"
-            onClick={() => console.log('Add Contract clicked')}
+            onClick={() => onNavigateToPage && onNavigateToPage('contracts-upload', { previousPage: 'contracts-contracts-list' })}
             icon={<AddSmall color={colors.blackAndWhite.white} />}
           >
             Add Contract

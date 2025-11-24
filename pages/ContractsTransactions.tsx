@@ -38,7 +38,7 @@ const getOptimizedColumnWidth = (data: any[], columnKey: string, baseWidth: stri
 
 // Table section component
 interface TransactionTableProps {
-  onNavigateToPage?: (page: string) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
 }
 
 const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage }) => {
@@ -443,7 +443,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
 
 // Main page component
 interface TransactionManagementProps {
-  onNavigateToPage?: (page: string) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
 }
 
 export const ContractsTransactions: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
@@ -459,7 +459,7 @@ export const ContractsTransactions: React.FC<TransactionManagementProps> = ({ on
       ]}
       selectedSidebarItem="contracts"
       selectedSidebarSubitem="transactions"
-      onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-transactions')}
+      onNavigate={createPageNavigationHandler(onNavigateToPage || (() => { }), 'contracts-transactions')}
       onInboxClick={() => {
       }}
       onManageAccountClick={undefined}
@@ -473,7 +473,7 @@ export const ContractsTransactions: React.FC<TransactionManagementProps> = ({ on
         patternSrc="/pattern_contracts.svg"
         buttonText="New Extraction"
         buttonIcon={<span style={{ color: colors.theme.primary700 }}>+</span>}
-        onButtonClick={() => onNavigateToPage && onNavigateToPage('contracts-upload')}
+        onButtonClick={() => onNavigateToPage && onNavigateToPage('contracts-upload', { previousPage: 'contracts-transactions' })}
         illustrationAlt="transaction management"
       />
 

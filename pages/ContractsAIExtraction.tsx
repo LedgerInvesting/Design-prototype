@@ -388,7 +388,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
         <div style={{ marginBottom: spacing[8] }}>
           <span style={titleStyles}>Extracted terms </span>
           <span style={subtitleStyles}>from</span>
-          <span style={{ ...subtitleStyles, fontStyle: 'normal' }}> {transactionName}</span>
+          <span style={{ ...subtitleStyles, fontStyle: 'normal', color: colors.blackAndWhite.black900 }}> {transactionName}</span>
         </div>
 
         {/* Main Card Container */}
@@ -422,7 +422,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
                 <DocumentSmall color={colors.blackAndWhite.black900} />
                 <span style={{
                   ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.black900,
+                  color: colors.blackAndWhite.black500,
                   fontWeight: typography.fontWeight.medium,
                 }}>
                   XYZ Quota Share Reinsurance Agreement 2024.pdf
@@ -584,7 +584,7 @@ export const ContractsAIExtraction: React.FC<ContractsAIExtractionProps> = ({ on
         pageType="contracts-ai-extraction"
         selectedSidebarItem="contracts"
         selectedSidebarSubitem="ai-extraction"
-        onNavigate={createPageNavigationHandler(onNavigateToPage || (() => {}), 'contracts-ai-extraction')}
+        onNavigate={createPageNavigationHandler(onNavigateToPage || (() => { }), 'contracts-ai-extraction')}
         breadcrumbs={breadcrumbs}
         onBackClick={() => {
           // Navigate back to contracts list
