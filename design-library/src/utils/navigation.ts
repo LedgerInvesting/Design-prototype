@@ -11,7 +11,7 @@ export type PageType =
   | 'reports-renewal-transaction'
   | 'reports-cash-settlement'
   | 'reports-bdx-upload'
-  | 'reports-bdx-configuration'
+  | 'reports-cession-summary-generation'
   | 'reports-cession-statement'
   | 'reports-contracts-explorer'
   | 'contracts-upload'
@@ -62,7 +62,7 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
       'reports-renewal-transaction',
       'reports-cash-settlement',
       'reports-bdx-upload',
-      'reports-bdx-configuration',
+      'reports-cession-summary-generation',
       'reports-cession-statement',
       'reports-contracts-explorer',
       'contracts-upload',
@@ -270,7 +270,7 @@ export const isSubPage = (pageType: PageType): boolean => {
     'reports-cash-settlement',
     'reports-contracts-explorer',
     'reports-insights-program-details',
-    'reports-bdx-configuration',
+    'reports-cession-summary-generation',
     'reports-cession-statement',
 
     // Contracts sub-pages
@@ -320,10 +320,16 @@ export const createBreadcrumbs = {
       { label: programName, isActive: true }
     ],
     bdxUpload: () => [{ label: 'Reports', isActive: false }, { label: 'BDX UPLOAD', isActive: true }],
+    cessionStatement: (onNavigateToPage: NavigationHandler) => [
+      { label: 'Reports', isActive: false },
+      { label: 'BDX Upload', onClick: () => onNavigateToPage('reports-bdx-upload'), isActive: false },
+      { label: 'Cession Summary Generation', onClick: () => onNavigateToPage('reports-cession-summary-generation'), isActive: false },
+      { label: 'CESSION STATEMENT', isActive: true }
+    ],
     cashSettlement: (onNavigateToPage: NavigationHandler) => [
       { label: 'Reports', isActive: false },
-      { label: 'REPORTS EXPLORER', onClick: () => onNavigateToPage('reports-explorer'), isActive: false },
-      { label: 'CESSION AND COLLATERAL', isActive: true }
+      { label: 'Cession Statement', onClick: () => onNavigateToPage('reports-cession-statement'), isActive: false },
+      { label: 'CASH SETTLEMENT', isActive: true }
     ]
   },
   contracts: {

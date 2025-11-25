@@ -163,7 +163,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
       };
 
       // Navigate to configuration page
-      onNavigateToPage('reports-bdx-configuration', uploadInfo);
+      onNavigateToPage('reports-cession-summary-generation', uploadInfo);
     }
   };
 
@@ -515,7 +515,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
               color: semanticColors.blackAndWhite.black900
             }}>bordereau status</span> <em>of</em> <span style={{
               color: semanticColors.blackAndWhite.black900
-            }}>{selectedTransaction?.transaction_name || 'Selected Transaction'}</span> Plus Bordereau. You can upload bordereau and track progress across different stages.
+            }}>Cucumber GL Seasonal</span> Plus Bordereau. You can upload bordereau and track progress across different stages.
           </h2>
         </div>
 
@@ -880,7 +880,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
                       setSelectedFile(null);
 
                       // Navigate to configuration page with data
-                      onNavigateToPage('reports-bdx-configuration', uploadInfo);
+                      onNavigateToPage('reports-cession-summary-generation', uploadInfo);
 
                       console.log('Navigating to configuration with data:', uploadInfo);
                     }

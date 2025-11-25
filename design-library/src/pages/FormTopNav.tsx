@@ -19,6 +19,7 @@ export interface FormTopNavProps {
   showStatus?: boolean;
   progress?: number; // 0-100
   onBackClick?: () => void;
+  backButtonText?: string; // Optional custom text for back button (default: "Back to Dashboard")
   onSidebarToggle?: () => void;
   isSidebarCompact?: boolean; // Track sidebar state for icon color
   appAction?: AppActionConfig; // Optional context-aware app action button
@@ -34,6 +35,7 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
   showStatus = true,
   progress = 0,
   onBackClick,
+  backButtonText = "Back to Dashboard",
   onSidebarToggle,
   isSidebarCompact = false,
   appAction,
@@ -226,7 +228,7 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
           style={{ height: '37px' }} // Custom height as requested
           showIcon={false} // No icon variant
         >
-          Back to Dashboard
+          {backButtonText}
         </Button>
       </div>
     </nav>

@@ -189,6 +189,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             variant="primary"
             color="black"
             onClick={primaryAction.onClick}
+            showIcon={false}
             style={{ height: '44px' }}
           >
             {primaryAction.label}

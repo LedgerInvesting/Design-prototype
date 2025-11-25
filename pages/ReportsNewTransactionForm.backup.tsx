@@ -18,48 +18,14 @@ type PageType = 'cash-settlement' | 'report-navigation' | 'transaction-managemen
 export interface NewTransactionFormProps {
   onNavigateToPage?: (page: string, data?: any) => void;
   renewalData?: any;
-  mode?: 'create' | 'renewal' | 'edit'; // Form mode: create new, renewal, or edit existing
-  programName?: string; // For renewal and edit modes
 }
 
 export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
   onNavigateToPage,
-  renewalData,
-  mode: propMode,
-  programName: propProgramName
+  renewalData
 }) => {
   const colors = useSemanticColors();
-
-  // Extract mode and programName from renewalData if provided
-  const mode = renewalData?.mode || propMode || 'create';
-  const programName = renewalData?.programName || propProgramName;
-
   const [activeTab, setActiveTab] = useState<string>(renewalData?.initialTab || 'basic-info');
-
-  // Determine form version based on mode
-  const isCreateMode = mode === 'create';
-  const isRenewalMode = mode === 'renewal';
-  const isEditMode = mode === 'edit';
-
-  // Get the title based on mode
-  const getFormTitle = () => {
-    if (isRenewalMode && programName) return programName;
-    if (isEditMode && programName) return programName;
-    return 'NEW TRANSACTION WORKFLOW';
-  };
-
-  // Get the primary button text based on mode
-  const getPrimaryButtonText = () => {
-    if (isRenewalMode) return 'Renewal Transaction';
-    if (isEditMode) return 'Update Transaction';
-    return 'Create Transaction';
-  };
-
-  // Get the secondary button text based on mode
-  const getSecondaryButtonText = () => {
-    if (isEditMode) return 'Close';
-    return 'Back to Dashboard';
-  };
   const [formData, setFormData] = useState({
     transactionName: renewalData?.transactionName || '',
     policyGroupId: renewalData?.policyGroupId || '',
@@ -79,45 +45,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
   const [policyLimits, setPolicyLimits] = useState<Array<{ id: number }>>([]);
   const [brokerInfo, setBrokerInfo] = useState<Array<{ id: number }>>([]);
 
-  // Aggregated configuration state for "Cucumber GL Seasonal"
-  const [premiumTagging, setPremiumTagging] = useState<'incremental' | 'cumulative' | ''>('cumulative');
-  const [lossesTagging, setLossesTagging] = useState<'incremental' | 'cumulative' | ''>('cumulative');
-  const [lossesExpenses, setLossesExpenses] = useState<'included' | 'excluded' | ''>('excluded');
-  const [lossesRecoveries, setLossesRecoveries] = useState<'included' | 'excluded' | ''>('excluded');
-
-  // Load saved settings from localStorage on mount
-  useEffect(() => {
-    const savedSettings = localStorage.getItem('cucumber-gl-seasonal-settings');
-    if (savedSettings) {
-      const settings = JSON.parse(savedSettings);
-      setPremiumTagging(settings.premiumTagging || 'cumulative');
-      setLossesTagging(settings.lossesTagging || 'cumulative');
-      setLossesExpenses(settings.lossesExpenses || 'excluded');
-      setLossesRecoveries(settings.lossesRecoveries || 'excluded');
-    }
-  }, []);
-
-  // When in edit mode for Cucumber, set the data detail level to 'aggregate' automatically
-  useEffect(() => {
-    if (isEditMode && programName === 'Cucumber GL Seasonal') {
-      setDataDetailLevel('aggregate');
-    }
-  }, [isEditMode, programName]);
-
-  // Save settings to localStorage whenever they change
-  useEffect(() => {
-    if (premiumTagging || lossesTagging || lossesExpenses || lossesRecoveries) {
-      const settings = {
-        premiumTagging,
-        lossesTagging,
-        lossesExpenses,
-        lossesRecoveries
-      };
-      localStorage.setItem('cucumber-gl-seasonal-settings', JSON.stringify(settings));
-    }
-  }, [premiumTagging, lossesTagging, lossesExpenses, lossesRecoveries]);
-
-  // Aggregated metrics state (old table system - kept for compatibility)
+  // Aggregated metrics state
   const [aggregatedMetrics, setAggregatedMetrics] = useState<Record<string, { tagging: string; expenses: string; recoveries: string }>>({
     'Earned Premium': { tagging: '', expenses: '', recoveries: '' },
     'Written Premium': { tagging: '', expenses: '', recoveries: '' },
@@ -859,7 +787,7 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
               placeholder="Select level"
               value={dataDetailLevel}
               options={[
-                { value: 'detail', label: 'Detail', disabled: true },
+                { value: 'detail', label: 'Detail' },
                 { value: 'aggregate', label: 'Aggregate' },
               ]}
               onChange={(value) => setDataDetailLevel(value)}
@@ -1191,209 +1119,218 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           <div style={{ ...formContainerStyles, marginTop: '24px' }}>
             <h3 style={sectionTitleStyles}>Aggregated Configuration</h3>
 
-            {/* Premium Box */}
+            {/* Separator */}
             <div style={{
-              backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.theme.primary400}`,
-              borderRadius: borderRadius[8],
-              padding: '24px',
+              width: '100%',
+              height: '1px',
+              backgroundColor: colors.theme.primary400,
               marginBottom: '24px',
-              position: 'relative',
+            }} />
+
+            {/* Column Headers */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              marginBottom: '12px',
+              paddingLeft: '20px',
+              paddingRight: '20px',
             }}>
-              {/* Premium Title with Description */}
-              <div style={{
-                marginBottom: '24px',
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                flex: '2',
+              }}>Metric name</span>
+
+              {/* Invisible divider for alignment */}
+              <div style={{ width: '1px' }} />
+
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
+                flex: '2',
+              }}>Tagging</span>
+
+              {/* Invisible divider for alignment */}
+              <div style={{ width: '1px' }} />
+
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                gap: '4px',
+                flex: '2',
               }}>
-                <h4 style={{
-                  ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.black900,
-                  margin: '0',
-                }}>
-                  Premium
-                </h4>
-                <span style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black500,
-                }}>
-                  Earned Premium, Written Premium, Collected Premium
-                </span>
-              </div>
+                Expenses
+                <InfoTooltip text="Impacts net ceded loss and expense-sharing calculations under treaty terms" />
+              </span>
 
-              {/* Tagging */}
-              <div style={{
-                marginBottom: '0',
-              }}>
-                <label style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black900,
-                  display: 'block',
-                  marginBottom: '12px',
-                }}>
-                  Tagging
-                </label>
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  marginTop: '12px',
-                  width: '100%',
-                }}>
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Incremental"
-                    checked={premiumTagging === 'incremental'}
-                    onChange={() => setPremiumTagging('incremental')}
-                    className="full-width-button-selector"
-                  />
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Cumulative"
-                    checked={premiumTagging === 'cumulative'}
-                    onChange={() => setPremiumTagging('cumulative')}
-                    className="full-width-button-selector"
-                  />
-                </div>
-              </div>
-            </div>
+              {/* Invisible divider for alignment */}
+              <div style={{ width: '1px' }} />
 
-            {/* Losses Box */}
-            <div style={{
-              backgroundColor: colors.blackAndWhite.white,
-              border: `1px solid ${colors.theme.primary400}`,
-              borderRadius: borderRadius[8],
-              padding: '24px',
-              marginBottom: '24px',
-              position: 'relative',
-            }}>
-              {/* Losses Title with Description */}
-              <div style={{
-                marginBottom: '24px',
+              <span style={{
+                ...typography.styles.bodyL,
+                color: colors.blackAndWhite.black900,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                gap: '4px',
+                flex: '2',
               }}>
-                <h4 style={{
-                  ...typography.styles.bodyL,
-                  color: colors.blackAndWhite.black900,
-                  margin: '0',
-                }}>
-                  Losses
-                </h4>
-                <span style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black500,
-                }}>
-                  Paid Loss, Reported Loss, Loss Reserves
-                </span>
-              </div>
-
-              {/* Tagging */}
-              <div style={{
-                marginBottom: '24px',
-              }}>
-                <label style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black900,
-                  display: 'block',
-                  marginBottom: '12px',
-                }}>
-                  Tagging
-                </label>
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  marginTop: '12px',
-                  width: '100%',
-                }}>
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Incremental"
-                    checked={lossesTagging === 'incremental'}
-                    onChange={() => setLossesTagging('incremental')}
-                    className="full-width-button-selector"
-                  />
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Cumulative"
-                    checked={lossesTagging === 'cumulative'}
-                    onChange={() => setLossesTagging('cumulative')}
-                    className="full-width-button-selector"
-                  />
-                </div>
-              </div>
-
-              {/* Expenses */}
-              <div style={{
-                marginBottom: '24px',
-              }}>
-                <label style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black900,
-                  display: 'block',
-                  marginBottom: '12px',
-                }}>
-                  Expenses
-                </label>
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  marginTop: '12px',
-                  width: '100%',
-                }}>
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Exclusive of Expenses"
-                    checked={lossesExpenses === 'excluded'}
-                    onChange={() => setLossesExpenses('excluded')}
-                    className="full-width-button-selector"
-                  />
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Inclusive of Expenses"
-                    checked={lossesExpenses === 'included'}
-                    onChange={() => setLossesExpenses('included')}
-                    className="full-width-button-selector"
-                  />
-                </div>
-              </div>
-
-              {/* Recoveries */}
-              <div style={{
-                marginBottom: '0',
-              }}>
-                <label style={{
-                  ...typography.styles.bodyM,
-                  color: colors.blackAndWhite.black900,
-                  display: 'block',
-                  marginBottom: '12px',
-                }}>
-                  Recoveries
-                </label>
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  marginTop: '12px',
-                  width: '100%',
-                }}>
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Exclusive of Recoveries"
-                    checked={lossesRecoveries === 'excluded'}
-                    onChange={() => setLossesRecoveries('excluded')}
-                    className="full-width-button-selector"
-                  />
-                  <ButtonSelector
-                    selectorType="checkbox"
-                    label="Inclusive of Recoveries"
-                    checked={lossesRecoveries === 'included'}
-                    onChange={() => setLossesRecoveries('included')}
-                    className="full-width-button-selector"
-                  />
-                </div>
-              </div>
+                Recoveries
+                <InfoTooltip text="Affects how recoveries are applied to ceded amounts and reinsurer share" />
+              </span>
             </div>
+
+            {/* Metric Rows */}
+            {[
+              { name: 'Earned Premium', tooltip: 'Premium earned during the reporting period' },
+              { name: 'Written Premium', tooltip: 'Total premium written during the reporting period' },
+              { name: 'Collected Premium', tooltip: 'Premium actually collected from policyholders' },
+              { name: 'Paid Loss', tooltip: 'Losses actually paid out during the reporting period' },
+              { name: 'Reported Loss', tooltip: 'Losses reported but not yet paid during the period' },
+              { name: 'Adjustments', tooltip: 'Any adjustments or corrections to reported values' },
+            ].map((metric, index) => (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: colors.blackAndWhite.white,
+                  border: `1px solid ${colors.theme.primary400}`,
+                  borderRadius: borderRadius[8],
+                  padding: '0 20px',
+                  marginBottom: '5px',
+                  height: '45px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  gap: '16px',
+                }}>
+                  {/* Metric Name */}
+                  <div style={{
+                    flex: '2',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}>
+                    <InfoTooltip text={metric.tooltip} />
+                    <span style={{
+                      ...typography.styles.bodyM,
+                      color: colors.blackAndWhite.black900,
+                    }}>{metric.name}</span>
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{
+                    width: '1px',
+                    height: '25px',
+                    backgroundColor: colors.theme.primary400,
+                  }} />
+
+                  {/* Tagging Dropdown */}
+                  <div style={{ flex: '2' }}>
+                    <MenuDropdown
+                      placeholder="Select"
+                      value={aggregatedMetrics[metric.name]?.tagging || ''}
+                      selectedPrefix=""
+                      options={[
+                        { value: 'incremental', label: 'Incremental' },
+                        { value: 'cumulative', label: 'Cumulative' },
+                      ]}
+                      onChange={(value) => updateAggregatedMetric(metric.name, 'tagging', value)}
+                    />
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{
+                    width: '1px',
+                    height: '25px',
+                    backgroundColor: colors.theme.primary400,
+                  }} />
+
+                  {/* Expenses Dropdown */}
+                  <div style={{ flex: '2' }}>
+                    <MenuDropdown
+                      placeholder="Select"
+                      value={aggregatedMetrics[metric.name]?.expenses || ''}
+                      selectedPrefix=""
+                      options={[
+                        { value: 'included', label: 'Included' },
+                        { value: 'excluded', label: 'Excluded' },
+                      ]}
+                      onChange={(value) => updateAggregatedMetric(metric.name, 'expenses', value)}
+                      triggerBackgroundColor={
+                        aggregatedMetrics[metric.name]?.expenses === 'excluded'
+                          ? 'rgba(255, 239, 176, 0.5)'
+                          : aggregatedMetrics[metric.name]?.expenses === 'included'
+                          ? 'rgba(198, 255, 193, 0.5)'
+                          : undefined
+                      }
+                      textColor={
+                        aggregatedMetrics[metric.name]?.expenses === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.expenses === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                      iconColor={
+                        aggregatedMetrics[metric.name]?.expenses === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.expenses === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                    />
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{
+                    width: '1px',
+                    height: '25px',
+                    backgroundColor: colors.theme.primary400,
+                  }} />
+
+                  {/* Recoveries Dropdown */}
+                  <div style={{ flex: '2' }}>
+                    <MenuDropdown
+                      placeholder="Select"
+                      value={aggregatedMetrics[metric.name]?.recoveries || ''}
+                      selectedPrefix=""
+                      options={[
+                        { value: 'included', label: 'Included' },
+                        { value: 'excluded', label: 'Excluded' },
+                      ]}
+                      onChange={(value) => updateAggregatedMetric(metric.name, 'recoveries', value)}
+                      triggerBackgroundColor={
+                        aggregatedMetrics[metric.name]?.recoveries === 'excluded'
+                          ? 'rgba(255, 239, 176, 0.5)'
+                          : aggregatedMetrics[metric.name]?.recoveries === 'included'
+                          ? 'rgba(198, 255, 193, 0.5)'
+                          : undefined
+                      }
+                      textColor={
+                        aggregatedMetrics[metric.name]?.recoveries === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.recoveries === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                      iconColor={
+                        aggregatedMetrics[metric.name]?.recoveries === 'excluded'
+                          ? staticColors.contracts.yellow900
+                          : aggregatedMetrics[metric.name]?.recoveries === 'included'
+                          ? staticColors.analytics.green900
+                          : undefined
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </>
@@ -1414,17 +1351,13 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
           variant="primary"
           color="black"
           onClick={() => {
-            console.log(`${getPrimaryButtonText()} clicked`);
-            // Navigate back based on mode
-            if (isEditMode) {
-              onNavigateToPage?.('reports-cession-summary-generation');
-            } else {
-              onNavigateToPage?.('reports-transaction-management');
-            }
+            console.log('Create Transaction clicked');
+            // Navigate back to transaction management page after creation
+            onNavigateToPage?.('reports-transaction-management');
           }}
           showIcon={false}
         >
-          {getPrimaryButtonText()}
+          Create Transaction
         </Button>
       </div>
     );
@@ -2660,22 +2593,16 @@ export const ReportsNewTransactionForm: React.FC<NewTransactionFormProps> = ({
 
   return (
     <FormLayout
-      formTitle={getFormTitle()}
+      formTitle={renewalData ? "RENEWAL TRANSACTION WORKFLOW" : "NEW TRANSACTION WORKFLOW"}
       entryType={renewalData?.fromPDFUpload ? "PDF Upload" : renewalData ? "Renewal Transaction" : "Manual Entry"}
       statusText="draft"
       statusVariant="warning"
       progress={getProgress()}
       selectedSidebarItem="reports"
       selectedSidebarSubitem="transactions"
-      backButtonText={getSecondaryButtonText()}
       onBackClick={() => {
-        console.log(`${getSecondaryButtonText()} clicked`);
-        // Navigate back based on mode
-        if (isEditMode) {
-          onNavigateToPage?.('reports-cession-summary-generation');
-        } else {
-          onNavigateToPage?.('reports-transaction-management');
-        }
+        console.log('Back to Dashboard clicked');
+        onNavigateToPage?.('reports-transaction-management');
       }}
       onNavigate={createPageNavigationHandler(onNavigateToPage!, 'new-transaction-form')}
       onInboxClick={() => {

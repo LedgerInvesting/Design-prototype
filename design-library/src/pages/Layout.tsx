@@ -71,6 +71,7 @@ export interface LayoutProps {
   showStatus?: boolean;
   progress?: number;
   onBackClick?: () => void;
+  backButtonText?: string; // Optional custom text for back button (default: "Back to Dashboard")
   isSubPage?: boolean; // Whether the current page is a detail/sub page (shows back button)
 }
 
@@ -108,6 +109,7 @@ export const Layout: React.FC<LayoutProps> = ({
   showStatus = true,
   progress,
   onBackClick,
+  backButtonText,
   isSubPage = false, // Manual override - if not provided, will auto-detect
 }) => {
   // Get prototype settings
@@ -287,6 +289,7 @@ export const Layout: React.FC<LayoutProps> = ({
               showStatus={showStatus}
               progress={progress}
               onBackClick={onBackClick}
+              backButtonText={backButtonText}
               onSidebarToggle={handleSidebarToggle}
               isSidebarCompact={isCompact}
               appAction={appAction}

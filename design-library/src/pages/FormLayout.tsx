@@ -34,6 +34,7 @@ export interface FormLayoutProps {
   selectedSidebarSubitem?: string;
   tabs?: React.ReactNode; // Optional tabs component to render between FormTopNav and content
   appAction?: AppActionConfig; // Optional context-aware app action button
+  backButtonText?: string; // Optional custom text for back button (default: "Back to Dashboard")
 }
 
 // FormLayout is now just a wrapper around Layout with formMode=true
@@ -50,6 +51,7 @@ export const FormLayout: React.FC<FormLayoutProps> = (props) => {
       progress={props.progress}
       onBackClick={props.onBackClick}
       appAction={props.appAction}
+      backButtonText={props.backButtonText}
       isSubPage={true}
     />
   );

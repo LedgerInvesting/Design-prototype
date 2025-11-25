@@ -14,10 +14,6 @@ interface ReportsCessionSummaryGenerationProps {
     month?: string;
     year?: string;
     openModal?: boolean;
-    premiumTagging?: 'incremental' | 'cumulative';
-    lossesTagging?: 'incremental' | 'cumulative';
-    lossesExpenses?: 'included' | 'excluded';
-    lossesRecoveries?: 'included' | 'excluded';
   };
 }
 
@@ -25,6 +21,9 @@ interface ReportsCessionSummaryGenerationProps {
 interface MetricRowProps {
   metricName: string;
   tooltipText: string;
+  tagging: 'Incremental' | 'Cumulative';
+  expenses: 'Included' | 'Excluded';
+  recoveries: 'Included' | 'Excluded';
   semanticColors: any;
   showBorder: boolean;
   value?: string;
@@ -35,6 +34,9 @@ interface MetricRowProps {
 const MetricRow: React.FC<MetricRowProps> = ({
   metricName,
   tooltipText,
+  tagging,
+  expenses,
+  recoveries,
   semanticColors,
   showBorder,
   value = '',
@@ -49,12 +51,55 @@ const MetricRow: React.FC<MetricRowProps> = ({
     }
   };
 
+  const tagStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    height: '24px',
+    padding: '0 20px',
+    borderRadius: '4px',
+    width: 'fit-content',
+    ...typography.styles.bodyS
+  };
+
+  const getTagColors = (type: string, value: string) => {
+    if (type === 'tagging') {
+      if (value === 'Incremental') {
+        return {
+          bg: 'rgba(225, 243, 255, 0.6)',
+          color: '#1c6297'
+        };
+      } else {
+        return {
+          bg: 'rgba(225, 243, 255, 0.5)',
+          color: '#1c6297'
+        };
+      }
+    } else if (type === 'expenses' || type === 'recoveries') {
+      if (value === 'Included') {
+        // Green 500 with 50% alpha, green 900 for text/icon
+        return {
+          bg: 'rgba(198, 255, 193, 0.5)',
+          color: colors.analytics.green900
+        };
+      } else {
+        // Yellow 500 with 50% alpha, yellow 900 for text/icon
+        return {
+          bg: 'rgba(255, 239, 176, 0.5)',
+          color: colors.contracts.yellow900
+        };
+      }
+    }
+    return { bg: '', color: '' };
+  };
+
   return (
     <div style={{
       height: '40px',
       display: 'flex',
       alignItems: 'center',
-      padding: '0 10px',
+      justifyContent: 'space-between',
+      padding: '0 0 0 10px',
       borderBottom: showBorder ? `1px dashed ${semanticColors.theme.primary400}` : 'none'
     }}>
       {/* Left: Metric Name */}
@@ -62,7 +107,11 @@ const MetricRow: React.FC<MetricRowProps> = ({
         display: 'flex',
         alignItems: 'center',
         gap: '10px',
-        flex: 1
+        padding: '0 10px',
+        // width: '400px', // Old fixed width
+        // width: '30%', // Responsive percentage
+        width: '32%', // Responsive percentage - adjusted
+        flexShrink: 0
       }}>
         <InfoTooltip
           text={tooltipText}
@@ -77,36 +126,114 @@ const MetricRow: React.FC<MetricRowProps> = ({
         </p>
       </div>
 
-      {/* Right: Value Input */}
+      {/* Right: Value + Tags */}
       <div style={{
-        minWidth: '200px',
-        height: '25px',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        padding: '0 20px',
-        borderLeft: `1px solid ${semanticColors.theme.primary400}`
+        height: '100%',
+        flex: 1
       }}>
-        <span style={{
-          ...typography.styles.bodyS,
-          color: isGenerated ? semanticColors.blackAndWhite.black700 : semanticColors.blackAndWhite.black900
-        }}>$</span>
-        <input
-          type="text"
-          value={value}
-          onChange={handleValueChange}
-          placeholder="Type value"
-          style={{
-            border: 'none',
-            outline: 'none',
-            background: 'transparent',
-            ...typography.styles.bodyM,
-            color: isGenerated ? semanticColors.blackAndWhite.black700 : semanticColors.blackAndWhite.black900,
-            width: '100%',
-            textAlign: 'left'
-          }}
-          className="metric-value-input"
-        />
+        {/* Value Input */}
+        <div style={{
+          // width: '200px', // Old fixed width
+          // width: '15%', // Responsive percentage
+          // width: '20%', // Responsive percentage - adjusted
+          width: '26%', // Responsive percentage - adjusted
+          minWidth: '120px', // Minimum width to prevent collapse
+          height: '25px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '10px 0 10px 20px',
+          borderLeft: `1px solid ${semanticColors.theme.primary400}`
+        }}>
+          <span style={{
+            ...typography.styles.bodyS,
+            color: isGenerated ? semanticColors.blackAndWhite.black700 : semanticColors.blackAndWhite.black900
+          }}>$</span>
+          <input
+            type="text"
+            value={value}
+            onChange={handleValueChange}
+            placeholder="Type value"
+            style={{
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              ...typography.styles.bodyM,
+              color: isGenerated ? semanticColors.blackAndWhite.black700 : semanticColors.blackAndWhite.black900,
+              width: '100%',
+              textAlign: 'left'
+            }}
+            className="metric-value-input"
+          />
+        </div>
+
+        {/* Tagging */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 20px',
+          borderLeft: `1px solid ${semanticColors.theme.primary400}`
+        }}>
+          <div style={{
+            ...tagStyle,
+            backgroundColor: getTagColors('tagging', tagging).bg,
+            color: getTagColors('tagging', tagging).color
+          }}>
+            {tagging === 'Incremental' ? (
+              <IncrementalExtraSmall color={getTagColors('tagging', tagging).color} />
+            ) : (
+              <CumulativeExtraSmall color={getTagColors('tagging', tagging).color} />
+            )}
+            {tagging}
+          </div>
+        </div>
+
+        {/* Expenses */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 20px',
+          borderLeft: `1px solid ${semanticColors.theme.primary400}`
+        }}>
+          <div style={{
+            ...tagStyle,
+            backgroundColor: getTagColors('expenses', expenses).bg,
+            color: getTagColors('expenses', expenses).color
+          }}>
+            {expenses === 'Included' ? (
+              <CheckExtraSmall color={getTagColors('expenses', expenses).color} />
+            ) : (
+              <XExtraSmall color={getTagColors('expenses', expenses).color} />
+            )}
+            {expenses}
+          </div>
+        </div>
+
+        {/* Recoveries */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 20px',
+          borderLeft: `1px solid ${semanticColors.theme.primary400}`
+        }}>
+          <div style={{
+            ...tagStyle,
+            backgroundColor: getTagColors('recoveries', recoveries).bg,
+            color: getTagColors('recoveries', recoveries).color
+          }}>
+            {recoveries === 'Included' ? (
+              <CheckExtraSmall color={getTagColors('recoveries', recoveries).color} />
+            ) : (
+              <XExtraSmall color={getTagColors('recoveries', recoveries).color} />
+            )}
+            {recoveries}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -271,19 +398,6 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documentType, setDocumentType] = useState<'policy' | 'claim'>('policy');
 
-  // Aggregated configuration settings from localStorage
-  const [config, setConfig] = useState<{
-    premiumTagging: 'incremental' | 'cumulative';
-    lossesTagging: 'incremental' | 'cumulative';
-    lossesExpenses: 'included' | 'excluded';
-    lossesRecoveries: 'included' | 'excluded';
-  }>({
-    premiumTagging: 'incremental',
-    lossesTagging: 'cumulative',
-    lossesExpenses: 'included',
-    lossesRecoveries: 'excluded',
-  });
-
   // Metric values state - stores value and whether it's generated or manual
   interface MetricValue {
     value: string;
@@ -296,8 +410,6 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
     writtenPremium2: MetricValue;
     paidLoss: MetricValue;
     reportedLoss: MetricValue;
-    expenses: MetricValue;
-    recoveries: MetricValue;
     ibnr: MetricValue;
     adjustment: MetricValue;
   }>({
@@ -306,8 +418,6 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
     writtenPremium2: { value: '', isGenerated: false },
     paidLoss: { value: '', isGenerated: false },
     reportedLoss: { value: '', isGenerated: false },
-    expenses: { value: '', isGenerated: false },
-    recoveries: { value: '', isGenerated: false },
     ibnr: { value: '', isGenerated: false },
     adjustment: { value: '', isGenerated: false },
   });
@@ -351,17 +461,15 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
 
   // Populate all metrics with generated values
   const populateGeneratedValues = () => {
-    const values = [1250000, 1500000, 1100000, 850000, 200000, 150000, 75000, 50000, 25000];
+    const values = [1250000, 1500000, 1100000, 850000, 200000, 150000, 25000];
     setMetrics({
       earnedPremium: { value: formatInputValue(values[0]), isGenerated: true },
       writtenPremium1: { value: formatInputValue(values[1]), isGenerated: true },
       writtenPremium2: { value: formatInputValue(values[2]), isGenerated: true },
       paidLoss: { value: formatInputValue(values[3]), isGenerated: true },
       reportedLoss: { value: formatInputValue(values[4]), isGenerated: true },
-      expenses: { value: formatInputValue(values[5]), isGenerated: true },
-      recoveries: { value: formatInputValue(values[6]), isGenerated: true },
-      ibnr: { value: formatInputValue(values[7]), isGenerated: true },
-      adjustment: { value: formatInputValue(values[8]), isGenerated: true },
+      ibnr: { value: formatInputValue(values[5]), isGenerated: true },
+      adjustment: { value: formatInputValue(values[6]), isGenerated: true },
     });
   };
 
@@ -373,8 +481,6 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
       writtenPremium2: { value: '', isGenerated: false },
       paidLoss: { value: '', isGenerated: false },
       reportedLoss: { value: '', isGenerated: false },
-      expenses: { value: '', isGenerated: false },
-      recoveries: { value: '', isGenerated: false },
       ibnr: { value: '', isGenerated: false },
       adjustment: { value: '', isGenerated: false },
     });
@@ -407,38 +513,16 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
     };
   }, [semanticColors]);
 
-  // Load configuration from localStorage on mount
-  React.useEffect(() => {
-    const savedSettings = localStorage.getItem('cucumber-gl-seasonal-settings');
-    if (savedSettings) {
-      try {
-        const settings = JSON.parse(savedSettings);
-        setConfig({
-          premiumTagging: settings.premiumTagging || 'incremental',
-          lossesTagging: settings.lossesTagging || 'cumulative',
-          lossesExpenses: settings.lossesExpenses || 'included',
-          lossesRecoveries: settings.lossesRecoveries || 'excluded',
-        });
-      } catch (e) {
-        console.error('Error loading settings:', e);
-      }
-    }
-  }, []);
-
-  // Open modal if navigated from Add button (only once)
+  // Open modal if navigated from Add button
   React.useEffect(() => {
     if (uploadData?.openModal) {
       setIsImportModalOpen(true);
-      // Clear the openModal flag after opening to prevent reopening on navigation back
-      if (uploadData) {
-        uploadData.openModal = false;
-      }
     }
-  }, []); // Empty dependency array so it only runs once on mount
+  }, [uploadData?.openModal]);
 
   // Create navigation handler
   const navigationHandler = onNavigateToPage
-    ? createPageNavigationHandler(onNavigateToPage, 'reports-cession-summary-generation')
+    ? createPageNavigationHandler(onNavigateToPage, 'reports-bdx-configuration')
     : undefined;
 
   // Create breadcrumbs with back navigation to BDX Upload
@@ -457,7 +541,7 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
   return (
     <Layout
       breadcrumbs={breadcrumbs}
-      pageType="reports-cession-summary-generation"
+      pageType="reports-bdx-configuration"
       selectedSidebarItem="reports"
       selectedSidebarSubitem="bdx-upload"
       onNavigate={navigationHandler}
@@ -542,11 +626,7 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               }}
               onClick={() => {
                 if (onNavigateToPage) {
-                  onNavigateToPage('reports-new-transaction-form', {
-                    initialTab: 'reporting-config',
-                    mode: 'edit',
-                    programName: 'Cucumber GL Seasonal'
-                  });
+                  onNavigateToPage('reports-new-transaction-form', { initialTab: 'reporting-config' });
                 }
               }}
             >
@@ -671,18 +751,19 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
             gap: '5px',
             paddingTop: '10px'
           }}>
-            {/* Premium Header */}
+            {/* Header Row */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              padding: '0 0 10px 0'
+              padding: '0 0 20px 10px'
             }}>
-              {/* Left: Premium Title and Tags */}
+              {/* Metric name header */}
               <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                flex: 1
+                // width: '400px', // Old fixed width
+                // width: '30%', // Responsive percentage
+                width: '32%', // Responsive percentage - adjusted
+                padding: '0 10px 0 10px',
+                flexShrink: 0
               }}>
                 <p style={{
                   ...typography.styles.bodyL,
@@ -690,62 +771,80 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                   margin: 0,
                   fontWeight: typography.fontWeight.medium
                 }}>
-                  Premium
+                  Metric name
                 </p>
-
-                {/* Premium Tags */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}>
-                  <span style={{
-                    ...typography.styles.bodyM,
-                    color: semanticColors.blackAndWhite.black700
-                  }}>
-                    Tagging:
-                  </span>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    height: '17px',
-                    padding: '5px 4px',
-                    borderRadius: '4px',
-                    backgroundColor: colors.reports.blue600,
-                    color: '#1c6297',
-                    ...typography.styles.bodyS
-                  }}>
-                    {config.premiumTagging === 'incremental' ? (
-                      <>
-                        <IncrementalExtraSmall color="#1c6297" />
-                        Incremental
-                      </>
-                    ) : (
-                      <>
-                        <CumulativeExtraSmall color="#1c6297" />
-                        Cumulative
-                      </>
-                    )}
-                  </div>
-                </div>
               </div>
 
-              {/* Right: Value Title - aligned with border division */}
+              {/* Right: Value + Tags headers */}
               <div style={{
-                minWidth: '200px',
                 display: 'flex',
                 alignItems: 'center',
-                borderLeft: `1px solid transparent`
+                flex: 1
               }}>
-                <p style={{
-                  ...typography.styles.bodyL,
-                  color: semanticColors.blackAndWhite.black900,
-                  margin: 0,
-                  fontWeight: typography.fontWeight.medium
+                {/* Value header */}
+                <div style={{
+                  // width: '200px', // Old fixed width
+                  // width: '15%', // Responsive percentage
+                  // width: '20%', // Responsive percentage - adjusted
+                  width: '26%', // Responsive percentage - adjusted
+                  minWidth: '120px', // Minimum width to prevent collapse
+                  padding: '0 20px 0 20px',
+                  flexShrink: 0
                 }}>
-                  Value
-                </p>
+                  <p style={{
+                    ...typography.styles.bodyL,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0,
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Value
+                  </p>
+                </div>
+
+                {/* Tagging header */}
+                <div style={{
+                  flex: 1,
+                  padding: '0 20px'
+                }}>
+                  <p style={{
+                    ...typography.styles.bodyL,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0,
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Tagging
+                  </p>
+                </div>
+
+                {/* Expenses header */}
+                <div style={{
+                  flex: 1,
+                  padding: '0 20px'
+                }}>
+                  <p style={{
+                    ...typography.styles.bodyL,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0,
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Expenses
+                  </p>
+                </div>
+
+                {/* Recoveries header */}
+                <div style={{
+                  flex: 1,
+                  padding: '0 20px'
+                }}>
+                  <p style={{
+                    ...typography.styles.bodyL,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0,
+                    fontWeight: typography.fontWeight.medium
+                  }}>
+                    Recoveries
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -761,6 +860,9 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               <MetricRow
                 metricName="Earned Premium"
                 tooltipText="Premium earned during the reporting period"
+                tagging="Incremental"
+                expenses="Included"
+                recoveries="Excluded"
                 semanticColors={semanticColors}
                 showBorder={true}
                 value={metrics.earnedPremium.value}
@@ -772,6 +874,9 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               <MetricRow
                 metricName="Written Premium"
                 tooltipText="Total premium written during the reporting period"
+                tagging="Cumulative"
+                expenses="Excluded"
+                recoveries="Included"
                 semanticColors={semanticColors}
                 showBorder={true}
                 value={metrics.writtenPremium1.value}
@@ -779,185 +884,19 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                 onChange={(value, isManual) => updateMetric('writtenPremium1', value, isManual)}
               />
 
-              {/* Collected Premium Row */}
+              {/* Written Premium Row (duplicate) */}
               <MetricRow
-                metricName="Collected Premium"
-                tooltipText="Premium collected during the reporting period"
+                metricName="Written Premium"
+                tooltipText="Total premium written during the reporting period"
+                tagging="Incremental"
+                expenses="Included"
+                recoveries="Excluded"
                 semanticColors={semanticColors}
                 showBorder={false}
                 value={metrics.writtenPremium2.value}
                 isGenerated={metrics.writtenPremium2.isGenerated}
                 onChange={(value, isManual) => updateMetric('writtenPremium2', value, isManual)}
               />
-            </div>
-
-            {/* Losses Header */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '20px 0 10px 0'
-            }}>
-              {/* Left: Losses Title and Tags */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                flex: 1,
-                flexWrap: 'wrap'
-              }}>
-                <p style={{
-                  ...typography.styles.bodyL,
-                  color: semanticColors.blackAndWhite.black900,
-                  margin: 0,
-                  fontWeight: typography.fontWeight.medium
-                }}>
-                  Losses
-                </p>
-
-                {/* Losses Tags */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '12px'
-                }}>
-                  {/* Tagging */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}>
-                    <span style={{
-                      ...typography.styles.bodyM,
-                      color: semanticColors.blackAndWhite.black700
-                    }}>
-                      Tagging:
-                    </span>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      height: '17px',
-                      padding: '5px 4px',
-                      borderRadius: '4px',
-                      backgroundColor: colors.reports.blue600,
-                      color: '#1c6297',
-                      ...typography.styles.bodyS
-                    }}>
-                      {config.lossesTagging === 'incremental' ? (
-                        <>
-                          <IncrementalExtraSmall color="#1c6297" />
-                          Incremental
-                        </>
-                      ) : (
-                        <>
-                          <CumulativeExtraSmall color="#1c6297" />
-                          Cumulative
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Expenses */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}>
-                    <span style={{
-                      ...typography.styles.bodyM,
-                      color: semanticColors.blackAndWhite.black700
-                    }}>
-                      Expenses:
-                    </span>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      height: '17px',
-                      padding: '5px 4px',
-                      borderRadius: '4px',
-                      backgroundColor: config.lossesExpenses === 'included'
-                        ? 'rgba(198, 255, 193, 0.5)'
-                        : 'rgba(255, 239, 176, 0.5)',
-                      color: config.lossesExpenses === 'included'
-                        ? colors.analytics.green900
-                        : colors.contracts.yellow900,
-                      ...typography.styles.bodyS
-                    }}>
-                      {config.lossesExpenses === 'included' ? (
-                        <>
-                          <CheckExtraSmall color={colors.analytics.green900} />
-                          Included
-                        </>
-                      ) : (
-                        <>
-                          <XExtraSmall color={colors.contracts.yellow900} />
-                          Excluded
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Recoveries */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}>
-                    <span style={{
-                      ...typography.styles.bodyM,
-                      color: semanticColors.blackAndWhite.black700
-                    }}>
-                      Recoveries:
-                    </span>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      height: '17px',
-                      padding: '5px 4px',
-                      borderRadius: '4px',
-                      backgroundColor: config.lossesRecoveries === 'included'
-                        ? 'rgba(198, 255, 193, 0.5)'
-                        : 'rgba(255, 239, 176, 0.5)',
-                      color: config.lossesRecoveries === 'included'
-                        ? colors.analytics.green900
-                        : colors.contracts.yellow900,
-                      ...typography.styles.bodyS
-                    }}>
-                      {config.lossesRecoveries === 'included' ? (
-                        <>
-                          <CheckExtraSmall color={colors.analytics.green900} />
-                          Included
-                        </>
-                      ) : (
-                        <>
-                          <XExtraSmall color={colors.contracts.yellow900} />
-                          Excluded
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right: Value Title - aligned with border division */}
-              <div style={{
-                minWidth: '200px',
-                display: 'flex',
-                alignItems: 'center',
-                borderLeft: `1px solid transparent`
-              }}>
-                <p style={{
-                  ...typography.styles.bodyL,
-                  color: semanticColors.blackAndWhite.black900,
-                  margin: 0,
-                  fontWeight: typography.fontWeight.medium
-                }}>
-                  Value
-                </p>
-              </div>
             </div>
 
             {/* Losses Container */}
@@ -972,6 +911,9 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               <MetricRow
                 metricName="Paid Loss"
                 tooltipText="Losses actually paid out during the reporting period"
+                tagging="Incremental"
+                expenses="Included"
+                recoveries="Excluded"
                 semanticColors={semanticColors}
                 showBorder={true}
                 value={metrics.paidLoss.value}
@@ -979,10 +921,13 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                 onChange={(value, isManual) => updateMetric('paidLoss', value, isManual)}
               />
 
-              {/* Loss Reserves Row */}
+              {/* Reported Loss Row */}
               <MetricRow
-                metricName="Loss Reserves"
-                tooltipText="Reserved amount for known and reported losses"
+                metricName="Reported Loss"
+                tooltipText="Losses reported but not yet paid during the period"
+                tagging="Cumulative"
+                expenses="Included"
+                recoveries="Excluded"
                 semanticColors={semanticColors}
                 showBorder={true}
                 value={metrics.reportedLoss.value}
@@ -990,36 +935,13 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                 onChange={(value, isManual) => updateMetric('reportedLoss', value, isManual)}
               />
 
-              {/* Conditional Expenses Row */}
-              {config.lossesExpenses === 'excluded' && (
-                <MetricRow
-                  metricName="Expenses"
-                  tooltipText="Expenses excluded from losses"
-                  semanticColors={semanticColors}
-                  showBorder={true}
-                  value={metrics.expenses.value}
-                  isGenerated={metrics.expenses.isGenerated}
-                  onChange={(value, isManual) => updateMetric('expenses', value, isManual)}
-                />
-              )}
-
-              {/* Conditional Recoveries Row */}
-              {config.lossesRecoveries === 'excluded' && (
-                <MetricRow
-                  metricName="Recoveries"
-                  tooltipText="Recoveries excluded from losses"
-                  semanticColors={semanticColors}
-                  showBorder={true}
-                  value={metrics.recoveries.value}
-                  isGenerated={metrics.recoveries.isGenerated}
-                  onChange={(value, isManual) => updateMetric('recoveries', value, isManual)}
-                />
-              )}
-
               {/* IBNR Row */}
               <MetricRow
                 metricName="IBNR"
                 tooltipText="Incurred But Not Reported loss reserves"
+                tagging="Incremental"
+                expenses="Excluded"
+                recoveries="Included"
                 semanticColors={semanticColors}
                 showBorder={false}
                 value={metrics.ibnr.value}
@@ -1028,29 +950,35 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               />
             </div>
 
-            {/* Reported Loss Container */}
+            {/* Loss reserves Container */}
             <div style={{
               backgroundColor: 'rgba(255, 255, 255, 0.5)',
               border: `1px solid ${semanticColors.theme.primary400}`,
               borderRadius: '4px',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              // width: 'fit-content' // Old - doesn't work with percentage children
+              width: '50%', // Responsive percentage - spans metric name + value columns
             }}>
               <div style={{
                 height: '40px',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 10px'
+                padding: '0 0 0 10px'
               }}>
                 {/* Left: Metric Name + Formula */}
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  flex: 1
+                  padding: '0 10px',
+                  // width: '400px', // Old fixed width
+                  // width: '30%', // Responsive percentage (when parent is full width)
+                  width: '65%', // Responsive percentage (relative to 50% parent wrapper)
+                  flexShrink: 0
                 }}>
                   <InfoTooltip
-                    text="Total losses reported (Paid Loss + Loss Reserves)"
+                    text="Reserved amount for known and reported losses"
                     variant="small"
                   />
                   <p style={{
@@ -1058,25 +986,28 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                     color: semanticColors.blackAndWhite.black800,
                     margin: 0
                   }}>
-                    Reported Loss
+                    Loss reserves
                   </p>
                   <p style={{
                     ...typography.styles.bodyS,
                     color: semanticColors.blackAndWhite.black500,
                     margin: 0
                   }}>
-                    (Paid Loss + Loss Reserves)
+                    (Reported Loss - Paid Loss)
                   </p>
                 </div>
 
-                {/* Right: Value Display */}
+                {/* Value Column */}
                 <div style={{
-                  minWidth: '200px',
+                  // width: '200px', // Old fixed width
+                  // width: '15%', // Responsive percentage (when parent is full width)
+                  width: '35%', // Responsive percentage (relative to 50% parent wrapper)
+                  minWidth: '120px', // Minimum width to prevent collapse
                   height: '25px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '0 20px',
+                  padding: '10px 20px 10px 20px',
                   borderLeft: `1px solid ${semanticColors.theme.primary400}`
                 }}>
                   <span style={{ ...typography.styles.bodyS, color: semanticColors.blackAndWhite.black500 }}>$</span>
@@ -1098,23 +1029,29 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               border: `1px solid ${semanticColors.theme.primary400}`,
               borderRadius: '4px',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              // width: 'fit-content' // Old - doesn't work with percentage children
+              width: '50%', // Responsive percentage - spans metric name + value columns
             }}>
               <div style={{
                 height: '40px',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '0 10px'
+                padding: '0 0 0 10px'
               }}>
                 {/* Left: Metric Name + Formula */}
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  flex: 1
+                  padding: '0 10px',
+                  // width: '400px', // Old fixed width
+                  // width: '30%', // Responsive percentage (when parent is full width)
+                  width: '65%', // Responsive percentage (relative to 50% parent wrapper)
+                  flexShrink: 0
                 }}>
                   <InfoTooltip
-                    text="Total incurred losses (Reported Loss + IBNR)"
+                    text="Total incurred losses (Paid Loss + Loss Reserves + IBNR)"
                     variant="small"
                   />
                   <p style={{
@@ -1133,14 +1070,17 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                   </p>
                 </div>
 
-                {/* Right: Value Display */}
+                {/* Value Column */}
                 <div style={{
-                  minWidth: '200px',
+                  // width: '200px', // Old fixed width
+                  // width: '15%', // Responsive percentage (when parent is full width)
+                  width: '35%', // Responsive percentage (relative to 50% parent wrapper)
+                  minWidth: '120px', // Minimum width to prevent collapse
                   height: '25px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '0 20px',
+                  padding: '10px 20px 10px 20px',
                   borderLeft: `1px solid ${semanticColors.theme.primary400}`
                 }}>
                   <span style={{ ...typography.styles.bodyS, color: semanticColors.blackAndWhite.black500 }}>$</span>
@@ -1156,44 +1096,6 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               </div>
             </div>
 
-            {/* Adjustments Header */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '20px 0 10px 0'
-            }}>
-              {/* Left: Adjustments Title */}
-              <div style={{
-                flex: 1
-              }}>
-                <p style={{
-                  ...typography.styles.bodyL,
-                  color: semanticColors.blackAndWhite.black900,
-                  margin: 0,
-                  fontWeight: typography.fontWeight.medium
-                }}>
-                  Adjustments
-                </p>
-              </div>
-
-              {/* Right: Value Title - aligned with border division */}
-              <div style={{
-                minWidth: '200px',
-                display: 'flex',
-                alignItems: 'center',
-                borderLeft: `1px solid transparent`
-              }}>
-                <p style={{
-                  ...typography.styles.bodyL,
-                  color: semanticColors.blackAndWhite.black900,
-                  margin: 0,
-                  fontWeight: typography.fontWeight.medium
-                }}>
-                  Value
-                </p>
-              </div>
-            </div>
-
             {/* Adjustments Container */}
             <div style={{
               backgroundColor: semanticColors.blackAndWhite.white,
@@ -1206,6 +1108,9 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
               <MetricRow
                 metricName="Adjustement"
                 tooltipText="Any adjustments or corrections to reported values"
+                tagging="Cumulative"
+                expenses="Included"
+                recoveries="Excluded"
                 semanticColors={semanticColors}
                 showBorder={false}
                 value={metrics.adjustment.value}

@@ -30,7 +30,7 @@ import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-contracts-list' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-bdx-configuration' | 'reports-cession-statement' | 'marketplace-offerings';
+type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-contracts-list' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-cession-summary-generation' | 'reports-cession-statement' | 'marketplace-offerings';
 
 // Inner component that uses settings
 function AppContent() {
@@ -83,8 +83,8 @@ function AppContent() {
       } else if (page === 'reports-cash-settlement') {
         console.log('Setting currentEntityData:', data);
         setCurrentEntityData(data);
-      } else if (page === 'reports-bdx-configuration') {
-        console.log('Setting BDX configuration data:', data);
+      } else if (page === 'reports-cession-summary-generation') {
+        console.log('Setting Cession Summary Generation data:', data);
         setValuationData(data);
       } else if (page === 'reports-cession-statement') {
         console.log('Setting cession data:', data);
@@ -107,8 +107,6 @@ function AppContent() {
     switch (currentPage) {
       case 'home':
         return <HomeTest onNavigateToPage={setPage} />;
-      case 'reports-cash-settlement':
-        return <ReportsCashSettlement onNavigateToPage={setPage} entityData={currentEntityData} />;
       case 'reports-explorer':
         return <ReportNavigation onNavigateToPage={setPage} />;
       case 'reports-insights-explorer':
@@ -149,10 +147,12 @@ function AppContent() {
         return <AnalyticsTriangleDashboard onNavigateToPage={setPage} triangleName={triangleData?.triangleName} />;
       case 'reports-bdx-upload':
         return <ReportsBDXUpload onNavigateToPage={setPage} onInboxClick={() => console.log('Inbox clicked')} />;
-      case 'reports-bdx-configuration':
+      case 'reports-cession-summary-generation':
         return <ReportsCessionSummaryGeneration onNavigateToPage={setPage} uploadData={valuationData} />;
       case 'reports-cession-statement':
-        return <ReportsCessionStatement onNavigateToPage={setPage} cessionData={cessionData} />;
+        return <ReportsCessionStatement onNavigateToPage={setPage} entityData={cessionData} source={cessionData?.source} />;
+      case 'reports-cash-settlement':
+        return <ReportsCashSettlement onNavigateToPage={setPage} cessionData={cessionData} />;
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:

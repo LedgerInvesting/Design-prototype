@@ -758,8 +758,11 @@ export const ReportNavigation: React.FC<ReportNavigationProps> = ({ onNavigateTo
               button={{
                 text: "EXPLORE",
                 onClick: () => {
-                  // Pass current entity data to the next page
-                  onNavigateToPage?.('reports-cash-settlement', currentEntity);
+                  // Navigate to cession statement with reports-explorer source
+                  onNavigateToPage?.('reports-cession-statement', {
+                    ...currentEntity,
+                    source: 'reports-explorer'
+                  });
                 }
               }}
               width="100%"
