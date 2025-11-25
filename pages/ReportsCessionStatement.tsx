@@ -323,7 +323,7 @@ export const ReportsCessionStatement: React.FC<CessionStatementProps> = ({ onNav
   const isFromBDXUpload = source === 'bdx-upload';
 
   // Use entity data passed from Reports Explorer, fallback to default
-  const currentEntity = entityData || {
+  const currentEntity = (entityData && entityData.name) ? entityData : {
     id: '',
     name: 'Cucumber GL Seasonal',
     type: 'Program',
