@@ -322,10 +322,10 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
 
   // Calculated values based on metrics
   const paidLossNum = parseValue(metrics.paidLoss.value);
-  const reportedLossNum = parseValue(metrics.reportedLoss.value);
+  const lossReservesNum = parseValue(metrics.reportedLoss.value); // This field stores Loss Reserves
   const ibnrNum = parseValue(metrics.ibnr.value);
-  const lossReserves = reportedLossNum - paidLossNum;
-  const incurredLoss = reportedLossNum + ibnrNum;
+  const reportedLoss = paidLossNum + lossReservesNum; // Reported Loss = Paid Loss + Loss Reserves
+  const incurredLoss = reportedLoss + ibnrNum;
 
   // Format number for display
   const formatValue = (value: number): string => {
@@ -1082,11 +1082,11 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                   <span style={{ ...typography.styles.bodyS, color: semanticColors.blackAndWhite.black500 }}>$</span>
                   <p style={{
                     ...typography.styles.bodyM,
-                    color: lossReserves === 0 ? semanticColors.blackAndWhite.black300 : semanticColors.blackAndWhite.black500,
+                    color: reportedLoss === 0 ? semanticColors.blackAndWhite.black300 : semanticColors.blackAndWhite.black500,
                     margin: 0,
                     textAlign: 'left'
                   }}>
-                    {lossReserves === 0 ? 'Value will be calculated' : formatValue(lossReserves)}
+                    {reportedLoss === 0 ? 'Value will be calculated' : formatValue(reportedLoss)}
                   </p>
                 </div>
               </div>
