@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HomeTest } from './HomeTest';
 import { ReportsCashSettlement } from './ReportsCashSettlement';
+import { ReportsCashSettlementDetail } from './ReportsCashSettlementDetail';
 import { ReportNavigation } from './ReportsExplorer';
 import { ReportsInsightsExplorer } from './ReportsInsightsExplorer';
 import { ReportsTransactionManagement } from './ReportsTransactionManagement';
@@ -20,8 +21,10 @@ import { AnalyticsAddValuationData } from './AnalyticsAddValuationData';
 import { AnalyticsTriangle } from './AnalyticsTriangle';
 import { AnalyticsTriangleDashboard } from './AnalyticsTriangleDashboard';
 import { ReportsBDXUpload } from './ReportsBDXUpload';
+import { ReportsBDXDetailMapping } from './ReportsBDXDetailMapping';
 import { ReportsCessionSummaryGeneration } from './ReportsCessionSummaryGeneration';
 import { ReportsCessionStatement } from './ReportsCessionStatement';
+import { ReportsCellLevelSummary } from './ReportsCellLevelSummary';
 import { MarketplaceOfferings } from './MarketplaceOfferings';
 import ReportsInsightsProgramDetails from './ReportsInsightsProgramDetails';
 
@@ -30,7 +33,7 @@ import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'home' | 'reports-cash-settlement' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-contracts-list' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-cession-summary-generation' | 'reports-cession-statement' | 'marketplace-offerings';
+type PageType = 'home' | 'reports-cash-settlement' | 'reports-cash-settlement-detail' | 'reports-cell-level-summary' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-contracts-list' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-bdx-detail-mapping' | 'reports-cession-summary-generation' | 'reports-cession-statement' | 'marketplace-offerings';
 
 // Inner component that uses settings
 function AppContent() {
@@ -50,6 +53,7 @@ function AppContent() {
   const [cessionData, setCessionData] = useState<any>(null);
   const [contractsTransactionData, setContractsTransactionData] = useState<any>(null);
   const [contractsUploadData, setContractsUploadData] = useState<any>(null);
+  const [bdxUploadData, setBdxUploadData] = useState<any>(null);
 
   // Listen to browser back/forward buttons
   useEffect(() => {
@@ -80,9 +84,9 @@ function AppContent() {
       } else if (page === 'analytics-triangle-dashboard') {
         console.log('Setting triangleData:', data);
         setTriangleData(data);
-      } else if (page === 'reports-cash-settlement') {
-        console.log('Setting currentEntityData:', data);
-        setCurrentEntityData(data);
+      } else if (page === 'reports-cash-settlement' || page === 'reports-cash-settlement-detail') {
+        console.log('Setting cession data for cash settlement:', data);
+        setCessionData(data);
       } else if (page === 'reports-cession-summary-generation') {
         console.log('Setting Cession Summary Generation data:', data);
         setValuationData(data);
@@ -95,6 +99,9 @@ function AppContent() {
       } else if (page === 'contracts-contracts-list' || page === 'contracts-ai-extraction') {
         console.log('Setting contracts transaction data:', data);
         setContractsTransactionData(data);
+      } else if (page === 'reports-bdx-upload' || page === 'reports-bdx-detail-mapping') {
+        console.log('Setting BDX upload data:', data);
+        setBdxUploadData(data);
       } else {
         setValuationData(data);
       }
@@ -146,13 +153,19 @@ function AppContent() {
       case 'analytics-triangle-dashboard':
         return <AnalyticsTriangleDashboard onNavigateToPage={setPage} triangleName={triangleData?.triangleName} />;
       case 'reports-bdx-upload':
-        return <ReportsBDXUpload onNavigateToPage={setPage} onInboxClick={() => console.log('Inbox clicked')} />;
+        return <ReportsBDXUpload onNavigateToPage={setPage} onInboxClick={() => console.log('Inbox clicked')} transactionData={bdxUploadData} />;
+      case 'reports-bdx-detail-mapping':
+        return <ReportsBDXDetailMapping onNavigateToPage={setPage} transactionData={bdxUploadData} />;
       case 'reports-cession-summary-generation':
         return <ReportsCessionSummaryGeneration onNavigateToPage={setPage} uploadData={valuationData} />;
       case 'reports-cession-statement':
         return <ReportsCessionStatement onNavigateToPage={setPage} entityData={cessionData} source={cessionData?.source} />;
       case 'reports-cash-settlement':
         return <ReportsCashSettlement onNavigateToPage={setPage} cessionData={cessionData} />;
+      case 'reports-cash-settlement-detail':
+        return <ReportsCashSettlementDetail onNavigateToPage={setPage} cessionData={cessionData} />;
+      case 'reports-cell-level-summary':
+        return <ReportsCellLevelSummary onNavigateToPage={setPage} />;
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
       default:

@@ -10,7 +10,10 @@ export type PageType =
   | 'reports-new-transaction-form'
   | 'reports-renewal-transaction'
   | 'reports-cash-settlement'
+  | 'reports-cash-settlement-detail'
+  | 'reports-cell-level-summary'
   | 'reports-bdx-upload'
+  | 'reports-bdx-detail-mapping'
   | 'reports-cession-summary-generation'
   | 'reports-cession-statement'
   | 'reports-contracts-explorer'
@@ -61,7 +64,10 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
       'reports-new-transaction-form',
       'reports-renewal-transaction',
       'reports-cash-settlement',
+      'reports-cash-settlement-detail',
+      'reports-cell-level-summary',
       'reports-bdx-upload',
+      'reports-bdx-detail-mapping',
       'reports-cession-summary-generation',
       'reports-cession-statement',
       'reports-contracts-explorer',
@@ -268,6 +274,9 @@ export const isSubPage = (pageType: PageType): boolean => {
     'reports-new-transaction-form',
     'reports-renewal-transaction',
     'reports-cash-settlement',
+    'reports-cash-settlement-detail',
+    'reports-cell-level-summary',
+    'reports-bdx-detail-mapping',
     'reports-contracts-explorer',
     'reports-insights-program-details',
     'reports-cession-summary-generation',

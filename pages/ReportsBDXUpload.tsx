@@ -32,27 +32,33 @@ import { useTransactions } from './hooks/useTransactionsStable';
 interface BDXUploadProps {
   onNavigateToPage?: (page: string, data?: any) => void;
   onInboxClick?: () => void;
+  transactionData?: {
+    transactionName?: string;
+    cedingCompany?: string;
+    reinsurerName?: string;
+  };
 }
 
 export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
   onNavigateToPage,
   onInboxClick,
+  transactionData,
 }) => {
-  
+
   // Function to detect if user accessed this page directly from sidebar navigation
   const isDirectAccess = (): boolean => {
     if (typeof window === 'undefined') return false;
-    
+
     // Check sessionStorage for navigation source
     const navigationSource = sessionStorage.getItem('navigationSource');
-    
+
     // If no navigation source is set, assume direct access
     // If source is 'sidebar', it's direct access
     // If source is 'page', it's navigation from another page
     return !navigationSource || navigationSource === 'sidebar' || navigationSource === 'direct';
   };
   const semanticColors = useSemanticColors();
-  
+
   // Get transaction data to use real transaction name
   const { transactions } = useTransactions({ limit: 1 });
   const selectedTransaction = transactions[0]; // Use first transaction
@@ -150,20 +156,29 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
     },
   };
 
-  // Handle Add button clicks - navigate directly to configuration page
+  // Handle Add button clicks - navigate to detail mapping or aggregated configuration
   const handleAddClick = (month: string, type: string) => {
     if (onNavigateToPage) {
-      // Prepare empty upload data for new configuration
-      const uploadInfo = {
-        fileName: undefined,
-        documentType: type,
-        month: month,
-        year: '2025',
-        openModal: true // Open the import modal when navigating from Add button
-      };
+      // Check if this is a Commercial Auto transaction (use detail mapping)
+      const isCommercialAuto = transactionData?.transactionName?.toLowerCase().includes('commercial auto');
 
-      // Navigate to configuration page
-      onNavigateToPage('reports-cession-summary-generation', uploadInfo);
+      if (isCommercialAuto) {
+        // Navigate to Detail Mapping page for Commercial Auto transactions
+        console.log('Navigating to Detail Mapping for Commercial Auto');
+        onNavigateToPage('reports-bdx-detail-mapping', transactionData);
+      } else {
+        // Prepare empty upload data for new configuration (aggregated view)
+        const uploadInfo = {
+          fileName: undefined,
+          documentType: type,
+          month: month,
+          year: '2025',
+          openModal: true // Open the import modal when navigating from Add button
+        };
+
+        // Navigate to aggregated configuration page
+        onNavigateToPage('reports-cession-summary-generation', uploadInfo);
+      }
     }
   };
 
@@ -515,7 +530,7 @@ export const ReportsBDXUpload: React.FC<BDXUploadProps> = ({
               color: semanticColors.blackAndWhite.black900
             }}>bordereau status</span> <em>of</em> <span style={{
               color: semanticColors.blackAndWhite.black900
-            }}>Cucumber GL Seasonal</span> Plus Bordereau. You can upload bordereau and track progress across different stages.
+            }}>{transactionData?.transactionName || 'Cucumber GL Seasonal'}</span> Plus Bordereau. You can upload bordereau and track progress across different stages.
           </h2>
         </div>
 

@@ -91,8 +91,8 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
         };
       }
       return {
-        minWidth: '150px',
-        maxWidth: '150px',
+        minWidth: '200px',
+        maxWidth: '200px',
       };
     };
 

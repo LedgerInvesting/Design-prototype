@@ -782,12 +782,32 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       headerAlign: 'right', // Right-aligned header
       cellType: 'action' as const,
       actionType: 'upload' as const,
-      onAction: (actionType: string, text: string) => {
-        if (actionType === 'upload') {
-          onNavigateToPage && onNavigateToPage('reports-bdx-upload');
+      onAction: (actionType: string, text: string, rowData?: any) => {
+        console.log('onAction called:', { actionType, text, rowData });
+
+        if (actionType === 'upload' && rowData) {
+          console.log('Upload clicked for row:', rowData);
+
+          if (onNavigateToPage) {
+            console.log('Navigating to BDX Upload with data:', {
+              transactionName: rowData.transactionName,
+              cedingCompany: rowData.cedingCompany,
+              reinsurerName: rowData.reinsurerName,
+            });
+
+            // Pass transaction data to BDX Upload page
+            onNavigateToPage('reports-bdx-upload', {
+              transactionName: rowData.transactionName,
+              cedingCompany: rowData.cedingCompany,
+              reinsurerName: rowData.reinsurerName,
+            });
+          } else {
+            console.warn('Missing onNavigateToPage');
+          }
         } else if (actionType === 'setup') {
           onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
         } else {
+          console.log('Other action type:', actionType);
         }
       },
     },
@@ -853,7 +873,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
 
 // Main page component
 interface TransactionManagementProps {
-  onNavigateToPage?: (page: string) => void;
+  onNavigateToPage?: (page: string, data?: any) => void;
 }
 
 export const ReportsTransactionManagement: React.FC<TransactionManagementProps> = ({ onNavigateToPage }) => {
