@@ -22,6 +22,7 @@ export interface TableColumn {
   cellType?: CellType;
   onDownload?: (filename: string, rowData?: any) => void; // For document cells
   hoverIcon?: 'download' | 'config' | 'open'; // For document cells hover icon
+  interactive?: boolean; // For document cells - controls background and hover effects
   actionType?: ActionType; // For action cells (edit, upload, validate, add, delete, plus)
   onAction?: (actionType: ActionType, text: string, rowData?: any) => void; // For action cells
   actionCellProps?: {
@@ -91,6 +92,7 @@ export interface CompactTableHeaderProps {
   itemsPerPage?: number;
   onPageChange?: (page: number) => void;
   headerActions?: TableHeaderAction[];
+  paginationItemLabel?: string;
   className?: string;
 }
 
@@ -98,6 +100,7 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
   title,
   searchValue = '',
   onSearchChange,
+  paginationItemLabel = 'valuations',
   showSearch = true,
   showCustomizeColumns = false,
   columns = [],
@@ -381,7 +384,7 @@ export const CompactTableHeader: React.FC<CompactTableHeaderProps> = ({
         {/* Right Section: Documents Count + Pagination */}
         <div style={rightSectionStyles}>
           <span style={documentsCountStyles}>
-            {startItem}-{endItem} of {totalItems} valuations
+            {startItem}-{endItem} of {totalItems} {paginationItemLabel}
           </span>
           <button
             style={currentPage === 1 ? disabledNavButtonStyles : navButtonStyles}
@@ -916,11 +919,12 @@ export const TableBody: React.FC<TableBodyProps> = ({
         // For document cells, expect the value to be a string filename
         if (typeof value === 'string') {
           return (
-            <div data-cell-type="document" style={{ cursor: 'pointer', height: '100%', display: 'flex' }}>
+            <div data-cell-type="document" style={{ cursor: column.interactive !== false ? 'pointer' : 'default', height: '100%', display: 'flex' }}>
               <DocumentCell
                 filename={value}
                 onDownload={column.onDownload ? (filename) => column.onDownload!(filename, row) : ((filename) => console.log('Download:', filename))}
                 hoverIcon={column.hoverIcon}
+                interactive={column.interactive}
               />
             </div>
           );
@@ -1379,6 +1383,7 @@ export interface TableProps {
   onGroupToggle?: (rowIndex: number) => void;
   emptyMessage?: string;
   headerActions?: TableHeaderAction[];
+  paginationItemLabel?: string;
   className?: string;
 }
 
@@ -1404,6 +1409,7 @@ export const Table: React.FC<TableProps> = ({
   onGroupToggle,
   emptyMessage = 'No data available',
   headerActions = [],
+  paginationItemLabel = 'valuations',
   className = '',
 }) => {
   const colors = useSemanticColors();
@@ -1710,6 +1716,7 @@ export const Table: React.FC<TableProps> = ({
           onColumnVisibilityChange={onColumnVisibilityChange}
           currentPage={currentPage}
           totalPages={totalPages}
+          paginationItemLabel={paginationItemLabel}
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           onPageChange={onPageChange}

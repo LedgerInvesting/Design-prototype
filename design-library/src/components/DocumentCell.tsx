@@ -9,6 +9,7 @@ export interface DocumentCellProps {
   className?: string;
   align?: 'left' | 'center' | 'right';
   hoverIcon?: 'download' | 'config' | 'open';
+  interactive?: boolean; // Controls background and hover effects
 }
 
 export const DocumentCell: React.FC<DocumentCellProps> = ({
@@ -17,6 +18,7 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
   className = '',
   align = 'left',
   hoverIcon = 'download',
+  interactive = true,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -53,10 +55,10 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
     justifyContent: 'space-between',
     margin: '6px',
     padding: '4px 4px 4px 8px',
-    borderRadius: borderRadius[4],
-    backgroundColor: isHovered ? colors.theme.primary300 : colors.theme.primary200, // Theme-aware colors
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    borderRadius: interactive ? borderRadius[4] : 0,
+    backgroundColor: interactive ? (isHovered ? colors.theme.primary300 : colors.theme.primary200) : 'transparent',
+    cursor: interactive ? 'pointer' : 'default',
+    transition: interactive ? 'all 0.2s ease' : 'none',
     minHeight: '21px', // Adjust for the margin
     width: 'calc(100% - 12px)', // Account for left and right margin
     boxSizing: 'border-box' as const,
@@ -133,42 +135,44 @@ export const DocumentCell: React.FC<DocumentCellProps> = ({
       <div
         className={className}
         style={containerStyles}
-        onClick={handleClick}
-        onMouseEnter={() => {
+        onClick={interactive ? handleClick : undefined}
+        onMouseEnter={interactive ? () => {
           setIsHovered(true);
           setShowTooltip(true);
-        }}
-        onMouseLeave={() => {
+        } : undefined}
+        onMouseLeave={interactive ? () => {
           setIsHovered(false);
           setShowTooltip(false);
-        }}
-        onMouseMove={handleMouseMove}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
+        } : undefined}
+        onMouseMove={interactive ? handleMouseMove : undefined}
+        role={interactive ? "button" : undefined}
+        tabIndex={interactive ? 0 : undefined}
+        onKeyDown={interactive ? (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             handleClick();
           }
-        }}
+        } : undefined}
       >
         <div style={leftSectionStyles}>
           <DocumentTable color={colors.theme.primary450} />
           <span style={textStyles}>{filename}</span>
         </div>
 
-        <div style={downloadIconStyles}>
-          {hoverIcon === 'config' ? (
-            <ConfigSmall color={colors.blackAndWhite.black900} />
-          ) : hoverIcon === 'open' ? (
-            <ChevronRightSmall color={colors.blackAndWhite.black900} />
-          ) : (
-            <DownloadSmall color={colors.blackAndWhite.black900} />
-          )}
-        </div>
+        {interactive && (
+          <div style={downloadIconStyles}>
+            {hoverIcon === 'config' ? (
+              <ConfigSmall color={colors.blackAndWhite.black900} />
+            ) : hoverIcon === 'open' ? (
+              <ChevronRightSmall color={colors.blackAndWhite.black900} />
+            ) : (
+              <DownloadSmall color={colors.blackAndWhite.black900} />
+            )}
+          </div>
+        )}
       </div>
       {/* Render tooltip in portal to avoid parent transform issues */}
-      {typeof document !== 'undefined' && tooltipContent && createPortal(tooltipContent, document.body)}
+      {interactive && typeof document !== 'undefined' && tooltipContent && createPortal(tooltipContent, document.body)}
     </>
   );
 };

@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Layout, PageHeader } from '@design-library/pages';
 import { Button, Table, colors, typography, useSemanticColors, borderRadius, shadows } from '@design-library/components';
-import { ChevronDownExtraSmall } from '@design-library/icons';
+import { ChevronDownExtraSmall, TextTable, AmmountTable, DocumentTable } from '@design-library/icons';
 import { createPageNavigationHandler, type NavigationHandler } from '@design-library/utils/navigation';
+import type { TableColumn } from '@design-library/components';
 
 interface ReportsCellLevelSummaryProps {
   onNavigateToPage?: NavigationHandler;
@@ -14,6 +15,7 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
   const semanticColors = useSemanticColors();
   const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
   const downloadDropdownRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -40,16 +42,116 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
     { label: 'Cell-Level Summary', isActive: true }
   ];
 
-  // Metrics data
-  const metrics = [
-    { label: 'Written Premium', value: '$243,719,718' },
-    { label: 'Ceded Premium', value: '$21,498,476' },
-    { label: 'Total Collateral Required', value: '$9,221,400' },
-    { label: 'Number of Binders', value: '11' },
-    { label: 'Earned Premium', value: '$243,719,718' },
-    { label: 'Net Cession', value: '$10,317,196' },
-    { label: 'Avg Gross Loss Ratio', value: '59.3%' },
-    { label: 'Trust Account Balance', value: '$13,489,888' },
+  // Metrics data - Left column
+  const leftMetrics = [
+    { label: 'Written Premium', value: '$312,800,000' },
+    { label: 'Earned Premium', value: '$298,400,000' },
+    { label: 'Ceded Premium', value: '$28,960,000' },
+    { label: 'Remitted Premium', value: '$28,960,000' },
+  ];
+
+  // Metrics data - Right column
+  const rightMetrics = [
+    { label: 'Net Cession', value: '$14,420,000' },
+    { label: 'Total Collateral Required', value: '$21,750,000' },
+    { label: 'Avg Gross Loss Ratio', value: '61.4%' },
+    { label: 'Number of Binders', value: '9' },
+  ];
+
+  // Table columns configuration
+  const columns: TableColumn[] = [
+    {
+      key: 'transactionName',
+      title: 'Transaction Name',
+      icon: <DocumentTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '300px',
+      cellType: 'document',
+      hoverIcon: 'open',
+      interactive: false, // No background or hover effects
+      align: 'left',
+      headerAlign: 'left',
+    },
+    {
+      key: 'premiumWritten',
+      title: 'Premium Written',
+      icon: <AmmountTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
+    {
+      key: 'premiumEarned',
+      title: 'Premium Earned',
+      icon: <AmmountTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
+    {
+      key: 'cededPremium',
+      title: 'Ceded Premium',
+      icon: <AmmountTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
+    {
+      key: 'paidLoss',
+      title: 'Paid Loss',
+      icon: <AmmountTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
+    {
+      key: 'incurredLoss',
+      title: 'Incurred Loss',
+      icon: <AmmountTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
+    {
+      key: 'grossLossRatio',
+      title: 'Gross Loss Ratio',
+      icon: <TextTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
+    {
+      key: 'netCession',
+      title: 'Net Cession',
+      icon: <AmmountTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '150px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
+    {
+      key: 'collateralRequired',
+      title: 'Collateral Required',
+      icon: <AmmountTable color={semanticColors.theme.primary450} />,
+      sortable: true,
+      width: '180px',
+      cellType: 'simple',
+      align: 'right',
+      headerAlign: 'center',
+    },
   ];
 
   // Table data
@@ -60,7 +162,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$8,459,732',
       cededPremium: '$14,235,825',
       paidLoss: '$23,456,789',
-      incurredLoss: '$23,456,7'
+      incurredLoss: '$23,456,789',
+      grossLossRatio: '65.4%',
+      netCession: '$12,345,678',
+      collateralRequired: '$9,876,543'
     },
     {
       transactionName: 'Cardigan CA 2021 Non-Admitted IFACC',
@@ -68,7 +173,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$21,932,150',
       cededPremium: '$12,450,000',
       paidLoss: '$8,123,456',
-      incurredLoss: '$8,123,4'
+      incurredLoss: '$8,123,456',
+      grossLossRatio: '58.2%',
+      netCession: '$10,234,567',
+      collateralRequired: '$8,765,432'
     },
     {
       transactionName: 'Cardigan CA 2022 Non-Admitted IFACC',
@@ -76,7 +184,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$3,678,905',
       cededPremium: '$9,875,300',
       paidLoss: '$19,876,543',
-      incurredLoss: '$19,876,5'
+      incurredLoss: '$19,876,543',
+      grossLossRatio: '72.1%',
+      netCession: '$8,765,432',
+      collateralRequired: '$7,654,321'
     },
     {
       transactionName: 'Cornerstone GL 2021 IFACC',
@@ -84,7 +195,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$15,004,567',
       cededPremium: '$20,100,500',
       paidLoss: '$11,345,678',
-      incurredLoss: '$11,345,6'
+      incurredLoss: '$11,345,678',
+      grossLossRatio: '61.8%',
+      netCession: '$15,432,123',
+      collateralRequired: '$12,345,678'
     },
     {
       transactionName: 'Cornerstone GL 2022 IFACC',
@@ -92,7 +206,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$19,500,143',
       cededPremium: '$7,300,000',
       paidLoss: '$5,432,109',
-      incurredLoss: '$5,432,1'
+      incurredLoss: '$5,432,109',
+      grossLossRatio: '54.3%',
+      netCession: '$6,543,210',
+      collateralRequired: '$5,432,109'
     },
     {
       transactionName: 'First Light CA 2022 IFACC',
@@ -100,7 +217,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$7,250,999',
       cededPremium: '$15,800,750',
       paidLoss: '$17,890,234',
-      incurredLoss: '$17,890,2'
+      incurredLoss: '$17,890,234',
+      grossLossRatio: '68.9%',
+      netCession: '$13,234,567',
+      collateralRequired: '$11,123,456'
     },
     {
       transactionName: 'RMS GL 2021 IFACC',
@@ -108,7 +228,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$26,478,300',
       cededPremium: '$5,440,000',
       paidLoss: '$12,345,678',
-      incurredLoss: '$12,345,6'
+      incurredLoss: '$12,345,678',
+      grossLossRatio: '63.7%',
+      netCession: '$4,876,543',
+      collateralRequired: '$4,123,456'
     },
     {
       transactionName: 'RMS GL 2022 IFACC',
@@ -116,7 +239,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$5,234,888',
       cededPremium: '$25,000,000',
       paidLoss: '$22,111,222',
-      incurredLoss: '$22,111,2'
+      incurredLoss: '$22,111,222',
+      grossLossRatio: '76.5%',
+      netCession: '$18,765,432',
+      collateralRequired: '$16,543,210'
     },
     {
       transactionName: 'Southern Star CA 2022 IFACC',
@@ -124,7 +250,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$12,879,560',
       cededPremium: '$3,250,000',
       paidLoss: '$9,876,543',
-      incurredLoss: '$9,876,5'
+      incurredLoss: '$9,876,543',
+      grossLossRatio: '59.6%',
+      netCession: '$2,987,654',
+      collateralRequired: '$2,456,789'
     },
     {
       transactionName: 'XPT CA 2023 IFACC',
@@ -132,7 +261,10 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       premiumEarned: '$30,001,200',
       cededPremium: '$18,900,600',
       paidLoss: '$15,678,910',
-      incurredLoss: '$15,678,5'
+      incurredLoss: '$15,678,910',
+      grossLossRatio: '66.2%',
+      netCession: '$14,567,890',
+      collateralRequired: '$12,345,678'
     },
   ];
 
@@ -147,7 +279,7 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '40px'
+        gap: '30px'
       }}>
         {/* Page Header */}
         <PageHeader
@@ -249,59 +381,140 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
           ]}
         />
 
-        {/* Metrics Card */}
+        {/* Trust Account Balance Box */}
         <div style={{
           backgroundColor: semanticColors.blackAndWhite.white,
           border: `1px solid ${semanticColors.theme.primary400}`,
           borderRadius: borderRadius[12],
           padding: '30px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '30px 20px',
-          gridTemplateRows: 'auto auto'
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
-          {metrics.map((metric, index) => (
-            <div key={index} style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px'
-            }}>
-              <p style={{
-                ...typography.styles.bodyS,
-                color: semanticColors.blackAndWhite.black500,
-                margin: 0
-              }}>
-                {metric.label}
-              </p>
-              <p style={{
-                fontSize: '26px',
-                fontWeight: typography.fontWeight.regular,
-                lineHeight: '1.3',
-                color: semanticColors.blackAndWhite.black900,
-                margin: 0,
-                whiteSpace: 'nowrap'
-              }}>
-                {metric.value}
-              </p>
-            </div>
-          ))}
+          <p style={{
+            ...typography.styles.bodyM,
+            color: semanticColors.blackAndWhite.black900,
+            margin: 0
+          }}>
+            Trust Account Balance
+          </p>
+          <p style={{
+            ...typography.styles.dataXXL,
+            color: semanticColors.blackAndWhite.black900,
+            margin: 0,
+            whiteSpace: 'nowrap'
+          }}>
+            $18,450,000
+          </p>
+        </div>
+
+        {/* Metrics Grid - 2 Columns (No Box) */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1px 1fr',
+          gap: '0 30px',
+          padding: '0 30px',
+          marginBottom: '30px'
+        }}>
+          {/* Left Column */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            {leftMetrics.map((metric, index) => (
+              <React.Fragment key={index}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  height: '30px'
+                }}>
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0
+                  }}>
+                    {metric.label}
+                  </p>
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0,
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {metric.value}
+                  </p>
+                </div>
+                {index < leftMetrics.length - 1 && (
+                  <div style={{
+                    height: '1px',
+                    borderBottom: `1px dotted ${semanticColors.theme.primary400}`
+                  }} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Vertical Divider Line */}
+          <div style={{
+            width: '1px',
+            backgroundColor: semanticColors.theme.primary400,
+            gridColumn: '2'
+          }} />
+
+          {/* Right Column */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            {rightMetrics.map((metric, index) => (
+              <React.Fragment key={index}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  height: '30px'
+                }}>
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0
+                  }}>
+                    {metric.label}
+                  </p>
+                  <p style={{
+                    ...typography.styles.bodyM,
+                    color: semanticColors.blackAndWhite.black900,
+                    margin: 0,
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {metric.value}
+                  </p>
+                </div>
+                {index < rightMetrics.length - 1 && (
+                  <div style={{
+                    height: '1px',
+                    borderBottom: `1px dotted ${semanticColors.theme.primary400}`
+                  }} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
 
         {/* Table */}
         <Table
-          columns={[
-            { key: 'transactionName', label: 'Transaction Name', align: 'left' },
-            { key: 'premiumWritten', label: 'Premium Written', align: 'right', headerAlign: 'center' },
-            { key: 'premiumEarned', label: 'Premium Earned', align: 'right', headerAlign: 'center' },
-            { key: 'cededPremium', label: 'Ceded Premium', align: 'right', headerAlign: 'center' },
-            { key: 'paidLoss', label: 'Paid Loss', align: 'right', headerAlign: 'center' },
-            { key: 'incurredLoss', label: 'Incurred Loss', align: 'right', headerAlign: 'center' }
-          ]}
+          columns={columns}
           data={tableData}
-          pagination={{
-            enabled: true,
-            position: 'bottom'
-          }}
+          title="Transactions"
+          showHeader={true}
+          showSearch={false}
+          currentPage={currentPage}
+          totalPages={1}
+          totalItems={tableData.length}
+          itemsPerPage={10}
+          onPageChange={setCurrentPage}
+          paginationItemLabel="transactions"
         />
       </div>
     </Layout>
