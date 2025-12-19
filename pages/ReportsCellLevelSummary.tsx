@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Layout, PageHeader } from '@design-library/pages';
-import { Button, Table, colors, typography, useSemanticColors, borderRadius, shadows } from '@design-library/components';
-import { ChevronDownExtraSmall, TextTable, AmmountTable, DocumentTable } from '@design-library/icons';
+import { Table, DownloadButton, typography, useSemanticColors, borderRadius } from '@design-library/components';
+import { TextTable, AmmountTable, DocumentTable } from '@design-library/icons';
 import { createPageNavigationHandler, type NavigationHandler } from '@design-library/utils/navigation';
 import type { TableColumn } from '@design-library/components';
 
@@ -13,23 +13,7 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
   onNavigateToPage
 }) => {
   const semanticColors = useSemanticColors();
-  const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
-  const downloadDropdownRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (downloadDropdownRef.current && !downloadDropdownRef.current.contains(event.target as Node)) {
-        setIsDownloadDropdownOpen(false);
-      }
-    };
-
-    if (isDownloadDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isDownloadDropdownOpen]);
 
   // Create navigation handler
   const navigationHandler = onNavigateToPage
@@ -290,94 +274,19 @@ export const ReportsCellLevelSummary: React.FC<ReportsCellLevelSummaryProps> = (
             { text: 'May 31st, 2025', important: true }
           ]}
           actions={[
-            <div key="download" ref={downloadDropdownRef} style={{ position: 'relative' }}>
-              <button
-                onClick={() => setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '8px 22px 8px 20px',
-                  height: '44px',
-                  width: 'fit-content',
-                  backgroundColor: semanticColors.blackAndWhite.black900,
-                  border: 'none',
-                  borderRadius: borderRadius[4],
-                  cursor: 'pointer',
-                  ...typography.styles.bodyL,
-                  color: semanticColors.blackAndWhite.white,
-                }}
-              >
-                <span>Download</span>
-                <div style={{
-                  width: '1px',
-                  height: '24px',
-                  backgroundColor: semanticColors.blackAndWhite.black800,
-                  flexShrink: 0
-                }} />
-                <div style={{
-                  transform: isDownloadDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}>
-                  <ChevronDownExtraSmall color={semanticColors.theme.primary700} />
-                </div>
-              </button>
-              {isDownloadDropdownOpen && (
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  minWidth: '200px',
-                  width: 'fit-content',
-                  backgroundColor: colors.blackAndWhite.white,
-                  border: 'none',
-                  borderRadius: borderRadius[8],
-                  marginTop: '8px',
-                  zIndex: 1000,
-                  boxShadow: shadows.medium,
-                  padding: '10px',
-                }}>
-                  <div
-                    onClick={() => {
-                      window.open('/PDF.pdf', '_blank');
-                      setIsDownloadDropdownOpen(false);
-                    }}
-                    style={{
-                      padding: '12px 10px',
-                      cursor: 'pointer',
-                      ...typography.styles.bodyM,
-                      color: colors.blackAndWhite.black900,
-                      borderRadius: borderRadius[4],
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = semanticColors.theme.primary200}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                  >
-                    Download as PDF
-                  </div>
-                  <div
-                    onClick={() => {
-                      window.open('https://docs.google.com/spreadsheets/d/1bviXCfE9z115ZbpHiBUdH9BPlVXj5648i_v9cYorydE/edit?gid=879068275#gid=879068275', '_blank');
-                      setIsDownloadDropdownOpen(false);
-                    }}
-                    style={{
-                      padding: '12px 10px',
-                      cursor: 'pointer',
-                      ...typography.styles.bodyM,
-                      color: colors.blackAndWhite.black900,
-                      borderRadius: borderRadius[4],
-                      whiteSpace: 'nowrap',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = semanticColors.theme.primary200}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                  >
-                    Download as Excel
-                  </div>
-                </div>
-              )}
-            </div>
+            <DownloadButton
+              key="download"
+              options={[
+                {
+                  label: 'Download as PDF',
+                  onClick: () => window.open('/PDF.pdf', '_blank'),
+                },
+                {
+                  label: 'Download as Excel',
+                  onClick: () => window.open('https://docs.google.com/spreadsheets/d/1bviXCfE9z115ZbpHiBUdH9BPlVXj5648i_v9cYorydE/edit?gid=879068275#gid=879068275', '_blank'),
+                },
+              ]}
+            />
           ]}
         />
 

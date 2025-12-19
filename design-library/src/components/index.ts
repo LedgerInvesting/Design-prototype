@@ -5,6 +5,9 @@ export type { ButtonProps, ButtonVariant, ButtonColor, PrimaryColor, SmallColor,
 export { AppActionButton } from './AppActionButton';
 export type { AppActionButtonProps } from './AppActionButton';
 
+export { DownloadButton } from './DownloadButton';
+export type { DownloadButtonProps, DownloadOption } from './DownloadButton';
+
 export { InfoTooltip } from './InfoTooltip';
 export type { InfoTooltipProps, InfoTooltipSection } from './InfoTooltip';
 

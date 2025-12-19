@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout, PageHeader } from '@design-library/pages';
-import { Button, DashboardCard, ChartTooltip, Input, CustomScroll } from '@design-library/components';
+import { Button, DashboardCard, ChartTooltip, Input, CustomScroll, DownloadButton } from '@design-library/components';
 import { typography, borderRadius, useSemanticColors, shadows, spacing } from '@design-library/tokens';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { createPageNavigationHandler, createBreadcrumbs, type NavigationHandler } from '@design-library/utils/navigation';
@@ -84,7 +84,6 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const [isChart4MenuOpen, setIsChart4MenuOpen] = useState(false);
   const [isChart5MenuOpen, setIsChart5MenuOpen] = useState(false);
   const [isChart6MenuOpen, setIsChart6MenuOpen] = useState(false);
-  const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
   const [chart1MenuPosition, setChart1MenuPosition] = useState({ top: 0, left: 0 });
   const [chart2MenuPosition, setChart2MenuPosition] = useState({ top: 0, left: 0 });
   const [chart3MenuPosition, setChart3MenuPosition] = useState({ top: 0, left: 0 });
@@ -251,7 +250,6 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
   const chart4ButtonRef = useRef<HTMLDivElement>(null);
   const chart5ButtonRef = useRef<HTMLDivElement>(null);
   const chart6ButtonRef = useRef<HTMLDivElement>(null);
-  const downloadDropdownRef = useRef<HTMLDivElement>(null);
 
   // Refs for chart containers to measure width
   const chart1ContainerRef = useRef<HTMLDivElement>(null);
@@ -290,19 +288,16 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
       if (chart6MenuRef.current && !chart6MenuRef.current.contains(event.target as Node)) {
         setIsChart6MenuOpen(false);
       }
-      if (downloadDropdownRef.current && !downloadDropdownRef.current.contains(event.target as Node)) {
-        setIsDownloadDropdownOpen(false);
-      }
     };
 
-    if (isChart1MenuOpen || isChart2MenuOpen || isChart3MenuOpen || isChart4MenuOpen || isChart5MenuOpen || isChart6MenuOpen || isDownloadDropdownOpen) {
+    if (isChart1MenuOpen || isChart2MenuOpen || isChart3MenuOpen || isChart4MenuOpen || isChart5MenuOpen || isChart6MenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isChart1MenuOpen, isChart2MenuOpen, isChart3MenuOpen, isChart4MenuOpen, isChart5MenuOpen, isChart6MenuOpen, isDownloadDropdownOpen]);
+  }, [isChart1MenuOpen, isChart2MenuOpen, isChart3MenuOpen, isChart4MenuOpen, isChart5MenuOpen, isChart6MenuOpen]);
 
   // Track container widths for responsive charts
   useEffect(() => {
@@ -2201,110 +2196,26 @@ const AnalyticsTriangleDashboardContent: React.FC<AnalyticsTriangleDashboardProp
             showIcon={false}
             onClick={() => console.log('Triangle Settings clicked')}
           >
-            Triangle Settings
+            Settings
           </Button>,
           // Download Dropdown
-          <div key="download" ref={downloadDropdownRef} style={{ position: 'relative' }}>
-            <button
-              onClick={() => setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '8px',
-                padding: '8px 12px 8px 20px',
-                height: '44px',
-                minWidth: '120px',
-                backgroundColor: colors.blackAndWhite.black900,
-                border: 'none',
-                borderRadius: borderRadius[4],
-                cursor: 'pointer',
-                ...typography.styles.bodyL,
-                color: colors.blackAndWhite.white,
-              }}
-            >
-              <span>Download</span>
-              <div style={{
-                transform: isDownloadDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-              }}>
-                <ChevronDownExtraSmall color={colors.theme.primary700} />
-              </div>
-            </button>
-            {isDownloadDropdownOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                minWidth: '200px',
-                width: 'fit-content',
-                backgroundColor: colors.blackAndWhite.white,
-                border: 'none',
-                borderRadius: borderRadius[8],
-                marginTop: spacing[1],
-                zIndex: 1000,
-                boxShadow: shadows.medium,
-                padding: '10px',
-              }}>
-                <div
-                  onClick={() => {
-                    console.log('Download as .trib clicked');
-                    setIsDownloadDropdownOpen(false);
-                  }}
-                  style={{
-                    padding: '12px 10px',
-                    cursor: 'pointer',
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    borderRadius: borderRadius[4],
-                    whiteSpace: 'nowrap',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  Download as .trib
-                </div>
-                <div
-                  onClick={() => {
-                    console.log('Download as .csv clicked');
-                    setIsDownloadDropdownOpen(false);
-                  }}
-                  style={{
-                    padding: '12px 10px',
-                    cursor: 'pointer',
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    borderRadius: borderRadius[4],
-                    whiteSpace: 'nowrap',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  Download as .csv
-                </div>
-                <div
-                  onClick={() => {
-                    console.log('Download as .json clicked');
-                    setIsDownloadDropdownOpen(false);
-                  }}
-                  style={{
-                    padding: '12px 10px',
-                    cursor: 'pointer',
-                    ...typography.styles.bodyM,
-                    color: colors.blackAndWhite.black900,
-                    borderRadius: borderRadius[4],
-                    whiteSpace: 'nowrap',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.theme.primary200}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  Download as .json
-                </div>
-              </div>
-            )}
-          </div>
+          <DownloadButton
+            key="download"
+            options={[
+              {
+                label: 'Download as .trib',
+                onClick: () => console.log('Download as .trib clicked'),
+              },
+              {
+                label: 'Download as .csv',
+                onClick: () => console.log('Download as .csv clicked'),
+              },
+              {
+                label: 'Download as .json',
+                onClick: () => console.log('Download as .json clicked'),
+              },
+            ]}
+          />
         ]}
       />
 

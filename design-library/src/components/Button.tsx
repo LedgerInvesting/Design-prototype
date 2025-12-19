@@ -141,11 +141,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       border: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
       transition: 'all 0.2s ease',
-      fontFamily: typography.styles.bodyL.fontFamily.join(', '),
-      fontSize: typography.styles.bodyL.fontSize,
+      fontFamily: typography.fontFamily.mono.join(', '),
+      fontSize: '12px',
       fontWeight: typography.styles.bodyL.fontWeight,
       lineHeight: typography.styles.bodyL.lineHeight,
-      letterSpacing: typography.styles.bodyL.letterSpacing,
+      letterSpacing: typography.letterSpacing.widest,
+      textTransform: 'uppercase' as const,
+      whiteSpace: 'nowrap' as const,
     };
 
     switch (color) {
@@ -206,11 +208,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       border: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
       transition: 'all 0.2s ease',
-      fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+      fontFamily: typography.fontFamily.mono.join(', '),
       fontSize: typography.styles.bodyM.fontSize,
       fontWeight: typography.styles.bodyM.fontWeight,
       lineHeight: typography.styles.bodyM.lineHeight,
-      letterSpacing: typography.styles.bodyM.letterSpacing,
+      letterSpacing: typography.letterSpacing.widest,
+      textTransform: 'uppercase' as const,
+      whiteSpace: 'nowrap' as const,
     };
 
     switch (color) {
@@ -270,11 +274,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       border: `1px solid ${colors.theme.primary400}`,
       cursor: disabled ? 'not-allowed' : 'pointer',
       transition: 'all 0.2s ease',
-      fontFamily: typography.styles.bodyM.fontFamily.join(', '),
+      fontFamily: typography.fontFamily.mono.join(', '),
       fontSize: typography.styles.bodyM.fontSize,
       fontWeight: typography.styles.bodyM.fontWeight,
       lineHeight: typography.styles.bodyM.lineHeight,
-      letterSpacing: typography.styles.bodyM.letterSpacing,
+      letterSpacing: typography.letterSpacing.widest,
+      textTransform: 'uppercase' as const,
+      whiteSpace: 'nowrap' as const,
     };
 
     return {
@@ -298,12 +304,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       border: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
       transition: 'all 0.2s ease',
-      fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+      fontFamily: typography.fontFamily.mono.join(', '),
       fontSize: typography.styles.bodyS.fontSize,
       fontWeight: 600,
       lineHeight: typography.styles.bodyS.lineHeight,
-      letterSpacing: '1px', // 1px letter spacing
+      letterSpacing: typography.letterSpacing.widest,
       textTransform: 'uppercase' as const, // All caps
+      whiteSpace: 'nowrap' as const,
     };
 
     // Determine background and text color based on secondaryColor

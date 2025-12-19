@@ -609,7 +609,12 @@ export const ReportsCessionSummaryGeneration: React.FC<ReportsCessionSummaryGene
                   style={{ width: '20px', height: '17px', flexShrink: 0 }}
                 />
                 <span style={{
-                  ...typography.styles.bodyM,
+                  fontFamily: typography.fontFamily.mono.join(', '),
+                  fontSize: typography.styles.bodyS.fontSize,
+                  fontWeight: typography.styles.bodyS.fontWeight,
+                  lineHeight: typography.styles.bodyS.lineHeight,
+                  letterSpacing: typography.letterSpacing.widest,
+                  textTransform: 'uppercase',
                   color: semanticColors.blackAndWhite.black900
                 }}>
                   Import values from file

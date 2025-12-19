@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Layout } from '@design-library/pages';
-import { Button, DashboardCard, ChartTooltip, AppActionButton, Table } from '@design-library/components';
+import { Button, DashboardCard, ChartTooltip, AppActionButton, Table, DownloadButton } from '@design-library/components';
 import { Dropdown } from '@design-library/components/Dropdown';
 import { typography, borderRadius, shadows } from '@design-library/tokens';
 import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
