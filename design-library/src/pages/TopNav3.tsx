@@ -17,7 +17,7 @@ export interface TopNav3Props {
   activeTab?: string; // Currently active tab
   onTabChange?: (tabId: string) => void; // Tab change handler
   pageTitle?: string; // If provided, shows page title instead of tabs (for home/all transactions)
-  onSettingsClick?: () => void; // Settings button handler (navigates to transaction settings)
+  onTransactionSettingsClick?: () => void; // Transaction Settings button handler (navigates to transaction settings)
   className?: string;
   style?: React.CSSProperties;
 }
@@ -36,7 +36,7 @@ export const TopNav3: React.FC<TopNav3Props> = ({
   activeTab = 'dashboard',
   onTabChange,
   pageTitle,
-  onSettingsClick,
+  onTransactionSettingsClick,
   className,
   style,
 }) => {
@@ -300,9 +300,9 @@ export const TopNav3: React.FC<TopNav3Props> = ({
             )}
 
             {/* Settings Button - Navigate to transaction settings */}
-            {onSettingsClick && (
+            {onTransactionSettingsClick && (
               <button
-                onClick={onSettingsClick}
+                onClick={onTransactionSettingsClick}
                 style={{
                   display: 'flex',
                   alignItems: 'center',

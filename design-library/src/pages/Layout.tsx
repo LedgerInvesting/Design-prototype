@@ -58,7 +58,8 @@ export interface LayoutProps {
   onShareClick?: () => void;
   onUserMenuClick?: () => void;
   onManageAccountClick?: () => void;
-  onSettingsClick?: () => void;
+  onSettingsClick?: () => void; // User profile menu settings (opens prototype settings modal)
+  onTransactionSettingsClick?: () => void; // Transaction settings button in TopNav3 (navigates to transaction settings)
   appAction?: AppActionConfig; // Optional context-aware app action button
   showAskQuill?: boolean; // Show "Ask Quill" button on home page
   onAskQuillClick?: () => void;
@@ -104,6 +105,7 @@ export const Layout: React.FC<LayoutProps> = ({
   onUserMenuClick,
   onManageAccountClick,
   onSettingsClick,
+  onTransactionSettingsClick,
   appAction,
   showAskQuill = false,
   onAskQuillClick,
@@ -348,7 +350,7 @@ export const Layout: React.FC<LayoutProps> = ({
               pageTitle={pageTitle}
               activeTab={activeTab}
               onTabChange={onTabChange}
-              onSettingsClick={onSettingsClick}
+              onTransactionSettingsClick={onTransactionSettingsClick}
             />
           ) : useSideNav2 ? (
             <TopNav2
