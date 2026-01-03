@@ -179,6 +179,12 @@ export const TransactionBDXUpload: React.FC<TransactionBDXUploadProps> = ({
 
       // Most recent year (2025) - mix of statuses with mostly successful
       if (year === currentYear) {
+        // Determine number of missing months (1-8) based on transaction seed
+        const missingMonths = 1 + (seed % 8); // Random from 1 to 8
+
+        // All months start as success or have status
+        const allMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
         yearData.jan = 'success';
         yearData.feb = (seed % 3 === 0) ? 'attention' : 'success';
         yearData.mar = 'success';
@@ -188,9 +194,15 @@ export const TransactionBDXUpload: React.FC<TransactionBDXUploadProps> = ({
         yearData.jul = (seed % 7 === 0) ? 'attention' : 'success';
         yearData.aug = 'success';
         yearData.sep = (seed % 4 === 0) ? 'error' : ((seed % 2 === 0) ? 'progress' : 'success');
-        yearData.oct = 'add';
-        yearData.nov = 'add';
-        yearData.dec = 'add';
+        yearData.oct = 'success';
+        yearData.nov = 'success';
+        yearData.dec = 'success';
+
+        // Set the last N months to 'add' (working backwards from December)
+        for (let i = 0; i < missingMonths; i++) {
+          const monthIndex = allMonths.length - 1 - i;
+          yearData[allMonths[monthIndex]] = 'add';
+        }
       }
       // Previous years - all successful
       else {
