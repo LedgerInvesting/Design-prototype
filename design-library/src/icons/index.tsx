@@ -776,13 +776,30 @@ export const ValuationsSmall: React.FC<SmallIconProps> = ({
 
 // Medium Icons (22x22px) - Auto-generated from SVG files
 
-export const AddMedium: React.FC<MediumIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const AddMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path fillRule="evenodd" clipRule="evenodd" d="M9.8418 5.10535V10.1053H4.8418V12.1053H9.8418V17.1053H11.8418V12.1053H16.8418V10.1053H11.8418V5.10535H9.8418ZM11.8418 10.1053V12.1053H9.8418V10.1053H11.8418Z" fill={color}/>
     </svg>
+);
+
+export const AppsMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <rect x="4.98901" y="4.98889" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="4.98901" y="9.61279" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="4.98901" y="14.2368" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="9.61304" y="4.98889" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="9.61304" y="9.61279" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="9.61304" y="14.2368" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="14.2368" y="4.98889" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="14.2368" y="9.61279" width="2.77436" height="2.77436" fill={color}/>
+    <rect x="14.2368" y="14.2368" width="2.77436" height="2.77436" fill={color}/>
+  </svg>
 );
 
 export const AttachMedium: React.FC<MediumIconProps> = ({ 
@@ -1063,19 +1080,9 @@ export const HideShowSidebarMedium: React.FC<MediumIconProps> = ({
   color = 'currentColor',
   className
 }) => (
-  <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    {/* Sidebar rectangle (left box) */}
-    <rect x="1" y="2" width="5" height="12" rx="1" fill="white" stroke={color} strokeWidth="2"/>
-    {/* Right border line only */}
-    <line x1="17" y1="3" x2="17" y2="13" stroke={color} strokeWidth="2"/>
-    {/* Top border line */}
-    <line x1="6" y1="2" x2="16" y2="2" stroke={color} strokeWidth="2"/>
-    {/* Bottom border line */}
-    <line x1="6" y1="14" x2="16" y2="14" stroke={color} strokeWidth="2"/>
-    {/* Top right corner */}
-    <path d="M16 2 Q17 2 17 3" fill="none" stroke={color} strokeWidth="2"/>
-    {/* Bottom right corner */}
-    <path d="M17 13 Q17 14 16 14" fill="none" stroke={color} strokeWidth="2"/>
+  <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <rect x="1.5542" y="3.49896" width="14.8916" height="11.0021" rx="1" stroke={color} strokeWidth="2"/>
+    <path d="M7 3.02315L7 14.665" stroke={color} strokeWidth="2"/>
   </svg>
 );
 

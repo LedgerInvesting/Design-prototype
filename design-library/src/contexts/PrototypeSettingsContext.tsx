@@ -16,6 +16,7 @@ export interface PrototypeSettings {
   // UI Experiments Category
   uiExperiments: {
     sidenavTest: boolean;
+    transactionsView: boolean;
   };
 }
 
@@ -31,6 +32,7 @@ const defaultSettings: PrototypeSettings = {
   },
   uiExperiments: {
     sidenavTest: true, // True = AltNav (default), False = Navigation v1 (legacy)
+    transactionsView: false, // True = Transaction-centric view, False = App-based view (default)
   },
 };
 

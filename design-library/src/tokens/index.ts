@@ -66,8 +66,8 @@ export const typography = {
     // Headlines/Title
     headlineH1: {
       fontFamily: ['Bradford LL', 'serif'],
-      fontSize: '50px',
-      fontWeight: 400,
+      fontSize: '42px',
+      fontWeight: 500,
       lineHeight: 1.0,
       letterSpacing: '-1px',
     },

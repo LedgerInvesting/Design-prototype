@@ -444,27 +444,10 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
     { month: 'Nov 2024', paid: 30, reported: 78, mean: 92, outerBandBase: 82, outerBandHeight: 20, innerBandBase: 87, innerBandHeight: 10 },
     { month: 'Dec 2024', paid: 35, reported: 80, mean: 95, outerBandBase: 85, outerBandHeight: 20, innerBandBase: 90, innerBandHeight: 10 },
     { month: 'Jan 2025', paid: 60, reported: 80, mean: 98, outerBandBase: 88, outerBandHeight: 20, innerBandBase: 93, innerBandHeight: 10 },
-
-    // February 2025 - 2 valuations
-    { month: 'Feb 2025', paid: 63, reported: 83, mean: 99, outerBandBase: 89, outerBandHeight: 20, innerBandBase: 94, innerBandHeight: 10 },
     { month: 'Feb 2025', paid: 65, reported: 85, mean: 100, outerBandBase: 90, outerBandHeight: 20, innerBandBase: 95, innerBandHeight: 10 },
-
     { month: 'Mar 2025', paid: 70, reported: 88, mean: 102, outerBandBase: 92, outerBandHeight: 20, innerBandBase: 97, innerBandHeight: 10 },
-
-    // April 2025 - 4 valuations
-    { month: 'Apr 2025', paid: 72, reported: 89, mean: 103, outerBandBase: 93, outerBandHeight: 20, innerBandBase: 98, innerBandHeight: 10 },
-    { month: 'Apr 2025', paid: 74, reported: 90, mean: 104, outerBandBase: 94, outerBandHeight: 20, innerBandBase: 99, innerBandHeight: 10 },
-    { month: 'Apr 2025', paid: 76, reported: 91, mean: 105, outerBandBase: 95, outerBandHeight: 20, innerBandBase: 100, innerBandHeight: 10 },
     { month: 'Apr 2025', paid: 78, reported: 92, mean: 106, outerBandBase: 96, outerBandHeight: 20, innerBandBase: 101, innerBandHeight: 10 },
-
     { month: 'May 2025', paid: 80, reported: 93, mean: 107, outerBandBase: 97, outerBandHeight: 20, innerBandBase: 102, innerBandHeight: 10 },
-
-    // June 2025 - 6 valuations
-    { month: 'Jun 2025', paid: 82, reported: 94, mean: 108, outerBandBase: 98, outerBandHeight: 20, innerBandBase: 103, innerBandHeight: 10 },
-    { month: 'Jun 2025', paid: 84, reported: 95, mean: 109, outerBandBase: 99, outerBandHeight: 20, innerBandBase: 104, innerBandHeight: 10 },
-    { month: 'Jun 2025', paid: 86, reported: 96, mean: 110, outerBandBase: 100, outerBandHeight: 20, innerBandBase: 105, innerBandHeight: 10 },
-    { month: 'Jun 2025', paid: 88, reported: 97, mean: 111, outerBandBase: 101, outerBandHeight: 20, innerBandBase: 106, innerBandHeight: 10 },
-    { month: 'Jun 2025', paid: 90, reported: 98, mean: 112, outerBandBase: 102, outerBandHeight: 20, innerBandBase: 107, innerBandHeight: 10 },
     { month: 'Jun 2025', paid: 92, reported: 99, mean: 113, outerBandBase: 103, outerBandHeight: 20, innerBandBase: 108, innerBandHeight: 10 },
     
     // Future placeholder
@@ -768,11 +751,13 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
           }}>
             {/* Spacer divs matching finalChartData (all data points) */}
             {finalChartData.slice(0, -1).map((_, index) => (
-              <div key={`spacer-${index}`} style={{ flex: 1 }} />
+              <div key={`spacer-${index}`} style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0 }} />
             ))}
             {/* Pattern overlay for the last section only (the "New" section) */}
             <div style={{
-              flex: 1,
+              flexGrow: 1,
+              flexShrink: 0,
+              flexBasis: 0,
               background: `repeating-linear-gradient(
                 45deg,
                 ${colors.theme.primary450},
@@ -796,7 +781,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
         >
             <ComposedChart
               data={finalChartData}
-              margin={{ top: 50, right: (selectedPeriod === 'annual' || selectedPeriod === 'all-data') ? 40 : 50, left: 15, bottom: 30 }}
+              margin={{ top: 50, right: selectedPeriod === 'all-data' ? 40 : 50, left: 15, bottom: 30 }}
               style={{
                 overflow: 'visible',
                 outline: 'none',
@@ -923,7 +908,7 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
           position: 'absolute',
           top: '25px', // 30px from card header line
           left: '75px', // Keep borders aligned
-          right: selectedPeriod === 'annual' ? '40px' : (selectedPeriod === 'all-data' ? '40px' : '50px'), // Keep borders aligned
+          right: selectedPeriod === 'all-data' ? '40px' : '50px', // Keep borders aligned
           height: '55px', // More height for date + buttons
           display: 'flex',
           zIndex: 2
@@ -952,7 +937,14 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ onNavigateToPage }) => 
               <div
                 key={index}
                 style={{
-                  flex: selectedPeriod === 'complete' ? (hoveredIndex === index ? 3 : 0.5) : (selectedPeriod === 'all-data' && dataPoint.month === 'New' ? 0 : 1), // Minimal space for "New" in all-data view
+                  flexGrow: selectedPeriod === 'complete'
+                    ? (hoveredIndex === index ? 3 : 0.5)
+                    : selectedPeriod === 'all-data' && dataPoint.month === 'New'
+                      ? 0
+                      : 1, // All months including "New" get equal width in monthly/annual views
+                  flexShrink: 0, // Prevent shrinking to ensure equal widths
+                  flexBasis: 0, // Start from zero and grow equally
+                  width: 0, // Force width calculation by flex
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',

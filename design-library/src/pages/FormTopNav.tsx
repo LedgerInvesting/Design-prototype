@@ -1,14 +1,20 @@
 import React from 'react';
 import { Button, Status } from '../components';
 import { AppActionButton } from '../components/AppActionButton';
-import { colors, typography, spacing, borderRadius, shadows } from '../tokens';
-import { HideShowSidebarMedium } from '../icons';
+import { colors, typography, spacing, borderRadius, shadows, useSemanticColors } from '../tokens';
+import { HideShowSidebarMedium, CheckSmall } from '../icons';
 import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
 
 export interface AppActionConfig {
   app: 'marketplace' | 'reports' | 'analytics' | 'contracts';
   actionText: string;
   onClick: () => void;
+}
+
+export interface StepConfig {
+  label: string;
+  status: 'completed' | 'active' | 'disabled';
+  onClick?: () => void;
 }
 
 export interface FormTopNavProps {
@@ -25,6 +31,9 @@ export interface FormTopNavProps {
   appAction?: AppActionConfig; // Optional context-aware app action button
   className?: string;
   style?: React.CSSProperties;
+  tags?: React.ReactNode[]; // Flexible tags/pills beside title (replaces entryType and status when provided)
+  showSidebarToggle?: boolean; // Control sidebar toggle visibility (default: true)
+  stepper?: StepConfig[]; // Optional stepper configuration
 }
 
 export const FormTopNav: React.FC<FormTopNavProps> = ({
@@ -40,9 +49,13 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
   isSidebarCompact = false,
   appAction,
   className,
-  style
+  style,
+  tags,
+  showSidebarToggle = true,
+  stepper
 }) => {
   const { settings: prototypeSettings } = usePrototypeSettings();
+  const semanticColors = useSemanticColors();
   // Using same base container styles as default TopNav
   const containerStyles: React.CSSProperties = {
     display: 'flex',
@@ -138,69 +151,131 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
 
   return (
     <nav className={className} style={containerStyles}>
-      {/* Left Section - Sidebar Toggle + Title + Entry Type + Status */}
+      {/* Left Section - Title and Tags */}
       <div style={leftSectionStyles}>
-        {/* Sidebar Toggle Button */}
-        {onSidebarToggle && (
-          <>
-            <button
-              style={sidebarToggleButtonStyles}
-              onClick={onSidebarToggle}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }}
-              title="Toggle Sidebar"
-            >
-              <div style={{
-                width: '18px',
-                height: '18px',
-                padding: '1px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <HideShowSidebarMedium color={isSidebarCompact ? colors.blackAndWhite.black500 : colors.blackAndWhite.black900} />
-              </div>
-            </button>
-
-            {/* Separator */}
-            <div style={separatorStyles} />
-          </>
-        )}
-
         <span style={titleStyles}>{title}</span>
-        {/* Entry Type Pill */}
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '3px',
-          padding: '0 5px',
-          backgroundColor: colors.reports.dynamic.blue200,
-          borderRadius: borderRadius[4],
-          height: '20px',
-          fontFamily: typography.styles.bodyS.fontFamily.join(', '),
-          fontSize: typography.styles.bodyS.fontSize,
-          fontWeight: typography.styles.bodyS.fontWeight,
-          lineHeight: typography.styles.bodyS.lineHeight,
-          letterSpacing: typography.letterSpacing.wide,
-          color: colors.blackAndWhite.black700,
-          whiteSpace: 'nowrap',
-        }}>
-          {entryType}
-        </div>
-        {showStatus && (
-          <Status
-            variant={statusVariant}
-            size="small"
-          >
-            {statusText}
-          </Status>
-        )}
+
+        {/* Flexible tags if provided, otherwise default entryType and status */}
+        {tags ? (
+          <>
+            {tags.map((tag, index) => (
+              <React.Fragment key={index}>{tag}</React.Fragment>
+            ))}
+          </>
+        ) : !stepper ? (
+          <>
+            {/* Entry Type Pill */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '3px',
+              padding: '0 5px',
+              backgroundColor: colors.reports.dynamic.blue200,
+              borderRadius: borderRadius[4],
+              height: '20px',
+              fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+              fontSize: typography.styles.bodyS.fontSize,
+              fontWeight: typography.styles.bodyS.fontWeight,
+              lineHeight: typography.styles.bodyS.lineHeight,
+              letterSpacing: typography.letterSpacing.wide,
+              color: colors.blackAndWhite.black700,
+              whiteSpace: 'nowrap',
+            }}>
+              {entryType}
+            </div>
+            {showStatus && (
+              <Status
+                variant={statusVariant}
+                size="small"
+              >
+                {statusText}
+              </Status>
+            )}
+          </>
+        ) : null}
       </div>
+
+      {/* Center Section - Stepper (if provided) */}
+      {stepper && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}>
+          {stepper.map((step, index) => (
+            <React.Fragment key={index}>
+              {/* Step */}
+              <div
+                onClick={step.onClick}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: step.onClick ? 'pointer' : 'default',
+                  opacity: 1,
+                  transition: 'opacity 0.15s ease',
+                }}
+                onMouseEnter={(e) => {
+                  if (step.onClick) {
+                    e.currentTarget.style.opacity = '0.7';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '1';
+                }}
+              >
+                {/* Check icon for completed steps */}
+                {step.status === 'completed' && (
+                  <div style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    backgroundColor: colors.analytics.green600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <CheckSmall color={colors.blackAndWhite.black900} />
+                    </div>
+                  </div>
+                )}
+
+                {/* Step label */}
+                <span style={{
+                  ...typography.styles.bodyM,
+                  color: step.status === 'disabled'
+                    ? colors.blackAndWhite.black300
+                    : colors.blackAndWhite.black700,
+                  whiteSpace: 'nowrap',
+                }}>
+                  {step.label}
+                </span>
+              </div>
+
+              {/* Arrow between steps (not after last step) */}
+              {index < stepper.length - 1 && (
+                <span style={{
+                  ...typography.styles.bodyM,
+                  color: semanticColors.theme.primary450,
+                }}>
+                  →
+                </span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      )}
 
       {/* Right Section: Progress or App Action + Button */}
       <div style={rightSectionStyles}>
@@ -211,15 +286,15 @@ export const FormTopNav: React.FC<FormTopNavProps> = ({
             actionText={appAction.actionText}
             onClick={appAction.onClick}
           />
-        ) : (
-          /* Otherwise show progress bar */
+        ) : showSidebarToggle ? (
+          /* Show progress bar only when sidebar toggle is visible (not third variation) */
           <div style={progressContainerStyles}>
             <div style={progressBarStyles}>
               <div style={progressFillStyles} />
             </div>
             <span style={progressTextStyles}>{progress}% Complete</span>
           </div>
-        )}
+        ) : null}
 
         <Button
           variant="primary"

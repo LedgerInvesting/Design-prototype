@@ -3,6 +3,12 @@
 
 export type PageType =
   | 'home'
+  | 'all-transactions'
+  | 'notifications'
+  | 'apps'
+  | 'transaction-detail'
+  | 'transaction-dashboard'
+  | 'transaction-upload-settings'
   | 'reports-explorer'
   | 'reports-insights-explorer'
   | 'reports-insights-program-details'
@@ -14,6 +20,7 @@ export type PageType =
   | 'reports-cell-level-summary'
   | 'reports-bdx-upload'
   | 'reports-bdx-detail-mapping'
+  | 'transaction-bdx-aggregated-mapping'
   | 'reports-cession-summary-generation'
   | 'reports-cession-statement'
   | 'reports-contracts-explorer'
@@ -57,6 +64,11 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
     // Valid page types
     const validPageTypes: PageType[] = [
       'home',
+      'all-transactions',
+      'notifications',
+      'apps',
+      'transaction-detail',
+      'transaction-dashboard',
       'reports-explorer',
       'reports-insights-explorer',
       'reports-insights-program-details',
@@ -68,6 +80,7 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
       'reports-cell-level-summary',
       'reports-bdx-upload',
       'reports-bdx-detail-mapping',
+      'transaction-bdx-aggregated-mapping',
       'reports-cession-summary-generation',
       'reports-cession-statement',
       'reports-contracts-explorer',
@@ -92,6 +105,16 @@ export const createNavigationHandler = (onNavigateToPage: NavigationHandler) => 
     // Handle Home navigation
     if (itemId === 'home') {
       onNavigateToPage('home');
+    }
+    // Handle transaction-centric navigation items
+    else if (itemId === 'all-transactions') {
+      onNavigateToPage('all-transactions');
+    }
+    else if (itemId === 'notifications') {
+      onNavigateToPage('notifications');
+    }
+    else if (itemId === 'apps') {
+      onNavigateToPage('apps');
     }
     // Handle Analytics navigation
     else if (itemId === 'analytics') {
@@ -161,6 +184,35 @@ export const createPageNavigationHandler = (
         console.log('Already on home page');
       } else {
         onNavigateToPage('home');
+      }
+    }
+    // Handle transaction-centric navigation items
+    else if (itemId === 'all-transactions') {
+      if (currentPage === 'all-transactions') {
+        console.log('Already on all transactions page');
+      } else {
+        onNavigateToPage('all-transactions');
+      }
+    }
+    else if (itemId === 'notifications') {
+      if (currentPage === 'notifications') {
+        console.log('Already on notifications page');
+      } else {
+        onNavigateToPage('notifications');
+      }
+    }
+    else if (itemId === 'apps') {
+      if (currentPage === 'apps') {
+        console.log('Already on apps page');
+      } else {
+        onNavigateToPage('apps');
+      }
+    }
+    else if (itemId === 'transaction-dashboard') {
+      if (currentPage === 'transaction-dashboard') {
+        console.log('Already on transaction dashboard page');
+      } else {
+        onNavigateToPage('transaction-dashboard');
       }
     }
     // Handle Analytics navigation

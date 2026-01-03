@@ -878,6 +878,8 @@ export interface TableBodyProps {
   emptyMessage?: string;
   /** Callback when a group header is clicked (receives visible row index) */
   onGroupToggle?: (rowIndex: number) => void;
+  /** Callback when a row is clicked (receives row data and index) */
+  onRowClick?: (row: TableRow, rowIndex: number) => void;
 }
 
 /**
@@ -896,6 +898,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
   data,
   emptyMessage = 'No data available',
   onGroupToggle,
+  onRowClick,
 }) => {
   const colors = useSemanticColors();
 
@@ -1146,7 +1149,13 @@ export const TableBody: React.FC<TableBodyProps> = ({
         const rowPaddingLeft = row.isGroupChild ? '22px' : '0';
 
         return (
-          <tr key={rowIndex}>
+          <tr
+            key={rowIndex}
+            onClick={() => onRowClick && !row.isGroup && onRowClick(row, rowIndex)}
+            style={{
+              cursor: onRowClick && !row.isGroup ? 'pointer' : 'default'
+            }}
+          >
             {columns.map((column, columnIndex) => {
               const isActionColumn = column.cellType === 'action';
 
@@ -1385,6 +1394,7 @@ export interface TableProps {
   headerActions?: TableHeaderAction[];
   paginationItemLabel?: string;
   className?: string;
+  onRowClick?: (row: TableRow, rowIndex: number) => void;
 }
 
 export const Table: React.FC<TableProps> = ({
@@ -1411,6 +1421,7 @@ export const Table: React.FC<TableProps> = ({
   headerActions = [],
   paginationItemLabel = 'valuations',
   className = '',
+  onRowClick,
 }) => {
   const colors = useSemanticColors();
   const [internalSortState, setInternalSortState] = useState<SortState>(sortState);
@@ -1754,6 +1765,7 @@ export const Table: React.FC<TableProps> = ({
             data={sortedData}
             emptyMessage={emptyMessage}
             onGroupToggle={onGroupToggle}
+            onRowClick={onRowClick}
           />
         </table>
       </div>

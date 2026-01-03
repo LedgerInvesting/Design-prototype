@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TopNav, TopNav2, Sidebar, SideNav2, FormTopNav } from './';
+import { TopNav, TopNav2, TopNav3, Sidebar, SideNav2, SideNav3, FormTopNav } from './';
 import type { BreadcrumbItem, AppActionConfig } from './TopNav';
 import { colors, typography } from '../tokens';
 import { useSettings } from '../contexts';
@@ -46,6 +46,7 @@ export interface LayoutProps {
   tabs?: React.ReactNode; // Optional tabs component to render between TopNav and content
   onNavigate?: (itemId: string, subitemId?: string, pageType?: string) => void;
   onInboxClick?: () => void;
+  onNewTransactionClick?: () => void; // Handler for New Transaction button in SideNav3
   maxWidth?: string; // For form layouts
 
   // Navigation mode props (regular TopNav)
@@ -61,6 +62,9 @@ export interface LayoutProps {
   appAction?: AppActionConfig; // Optional context-aware app action button
   showAskQuill?: boolean; // Show "Ask Quill" button on home page
   onAskQuillClick?: () => void;
+  pageTitle?: string; // For TopNav3: Shows page title instead of tabs (for home/all transactions)
+  activeTab?: string; // For TopNav3: Currently active tab
+  onTabChange?: (tabId: string) => void; // For TopNav3: Tab change handler
 
   // Form mode props (FormTopNav)
   formMode?: boolean;
@@ -73,6 +77,9 @@ export interface LayoutProps {
   onBackClick?: () => void;
   backButtonText?: string; // Optional custom text for back button (default: "Back to Dashboard")
   isSubPage?: boolean; // Whether the current page is a detail/sub page (shows back button)
+  formTags?: React.ReactNode[]; // Flexible tags/pills beside title (replaces entryType and status when provided)
+  showSidebarToggle?: boolean; // Control sidebar toggle visibility in FormTopNav (default: true)
+  stepper?: import('./FormTopNav').StepConfig[]; // Optional stepper configuration for FormTopNav
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -84,6 +91,7 @@ export const Layout: React.FC<LayoutProps> = ({
   tabs,
   onNavigate,
   onInboxClick,
+  onNewTransactionClick,
   maxWidth = '1200px',
 
   // Navigation mode props
@@ -99,6 +107,9 @@ export const Layout: React.FC<LayoutProps> = ({
   appAction,
   showAskQuill = false,
   onAskQuillClick,
+  pageTitle,
+  activeTab,
+  onTabChange,
 
   // Form mode props
   formMode = false,
@@ -111,10 +122,14 @@ export const Layout: React.FC<LayoutProps> = ({
   onBackClick,
   backButtonText,
   isSubPage = false, // Manual override - if not provided, will auto-detect
+  formTags,
+  showSidebarToggle = true,
+  stepper,
 }) => {
   // Get prototype settings
   const settings = useSettings();
   const useSideNav2 = settings.uiExperiments.sidenavTest;
+  const useTransactionsView = settings.uiExperiments.transactionsView;
 
   // Auto-detect if this is a sub-page based on pageType (unless manually overridden)
   const isActuallySubPage = isSubPage || (pageType ? detectSubPage(pageType as PageType) : false);
@@ -232,7 +247,32 @@ export const Layout: React.FC<LayoutProps> = ({
         zIndex: 1000,
         transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
       }}>
-        {useSideNav2 ? (
+        {useTransactionsView ? (
+          <SideNav3
+            onNavigate={onNavigate || (() => {})}
+            onInboxClick={onInboxClick || (() => {})}
+            onHomeClick={() => {
+              // Navigate to home when Home/Korra logo is clicked
+              if (onNavigate) {
+                onNavigate('home');
+              }
+            }}
+            selectedItem={selectedSidebarItem}
+            selectedSubitem={selectedSidebarSubitem}
+            currentPageType={pageType}
+            onHoverChange={setIsSidebarHovered}
+            isCompact={isCompact}
+            userName={userName}
+            userInitials={userInitials}
+            profileColor={profileColor}
+            onManageAccountClick={onManageAccountClick}
+            onSettingsClick={handleSettingsClick}
+            isSubPage={isActuallySubPage}
+            onBackClick={onBackClick}
+            onNewTransactionClick={onNewTransactionClick}
+            onSidebarToggle={handleSidebarToggle}
+          />
+        ) : useSideNav2 ? (
           <SideNav2
             onNavigate={onNavigate || (() => {})}
             onInboxClick={onInboxClick || (() => {})}
@@ -293,6 +333,21 @@ export const Layout: React.FC<LayoutProps> = ({
               onSidebarToggle={handleSidebarToggle}
               isSidebarCompact={isCompact}
               appAction={appAction}
+              tags={formTags}
+              showSidebarToggle={showSidebarToggle}
+              stepper={stepper}
+            />
+          ) : useTransactionsView ? (
+            <TopNav3
+              showShare={showShare}
+              onShareClick={onShareClick || (() => alert('Share clicked'))}
+              onNavigate={onNavigate}
+              appAction={appAction}
+              showAskQuill={showAskQuill}
+              onAskQuillClick={onAskQuillClick}
+              pageTitle={pageTitle}
+              activeTab={activeTab}
+              onTabChange={onTabChange}
             />
           ) : useSideNav2 ? (
             <TopNav2
@@ -401,6 +456,19 @@ export const Layout: React.FC<LayoutProps> = ({
                       onNavigate('home');
                     }
                   }
+                }}
+              />
+
+              <Selector
+                variant="checkbox"
+                label="Transactions view"
+                checked={prototypeSettings.uiExperiments.transactionsView}
+                onChange={(checked) => {
+                  updateSetting('uiExperiments', 'transactionsView', checked);
+                  // Close modal and reload when toggling
+                  setIsSettingsModalOpen(false);
+                  // Reload to apply changes
+                  window.location.reload();
                 }}
               />
             </div>

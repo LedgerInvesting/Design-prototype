@@ -8,7 +8,7 @@ import { DocumentMedium, CloseSmall, CloseMedium } from '@design-library/icons';
 
 interface ReportsBDXDetailMappingProps {
   onNavigateToPage?: (page: string, data?: any) => void;
-  transactionData?: { transactionName?: string };
+  transactionData?: { transactionName?: string; dataDetailLevel?: string };
 }
 
 interface UploadedFile {
@@ -26,8 +26,9 @@ export const ReportsBDXDetailMapping: React.FC<ReportsBDXDetailMappingProps> = (
 
   const transactionName = transactionData?.transactionName || 'Commercial Auto Specialty Lines Q1';
 
-  // Determine if this is detail or aggregated configuration
-  const isDetailMapping = transactionName.toLowerCase().includes('commercial auto');
+  // Determine if this is detail or aggregated configuration from the passed data
+  const dataDetailLevel = transactionData?.dataDetailLevel || 'detail';
+  const isDetailMapping = dataDetailLevel.toLowerCase() === 'detail';
   const configurationType = isDetailMapping ? 'detail' : 'aggregated';
 
   const handleFileSelect = (file: File) => {
@@ -166,6 +167,7 @@ export const ReportsBDXDetailMapping: React.FC<ReportsBDXDetailMappingProps> = (
         type: 'Program',
         path: transactionName,
         source: 'bdx-upload',
+        flowType: 'detail',
         financialData: financialData
       });
     }
@@ -426,7 +428,7 @@ export const ReportsBDXDetailMapping: React.FC<ReportsBDXDetailMappingProps> = (
               <span style={{ color: colors.blackAndWhite.black500 }}> Data layout - </span>
               <span style={{ color: colors.blackAndWhite.black900 }}>Snapshot</span>
               <span style={{ color: colors.blackAndWhite.black500 }}> Data detail level - </span>
-              <span style={{ color: colors.blackAndWhite.black900 }}>Detail</span>
+              <span style={{ color: colors.blackAndWhite.black900 }}>{configurationType.charAt(0).toUpperCase() + configurationType.slice(1)}</span>
             </div>
 
             {/* White inner box */}
@@ -539,36 +541,15 @@ export const ReportsBDXDetailMapping: React.FC<ReportsBDXDetailMappingProps> = (
       color: colors.blackAndWhite.black700,
       whiteSpace: 'nowrap' as const,
     }}>
-      {configurationType === 'detail' ? 'Detail' : 'Aggregated'}
+      {configurationType.charAt(0).toUpperCase() + configurationType.slice(1)}
     </div>
-  ];
-
-  // Stepper configuration
-  const stepper = [
-    {
-      label: 'Upload file',
-      status: 'active' as const,
-      onClick: () => {} // Current page, no action needed
-    },
-    {
-      label: 'Cession statement',
-      status: 'disabled' as const
-    },
-    {
-      label: 'Cash settlement',
-      status: 'disabled' as const
-    },
-    {
-      label: 'Summary',
-      status: 'disabled' as const
-    },
   ];
 
   return (
     <ThemeProvider initialTheme="reports">
       <Layout
         formMode={true}
-        formTitle="BDX UPLOAD"
+        formTitle="BDX upload flow"
         formTags={formTags}
         showSidebarToggle={false}
         backButtonText="Close"
@@ -576,35 +557,9 @@ export const ReportsBDXDetailMapping: React.FC<ReportsBDXDetailMappingProps> = (
         selectedSidebarItem="reports"
         selectedSidebarSubitem="bdx-upload"
         onNavigate={createPageNavigationHandler(onNavigateToPage || (() => { }), 'reports-bdx-detail-mapping')}
-        stepper={stepper}
         onBackClick={() => {
-          // Set the active tab to bdx-upload in sessionStorage
-          if (typeof window !== 'undefined') {
-            const storedTransaction = sessionStorage.getItem('currentTransaction');
-            if (storedTransaction) {
-              try {
-                const transaction = JSON.parse(storedTransaction);
-                const savedTabs = sessionStorage.getItem('transactionTabs');
-                let tabsMap: { [key: string]: string } = {};
-
-                if (savedTabs) {
-                  try {
-                    tabsMap = JSON.parse(savedTabs);
-                  } catch (e) {
-                    console.error('Error parsing transaction tabs:', e);
-                  }
-                }
-
-                tabsMap[transaction.id] = 'bdx-upload';
-                sessionStorage.setItem('transactionTabs', JSON.stringify(tabsMap));
-              } catch (e) {
-                console.error('Error setting active tab:', e);
-              }
-            }
-          }
-
-          // Navigate back to transaction dashboard
-          onNavigateToPage?.('transaction-dashboard');
+          // Navigate back to transaction dashboard (will open BDX Upload tab)
+          onNavigateToPage?.('transaction-dashboard', transactionData);
         }}
       >
         <PageContent />
