@@ -348,6 +348,7 @@ export const Layout: React.FC<LayoutProps> = ({
               pageTitle={pageTitle}
               activeTab={activeTab}
               onTabChange={onTabChange}
+              onSettingsClick={onSettingsClick}
             />
           ) : useSideNav2 ? (
             <TopNav2

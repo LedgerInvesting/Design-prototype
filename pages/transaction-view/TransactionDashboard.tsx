@@ -1035,6 +1035,10 @@ export const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           onNavigateToPage('transaction-dashboard');
         }
       }}
+      onSettingsClick={() => {
+        console.log('Settings clicked - navigating to transaction settings');
+        onNavigateToPage('reports-new-transaction-form');
+      }}
     >
       {/* Tab Content - Dynamic based on active tab */}
       {renderTabContent()}

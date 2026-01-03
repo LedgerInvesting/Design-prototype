@@ -938,7 +938,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
         // For action cells, expect the value to be an ActionType string
         if (typeof value === 'string') {
           // Use the value as actionType if it's a valid ActionType, otherwise use column default
-          const validActionTypes = ['upload', 'validate', 'generate', 'setup', 'download', 'add-data', 'run-valuation'];
+          const validActionTypes = ['upload', 'validate', 'generate', 'setup', 'download', 'add-data', 'run-valuation', 'open'];
           const actionType = validActionTypes.includes(value) ? value as ActionType : (column.actionType || 'upload');
           return (
             <div data-cell-type="action" style={{ cursor: 'pointer' }}>
@@ -988,6 +988,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
             'ready': 'ready',
             'processing': 'processing',
             'error': 'error',
+            'open': 'done',
           };
           const statusType = statusMap[value.toLowerCase()] || 'ready';
           const alignment = column.align || 'left'; // Default to left alignment for status cells

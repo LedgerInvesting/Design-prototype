@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { colors, typography, spacing, borderRadius, shadows } from '../tokens';
+import { colors, typography, spacing, borderRadius, shadows, useSemanticColors } from '../tokens';
 import { Button } from '../components/Button';
 import { AppActionButton } from '../components/AppActionButton';
 import { Tabs } from '../components/Tabs';
 import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
 import type { AppActionConfig } from './TopNav';
+import { ConfigSmall } from '../icons';
 
 export interface TopNav3Props {
   showShare?: boolean;
@@ -16,6 +17,7 @@ export interface TopNav3Props {
   activeTab?: string; // Currently active tab
   onTabChange?: (tabId: string) => void; // Tab change handler
   pageTitle?: string; // If provided, shows page title instead of tabs (for home/all transactions)
+  onSettingsClick?: () => void; // Settings button handler (navigates to transaction settings)
   className?: string;
   style?: React.CSSProperties;
 }
@@ -34,10 +36,12 @@ export const TopNav3: React.FC<TopNav3Props> = ({
   activeTab = 'dashboard',
   onTabChange,
   pageTitle,
+  onSettingsClick,
   className,
   style,
 }) => {
   const { settings: prototypeSettings } = usePrototypeSettings();
+  const semanticColors = useSemanticColors();
 
   // Define tabs
   const tabs = [
@@ -293,6 +297,40 @@ export const TopNav3: React.FC<TopNav3Props> = ({
                   Ask Quill
                 </button>
               </div>
+            )}
+
+            {/* Settings Button - Navigate to transaction settings */}
+            {onSettingsClick && (
+              <button
+                onClick={onSettingsClick}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 12px',
+                  backgroundColor: colors.blackAndWhite.white,
+                  border: `1px solid ${semanticColors.theme.primary400}`,
+                  borderRadius: borderRadius[8],
+                  cursor: 'pointer',
+                  fontFamily: typography.styles.navM.fontFamily.join(', '),
+                  fontSize: typography.styles.navM.fontSize,
+                  fontWeight: typography.styles.navM.fontWeight,
+                  lineHeight: typography.styles.navM.lineHeight,
+                  letterSpacing: typography.letterSpacing.widest,
+                  textTransform: 'uppercase',
+                  color: colors.blackAndWhite.black700,
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.blackAndWhite.black50;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.blackAndWhite.white;
+                }}
+              >
+                <ConfigSmall color={colors.blackAndWhite.black700} />
+                Settings
+              </button>
             )}
           </>
         )}

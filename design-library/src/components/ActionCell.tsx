@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { typography, borderRadius, shadows, useSemanticColors, colors as staticColors } from '../tokens';
 import { CheckSmall, UploadSmall, ConfigSmall, CalculatorSmall, DownloadSmall, AddSmall, PlaySmall } from '../icons';
 
-export type ActionType = 'upload' | 'validate' | 'generate' | 'setup' | 'download' | 'add-data' | 'run-valuation' | 'custom';
+export type ActionType = 'upload' | 'validate' | 'generate' | 'setup' | 'download' | 'add-data' | 'run-valuation' | 'open' | 'custom';
 
 interface ActionConfig {
   icon: React.ReactNode;
@@ -86,6 +86,10 @@ export const ActionCell: React.FC<ActionCellProps> = ({
       icon: <PlaySmall color={colors.success.textAndStrokes} />,
       text: 'Run valuation'
     },
+    'open': {
+      icon: <PlaySmall color={colors.success.textAndStrokes} />,
+      text: 'Open'
+    },
     custom: {
       icon: customIcon || <AddSmall color={colors.success.textAndStrokes} />,
       text: customText || 'Action'
@@ -121,7 +125,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   // Determine icon background color
   const getIconBackgroundColor = () => {
     if (customIconBg) return customIconBg;
-    if (actionType === 'upload' || actionType === 'add-data' || actionType === 'run-valuation') {
+    if (actionType === 'upload' || actionType === 'add-data' || actionType === 'run-valuation' || actionType === 'open') {
       return '#C6FFC1'; // Light green
     }
     return staticColors.reports.blue500; // Blue for others

@@ -372,7 +372,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: tx.expiry_date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
       premium: tx.premium ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(tx.premium) : 'N/A',
       status: tx.transaction_status.charAt(0).toUpperCase() + tx.transaction_status.slice(1),
-      actions: tx.transaction_status === 'active' ? 'upload' : tx.transaction_status === 'pending' ? 'validate' : tx.transaction_status === 'cancelled' ? 'generate' : 'setup',
+      actions: 'open',
     }));
   };
 
@@ -394,7 +394,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$1,245,000',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Red Worker\'s Comp 2021',
@@ -404,7 +404,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$890,500',
       status: 'Pending',
-      actions: 'validate',
+      actions: 'open',
     },
     {
       transactionName: 'Green General Liability 2022',
@@ -414,7 +414,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '06/30/2024',
       premium: '$567,200',
       status: 'Cancelled',
-      actions: 'generate',
+      actions: 'open',
     },
     {
       transactionName: 'Yellow Agriculture 2023',
@@ -424,7 +424,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$2,100,000',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Black Aviation 2024',
@@ -434,7 +434,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$430,750',
       status: 'Draft',
-      actions: 'setup',
+      actions: 'open',
     },
     {
       transactionName: 'White Cyber 2025',
@@ -444,7 +444,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$1,850,000',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Purple Commercial Auto 2021',
@@ -454,7 +454,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$750,300',
       status: 'Pending',
-      actions: 'validate',
+      actions: 'open',
     },
     {
       transactionName: 'Silver Worker\'s Comp 2024',
@@ -464,7 +464,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$1,320,400',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Gold General Liability 2020',
@@ -474,7 +474,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$995,600',
       status: 'Draft',
-      actions: 'setup',
+      actions: 'open',
     },
     {
       transactionName: 'Pink Agriculture 2025',
@@ -484,7 +484,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$2,450,000',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Orange Aviation 2022',
@@ -494,7 +494,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$678,900',
       status: 'Pending',
-      actions: 'validate',
+      actions: 'open',
     },
     {
       transactionName: 'Teal Cyber 2023',
@@ -504,7 +504,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$445,200',
       status: 'Cancelled',
-      actions: 'generate',
+      actions: 'open',
     },
     {
       transactionName: 'Brown Commercial Auto 2025',
@@ -514,7 +514,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2025',
       premium: '$1,675,000',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Cyan Worker\'s Comp 2022',
@@ -524,7 +524,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$923,400',
       status: 'Pending',
-      actions: 'validate',
+      actions: 'open',
     },
     {
       transactionName: 'Maroon General Liability 2024',
@@ -534,7 +534,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$1,234,567',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Indigo Agriculture 2021',
@@ -544,7 +544,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$756,890',
       status: 'Draft',
-      actions: 'setup',
+      actions: 'open',
     },
     {
       transactionName: 'Violet Aviation 2020',
@@ -554,7 +554,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$2,890,000',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Grey Cyber 2021',
@@ -564,7 +564,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$1,445,600',
       status: 'Pending',
-      actions: 'validate',
+      actions: 'open',
     },
     {
       transactionName: 'Navy Commercial Auto 2023',
@@ -574,7 +574,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$987,654',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Coral Worker\'s Comp 2020',
@@ -584,7 +584,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$654,321',
       status: 'Cancelled',
-      actions: 'generate',
+      actions: 'open',
     },
     {
       transactionName: 'Mint General Liability 2025',
@@ -594,7 +594,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2025',
       premium: '$1,876,543',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Beige Agriculture 2024',
@@ -604,7 +604,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$543,210',
       status: 'Draft',
-      actions: 'setup',
+      actions: 'open',
     },
     {
       transactionName: 'Turquoise Aviation 2023',
@@ -614,7 +614,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$2,123,456',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Lavender Cyber 2022',
@@ -624,7 +624,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$876,543',
       status: 'Pending',
-      actions: 'validate',
+      actions: 'open',
     },
     {
       transactionName: 'Magenta Commercial Auto 2024',
@@ -634,7 +634,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$1,567,890',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Olive Worker\'s Comp 2023',
@@ -644,7 +644,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$789,123',
       status: 'Draft',
-      actions: 'setup',
+      actions: 'open',
     },
     {
       transactionName: 'Peach General Liability 2021',
@@ -654,7 +654,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$1,234,890',
       status: 'Cancelled',
-      actions: 'generate',
+      actions: 'open',
     },
     {
       transactionName: 'Bronze Agriculture 2020',
@@ -664,7 +664,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$456,789',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Scarlet Aviation 2025',
@@ -674,7 +674,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2025',
       premium: '$3,456,789',
       status: 'Active',
-      actions: 'upload',
+      actions: 'open',
     },
     {
       transactionName: 'Charcoal Cyber 2024',
@@ -684,7 +684,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       expiryDate: '12/31/2024',
       premium: '$2,345,678',
       status: 'Pending',
-      actions: 'validate',
+      actions: 'open',
     }
   ];
 
@@ -785,29 +785,19 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ onNavigateToPage })
       onAction: (actionType: string, text: string, rowData?: any) => {
         console.log('onAction called:', { actionType, text, rowData });
 
-        if (actionType === 'upload' && rowData) {
-          console.log('Upload clicked for row:', rowData);
+        // All actions now navigate to transaction dashboard
+        if (rowData && onNavigateToPage) {
+          console.log('Open clicked for row:', rowData);
+          console.log('Navigating to Transaction Dashboard with data:', {
+            transactionName: rowData.transactionName,
+            cedingCompany: rowData.cedingCompany,
+            reinsurerName: rowData.reinsurerName,
+          });
 
-          if (onNavigateToPage) {
-            console.log('Navigating to BDX Upload with data:', {
-              transactionName: rowData.transactionName,
-              cedingCompany: rowData.cedingCompany,
-              reinsurerName: rowData.reinsurerName,
-            });
-
-            // Pass transaction data to BDX Upload page
-            onNavigateToPage('reports-bdx-upload', {
-              transactionName: rowData.transactionName,
-              cedingCompany: rowData.cedingCompany,
-              reinsurerName: rowData.reinsurerName,
-            });
-          } else {
-            console.warn('Missing onNavigateToPage');
-          }
-        } else if (actionType === 'setup') {
-          onNavigateToPage && onNavigateToPage('reports-new-transaction-form');
+          // Navigate to transaction dashboard
+          onNavigateToPage('transaction-dashboard');
         } else {
-          console.log('Other action type:', actionType);
+          console.warn('Missing rowData or onNavigateToPage');
         }
       },
     },
