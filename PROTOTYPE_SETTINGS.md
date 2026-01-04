@@ -288,6 +288,69 @@ const MyTable = () => {
 
 2. **React DevTools**: Look for `PrototypeSettingsContext.Provider` in component tree
 
+## 🔗 URL-Based Settings Sharing
+
+### Overview
+You can now share direct links to the prototype with specific settings pre-enabled using URL parameters. This eliminates the need to send manual instructions for enabling settings.
+
+### How It Works
+
+**URL Parameter Format:**
+```
+http://localhost:5173/?transactionsView=true#home
+http://localhost:5173/?transactionsView=true&showExtraCardButtons=true#transaction-detail
+```
+
+**Supported Values:**
+- `true` or `1` = Enable setting
+- `false` or `0` = Disable setting
+
+**Available Settings:**
+- `transactionsView` - Enable transaction-centric view
+- `sidenavTest` - Enable AltNav layout
+- `showExtraCardButtons` - Show integration buttons
+- `enableAdvancedFilters` - Enable advanced filtering
+- `showIntegrationBadges` - Display integration badges
+- `useEnhancedNavigation` - Activate enhanced navigation
+
+### Using the Copy Link Feature
+
+1. Open prototype settings (click user icon → Settings)
+2. Configure your desired settings using the checkboxes
+3. Click **"Copy Link with Settings"** button
+4. Share the copied URL - recipients will see the prototype with your exact settings
+
+**Priority Order:**
+1. URL parameters (highest priority - override everything)
+2. localStorage (saved settings from previous sessions)
+3. Default settings (fallback)
+
+### Examples
+
+**Share transaction view:**
+```
+http://localhost:5173/?transactionsView=true#home
+```
+
+**Share with multiple settings:**
+```
+http://localhost:5173/?transactionsView=true&showExtraCardButtons=true#reports-transaction-management
+```
+
+**Share legacy navigation:**
+```
+http://localhost:5173/?sidenavTest=false#marketplace-offerings
+```
+
+### Technical Implementation
+
+The system automatically:
+- Parses URL parameters on page load
+- Applies settings before localStorage
+- Logs applied settings to console for debugging
+- Generates shareable URLs with only non-default settings
+- Preserves current page hash in generated URLs
+
 ## 🚀 Future Enhancements
 
 ### Planned Features
@@ -296,12 +359,13 @@ const MyTable = () => {
 - **Setting Descriptions**: Tooltips explaining each feature
 - **Conditional Settings**: Settings that depend on other settings
 - **Analytics Tracking**: Track which features are used most
+- **Toast Notifications**: Better success feedback when copying links
 
 ### Integration Opportunities
 - **Storybook Integration**: Control story variants via settings
-- **URL Parameters**: Load settings from query parameters
 - **Team Sync**: Share settings across team members
 - **Environment Configs**: Different defaults per environment
+- **QR Code Generation**: Generate QR codes for mobile testing
 
 ## 📞 Support
 

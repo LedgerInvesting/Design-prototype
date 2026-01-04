@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { TopNav, TopNav2, TopNav3, Sidebar, SideNav2, SideNav3, FormTopNav } from './';
 import type { BreadcrumbItem, AppActionConfig } from './TopNav';
-import { colors, typography } from '../tokens';
+import { colors, typography, borderRadius } from '../tokens';
 import { useSettings } from '../contexts';
 import { Modal } from '../components/Modal';
 import { Selector } from '../components/Selector';
 import { Button } from '../components/Button';
+import { CopyMedium } from '../icons';
 import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
 import { isSubPage as detectSubPage, type PageType } from '../utils/navigation';
 
@@ -435,45 +436,90 @@ export const Layout: React.FC<LayoutProps> = ({
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <Selector
-                variant="checkbox"
-                label="Show apps integration buttons"
-                checked={prototypeSettings.appIntegration.showExtraCardButtons}
-                onChange={(checked) => updateSetting('appIntegration', 'showExtraCardButtons', checked)}
-              />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Selector
+                  variant="checkbox"
+                  label="Show apps integration buttons"
+                  checked={prototypeSettings.appIntegration.showExtraCardButtons}
+                  onChange={(checked) => updateSetting('appIntegration', 'showExtraCardButtons', checked)}
+                />
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  icon={<CopyMedium color={colors.blackAndWhite.black900} />}
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    params.set('showExtraCardButtons', 'true');
+                    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}${window.location.hash}`;
+                    navigator.clipboard.writeText(url);
+                    alert('Link copied to clipboard!');
+                  }}
+                />
+              </div>
 
-              <Selector
-                variant="checkbox"
-                label="Navigation v1 (Legacy)"
-                checked={!prototypeSettings.uiExperiments.sidenavTest}
-                onChange={(checked) => {
-                  updateSetting('uiExperiments', 'sidenavTest', !checked);
-                  // Navigate and close modal when toggling
-                  if (onNavigate) {
-                    setIsSettingsModalOpen(false);
-                    if (checked) {
-                      // When enabling Navigation v1, navigate to offerings
-                      onNavigate('marketplace', 'offerings');
-                    } else {
-                      // When disabling Navigation v1, navigate to home
-                      onNavigate('home');
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Selector
+                  variant="checkbox"
+                  label="Navigation v1 (Legacy)"
+                  checked={!prototypeSettings.uiExperiments.sidenavTest}
+                  onChange={(checked) => {
+                    updateSetting('uiExperiments', 'sidenavTest', !checked);
+                    // Navigate and close modal when toggling
+                    if (onNavigate) {
+                      setIsSettingsModalOpen(false);
+                      if (checked) {
+                        // When enabling Navigation v1, navigate to offerings
+                        onNavigate('marketplace', 'offerings');
+                      } else {
+                        // When disabling Navigation v1, navigate to home
+                        onNavigate('home');
+                      }
                     }
-                  }
-                }}
-              />
+                  }}
+                />
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  icon={<CopyMedium color={colors.blackAndWhite.black900} />}
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    params.set('sidenavTest', 'false');
+                    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}${window.location.hash}`;
+                    navigator.clipboard.writeText(url);
+                    alert('Link copied to clipboard!');
+                  }}
+                />
+              </div>
 
-              <Selector
-                variant="checkbox"
-                label="Transactions view"
-                checked={prototypeSettings.uiExperiments.transactionsView}
-                onChange={(checked) => {
-                  updateSetting('uiExperiments', 'transactionsView', checked);
-                  // Close modal and reload when toggling
-                  setIsSettingsModalOpen(false);
-                  // Reload to apply changes
-                  window.location.reload();
-                }}
-              />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Selector
+                  variant="checkbox"
+                  label="Transactions view"
+                  checked={prototypeSettings.uiExperiments.transactionsView}
+                  onChange={(checked) => {
+                    updateSetting('uiExperiments', 'transactionsView', checked);
+                    // Close modal and reload when toggling
+                    setIsSettingsModalOpen(false);
+                    // Reload to apply changes
+                    window.location.reload();
+                  }}
+                />
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  icon={<CopyMedium color={colors.blackAndWhite.black900} />}
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    params.set('transactionsView', 'true');
+                    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}${window.location.hash}`;
+                    navigator.clipboard.writeText(url);
+                    alert('Link copied to clipboard!');
+                  }}
+                />
+              </div>
             </div>
           </div>
 

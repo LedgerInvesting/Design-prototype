@@ -1127,15 +1127,26 @@ export const InboxMedium: React.FC<MediumIconProps> = ({
     </svg>
 );
 
-export const LimitsMedium: React.FC<MediumIconProps> = ({ 
-  color = 'currentColor', 
-  className 
+export const LimitsMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
 }) => (
   <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M13.5349 4.4751C12.0377 3.89346 10.3861 3.84438 8.85703 4.3361C7.32796 4.82781 6.01451 5.83041 5.13701 7.1757C4.25951 8.52099 3.87134 10.1271 4.03762 11.7247C4.20391 13.3222 4.91452 14.814 6.05026 15.9497C7.186 17.0855 8.67777 17.7961 10.2753 17.9624C11.8729 18.1287 13.479 17.7405 14.8243 16.863C16.1696 15.9855 17.1722 14.672 17.6639 13.143C18.1556 11.6139 18.1065 9.96226 17.5249 8.4651" stroke={color} strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"/>
     <path d="M11 13C12.1046 13 13 12.1046 13 11C13 9.89543 12.1046 9 11 9C9.89543 9 9 9.89543 9 11C9 12.1046 9.89543 13 11 13Z" stroke={color} strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"/>
     <path d="M13 9L16 6" stroke={color} strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"/>
     </svg>
+);
+
+export const LinkMedium: React.FC<MediumIconProps> = ({
+  color = 'currentColor',
+  className
+}) => (
+  <svg width={ICON_SIZES.medium} height={ICON_SIZES.medium} viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M9 13L13 9" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    <path d="M6.5 9.5L8.5 7.5C9.88071 6.11929 12.1193 6.11929 13.5 7.5V7.5C14.8807 8.88071 14.8807 11.1193 13.5 12.5L12 14" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    <path d="M15.5 12.5L13.5 14.5C12.1193 15.8807 9.88071 15.8807 8.5 14.5V14.5C7.11929 13.1193 7.11929 10.8807 8.5 9.5L10 8" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+  </svg>
 );
 
 export const ListMedium: React.FC<MediumIconProps> = ({ 
