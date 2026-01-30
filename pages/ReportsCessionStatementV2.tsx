@@ -495,9 +495,10 @@ const indexToPeriod = (index: number): { month: number; year: number } => {
 interface PeriodScrubberProps {
   currentPeriod: { month: number; year: number };
   onPeriodChange: (period: { month: number; year: number }) => void;
+  onDragStateChange?: (isDragging: boolean) => void;
 }
 
-const PeriodScrubber: React.FC<PeriodScrubberProps> = ({ currentPeriod, onPeriodChange }) => {
+const PeriodScrubber: React.FC<PeriodScrubberProps> = ({ currentPeriod, onPeriodChange, onDragStateChange }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -506,6 +507,7 @@ const PeriodScrubber: React.FC<PeriodScrubberProps> = ({ currentPeriod, onPeriod
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
+    onDragStateChange?.(true);
     e.preventDefault();
   };
 
@@ -520,6 +522,7 @@ const PeriodScrubber: React.FC<PeriodScrubberProps> = ({ currentPeriod, onPeriod
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    onDragStateChange?.(false);
   };
 
   React.useEffect(() => {
@@ -1143,6 +1146,7 @@ const getDataForPeriod = (month: number, year: number): AccordionRowData[] => {
 export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ onNavigateToPage, entityData, source = 'bdx-upload' }) => {
   const colors = useSemanticColors();
   const [scenario, setScenario] = useState<ScenarioType>('base');
+  const [isScrubbing, setIsScrubbing] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [currentPeriod, setCurrentPeriod] = useState({ month: 8, year: 2025 });
 
@@ -1524,8 +1528,9 @@ export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ o
                     }}
                   />
                   <Tooltip
+                    active={!isScrubbing}
                     content={({ active, payload, label }) => {
-                      if (active && payload && payload.length) {
+                      if (active && !isScrubbing && payload && payload.length) {
                         const data = payload[0]?.payload;
                         const tooltipItems = [
                           { label: 'Premium', value: data?.premium, color: chartColors.premium.fill },
@@ -1609,6 +1614,7 @@ export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ o
               <PeriodScrubber
                 currentPeriod={currentPeriod}
                 onPeriodChange={setCurrentPeriod}
+                onDragStateChange={setIsScrubbing}
               />
             </div>
           </div>
