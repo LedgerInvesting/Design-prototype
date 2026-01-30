@@ -30,16 +30,19 @@ import { ReportsBDXDetailMapping } from './transaction-view/ReportsBDXDetailMapp
 import { TransactionBDXAggregatedMapping } from './transaction-view/TransactionBDXAggregatedMapping';
 import { ReportsCessionSummaryGeneration } from './ReportsCessionSummaryGeneration';
 import { ReportsCessionStatement } from './transaction-view/ReportsCessionStatement';
+import { ReportsCessionStatementV2 } from './ReportsCessionStatementV2';
 import { ReportsCellLevelSummary } from './transaction-view/ReportsCellLevelSummary';
 import { MarketplaceOfferings } from './MarketplaceOfferings';
 import ReportsInsightsProgramDetails from './ReportsInsightsProgramDetails';
+import { BankStatementTest } from './BankStatementTest';
+import { BankStatementTest2 } from './BankStatementTest2';
 
 // Import base styles from the design library
 import '@design-library/styles/base.css';
 import { ThemeProvider } from '@design-library/tokens/ThemeProvider';
 import { PrototypeSettingsProvider, useSettings } from '@design-library/contexts';
 
-type PageType = 'home' | 'all-transactions' | 'notifications' | 'apps' | 'transaction-detail' | 'transaction-dashboard' | 'transaction-upload-settings' | 'reports-cash-settlement' | 'reports-cash-settlement-detail' | 'reports-cell-level-summary' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-contracts-list' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-bdx-detail-mapping' | 'transaction-bdx-aggregated-mapping' | 'reports-cession-summary-generation' | 'reports-cession-statement' | 'marketplace-offerings';
+type PageType = 'home' | 'all-transactions' | 'notifications' | 'apps' | 'transaction-detail' | 'transaction-dashboard' | 'transaction-upload-settings' | 'reports-cash-settlement' | 'reports-cash-settlement-detail' | 'reports-cell-level-summary' | 'reports-explorer' | 'reports-insights-explorer' | 'reports-insights-program-details' | 'reports-transaction-management' | 'reports-new-transaction-form' | 'reports-renewal-transaction' | 'reports-contracts-explorer' | 'contracts-upload' | 'contracts-ai-extraction' | 'contracts-contracts-list' | 'contracts-transactions' | 'analytics-valuation' | 'analytics-valuation-dashboard' | 'analytics-valuation-configuration' | 'analytics-valuation-status' | 'analytics-valuation-edit' | 'analytics-add-valuation-data' | 'analytics-triangle' | 'analytics-triangle-dashboard' | 'reports-bdx-upload' | 'reports-bdx-detail-mapping' | 'transaction-bdx-aggregated-mapping' | 'reports-cession-summary-generation' | 'reports-cession-statement' | 'reports-cession-statement-v2' | 'marketplace-offerings' | 'bank-statement-test' | 'bank-statement-test-2';
 
 // Inner component that uses settings
 function AppContent() {
@@ -100,7 +103,7 @@ function AppContent() {
       } else if (page === 'reports-cession-summary-generation') {
         console.log('Setting Cession Summary Generation data:', data);
         setValuationData(data);
-      } else if (page === 'reports-cession-statement') {
+      } else if (page === 'reports-cession-statement' || page === 'reports-cession-statement-v2') {
         console.log('Setting cession data:', data);
         setCessionData(data);
       } else if (page === 'contracts-upload') {
@@ -228,6 +231,8 @@ function AppContent() {
         return <ReportsCessionSummaryGeneration onNavigateToPage={setPage} uploadData={valuationData} />;
       case 'reports-cession-statement':
         return <ReportsCessionStatement onNavigateToPage={setPage} entityData={cessionData} source={cessionData?.source} flowType={cessionData?.flowType} />;
+      case 'reports-cession-statement-v2':
+        return <ReportsCessionStatementV2 onNavigateToPage={setPage} entityData={cessionData} source={cessionData?.source} />;
       case 'reports-cash-settlement':
         return <ReportsCashSettlement onNavigateToPage={setPage} cessionData={cessionData} flowType={cessionData?.flowType} />;
       case 'reports-cash-settlement-detail':
@@ -236,6 +241,10 @@ function AppContent() {
         return <ReportsCellLevelSummary onNavigateToPage={setPage} />;
       case 'marketplace-offerings':
         return <MarketplaceOfferings onNavigateToPage={setPage} />;
+      case 'bank-statement-test':
+        return <BankStatementTest />;
+      case 'bank-statement-test-2':
+        return <BankStatementTest2 />;
       default:
         return <HomeTest onNavigateToPage={setPage} />;
     }
