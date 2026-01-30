@@ -7,10 +7,10 @@ import { Layout } from '@design-library/pages';
 import { typography, borderRadius, shadows, useSemanticColors, colors as staticColors } from '@design-library/tokens';
 
 // Import components
-import { InfoTooltip, ChartTooltip, ButtonSelector, FormDropdown } from '@design-library/components';
+import { InfoTooltip, ChartTooltip, ButtonSelector } from '@design-library/components';
 
 // Import icons
-import { ChevronDownExtraSmall, ChevronRightExtraSmall, S2ArrowRightSmall, S2ArrowRightMedium, ChevronLeftSmall, ChevronRightSmall } from '@design-library/icons';
+import { ChevronDownExtraSmall, ChevronRightExtraSmall, S2ArrowRightSmall, S2ArrowRightMedium, ChevronLeftSmall, ChevronRightSmall, PieChartMedium, GraphArrowMedium } from '@design-library/icons';
 
 // Import navigation utilities
 import { createPageNavigationHandler } from '@design-library/utils/navigation';
@@ -67,52 +67,18 @@ const chartColors = {
  * 3. Late: Claims & Dividends flow out (balance depletes)
  * 4. Final: Balance reaches exactly zero
  */
-type ScenarioType = 'base' | 'conservative' | 'aggressive';
-
-const scenarioParams: Record<ScenarioType, {
-  totalPremium: number;
-  totalCapital: number;
-  totalClaimsPaid: number;
-  totalProfitCommission: number;
-  totalInvestmentIncome: number;
-  totalDividends: number;
-  expectedLossBase: number;
-  expectedLossAmplitude: number;
-}> = {
-  base: {
-    totalPremium: 50, totalCapital: 40,
-    totalClaimsPaid: 50, totalProfitCommission: 8,
-    totalInvestmentIncome: 10, totalDividends: 22,
-    expectedLossBase: 30, expectedLossAmplitude: 12,
-  },
-  conservative: {
-    totalPremium: 45, totalCapital: 35,
-    totalClaimsPaid: 60, totalProfitCommission: 4,
-    totalInvestmentIncome: 6, totalDividends: 10,
-    expectedLossBase: 45, expectedLossAmplitude: 8,
-  },
-  aggressive: {
-    totalPremium: 60, totalCapital: 50,
-    totalClaimsPaid: 40, totalProfitCommission: 14,
-    totalInvestmentIncome: 16, totalDividends: 40,
-    expectedLossBase: 20, expectedLossAmplitude: 15,
-  },
-};
-
-const generateChartData = (scenario: ScenarioType = 'base') => {
+const generateChartData = () => {
   const months = 24;
   const data = [];
 
-  const params = scenarioParams[scenario];
-
   // Total amounts (inflows = outflows for zero final balance)
-  const totalPremium = params.totalPremium;
-  const totalCapital = params.totalCapital;
+  const totalPremium = 50;           // Inflow - front-loaded (Cedent)
+  const totalCapital = 40;           // Inflow - front-loaded (Reinsurer)
 
-  const totalClaimsPaid = params.totalClaimsPaid;
-  const totalProfitCommission = params.totalProfitCommission;
-  const totalInvestmentIncome = params.totalInvestmentIncome;
-  const totalDividends = params.totalDividends;
+  const totalClaimsPaid = 50;        // Outflow - back-loaded (Cedent)
+  const totalProfitCommission = 8;   // Outflow - mid-to-late (Cedent)
+  const totalInvestmentIncome = 10;  // Outflow - paid to investors (Reinsurer)
+  const totalDividends = 22;         // Outflow - back-loaded (Reinsurer)
 
   // Verify: 50 + 40 = 90 inflows = 50 + 8 + 10 + 22 = 90 outflows ✓
 
@@ -155,7 +121,7 @@ const generateChartData = (scenario: ScenarioType = 'base') => {
     const trustBalance = totalInflowsValue - totalOutflowsValue;
 
     // Expected ultimate loss reference line
-    const expectedLoss = params.expectedLossBase + Math.sin(t * Math.PI * 0.7) * params.expectedLossAmplitude;
+    const expectedLoss = 30 + Math.sin(t * Math.PI * 0.7) * 12;
 
     // Format date
     const monthNum = (month % 12) + 1;
@@ -186,12 +152,7 @@ const generateChartData = (scenario: ScenarioType = 'base') => {
   return data;
 };
 
-// Pre-generate chart data for all scenarios
-const chartDataByScenario: Record<ScenarioType, ReturnType<typeof generateChartData>> = {
-  base: generateChartData('base'),
-  conservative: generateChartData('conservative'),
-  aggressive: generateChartData('aggressive'),
-};
+const chartData = generateChartData();
 
 /**
  * Sankey node color mapping - reuses existing chartColors
@@ -223,9 +184,8 @@ const generateSankeyData = (
   showReinsurer: boolean,
 ) => {
   const periodIndex = periodToIndex(periodMonth, periodYear);
-  const baseData = chartDataByScenario.base;
-  const clampedIndex = Math.max(0, Math.min(baseData.length - 1, periodIndex));
-  const dataPoint = baseData[clampedIndex];
+  const clampedIndex = Math.max(0, Math.min(chartData.length - 1, periodIndex));
+  const dataPoint = chartData[clampedIndex];
 
   const nodes: Array<{ name: string }> = [
     { name: 'Premium' },            // 0
@@ -464,7 +424,7 @@ const LegendItem: React.FC<LegendItemProps> = ({ color, label, isDashed }) => (
     )}
     <span style={{
       ...typography.styles.bodyS,
-      color: staticColors.blackAndWhite.black700,
+      color: staticColors.blackAndWhite.black500,
     }}>
       {label}
     </span>
@@ -539,8 +499,8 @@ const PeriodScrubber: React.FC<PeriodScrubberProps> = ({ currentPeriod, onPeriod
       style={{
         position: 'absolute',
         top: 0,
-        left: 72,
-        right: 30,
+        left: 50,
+        right: 50,
         bottom: 35,
         pointerEvents: 'none',
       }}
@@ -1142,17 +1102,15 @@ const getDataForPeriod = (month: number, year: number): AccordionRowData[] => {
 
 export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ onNavigateToPage, entityData, source = 'bdx-upload' }) => {
   const colors = useSemanticColors();
-  const [scenario, setScenario] = useState<ScenarioType>('base');
+  const [chartMode, setChartMode] = useState<'area' | 'sankey'>('area');
+  const useSankeyChart = chartMode === 'sankey';
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [currentPeriod, setCurrentPeriod] = useState({ month: 8, year: 2025 });
 
-  // Chart filter state - radio selection (one at a time, or all)
-  const [chartFilter, setChartFilter] = useState<'all' | 'trust-account' | 'cedent' | 'reinsurer'>('all');
-
-  // Derive visibility from selected filter
-  const showTrustAccount = chartFilter === 'all' || chartFilter === 'trust-account';
-  const showCedent = chartFilter === 'all' || chartFilter === 'cedent';
-  const showReinsurer = chartFilter === 'all' || chartFilter === 'reinsurer';
+  // Chart filter states
+  const [showTrustAccount, setShowTrustAccount] = useState(true);
+  const [showCedent, setShowCedent] = useState(true);
+  const [showReinsurer, setShowReinsurer] = useState(true);
 
   // Get data for the current period
   const periodData = getDataForPeriod(currentPeriod.month, currentPeriod.year);
@@ -1289,113 +1247,121 @@ export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ o
               marginBottom: '20px',
             }}>
               {/* Left: filter buttons */}
-              <div style={{ display: 'flex', gap: '5px' }}>
-                <ButtonSelector
-                  label="All"
-                  selectorType="radio"
-                  name="chart-filter"
-                  checked={chartFilter === 'all'}
-                  onChange={() => setChartFilter('all')}
-                />
+              <div style={{ display: 'flex', gap: '16px' }}>
                 <ButtonSelector
                   label="Trust account"
-                  selectorType="radio"
-                  name="chart-filter"
-                  checked={chartFilter === 'trust-account'}
-                  onChange={() => setChartFilter('trust-account')}
+                  selectorType="checkbox"
+                  checked={showTrustAccount}
+                  onChange={setShowTrustAccount}
                 />
                 <ButtonSelector
                   label="Cedent"
-                  selectorType="radio"
-                  name="chart-filter"
-                  checked={chartFilter === 'cedent'}
-                  onChange={() => setChartFilter('cedent')}
+                  selectorType="checkbox"
+                  checked={showCedent}
+                  onChange={setShowCedent}
                 />
                 <ButtonSelector
                   label="Reinsurer"
-                  selectorType="radio"
-                  name="chart-filter"
-                  checked={chartFilter === 'reinsurer'}
-                  onChange={() => setChartFilter('reinsurer')}
+                  selectorType="checkbox"
+                  checked={showReinsurer}
+                  onChange={setShowReinsurer}
                 />
               </div>
 
-              {/* Right: scenario dropdown */}
-              <div style={{ width: '220px' }}>
-                <FormDropdown
-                  label="Scenario"
-                  labelPosition="left"
-                  showTooltip={false}
-                  value={scenario}
-                  options={[
-                    { value: 'base', label: 'Base Case', description: 'Expected scenario with balanced inflows and outflows' },
-                    { value: 'conservative', label: 'Conservative', description: 'Higher claims, lower dividends and profit commission' },
-                    { value: 'aggressive', label: 'Aggressive', description: 'Lower claims, higher returns and capital deployment' },
-                  ]}
-                  onChange={(value) => setScenario(value as ScenarioType)}
-                />
+              {/* Right: chart mode toggle */}
+              <div style={{
+                display: 'flex',
+                gap: '2px',
+                padding: '5px',
+                border: `1px solid ${colors.theme.primary400}`,
+                borderRadius: '12px',
+              }}>
+                <button
+                  onClick={() => setChartMode('area')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '7px 10px',
+                    border: 'none',
+                    borderRadius: '8px',
+                    backgroundColor: chartMode === 'area' ? staticColors.blackAndWhite.black900 : 'transparent',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                >
+                  <GraphArrowMedium color={chartMode === 'area' ? staticColors.blackAndWhite.white : staticColors.blackAndWhite.black700} />
+                </button>
+                <button
+                  onClick={() => setChartMode('sankey')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '7px 10px',
+                    border: 'none',
+                    borderRadius: '8px',
+                    backgroundColor: chartMode === 'sankey' ? staticColors.blackAndWhite.black900 : 'transparent',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                >
+                  <PieChartMedium color={chartMode === 'sankey' ? staticColors.blackAndWhite.white : staticColors.blackAndWhite.black700} />
+                </button>
               </div>
             </div>
 
-            {/* Divider between filters and legend */}
-            <div style={{ height: '1px', backgroundColor: colors.theme.primary400 }} />
-
-            {/* Legend */}
+            {/* Legend - only shown for area chart */}
+            {!useSankeyChart && (
             <div style={{
               display: 'flex',
-              justifyContent: 'space-between',
+              gap: '24px',
+              justifyContent: 'center',
               marginBottom: '16px',
+              flexWrap: 'wrap',
               alignItems: 'center',
-              padding: '30px 30px 0 30px',
             }}>
-              {/* Left: Party color key + Expected Loss */}
+              {/* Inflows group */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '2px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ flex: 1, backgroundColor: chartColors.premium.fill }} />
-                    <div style={{ flex: 1, backgroundColor: chartColors.profitCommission.fill }} />
-                    <div style={{ flex: 1, backgroundColor: chartColors.claimsPaid.fill }} />
-                  </div>
-                  <span style={{ ...typography.styles.bodyS, color: staticColors.blackAndWhite.black500, fontWeight: 600 }}>Cedent</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '2px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ flex: 1, backgroundColor: chartColors.capital.fill }} />
-                    <div style={{ flex: 1, backgroundColor: chartColors.investmentIncome.fill }} />
-                    <div style={{ flex: 1, backgroundColor: chartColors.dividends.fill }} />
-                  </div>
-                  <span style={{ ...typography.styles.bodyS, color: staticColors.blackAndWhite.black500, fontWeight: 600 }}>Reinsurer</span>
-                </div>
-                {/* Reference */}
-                <LegendItem color={chartColors.expectedLoss} label="Expected Loss" isDashed />
+                <span style={{ ...typography.styles.bodyS, color: staticColors.blackAndWhite.black500, fontWeight: 600 }}>Inflows:</span>
+                <LegendItem color={chartColors.premium.fill} label="Premium" />
+                <LegendItem color={chartColors.capital.fill} label="Capital" />
               </div>
 
-              {/* Right: Inflows, Outflows */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                {/* Inflows group */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ ...typography.styles.bodyS, color: staticColors.blackAndWhite.black300, fontWeight: 600 }}>Inflows:</span>
-                  <LegendItem color={chartColors.premium.fill} label="Premium" />
-                  <LegendItem color={chartColors.capital.fill} label="Capital" />
-                </div>
+              {/* Separator */}
+              <div style={{ width: '1px', height: '16px', backgroundColor: staticColors.blackAndWhite.black300 }} />
 
-                {/* Outflows group */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ ...typography.styles.bodyS, color: staticColors.blackAndWhite.black300, fontWeight: 600 }}>Outflows:</span>
-                  <LegendItem color={chartColors.claimsPaid.fill} label="Claims" />
-                  <LegendItem color={chartColors.profitCommission.fill} label="Commission" />
-                  <LegendItem color={chartColors.investmentIncome.fill} label="Investment" />
-                  <LegendItem color={chartColors.dividends.fill} label="Dividends" />
-                </div>
+              {/* Outflows group */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ ...typography.styles.bodyS, color: staticColors.blackAndWhite.black500, fontWeight: 600 }}>Outflows:</span>
+                <LegendItem color={chartColors.claimsPaid.fill} label="Claims" />
+                <LegendItem color={chartColors.profitCommission.fill} label="Commission" />
+                <LegendItem color={chartColors.investmentIncome.fill} label="Investment" />
+                <LegendItem color={chartColors.dividends.fill} label="Dividends" />
               </div>
+
+              {/* Separator */}
+              <div style={{ width: '1px', height: '16px', backgroundColor: staticColors.blackAndWhite.black300 }} />
+
+              {/* Reference */}
+              <LegendItem color={chartColors.expectedLoss} label="Expected Loss" isDashed />
             </div>
+            )}
 
             {/* Chart - Sources and Uses of Cash */}
             <div style={{ height: '350px', position: 'relative', overflow: 'visible' }}>
+              {useSankeyChart ? (
+                <CessionSankeyChart
+                  currentPeriod={currentPeriod}
+                  showTrustAccount={showTrustAccount}
+                  showCedent={showCedent}
+                  showReinsurer={showReinsurer}
+                />
+              ) : (<>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
-                  data={chartDataByScenario[scenario]}
-                  margin={{ top: 20, right: 30, left: 10, bottom: 35 }}
+                  data={chartData}
+                  margin={{ top: 20, right: 50, left: 10, bottom: 35 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={staticColors.blackAndWhite.black300} vertical={false} />
 
@@ -1519,7 +1485,7 @@ export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ o
                       value: 'Cumulative Cash ($M)',
                       angle: -90,
                       position: 'insideLeft',
-                      offset: 0,
+                      offset: 10,
                       style: { fill: staticColors.blackAndWhite.black700, ...typography.styles.bodyS }
                     }}
                   />
@@ -1573,28 +1539,6 @@ export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ o
                                 </p>
                               </div>
                             ))}
-                            {/* Expected Loss */}
-                            <div style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '8px',
-                              marginTop: '8px',
-                              paddingTop: '8px',
-                              borderTop: `1px solid ${colors.blackAndWhite.black200}`,
-                            }}>
-                              <div style={{
-                                width: '10px',
-                                height: '2px',
-                                backgroundImage: `repeating-linear-gradient(90deg, ${chartColors.expectedLoss} 0px, ${chartColors.expectedLoss} 3px, transparent 3px, transparent 6px)`,
-                              }} />
-                              <p style={{
-                                ...typography.styles.bodyM,
-                                color: chartColors.expectedLoss,
-                                margin: 0,
-                              }}>
-                                Expected Loss: {data?.expectedLoss}%
-                              </p>
-                            </div>
                           </div>
                         );
                       }
@@ -1610,6 +1554,7 @@ export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ o
                 currentPeriod={currentPeriod}
                 onPeriodChange={setCurrentPeriod}
               />
+              </>)}
             </div>
           </div>
         </div>

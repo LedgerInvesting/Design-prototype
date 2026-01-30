@@ -303,14 +303,26 @@ export const FormDropdown = forwardRef<HTMLDivElement, FormDropdownProps>(({
                     onClick={() => handleOptionClick(option.value)}
                     onMouseEnter={(e) => {
                       if (!option.disabled) {
-                        (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
+                        e.currentTarget.style.backgroundColor = colors.theme.primary200;
                       }
                     }}
                     onMouseLeave={(e) => {
-                      (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                      e.currentTarget.style.backgroundColor = 'transparent';
                     }}
                   >
                     {option.label}
+                    {option.description && (
+                      <div style={{
+                        fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+                        fontSize: typography.styles.bodyS.fontSize,
+                        fontWeight: typography.styles.bodyS.fontWeight,
+                        lineHeight: typography.styles.bodyS.lineHeight,
+                        color: colors.blackAndWhite.black500,
+                        marginTop: '2px',
+                      }}>
+                        {option.description}
+                      </div>
+                    )}
                   </div>
                 ))}
               </CustomScroll>
@@ -323,14 +335,26 @@ export const FormDropdown = forwardRef<HTMLDivElement, FormDropdownProps>(({
                     onClick={() => handleOptionClick(option.value)}
                     onMouseEnter={(e) => {
                       if (!option.disabled) {
-                        (e.target as HTMLElement).style.backgroundColor = colors.theme.primary200;
+                        e.currentTarget.style.backgroundColor = colors.theme.primary200;
                       }
                     }}
                     onMouseLeave={(e) => {
-                      (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                      e.currentTarget.style.backgroundColor = 'transparent';
                     }}
                   >
                     {option.label}
+                    {option.description && (
+                      <div style={{
+                        fontFamily: typography.styles.bodyS.fontFamily.join(', '),
+                        fontSize: typography.styles.bodyS.fontSize,
+                        fontWeight: typography.styles.bodyS.fontWeight,
+                        lineHeight: typography.styles.bodyS.lineHeight,
+                        color: colors.blackAndWhite.black500,
+                        marginTop: '2px',
+                      }}>
+                        {option.description}
+                      </div>
+                    )}
                   </div>
                 ))}
               </>
