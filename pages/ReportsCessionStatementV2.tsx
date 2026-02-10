@@ -1528,7 +1528,6 @@ export const ReportsCessionStatementV2: React.FC<CessionStatementV2Props> = ({ o
                     }}
                   />
                   <Tooltip
-                    active={!isScrubbing}
                     content={({ active, payload, label }) => {
                       if (active && !isScrubbing && payload && payload.length) {
                         const data = payload[0]?.payload;
