@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd 'Ledger design library' && npm install && cd ../pages && npm install && npm run build",
+  "outputDirectory": "pages/dist",
+  "installCommand": "echo 'dependencies installed per buildCommand'",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
