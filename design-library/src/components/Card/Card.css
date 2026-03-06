@@ -1,0 +1,85 @@
+.card {
+  background-color: white;
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+/* Variants */
+.card--default {
+  border: 1px solid var(--color-gray-200);
+}
+
+.card--outlined {
+  border: 1px solid var(--color-gray-300);
+}
+
+.card--elevated {
+  border: 1px solid var(--color-gray-100);
+  box-shadow: var(--shadow-md);
+}
+
+.card--elevated:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Padding variants */
+.card--padding-none {
+  padding: 0;
+}
+
+.card--padding-sm {
+  padding: var(--space-3);
+}
+
+.card--padding-md {
+  padding: var(--space-4);
+}
+
+.card--padding-lg {
+  padding: var(--space-6);
+}
+
+/* Card sections */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+/* Remove borders when card has no padding */
+.card--padding-none .card-header,
+.card--padding-none .card-footer {
+  margin: 0;
+  padding: var(--space-4);
+  border: none;
+}
+
+.card--padding-none .card-content {
+  padding: 0 var(--space-4);
+}
+
+.card--padding-none .card-header {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.card--padding-none .card-footer {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-gray-100);
+}

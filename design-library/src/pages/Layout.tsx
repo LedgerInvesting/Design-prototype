@@ -1,0 +1,558 @@
+import React, { useState, useEffect } from 'react';
+import { TopNav, TopNav2, TopNav3, Sidebar, SideNav2, SideNav3, FormTopNav } from './';
+import type { BreadcrumbItem, AppActionConfig } from './TopNav';
+import { colors, typography, borderRadius } from '../tokens';
+import { useSettings } from '../contexts';
+import { Modal } from '../components/Modal';
+import { Selector } from '../components/Selector';
+import { Button } from '../components/Button';
+import { CopyMedium } from '../icons';
+import { usePrototypeSettings } from '../contexts/PrototypeSettingsContext';
+import { isSubPage as detectSubPage, type PageType } from '../utils/navigation';
+
+/**
+ * Unified layout component that supports both navigation and form modes
+ *
+ * Navigation mode: Uses TopNav with breadcrumbs, user profile, and share functionality
+ * Form mode: Uses FormTopNav with form title, status, and progress indicators
+ *
+ * @example Navigation Mode
+ * ```tsx
+ * <Layout
+ *   breadcrumbs={[{label: 'Home', href: '/'}]}
+ *   userName="John Doe"
+ * >
+ *   <div>Content</div>
+ * </Layout>
+ * ```
+ *
+ * @example Form Mode
+ * ```tsx
+ * <Layout
+ *   formMode={true}
+ *   formTitle="New Transaction"
+ *   progress={60}
+ *   statusText="draft"
+ * >
+ *   <div>Form content</div>
+ * </Layout>
+ * ```
+ */
+export interface LayoutProps {
+  children: React.ReactNode;
+  className?: string;
+  pageType?: string; // Full page type for localStorage (e.g., 'analytics-triangle-dashboard')
+  selectedSidebarItem?: string;
+  selectedSidebarSubitem?: string;
+  tabs?: React.ReactNode; // Optional tabs component to render between TopNav and content
+  onNavigate?: (itemId: string, subitemId?: string, pageType?: string) => void;
+  onInboxClick?: () => void;
+  onNewTransactionClick?: () => void; // Handler for New Transaction button in SideNav3
+  maxWidth?: string; // For form layouts
+
+  // Navigation mode props (regular TopNav)
+  breadcrumbs?: BreadcrumbItem[];
+  userName?: string;
+  userInitials?: string;
+  profileColor?: string;
+  showShare?: boolean;
+  onShareClick?: () => void;
+  onUserMenuClick?: () => void;
+  onManageAccountClick?: () => void;
+  onSettingsClick?: () => void; // User profile menu settings (opens prototype settings modal)
+  onTransactionSettingsClick?: () => void; // Transaction settings button in TopNav3 (navigates to transaction settings)
+  appAction?: AppActionConfig; // Optional context-aware app action button
+  showAskQuill?: boolean; // Show "Ask Quill" button on home page
+  onAskQuillClick?: () => void;
+  pageTitle?: string; // For TopNav3: Shows page title instead of tabs (for home/all transactions)
+  activeTab?: string; // For TopNav3: Currently active tab
+  onTabChange?: (tabId: string) => void; // For TopNav3: Tab change handler
+
+  // Form mode props (FormTopNav)
+  formMode?: boolean;
+  formTitle?: string;
+  entryType?: string;
+  statusText?: string;
+  statusVariant?: 'warning' | 'success' | 'error' | 'info' | 'inactive';
+  showStatus?: boolean;
+  progress?: number;
+  onBackClick?: () => void;
+  backButtonText?: string; // Optional custom text for back button (default: "Back to Dashboard")
+  isSubPage?: boolean; // Whether the current page is a detail/sub page (shows back button)
+  formTags?: React.ReactNode[]; // Flexible tags/pills beside title (replaces entryType and status when provided)
+  showSidebarToggle?: boolean; // Control sidebar toggle visibility in FormTopNav (default: true)
+  stepper?: import('./FormTopNav').StepConfig[]; // Optional stepper configuration for FormTopNav
+}
+
+export const Layout: React.FC<LayoutProps> = ({
+  children,
+  className,
+  pageType,
+  selectedSidebarItem,
+  selectedSidebarSubitem,
+  tabs,
+  onNavigate,
+  onInboxClick,
+  onNewTransactionClick,
+  maxWidth = '1200px',
+
+  // Navigation mode props
+  breadcrumbs,
+  userName = "SARAH JOHNSON",
+  userInitials = "SJ",
+  profileColor = colors.reports.blue700,
+  showShare = false,
+  onShareClick,
+  onUserMenuClick,
+  onManageAccountClick,
+  onSettingsClick,
+  onTransactionSettingsClick,
+  appAction,
+  showAskQuill = false,
+  onAskQuillClick,
+  pageTitle,
+  activeTab,
+  onTabChange,
+
+  // Form mode props
+  formMode = false,
+  formTitle,
+  entryType,
+  statusText,
+  statusVariant,
+  showStatus = true,
+  progress,
+  onBackClick,
+  backButtonText,
+  isSubPage = false, // Manual override - if not provided, will auto-detect
+  formTags,
+  showSidebarToggle = true,
+  stepper,
+}) => {
+  // Get prototype settings
+  const settings = useSettings();
+  const useSideNav2 = settings.uiExperiments.sidenavTest;
+  const useTransactionsView = settings.uiExperiments.transactionsView;
+
+  // Auto-detect if this is a sub-page based on pageType (unless manually overridden)
+  const isActuallySubPage = isSubPage || (pageType ? detectSubPage(pageType as PageType) : false);
+
+  // Prototype settings modal state
+  const { settings: prototypeSettings, updateSetting, resetSettings } = usePrototypeSettings();
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  // Handle settings click - open modal and call parent callback
+  const handleSettingsClick = () => {
+    setIsSettingsModalOpen(true);
+    if (onSettingsClick) {
+      onSettingsClick();
+    }
+  };
+
+  // Initialize sidebar state from localStorage
+  const [isCompact, setIsCompact] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebarCompact');
+      return saved ? JSON.parse(saved) : false;
+    }
+    return false;
+  });
+
+  // When SideNav test is enabled, ensure sidebar is expanded (only on initial enable)
+  useEffect(() => {
+    if (useSideNav2 && isCompact) {
+      setIsCompact(false);
+      localStorage.setItem('sidebarCompact', JSON.stringify(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useSideNav2]); // Only run when useSideNav2 changes, not when isCompact changes
+  const [isSidebarHovered, setIsSidebarHovered] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [contentKey, setContentKey] = useState<string>('initial');
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+
+  // Handle sidebar toggle - button controls compact mode instead of viewport
+  const handleSidebarToggle = () => {
+    const newCompactState = !isCompact;
+    setIsCompact(newCompactState);
+    // Save to localStorage
+    localStorage.setItem('sidebarCompact', JSON.stringify(newCompactState));
+  };
+
+  // Detect page changes and trigger animation
+  useEffect(() => {
+    // Skip animation on first render
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
+
+    // Generate a key based on the page content to detect changes
+    const newKey = `${selectedSidebarItem}-${selectedSidebarSubitem}-${breadcrumbs?.length || 0}`;
+
+    if (newKey !== contentKey) {
+      // Update content key first
+      setContentKey(newKey);
+
+      // Start animation: immediately jump to 1.02 scale
+      setIsAnimating(true);
+
+      // Use double requestAnimationFrame to ensure the scale(1.02) is rendered before transitioning
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(false);
+        });
+      });
+    }
+  }, [selectedSidebarItem, selectedSidebarSubitem, breadcrumbs, contentKey, isFirstRender]);
+
+  // Calculate sidebar width based on compact mode and hover state
+  const sidebarWidth = isCompact && !isSidebarHovered ? '80px' : '220px';
+
+  const pageStyles: React.CSSProperties = {
+    minHeight: '100vh',
+    backgroundColor: colors.blackAndWhite.black900,
+  };
+
+  const mainContentStyles: React.CSSProperties = {
+    marginLeft: sidebarWidth,
+    backgroundColor: colors.blackAndWhite.white,
+    transition: 'margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+    overflow: 'hidden', // Contain any overflow
+    minHeight: '100vh',
+  };
+
+  const contentAreaStyles: React.CSSProperties = {
+    backgroundColor: colors.blackAndWhite.white,
+    minHeight: 'calc(100vh - 60px)',
+    width: '100%', // Fill available width
+    margin: formMode ? '60px 0 0 0' : '0', // Form mode: 60px top offset, nav mode: no margins
+    padding: formMode ? '40px 60px 60px 60px' : '40px 60px 60px 60px', // Standard padding (will be overridden by inline marginTop)
+    overflow: 'hidden', // Prevent any content from overflowing
+    boxSizing: 'border-box', // Include padding in width calculation
+    // Page transition animation - subtle zoom out effect (only in nav mode)
+    opacity: !formMode ? (isAnimating ? 1 : 1) : 1,
+    transform: !formMode ? (isAnimating ? 'scale(1.01)' : 'scale(1)') : 'scale(1)',
+    transformOrigin: 'center center', // Ensure scaling from center
+    // Only apply transition when zooming out (isAnimating false), not when starting
+    transition: !formMode && !isAnimating ? 'opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none',
+  };
+
+  return (
+    <div style={pageStyles} className={className}>
+      {/* Fixed Sidebar */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        height: '100vh',
+        width: sidebarWidth,
+        zIndex: 1000,
+        transition: 'width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
+      }}>
+        {useTransactionsView ? (
+          <SideNav3
+            onNavigate={onNavigate || (() => {})}
+            onInboxClick={onInboxClick || (() => {})}
+            onHomeClick={() => {
+              // Navigate to home when Home/Korra logo is clicked
+              if (onNavigate) {
+                onNavigate('home');
+              }
+            }}
+            selectedItem={selectedSidebarItem}
+            selectedSubitem={selectedSidebarSubitem}
+            currentPageType={pageType}
+            onHoverChange={setIsSidebarHovered}
+            isCompact={isCompact}
+            userName={userName}
+            userInitials={userInitials}
+            profileColor={profileColor}
+            onManageAccountClick={onManageAccountClick}
+            onSettingsClick={handleSettingsClick}
+            isSubPage={isActuallySubPage}
+            onBackClick={onBackClick}
+            onNewTransactionClick={onNewTransactionClick}
+            onSidebarToggle={handleSidebarToggle}
+          />
+        ) : useSideNav2 ? (
+          <SideNav2
+            onNavigate={onNavigate || (() => {})}
+            onInboxClick={onInboxClick || (() => {})}
+            onHomeClick={() => {
+              // Navigate to home when Home is clicked
+              if (onNavigate) {
+                onNavigate('home');
+              }
+            }}
+            selectedItem={selectedSidebarItem}
+            selectedSubitem={selectedSidebarSubitem}
+            currentPageType={pageType}
+            onHoverChange={setIsSidebarHovered}
+            isCompact={isCompact}
+            userName={userName}
+            userInitials={userInitials}
+            profileColor={profileColor}
+            onManageAccountClick={onManageAccountClick}
+            onSettingsClick={handleSettingsClick}
+            isSubPage={isActuallySubPage}
+            onBackClick={onBackClick}
+          />
+        ) : (
+          <Sidebar
+            onNavigate={onNavigate || (() => {})}
+            onInboxClick={onInboxClick || (() => {})}
+            selectedItem={selectedSidebarItem}
+            selectedSubitem={selectedSidebarSubitem}
+            onHoverChange={setIsSidebarHovered}
+            isCompact={isCompact}
+          />
+        )}
+      </div>
+
+      <div style={mainContentStyles}>
+        {/* Fixed Top Navigation - Conditional TopNav/FormTopNav */}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: sidebarWidth,
+          right: 0,
+          zIndex: 999,
+          backgroundColor: colors.blackAndWhite.black900,
+          borderRadius: '0 0 12px 12px',
+          transition: 'left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+          overflow: 'visible'
+        }}>
+          {formMode ? (
+            <FormTopNav
+              title={formTitle}
+              entryType={entryType}
+              statusText={statusText}
+              statusVariant={statusVariant}
+              showStatus={showStatus}
+              progress={progress}
+              onBackClick={onBackClick}
+              backButtonText={backButtonText}
+              onSidebarToggle={handleSidebarToggle}
+              isSidebarCompact={isCompact}
+              appAction={appAction}
+              tags={formTags}
+              showSidebarToggle={showSidebarToggle}
+              stepper={stepper}
+            />
+          ) : useTransactionsView ? (
+            <TopNav3
+              showShare={showShare}
+              onShareClick={onShareClick || (() => alert('Share clicked'))}
+              onNavigate={onNavigate}
+              appAction={appAction}
+              showAskQuill={showAskQuill}
+              onAskQuillClick={onAskQuillClick}
+              pageTitle={pageTitle}
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+              onTransactionSettingsClick={onTransactionSettingsClick}
+            />
+          ) : useSideNav2 ? (
+            <TopNav2
+              breadcrumbs={breadcrumbs || []}
+              showShare={showShare}
+              onShareClick={onShareClick || (() => alert('Share clicked'))}
+              onSidebarToggle={handleSidebarToggle}
+              onNavigate={onNavigate}
+              appAction={appAction}
+              showAskQuill={showAskQuill}
+              onAskQuillClick={onAskQuillClick}
+              isSidebarCompact={isCompact}
+            />
+          ) : (
+            <TopNav
+              breadcrumbs={breadcrumbs || []}
+              userName={userName}
+              userInitials={userInitials}
+              profileColor={profileColor}
+              showShare={showShare}
+              onShareClick={onShareClick || (() => alert('Share clicked'))}
+              onUserMenuClick={onUserMenuClick}
+              onManageAccountClick={onManageAccountClick}
+              onSettingsClick={handleSettingsClick}
+              onSidebarToggle={handleSidebarToggle}
+              onNavigate={onNavigate}
+              appAction={appAction}
+              showAskQuill={showAskQuill}
+              onAskQuillClick={onAskQuillClick}
+              isSidebarCompact={isCompact}
+            />
+          )}
+        </div>
+
+        {/* Optional Tabs - Full width under TopNav */}
+        {tabs && (
+          <div style={{
+            position: 'fixed',
+            top: '60px', // Right under TopNav (TopNav height is 60px)
+            left: sidebarWidth,
+            right: 0,
+            zIndex: 998, // Just below TopNav
+            backgroundColor: colors.blackAndWhite.white,
+            transition: 'left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
+          }}>
+            {tabs}
+          </div>
+        )}
+
+        {/* Main Content Area */}
+        <div style={{
+          ...contentAreaStyles,
+          marginTop: tabs ? '150px' : '120px', // TopNav (60px) + desired gap (60px) = 120px total
+          padding: '0 60px 60px 60px', // Remove top padding since marginTop handles the gap
+        }}>
+          {children}
+        </div>
+      </div>
+
+      {/* Settings Modal - Shared between TopNav and SideNav2 */}
+      <Modal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        title="Prototype Settings"
+        width="520px"
+        showCloseButton={true}
+        showBackdrop={true}
+        backdropColor="white"
+        backdropOpacity={0.8}
+      >
+        <div style={{ padding: '0 0 20px 0' }}>
+          {/* UI Experiments Section */}
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{
+              ...typography.styles.subheadingM,
+              color: colors.blackAndWhite.black900,
+              marginBottom: '16px',
+              paddingBottom: '8px',
+              borderBottom: `1px solid ${colors.blackAndWhite.black100}`,
+            }}>
+              UI Experiments
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Selector
+                  variant="checkbox"
+                  label="Show apps integration buttons"
+                  checked={prototypeSettings.appIntegration.showExtraCardButtons}
+                  onChange={(checked) => updateSetting('appIntegration', 'showExtraCardButtons', checked)}
+                />
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  icon={<CopyMedium color={colors.blackAndWhite.black900} />}
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    params.set('showExtraCardButtons', 'true');
+                    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}${window.location.hash}`;
+                    navigator.clipboard.writeText(url);
+                    alert('Link copied to clipboard!');
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Selector
+                  variant="checkbox"
+                  label="Navigation v1 (Legacy)"
+                  checked={!prototypeSettings.uiExperiments.sidenavTest}
+                  onChange={(checked) => {
+                    updateSetting('uiExperiments', 'sidenavTest', !checked);
+                    // Navigate and close modal when toggling
+                    if (onNavigate) {
+                      setIsSettingsModalOpen(false);
+                      if (checked) {
+                        // When enabling Navigation v1, navigate to offerings
+                        onNavigate('marketplace', 'offerings');
+                      } else {
+                        // When disabling Navigation v1, navigate to home
+                        onNavigate('home');
+                      }
+                    }
+                  }}
+                />
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  icon={<CopyMedium color={colors.blackAndWhite.black900} />}
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    params.set('sidenavTest', 'false');
+                    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}${window.location.hash}`;
+                    navigator.clipboard.writeText(url);
+                    alert('Link copied to clipboard!');
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Selector
+                  variant="checkbox"
+                  label="Transactions view"
+                  checked={prototypeSettings.uiExperiments.transactionsView}
+                  onChange={(checked) => {
+                    updateSetting('uiExperiments', 'transactionsView', checked);
+                    // Close modal and reload when toggling
+                    setIsSettingsModalOpen(false);
+                    // Reload to apply changes
+                    window.location.reload();
+                  }}
+                />
+                <Button
+                  variant="icon"
+                  color="white"
+                  shape="square"
+                  icon={<CopyMedium color={colors.blackAndWhite.black900} />}
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    params.set('transactionsView', 'true');
+                    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}${window.location.hash}`;
+                    navigator.clipboard.writeText(url);
+                    alert('Link copied to clipboard!');
+                  }}
+                />
+              </div>
+
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{
+            paddingTop: '16px',
+            borderTop: `1px solid ${colors.blackAndWhite.black100}`,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+            <Button
+              variant="primary"
+              color="white"
+              onClick={resetSettings}
+              showIcon={false}
+            >
+              Reset All Settings
+            </Button>
+            <Button
+              variant="primary"
+              color="black"
+              onClick={() => setIsSettingsModalOpen(false)}
+              showIcon={false}
+            >
+              Apply
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
+export default Layout;
