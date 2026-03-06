@@ -1,0 +1,623 @@
+# Component Documentation
+
+This document contains detailed documentation for all components in the Ledger Design Library.
+
+> 📘 **Note:** This is the detailed architectural documentation. For quick usage examples, code snippets, and common patterns, see [LIBRARY_USAGE.md](./LIBRARY_USAGE.md).
+
+## 🎨 Unified Semantic Theme System
+
+### Overview
+The design library features a comprehensive, consolidated theming system where ALL components and pages use semantic color tokens that automatically adapt based on product context (Reports, Analytics, Marketplace). Token duplication has been completely eliminated.
+
+### Core Architecture
+- **Universal Semantic Colors**: All 45+ components use `colors.theme.primary200/300/400/500/700` and `colors.theme.main`
+- **ThemeProvider**: React context that provides theme-aware colors to all child components
+- **Automatic Color Resolution**: Theme system automatically maps semantic tokens to product colors
+  - Reports context: `theme.main` → `reports.blue700`, `theme.primary400` → `reports.dynamic.blue400`
+  - Analytics context: `theme.main` → `analytics.green700`, `theme.primary400` → `analytics.dynamic.green400`
+  - Marketplace context: `theme.main` → `marketplace.violet700`, `theme.primary400` → `marketplace.dynamic.violet400`
+- **Token Consolidation**: Eliminated redundant `strokes` token and all duplicate color references
+
+### Implementation Patterns
+```typescript
+// Wrap components with ThemeProvider
+<ThemeProvider initialTheme="analytics">
+  <YourComponent />
+</ThemeProvider>
+
+// Inside components, use semantic colors via hook
+const YourComponent = () => {
+  const colors = useSemanticColors();
+  return <div style={{ backgroundColor: colors.theme.main }} />;
+};
+
+// For static data outside components, use direct imports
+import { colors as staticColors } from '@design-library/tokens';
+const staticData = [
+  { id: 1, status: staticColors.success.fill }
+];
+```
+
+### Comprehensive Integration Benefits
+- **Zero Token Duplication**: Single source of truth for all theme colors across entire codebase
+- **Automatic Theme Adaptation**: All components, pages, tables, and forms automatically adapt to context
+- **Error-Free Architecture**: Resolved all "colors is not defined" errors through systematic component updates
+- **Developer Experience**: Clear semantic naming (`colors.theme.primary400` vs `colors.reports.dynamic.blue400`)
+- **Type Safety**: Full TypeScript support with consolidated theme-aware color tokens
+- **Maintainable**: Theme changes propagate automatically across 45+ components and all pages
+
+## Components Built
+1. **Button**: Unified button component with 3 variants (primary, small, icon), multiple colors, icon support, disabled states
+2. **InfoTooltip**: Interactive "i" symbol with hover tooltips, supports simple text or complex multi-section content, 5 positioning options
+3. **Input**: Complete form input with label, tooltip integration, left symbols ($, %), right icons, 6 states, helper text
+4. **DatePicker**: Date selection component based on Input field with calendar icon, all 6 states, form integration
+5. **Dropdown**: Complete dropdown component with same Input field specifications and interactive behavior
+6. **Selector**: Unified selector component with 2 variants (checkbox, radio), form integration, disabled support
+7. **ButtonSelector**: Button-style selector combining button design with embedded checkbox/radio, 3 states, perfect for binary choices
+8. **Utilities**: Shared utility functions for styling, typography, and common patterns
+9. **Custom Hooks**: Reusable hooks for common component behaviors (outside clicks, hover states)
+12. **Status**: Interactive status component with dropdown menu functionality (evolved from Chips), 5 semantic variants, 4 menu item states, design system integration
+13. **Modal**: Unified modal component replacing inconsistent implementations across valuation and transaction sections
+14. **Table**: Advanced responsive data table with intelligent column sizing, enhanced action buttons, and comprehensive Storybook showcases
+15. **DocumentCell**: Enhanced interactive document cell with DocumentTable icons and configurable hover icons (download/config modes)
+16. **ActionCell**: Interactive action cell with enhanced primary action styling - upload buttons feature light green background (#C6FFC1) for prominence
+
+## Page Components
+17. **TransactionManagement**: Complete transaction management interface with intelligent table system
+    - **Animated Header**: Blue header with subtle SVG line animation (5.76s cycle, parallax entrance effect)
+    - Header includes base shadow, document icon, and "New Transaction" button
+    - Complete new transaction workflow with proper navigation flow
+    - Transaction and Total Premium stats cards using reusable MetricCard components
+    - Advanced data table with tab selector functionality (5 tabs: All Transactions, Active, Pending, Draft, Cancelled)
+    - 12 rows of sample transaction data demonstrating proper scrolling/masking behavior
+    - Complete integration with Sidebar, TopNav, and enhanced Table component
+    - Responsive layout with 1300px max-width and proper component composition
+18. **ReportNavigation**: Advanced report navigation interface with program selector, relationship indicators, and sophisticated metric cards
+    - Program selector card with dropdown functionality
+    - Program relationship pills showing hierarchical connections  
+    - Cession and Collateral metrics with growth indicators and trend charts
+    - Data Validation metrics with status indicators and validation charts
+    - Custom chart components (SmallChart, DataValidationChart) with SVG-based visualizations
+    - Full design system integration with proper spacing and typography
+
+## Icon System (106 total icons + Favicon)
+1. **Extra Small (8x8px)**: 9 icons - minimal UI elements (added chevronUp)
+2. **Small (12x12px)**: 32 icons - used in IconButton and small components (includes new CalculatorSmall, UploadSmall, ConfigSmall for action types)
+3. **Medium (22x22px)**: 56 icons - larger UI elements, headers, includes status icons (StatusWarning, StatusError, StatusSuccess)
+4. **Table (24x24px)**: 9 icons - specifically for table headers (includes new ArrangeTable icon)
+5. **Logo Icons**: 6 brand logos including KLogo (K icon) used for compact navigation and favicon
+6. **Favicon**: Professional K logo favicon with black900 background implemented across pages and Storybook environments
+
+## Component Features Summary
+
+> 💡 **Detailed features below.** For quick usage examples and code snippets, see [LIBRARY_USAGE.md](./LIBRARY_USAGE.md).
+
+### Button
+
+> 📖 [Quick Button examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#button)
+- Unified component with 4 variants: primary, small, icon, tertiary
+- **Primary variant**: Full-featured buttons with text, icons, 5 colors (black, white, main, light, green)
+- **Small variant**: Compact buttons for secondary actions, 5 colors (black, white, main, light, green)
+  - **Enhanced centering**: Perfect text alignment when `showIcon={false}` - no extra spacing for hidden icons
+  - **Dynamic gap**: Automatically adjusts spacing based on icon presence (10px with icon, 0px without)
+- **Icon variant**: Icon-only buttons, 5 colors (black, main, light, green, white), 2 shapes (circle, square)
+- **Tertiary variant**: White background button with blue circular icon container and text
+  - **Design**: White button with primary400 border, blue circular icon container (24px) with white variant for "Add" functionality
+  - **Usage**: Ideal for "Add" actions in forms and dynamic content sections
+  - **Icon container**: Blue700 background with white AddMedium icon, border radius 8px
+  - **Full-width support**: Designed to span full width of containers for prominent actions
+- **Interactive hover effects**: Subtle 15% white overlay for colored buttons, blue200 solid for white buttons
+- **Smart icon colors**: White icons on dark backgrounds, black icons on light backgrounds
+- Icon positioning (left, right) for primary variant
+- Comprehensive prop API with variant-specific features
+- Disabled states across all variants with no hover effects
+- **State management**: Automatic hover state reset when switching variants/colors in Storybook
+- Uses design tokens: `typography.styles.*`, `borderRadius.*`, `colors.*`
+- **Updated icon colors**: Black and white button variants now use blue700 (#9ad5f7) for proper design system compliance
+
+### Status
+
+> 📖 [Quick Status examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#status)
+- Interactive status component with dropdown menu functionality (evolved from Chips component)
+- **5 semantic variants**: warning (yellow), success (green), error (red/pink), info (blue), inactive (gray)
+- **3 sizes**: small, medium, large with consistent design token integration
+- **Dropdown menu features**: Click to open/close, outside click detection, ESC key support, close button (X)
+- **4 menu item states**: Default, Hover (blue200 50% alpha), Selected (blue300), Disabled (reduced opacity)
+- **Design system integration**: Uses `borderRadius.absolute` for rounded corners, proper color tokens
+- **Form integration**: Controlled/uncontrolled modes with onSelect callback for option handling
+- **Accessibility**: Full keyboard support, ARIA roles, smooth 0.2s ease transitions
+- **Backward compatibility**: Original Chips component still exported alongside Status
+- Located in "Components/Status" Storybook category with comprehensive interactive examples
+
+### InfoTooltip
+- **Circular "i" icon**: 18x18px SVG icon with hover/focus triggers and interactive states
+- **Content Support**: Three content modes with priority handling
+  - **Simple text**: Use `text` prop for basic tooltip content
+  - **Complex sections**: Use `sections` prop for multi-section content with titles and descriptions
+  - **Custom content**: Use `children` prop for completely custom React content
+- **5 positioning options**: top, bottom, left, right, bottom-right, follow-mouse
+- **Dynamic sizing**: Automatic sizing based on content type
+  - Simple text: 150px width with 8px 12px padding
+  - Complex sections: 250px width with 18px 20px padding
+  - Custom content: 200-400px width with 15px padding
+- **Typography integration**: Uses `typography.styles.captionS` (titles), `typography.styles.bodyS` (descriptions)
+- **Theme-aware design**: Black900 background, white text, proper separators between sections
+- **Usage Pattern Note**: For custom tooltip content without showing the "i" icon, create a custom tooltip component instead of using InfoTooltip with children prop
+
+### Input
+- Complete form input with label and helper text
+- InfoTooltip integration (simple or complex)
+- Left symbols ($ or %) with proper positioning
+- 6 states with automatic state transitions:
+  - **Default**: Initial idle state
+  - **Active**: When focused/clicked (auto-switches)
+  - **Filled**: When has content and not focused (auto-switches)
+  - **Warning**: Manual state for potential issues
+  - **Error**: Manual state for validation errors
+  - **Disabled**: Non-interactive state
+- Multiple input types (text, number, email, password)
+- Custom number input controls with library chevron icons (no browser spinners)
+- Interactive behavior: default → active (focus) → filled (type + blur) → active (focus again)
+- Fully uses design tokens: colors, typography, spacing, border radius
+- Uses `typography.styles.bodyL` (label), `typography.styles.bodyM` (input), `typography.styles.bodyS` (helper)
+
+### DatePicker
+- Complete date range picker with advanced modal interface and multiple period modes
+- Built-in calendar icon from design system library (medium.calendar - 22x22px)
+- **Adaptive Modal Interface**: Responsive modal sizing based on calendar type
+  - Single calendar: 420px width for Current period
+  - Dual calendar: 680px width for range/year periods
+- **Time Period Modes**: 6 preset buttons with distinct behaviors
+  - **Custom**: Full dual calendar with manual date range selection
+  - **Current**: Single calendar, start date only, ongoing period display ("From DD/MM/YYYY")
+  - **1-5 Years**: Automatic end date calculation (+1/2/3/5 years from start date)
+- **Intelligent Calendar Display**:
+  - Single calendar: Centered, for Current period only
+  - Dual calendar: Side-by-side with center alignment for all other periods
+  - Disabled right calendar: For year periods with 50% opacity and no interaction
+- **Enhanced Calendar Navigation**:
+  - Month/year dropdowns using extraSmall chevronDown icons (8x8px)
+  - Click chevrons to access dropdown lists with proper styling
+  - Smooth transitions and click-outside-to-close functionality
+- **Smart Date Input Handling**:
+  - Start date: Always editable, supports manual entry and calendar selection
+  - End date: Auto-disabled for year periods with helper text ("Auto-calculated +X years")
+  - Read-only main input: Click to open modal, shows formatted results
+- **Advanced Date Selection Logic**:
+  - Start/end dates: black900 background with blue700 text
+  - Range dates: blue300 background with black900 text
+  - Single date: Same high-contrast styling as range endpoints
+- **Responsive Button Layout**:
+  - Single calendar: 3 columns × 2 rows (compact layout)
+  - Dual calendar: 6 columns × 1 row (spread across modal width)
+- **Modal Interactions**: 
+  - Click input field or calendar icon to open
+  - Click outside or escape key to close
+  - Apply button appears when appropriate dates selected
+  - Backdrop click with proper event handling
+- **Display Formats**:
+  - Date range: "DD/MM/YYYY to DD/MM/YYYY"
+  - Current period: "From DD/MM/YYYY"
+  - Auto-calculated periods: Proper end date display with visual feedback
+- **Complete Design System Integration**: All components use library Button, Input, Calendar, and icon components
+- **Form Integration**: Controlled/uncontrolled modes with proper event handling
+- InfoTooltip integration (simple and complex)
+- Left symbols ($ or %) with proper positioning
+- 6 states with automatic state transitions (same as Input component)
+- Located in "Components" Storybook category with comprehensive examples
+
+### Dropdown
+- Complete dropdown component with same specs as Input field
+- InfoTooltip integration (simple and complex)
+- 6 states with automatic state transitions:
+  - **Default**: Initial idle state
+  - **Active**: When clicked/opened (auto-switches)
+  - **Filled**: When option selected and closed (auto-switches)
+  - **Warning**: Manual state for potential issues
+  - **Error**: Manual state for validation errors
+  - **Disabled**: Non-interactive state
+- Interactive behavior: default → active (click) → filled (select) → active (click again)
+- Custom dropdown list with 10px margin, library shadows, clean styling
+- Custom scrollbar: black900 color, no arrow buttons, minimal design
+- Chevron icon rotation animation on open/close
+- Click outside to close functionality
+- Disabled options support within dropdown list
+- Fully uses design tokens: colors, typography, spacing, border radius, shadows
+- Uses `typography.styles.bodyL` (label), `typography.styles.bodyM` (options), `typography.styles.bodyS` (helper)
+
+### Selector
+- Unified selector component with 2 variants: checkbox, radio
+- **Checkbox variant**: Square selector (4px border radius) for independent choices
+- **Radio variant**: Circular selector (borderRadius.absolute) for exclusive choices
+- 18x18px dimensions for both variants
+- Transparent background in default state for radio, white for checkbox
+- Black900 background with success.fill checkmark when selected (both variants)
+- Interactive state behavior: default ↔ filled (click to select)
+- Form integration with proper name/value attributes
+- Radio group functionality for exclusive selections
+- Controlled and uncontrolled modes
+- Disabled state with proper opacity and cursor handling
+- Uses `typography.styles.bodyM` for label text
+- Comprehensive prop API with variant-specific features
+- Uses design tokens: `colors.*`, `borderRadius.*`, `typography.styles.*`
+
+### Modal
+
+> 📖 [Quick Modal examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#modal)
+- **Unified Modal Component**: Comprehensive modal system replacing inconsistent implementations across valuation and transaction sections
+- **Flexible Positioning System**:
+  - **Button-relative**: Positions modal below trigger button with smart viewport calculations
+  - **Centered**: Standard centered modal with backdrop
+  - **Custom**: Accept custom x/y coordinates for precise positioning
+- **Theme-Aware Styling**: Semantic color integration with proper close button theming using Button component
+- **Footer Integration**: Built-in footer system with intelligent alignment matching content area
+  - Automatic padding calculation and proper alignment
+  - Eliminates double padding issues through proper CSS structure
+- **20+ Customization Props**: width, height, positioning, backdrop control, custom styling support
+- **Enhanced Features**:
+  - Smart viewport boundary detection and positioning adjustment
+  - Keyboard support (ESC key to close)
+  - Optional backdrop with click-to-close functionality
+  - Unified close button using Button component with icon variant
+  - Title and subtitle support with proper typography
+- **Shadow System**: Uses proper design token `shadows.large` for consistent elevation
+- **Error-Free Implementation**: Resolved all positioning flash issues and shadow token mismatches
+- **Comprehensive Storybook**: 6 interactive examples demonstrating all modal variants and usage patterns
+- **Location**: "Components/Modal" in Storybook with complete documentation and examples
+
+### ButtonSelector
+- Complete button-style selector component with 3 states (default, active, filled)
+- Combines button design with embedded checkbox or radio selector
+- Button dimensions with padding (12px 16px) and 44px minimum height
+- 8px border radius and proper button styling
+- Supports both checkbox and radio selector types
+- Perfect for binary choices in forms where selectors need to be prominent
+- Interactive state behavior: default → active (hover/focus) → filled (selected)
+- Form integration with proper name/value attributes
+- Controlled and uncontrolled modes
+- Disabled state with proper opacity and cursor handling
+- Uses `typography.styles.bodyM` for button text
+- Located in "Components" Storybook category
+- Comprehensive examples including binary choice forms and radio groups
+
+### Table
+
+> 📖 [Quick Table examples in LIBRARY_USAGE.md](./LIBRARY_USAGE.md#table)
+- Advanced responsive data table component with tab selector, horizontal scrolling, and specialized cell types
+- **Enhanced Header Features**: Tab selector replacing filter functionality, search input, dual pagination options (header/footer) with Figma-based design
+- **Tab Selector**: Interactive tab switching with blue400 dividers, smooth transitions, and proper state management
+  - Selected state: white background, blue400 border, black900 text, active tab functionality
+  - Default state: transparent border, black500 text, clickable interactions
+  - Proper event handling with useState integration
+- **Responsive Scrolling**: Horizontal scroll with single scrollbar, adapts to page size (no double scrollbars)
+- **Sticky Action Column**: Right-aligned action column with elevation and visual separation
+  - **Floating Behavior**: Always visible on right side during horizontal scroll
+  - **Visual Elevation**: Blue400 left border (1px) using inset shadow technique for sticky compatibility
+  - **Base Shadow**: Design token shadow for clear elevation above other columns  
+  - **White Background**: Covers underlying content when floating
+- **Intelligent Column Width System**: Automatic column sizing based on content analysis
+  - **Smart Rule**: If all cells in a column have < 11 characters, width = 150px
+  - **Special Cases**: Document columns = 300px, Action columns = 130px
+  - **Fallback**: Regular columns default to 200px for longer content
+  - **Dynamic Optimization**: Analyzes actual data to determine optimal widths
+- **Enhanced Action Types**: Streamlined action system with primary action highlighting
+  - **Upload (Primary)**: Light green background (#C6FFC1) with success green icon (#2fa915) to indicate primary actions
+  - **Validate**: Blue styling with CheckSmall icon + "Validate" text  
+  - **Generate**: Blue styling with CalculatorSmall icon + "Generate" text
+  - **Setup**: Blue styling with ConfigSmall icon + "Setup" text
+- **Three Specialized Cell Types**:
+  - **Simple cells**: Standard text with black700 color and right/left/center alignment support
+  - **Document cells**: Enhanced with DocumentTable icons and configurable hover icons (download or config)
+  - **Action cells**: Button-style cells with row-specific action type selection
+- **Responsive Design**: Table adapts to container width while maintaining minimum column requirements
+- **Enhanced Dimensions**: 45px row height, intelligent column widths based on content analysis (150px for short content, 200px for long content, 300px for documents, 130px for actions)
+- **Dual Pagination Options**: Header pagination (default) and footer pagination with blue400 separator line
+- **Dynamic Width**: Automatically calculated based on intelligent column sizing (typically 1550px with optimized columns)
+- **Design Tokens**: Full integration with colors, typography, spacing, shadows, and border radius
+- Located in "Components" Storybook category with comprehensive interactive examples
+
+## Utilities & Hooks
+
+### Typography Utilities
+- **applyTypographyStyle()**: Applies design system typography styles consistently
+- **commonTypographyStyles**: Pre-configured styles for labels, fields, helpers, buttons, etc.
+- Eliminates repetitive typography object creation across components
+- Ensures consistent font application throughout the design system
+
+### Style Utilities
+- **injectGlobalStyles()**: Utility for injecting CSS into document head safely
+- **commonStyles**: Pre-configured injections for number spinners and custom scrollbars
+- **flexCenter, flexAlign()**: Common flex alignment patterns
+- **standardTransition()**: Consistent animation transitions
+- **colorWithOpacity()**: Color manipulation utility
+
+### Custom Hooks
+- **useOutsideClick**: Handles clicks outside referenced elements (dropdowns, modals)
+- **useHoverState**: Manages hover state consistently with proper handlers
+- Reduces duplicate event handling logic across components
+- Provides consistent behavior patterns throughout the library
+
+## Cell Components
+
+### DocumentCell
+- Interactive document cell component for downloadable files in table cells with alignment support
+- **Alignment Awareness**: Accepts `align` prop ('left', 'center', 'right') for proper text positioning
+  - Left alignment: Standard icon + text layout
+  - Right alignment: Icon and text positioned to flex-end for proper right-aligned appearance
+  - Center alignment: Icon and text centered within cell container
+- **Default State**: Blue200 background (`colors.reports.dynamic.blue200`) with document icon + filename
+- **Hover State**: Blue300 background (`colors.reports.dynamic.blue300`) with download icon reveal
+- **Download Icon Container**: White background, 8px border radius, small shadow from design tokens
+- **Text Handling**: Ellipsis for long filenames with proper overflow management
+- **Accessibility**: Full keyboard support (Enter/Space), ARIA roles, focus management
+- **Design Integration**: Uses DocumentSmall and DownloadSmall icons from library
+- **Smooth Animations**: 0.2s ease transitions for background and icon opacity
+- **Table Integration**: Table component automatically passes column alignment to DocumentCell
+- **Form Integration**: Configurable onDownload callback for file handling
+- Uses design tokens: `colors.reports.dynamic.*`, `borderRadius[4]`, `shadows.sm`, `typography.styles.bodyM`
+
+### ActionCell
+- Interactive action cell component for table actions (edit, configure, upload)
+- **Three Icon Types**: 
+  - `'edit'`: EditSmall icon for configuration/editing actions
+  - `'add'`: AddSmall icon for upload/creation actions
+  - `'plus'`: PlusSmall icon for adding new items
+- **Default State**: Transparent background, blue400 border, small shadow
+- **Hover State**: Blue300 background, no border, no shadow
+- **Button-like Design**: Professional appearance with proper elevation and interaction states
+- **Text + Icon Layout**: Action text on left, configurable icon on right with 6px gap
+- **Overflow Handling**: Ellipsis for long action names with native HTML tooltips
+- **Accessibility**: Full keyboard support, proper ARIA roles, focus management
+- **Smooth Transitions**: 0.2s ease animation between all visual states
+- **Form Integration**: Configurable onClick callback for action handling
+- Uses design tokens: `colors.reports.dynamic.*`, `borderRadius[4]`, `shadows.sm`, `typography.styles.bodyM`
+
+## Enhanced Table System
+
+### Multiple Cell Types
+The Table component supports three distinct cell types through the `cellType` property:
+
+1. **Simple Cells** (`cellType: 'simple'`): 
+   - Standard text content with ellipsis overflow
+   - Native HTML tooltips for truncated text
+   - Automatic wrapping for string/number content
+
+2. **Document Cells** (`cellType: 'document'`):
+   - DocumentCell component for downloadable files
+   - Expects string filename data
+   - Configurable download callbacks via `onDownload` property
+
+3. **Action Cells** (`cellType: 'action'`):
+   - ActionCell component for interactive buttons
+   - Configurable icons via `actionIcon` property
+   - Action callbacks via `onAction` property
+
+### Table Features
+- **Responsive Design**: Adapts to container width while maintaining minimum requirements, single horizontal scrollbar
+- **Internal Cell Components**: DocumentCell and ActionCell are internal components (not exported)
+- **Optimized Column Widths**: First column 300px, standard columns 200px, action column 150px
+- **Sticky Action Column**: Right-side floating column with blue400 left border, base shadow, and white background
+- **Smart Cell Rendering**: Automatically renders appropriate component based on cellType with row-specific action types
+- **Consistent Overflow**: All cell types handle text overflow with ellipsis and tooltips
+- **Enhanced Dimensions**: 45px row height for better visual spacing and content readability
+- **Total Width**: 2050px minimum (300px + 8×200px + 150px) with responsive expansion capability
+- **Layout**: `tableLayout: 'fixed'` enforces exact column specifications with sticky positioning support
+- **Action System**: Four distinct action types (upload, validate, generate, setup) with proper icon integration
+- **Professional Elevation**: Base shadow and border effects for clear visual hierarchy
+
+## Modal Usage Examples
+
+### NewValuationModal
+**Location**: `/pages/NewValuationModal.tsx` - Analytics-specific modal for creating new valuation configurations
+
+**Features**:
+- **Unified Modal Integration**: Now uses the unified Modal component with footer prop
+- **Theme Integration**: Uses ThemeProvider context to automatically adapt to Analytics green theme
+- **Form Layout**: 2-column grid layout with 6 form fields
+- **Validation**: Form validation with disabled submit button until all fields are filled
+
+**Form Fields**:
+1. **Policy Group** (Dropdown): Aviation Treaty, Cyber Treaty, Health Insurance, Liability Treaty, Property Treaty, Marine Cargo Treaty
+2. **Risk Period** (Dropdown): 2023, 2024, 2025, TY23, TY24, TY25
+3. **Expected Loss Ratio** (Input): Text input for loss ratio percentage
+4. **Loss Ratio Standard Deviation** (Input): Text input for standard deviation value
+5. **Expected Premium** (Input): Text input for premium amount
+6. **Premium Cap** (Input): Text input for premium cap value
+
+### NewTransactionModal
+**Location**: `/pages/NewTransactionModal.tsx` - Transaction type selection modal
+
+**Features**:
+- **Unified Modal Integration**: Converted to use Modal component with button positioning
+- **Option Cards**: Two 50% width cards (Brand New vs Renewal transactions)
+- **Footer Integration**: Continue button in modal footer with proper alignment
+- **Theme Integration**: Uses semantic theme colors for consistent styling
+
+### BrandNewTransactionModal
+**Location**: `/pages/BrandNewTransactionModal.tsx` - Contract terms input method selection
+
+**Features**:
+- **Unified Modal Integration**: Refactored to use Modal component with footer
+- **Back/Continue Flow**: Back and Continue buttons in footer with proper navigation
+- **Option Cards**: Upload PDF vs Enter Manually options with 50% width each
+- **AI Integration**: Features korra ContractsAI badge for PDF upload option
+
+### UploadTrianglesModal
+**Location**: `/pages/UploadTrianglesModal.tsx` - Analytics valuation data upload modal
+
+**Features**:
+- **Unified Modal Integration**: Updated to use Modal component with footer
+- **Warning System**: StatusWarning icon with proper error messaging in footer
+- **Triangle Upload**: Development Fit Triangle and On Risk Triangle upload options
+- **Enhanced Typography**: bodyL labels with proper spacing and "add" prefix for UX
+
+### Usage Pattern
+```typescript
+// All modals now follow this unified pattern:
+<Modal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Modal Title"
+  subtitle="Optional subtitle"
+  buttonRef={buttonRef}
+  showBackdrop={false}
+  width="730px"
+  footer={
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Button variant="primary" color="black" onClick={handleAction}>
+        Action Button
+      </Button>
+    </div>
+  }
+>
+  {/* Modal content */}
+</Modal>
+```
+
+## Icon System
+
+### Complete 6-Tier Icon Architecture
+The design library features a comprehensive icon system with 115+ icons organized into 6 distinct categories, each optimized for specific use cases and consistent sizing.
+
+### Icon Categories
+
+#### 1. Extra Small Icons (8x8px)
+- **Usage**: Minimal UI elements, chevrons, small indicators
+- **Examples**: ChevronDownExtraSmall, PlusExtraSmall, XExtraSmall
+- **Import**: `import { ChevronDownExtraSmall } from '@design-library/icons'`
+
+#### 2. Small Icons (12x12px)
+- **Usage**: General UI elements, form controls, navigation
+- **Examples**: AddSmall, CheckSmall, DocumentSmall, DownloadSmall
+- **Import**: `import { AddSmall } from '@design-library/icons'`
+
+#### 3. Medium Icons (22x22px)
+- **Usage**: Standard interface icons, buttons, navigation
+- **Examples**: AddMedium, CalendarMedium, CloseMedium, **SettingsMedium** (new)
+- **Import**: `import { SettingsMedium } from '@design-library/icons'`
+
+#### 4. Table Icons (24x24px)
+- **Usage**: Table headers, data visualization, sorting controls
+- **Examples**: DocumentTable, ArrangeTable, AmmountTable, TextTable
+- **Special Status Icons (17x17px)**: StatusCheckTable, StatusAlertTable, StatusErrorTable, StatusProgressTable, StatusAddTable
+- **Import**: `import { StatusCheckTable } from '@design-library/icons'`
+
+#### 5. Card Icons (15x18px) - NEW
+- **Usage**: Card title indicators with colored backgrounds
+- **CardsCheck**: Purple background (#E0BFFB) with checkmark for status cards
+- **CardsGraph**: Blue background (#BEE4FB) with trend line for analytics cards
+- **CardsText**: Yellow background (#FFDD61) with text lines for content cards
+- **Import**: `import { CardsCheck } from '@design-library/icons'`
+
+#### 6. Logo Icons (14x14px + Variable)
+- **Usage**: Brand logos, navigation identity, product themes
+- **Examples**: KLogo, MarketplaceLogo, ReportsLogo, AnalyticsLogo, ContractsLogo
+- **Import**: `import { KLogo } from '@design-library/icons'`
+
+### Table Status Icon System
+A specialized collection of 5 status icons designed for data tables, all standardized to 17x17px for visual consistency:
+
+- **StatusCheckTable**: Blue check circle (#3DA3CB) for completed status
+- **StatusAlertTable**: Yellow warning circle (#AB8703) with exclamation mark
+- **StatusErrorTable**: Red error circle (#FF8588) with X mark
+- **StatusProgressTable**: Blue progress circle (#3DA3CB/#B3E5FF) with loading indicator
+- **StatusAddTable**: Gray add circle (#B4C2C5) with plus sign
+
+### Icon Usage Patterns
+
+#### Structured Import (Recommended)
+```typescript
+import { icons } from '@design-library/icons'
+
+// Usage
+<IconComponent
+  icon={icons.small.add}
+  color="currentColor"
+/>
+<IconComponent
+  icon={icons.cards.check}
+  color="currentColor"
+/>
+<IconComponent
+  icon={icons.table.statusCheck}
+  color="currentColor"
+/>
+```
+
+#### Direct Import
+```typescript
+import {
+  AddSmall,
+  CardsCheck,
+  StatusCheckTable,
+  SettingsMedium
+} from '@design-library/icons'
+```
+
+### Design Principles
+- **Consistent Sizing**: Each tier has standardized dimensions for visual harmony
+- **Transparent Backgrounds**: All icons work on any background color
+- **Predefined Colors**: Status and card icons include color schemes aligned with design system
+- **TypeScript Support**: Full type safety with dedicated interfaces for each tier
+- **Scalable Architecture**: Easy to extend with new categories and icons
+
+### Storybook Documentation
+All icons are documented in the **Design Tokens** story with interactive examples, organized by category with size specifications and color information.
+
+## CustomCell
+
+### Overview
+A highly flexible table cell component that can render multiple types of content elements with sophisticated layout controls. Designed for advanced data table scenarios requiring complex cell content.
+
+### Features
+- **Multi-Element Support**: Combine text, icons, buttons, badges, and status indicators in a single cell
+- **Flexible Layout**: Horizontal or vertical layouts with configurable alignment and spacing
+- **Rich Typography**: Full typography token integration with weight and color controls
+- **Interactive Elements**: Click handlers, hover effects, and link support
+- **Theme Integration**: Automatic color adaptation through semantic theme system
+
+### Element Types
+1. **Text Elements**: Rich typography with style, weight, and color options
+2. **Icon Elements**: Custom icons with size and color controls
+3. **Button Elements**: Full button component integration with all variants
+4. **Badge Elements**: Colored status badges with icon support
+5. **Status Elements**: Status indicators with dots and optional text
+
+### Usage Examples
+
+```tsx
+// Multi-element cell with mixed content
+<CustomCell
+  elements={[
+    { type: 'text', content: 'Premium Amount', style: 'bodyM', weight: 'medium' },
+    { type: 'text', content: '$125,430', style: 'bodyL', color: 'primary' },
+    { type: 'badge', text: 'Verified', variant: 'success' }
+  ]}
+  direction="vertical"
+  alignment="left"
+  gap={8}
+/>
+
+// Interactive cell with actions
+<CustomCell
+  elements={[
+    { type: 'text', content: 'Document.pdf', style: 'bodyM' },
+    { type: 'button', text: 'Download', variant: 'small', onClick: handleDownload }
+  ]}
+  alignment="space-between"
+/>
+```
+
+### Props
+- `elements`: Array of content elements to render
+- `alignment`: 'left' | 'center' | 'right' - Content alignment
+- `direction`: 'horizontal' | 'vertical' - Layout direction
+- `gap`: Number - Spacing between elements in pixels
+- `onClick`: Optional click handler for entire cell
+- `className`: Additional CSS classes
+- `style`: Custom styles
+
+### Working Examples
+For complete implementation examples, see:
+- [BDX Upload Page](./pages/BDXUpload.tsx) - Status cells with hover tooltips
+- [Transaction Management Page](./pages/TransactionManagement.tsx) - Complex table implementations

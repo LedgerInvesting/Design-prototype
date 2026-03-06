@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd ../design-library && npm install && cd ../pages && npm run build",
+  "installCommand": "npm install"
+}

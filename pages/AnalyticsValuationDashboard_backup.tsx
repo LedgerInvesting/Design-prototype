@@ -1,0 +1,948 @@
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { Layout } from '@design-library/pages';
+import { Button, DashboardCard, ChartTooltip, AppActionButton } from '@design-library/components';
+import { typography, borderRadius, shadows } from '@design-library/tokens';
+import { ThemeProvider, useSemanticColors } from '@design-library/tokens/ThemeProvider';
+import { SettingsMedium, DownloadSmall, ArrowUpSmall, ArrowDownSmall, CardsGraph, CardsText, AddMedium, ContractsLogo, StatusAddTable, ListMedium, StatusProgressTable, EditSmall } from '@design-library/icons';
+import { UploadTrianglesModal } from './UploadTrianglesModal';
+import { AddTriangleModal } from './AddTriangleModal';
+import { useSettings } from '@design-library/contexts';
+import { createPageNavigationHandler } from '@design-library/utils/navigation';
+import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+// Custom StatusCheck component with proper color support
+const StatusCheck: React.FC<{ color: string }> = ({ color }) => (
+  <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.7998 8.27778L7.94266 10.5L11.7998 6.5" stroke={color} strokeWidth="2"/>
+    <circle cx="8.7998" cy="8.5" r="7.5" stroke={color} strokeWidth="2"/>
+  </svg>
+);
+
+/**
+ * Triangle Tooltip Component
+ *
+ * Custom tooltip wrapper that displays triangle type legend when hovering over status icons.
+ * This replaces the InfoTooltip component to avoid unwanted "i" icon display.
+ *
+ * Features:
+ * - Mouse-following tooltip positioning
+ * - No additional visual elements (triggers directly on children)
+ * - Triangle legend with color-coded explanations
+ * - Clean hover/leave state management
+ */
+const TriangleTooltip: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    setIsVisible(true);
+    setPosition({ x: e.clientX + 10, y: e.clientY + 10 });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setPosition({ x: e.clientX + 10, y: e.clientY + 10 });
+  };
+
+  const handleMouseLeave = () => {
+    setIsVisible(false);
+  };
+
+  return (
+    <>
+      <div
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ cursor: 'pointer' }}
+      >
+        {children}
+      </div>
+
+      {/* Render tooltip in portal to avoid parent transform issues */}
+      {isVisible && typeof document !== 'undefined' && createPortal(
+        <div
+          style={{
+            position: 'fixed',
+            left: position.x,
+            top: position.y,
+            backgroundColor: '#17211B',
+            color: 'white',
+            padding: '16px',
+            borderRadius: '8px',
+            fontSize: '10px',
+            fontWeight: 500,
+            lineHeight: 1.3,
+            maxWidth: '280px',
+            zIndex: 1000,
+            pointerEvents: 'none',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #BD8B11', backgroundColor: 'transparent', flexShrink: 0 }} />
+              <span>On risk triangle (Accident-quarter)</span>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #744DEB', backgroundColor: 'transparent', flexShrink: 0, marginTop: '2px' }} />
+              <span style={{ whiteSpace: 'pre-line' }}>Loss Development triangle{'\n'}(Accident-quarter)</span>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid #3DA3CB', backgroundColor: 'transparent', flexShrink: 0 }} />
+              <span>Policy-Year triangle</span>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
+  );
+};
+
+
+// Growth indicator component
+interface GrowthIndicatorProps {
+  direction: 'up' | 'down';
+  percentage: string;
+  period: string;
+}
+
+const GrowthIndicator: React.FC<GrowthIndicatorProps> = ({ direction, percentage, period }) => {
+  const colors = useSemanticColors();
+  const isPositive = direction === 'up';
+  const color = isPositive ? colors.success.textAndStrokes : colors.error.textAndStrokes;
+  const ArrowIcon = isPositive ? ArrowUpSmall : ArrowDownSmall;
+  const sign = isPositive ? '+' : '';
+
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+      fontFamily: 'Söhne, system-ui, sans-serif',
+      fontSize: '12px',
+      fontWeight: 500,
+      color: colors.blackAndWhite.black900,
+    }}>
+      <ArrowIcon color={color} />
+      <span>{sign} {percentage} in the last {period}</span>
+    </div>
+  );
+};
+
+// Small chart component for metrics
+interface SmallChartProps {
+  trend: 'up' | 'down';
+}
+
+const SmallChart: React.FC<SmallChartProps> = ({ trend }) => {
+  const colors = useSemanticColors();
+  const circleColor = trend === 'up' ? colors.success.textAndStrokes : colors.error.textAndStrokes;
+
+  return (
+    <svg width="106" height="28" viewBox="0 0 106 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M1 15.5C2.5 15.5 4 14 6 13C8 12 10.5 11 13 10.5C15.5 10 18 9.5 21 9C24 8.5 27.5 8 31 7.5C34.5 7 38.5 6.5 42 6C45.5 5.5 49.5 5 53 4.5C56.5 4 60.5 3.5 64 3C67.5 2.5 71.5 2 75 1.5C78.5 1 82.5 0.5 86 1C89.5 1.5 93.5 2 97 2.5C100.5 3 104.5 3.5 106 4"
+        stroke="#17211B"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="102"
+        cy="4"
+        r="4"
+        fill={circleColor}
+        stroke="white"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+};
+
+interface ValuationDashboardProps {
+  onNavigateToPage: (page: string) => void;
+  valuationData?: {
+    programName: string;
+    evaluationDate: string;
+    reportedLossRatio: string;
+    currentWrittenPremium: string;
+  };
+}
+
+/**
+ * Status Dot Component
+ *
+ * Displays status indicators for triangle uploads and official valuations.
+ * - Triangle icons (when position is set): StatusCheck for reviewed, StatusProgressTable for pending review
+ * - Status dots (when position is not set): colored dots for reviewed/pending/none states
+ */
+interface StatusDotProps {
+  status: 'reviewed' | 'pending' | 'none' | 'add' | 'pending-review';
+  position?: 'left' | 'center' | 'right';
+}
+
+const StatusDot: React.FC<StatusDotProps> = ({ status, position }) => {
+  const getColor = () => {
+    if (position) {
+      // Triangle icons with specific colors
+      switch (position) {
+        case 'left': return '#BD8B11';
+        case 'center': return '#744DEB';
+        case 'right': return '#3DA3CB';
+        default: return '#e1eae5';
+      }
+    } else {
+      // Regular status dots
+      switch (status) {
+        case 'reviewed': return '#74efa3';
+        case 'pending': return '#ffdd61';
+        case 'none': return '#ff8588';
+        default: return '#ff8588';
+      }
+    }
+  };
+
+  if (position) {
+    // Render StatusProgressTable icon for triangles pending review, StatusCheck for reviewed
+    if (status === 'pending-review') {
+      return <StatusProgressTable color={getColor()} />;
+    }
+    return <StatusCheck color={getColor()} />;
+  }
+
+  // Render regular dot for status column
+  return (
+    <div
+      style={{
+        width: '6px',
+        height: '6px',
+        borderRadius: '50%',
+        backgroundColor: getColor(),
+      }}
+    />
+  );
+};
+
+interface StatusRowProps {
+  id: string;
+  date: string;
+  triangleStatuses: ('reviewed' | 'pending' | 'none' | 'add' | 'pending-review')[];
+  officialStatus: string;
+  onAddTriangleClick: (rowId: string, position: 'left' | 'center' | 'right') => void;
+}
+
+const StatusRow: React.FC<StatusRowProps> = ({ id, date, triangleStatuses, officialStatus, onAddTriangleClick }) => {
+  const colors = useSemanticColors();
+
+  return (
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          height: '50px',
+          padding: '0 30px',
+        }}
+      >
+        {/* Date Column */}
+        <div style={{ width: '107px', padding: '10px 0' }}>
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black900 }}>
+            {date}
+          </div>
+        </div>
+
+        {/* Triangles Column */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '8px', marginLeft: '-10px', minWidth: 0 }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {triangleStatuses.map((status, index) => {
+              const position = index === 0 ? 'left' : index === 1 ? 'center' : 'right';
+              return (
+                <div key={index} style={{ width: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {status === 'add' ? (
+                    <Button
+                      variant="icon"
+                      color="white"
+                      icon={
+                        <div style={{ transform: 'scale(0.944)' }}>
+                          <StatusAddTable color={colors.theme.main} />
+                        </div>
+                      }
+                      onClick={() => onAddTriangleClick(id, position)}
+                      shape="square"
+                      style={{
+                        boxShadow: shadows.small,
+                        transform: 'scale(1)',
+                        transition: 'transform 0.2s ease',
+                        width: '28px',
+                        height: '28px',
+                        padding: '4px',
+                      }}
+                    />
+                  ) : (
+                    <TriangleTooltip>
+                      <StatusDot status={status} position={position} />
+                    </TriangleTooltip>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Official Valuation Column */}
+        <div style={{ width: '160px', padding: '10px 0', paddingLeft: '20px', display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+          <StatusDot status={officialStatus === 'Reviewed' ? 'reviewed' : officialStatus === 'Pending' ? 'pending' : 'none'} />
+          <div style={{ ...typography.styles.bodyM, color: colors.blackAndWhite.black700 }}>
+            {officialStatus}
+          </div>
+        </div>
+
+        {/* Download Column */}
+        <div style={{ width: '70px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}>
+          <Button
+            variant="icon"
+            color="light"
+            icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
+            onClick={() => console.log('Download clicked')}
+            shape="square"
+          />
+        </div>
+      </div>
+
+      {/* Dashed separator with proper padding */}
+      <div style={{
+        height: '1px',
+        margin: '0 30px',
+        borderTop: '1px dashed #e1eae5',
+        backgroundColor: 'transparent',
+      }} />
+    </div>
+  );
+};
+
+
+const ChartComponent: React.FC = () => {
+  const colors = useSemanticColors();
+  const [selectedPeriod, setSelectedPeriod] = useState('1year');
+
+  // 6-month data - 7 total sections: 6 data points arranged oldest to newest + last empty "New" section
+  const sixMonthData = [
+    {
+      month: 'Mar 2024', paid: 0, reported: 30, mean: 65,
+      outerBandBase: 55, outerBandHeight: 20, // 55 to 75 (mean ± 10%)
+      innerBandBase: 60, innerBandHeight: 10  // 60 to 70 (mean ± 5%)
+    },
+    {
+      month: 'May 2024', paid: 20, reported: 39, mean: 70,
+      outerBandBase: 60, outerBandHeight: 20, // 60 to 80
+      innerBandBase: 65, innerBandHeight: 10  // 65 to 75
+    },
+    {
+      month: 'Jul 2024', paid: 25, reported: 50, mean: 78,
+      outerBandBase: 68, outerBandHeight: 20, // 68 to 88
+      innerBandBase: 73, innerBandHeight: 10  // 73 to 83
+    },
+    {
+      month: 'Sep 2024', paid: 25, reported: 65, mean: 90,
+      outerBandBase: 80, outerBandHeight: 20, // 80 to 100
+      innerBandBase: 85, innerBandHeight: 10  // 85 to 95
+    },
+    {
+      month: 'Nov 2024', paid: 30, reported: 80, mean: 95,
+      outerBandBase: 85, outerBandHeight: 20, // 85 to 105
+      innerBandBase: 90, innerBandHeight: 10  // 90 to 100
+    },
+    {
+      month: 'Jan 2025', paid: 60, reported: 80, mean: 98,
+      outerBandBase: 88, outerBandHeight: 20, // 88 to 108
+      innerBandBase: 93, innerBandHeight: 10  // 93 to 103
+    },
+    {
+      month: 'New', paid: null, reported: null, mean: null,
+      outerBandBase: null, outerBandHeight: null,
+      innerBandBase: null, innerBandHeight: null
+    },
+  ];
+
+  // One year data with monthly progression
+  const oneYearData = [
+    {
+      month: 'Jan 2024', paid: 0, reported: 15, mean: 58,
+      outerBandBase: 48, outerBandHeight: 20, // 48 to 68 (mean ± 10%)
+      innerBandBase: 53, innerBandHeight: 10  // 53 to 63 (mean ± 5%)
+    },
+    {
+      month: 'Feb 2024', paid: 5, reported: 22, mean: 62,
+      outerBandBase: 52, outerBandHeight: 20, // 52 to 72
+      innerBandBase: 57, innerBandHeight: 10  // 57 to 67
+    },
+    {
+      month: 'Mar 2024', paid: 8, reported: 30, mean: 65,
+      outerBandBase: 55, outerBandHeight: 20, // 55 to 75
+      innerBandBase: 60, innerBandHeight: 10  // 60 to 70
+    },
+    {
+      month: 'Apr 2024', paid: 12, reported: 35, mean: 68,
+      outerBandBase: 58, outerBandHeight: 20, // 58 to 78
+      innerBandBase: 63, innerBandHeight: 10  // 63 to 73
+    },
+    {
+      month: 'May 2024', paid: 20, reported: 39, mean: 70,
+      outerBandBase: 60, outerBandHeight: 20, // 60 to 80
+      innerBandBase: 65, innerBandHeight: 10  // 65 to 75
+    },
+    {
+      month: 'Jun 2024', paid: 22, reported: 45, mean: 74,
+      outerBandBase: 64, outerBandHeight: 20, // 64 to 84
+      innerBandBase: 69, innerBandHeight: 10  // 69 to 79
+    },
+    {
+      month: 'Jul 2024', paid: 25, reported: 50, mean: 78,
+      outerBandBase: 68, outerBandHeight: 20, // 68 to 88
+      innerBandBase: 73, innerBandHeight: 10  // 73 to 83
+    },
+    {
+      month: 'Aug 2024', paid: 23, reported: 58, mean: 82,
+      outerBandBase: 72, outerBandHeight: 20, // 72 to 92
+      innerBandBase: 77, innerBandHeight: 10  // 77 to 87
+    },
+    {
+      month: 'Sep 2024', paid: 25, reported: 65, mean: 85,
+      outerBandBase: 75, outerBandHeight: 20, // 75 to 95
+      innerBandBase: 80, innerBandHeight: 10  // 80 to 90
+    },
+    {
+      month: 'Oct 2024', paid: 28, reported: 72, mean: 88,
+      outerBandBase: 78, outerBandHeight: 20, // 78 to 98
+      innerBandBase: 83, innerBandHeight: 10  // 83 to 93
+    },
+    {
+      month: 'Nov 2024', paid: 30, reported: 78, mean: 92,
+      outerBandBase: 82, outerBandHeight: 20, // 82 to 102
+      innerBandBase: 87, innerBandHeight: 10  // 87 to 97
+    },
+    {
+      month: 'Dec 2024', paid: 35, reported: 80, mean: 95,
+      outerBandBase: 85, outerBandHeight: 20, // 85 to 105
+      innerBandBase: 90, innerBandHeight: 10  // 90 to 100
+    },
+    {
+      month: 'New', paid: null, reported: null, mean: null,
+      outerBandBase: null, outerBandHeight: null,
+      innerBandBase: null, innerBandHeight: null
+    },
+  ];
+
+  // Get current data based on selected period
+  const baseData = selectedPeriod === '6months' ? sixMonthData : oneYearData;
+  
+  if (selectedPeriod === '6months') {
+    // For 6-month view: chart shows all 7 data points, but buttons skip the first one
+    const chartData = baseData; // All 7 sections for chart (includes Mar 2024 + others + New)
+    const buttonData = baseData.slice(1); // Skip first section (Mar 2024) for buttons, start from May 2024
+    const dataLength = 7; // Chart shows 7 X-axis lines
+    const addButtonIndex = 5; // "Add Valuation" on 6th button section (which is "New")
+    
+    var finalChartData = chartData;
+    var finalButtonData = buttonData;
+    var finalDataLength = dataLength;
+    var finalAddButtonIndex = addButtonIndex;
+  } else {
+    // For 12-month view: chart shows all 13 data points, but buttons skip the first one
+    const chartData = baseData; // All 13 sections for chart (includes Jan 2024 + others + New)
+    const buttonData = baseData.slice(1); // Skip first section (Jan 2024) for buttons, start from Feb 2024
+    const dataLength = 13; // Chart shows 13 X-axis lines
+    const addButtonIndex = 11; // "Add Valuation" on 12th button section (which is "New")
+    
+    var finalChartData = chartData;
+    var finalButtonData = buttonData;
+    var finalDataLength = dataLength;
+    var finalAddButtonIndex = addButtonIndex;
+  }
+
+  return (
+    <div style={{
+      backgroundColor: colors.blackAndWhite.white,
+      borderRadius: borderRadius[12],
+      border: `1px solid ${colors.theme.primary400}`,
+      overflow: 'visible',
+      outline: 'none',
+    }}>
+      {/* Header */}
+      <div style={{
+        padding: '20px 30px',
+        borderBottom: `1px solid ${colors.theme.primary400}`,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
+          <CardsGraph color="#8b68f5" />
+          <div style={{ ...typography.styles.bodyL, color: colors.blackAndWhite.black900 }}>
+            Valuation runs over time
+          </div>
+        </div>
+        {/* Description removed */}
+      </div>
+
+      {/* Legend and Time Period Controls */}
+      <div style={{
+        padding: '20px 30px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        {/* Color Legend */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '24px'
+        }}>
+          {/* Expected loss ratio */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              backgroundColor: '#0f9342',
+              borderRadius: '50%'
+            }} />
+            <span style={{
+              ...typography.styles.bodyS,
+              color: colors.blackAndWhite.black700
+            }}>
+              Expected loss ratio
+            </span>
+          </div>
+          
+          {/* Reported Loss Ratio */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              backgroundColor: '#ffd028',
+              borderRadius: '50%'
+            }} />
+            <span style={{
+              ...typography.styles.bodyS,
+              color: colors.blackAndWhite.black700
+            }}>
+              Reported Loss Ratio
+            </span>
+          </div>
+          
+          {/* Paid Loss Ratio */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              backgroundColor: '#8b68f5',
+              borderRadius: '50%'
+            }} />
+            <span style={{
+              ...typography.styles.bodyS,
+              color: colors.blackAndWhite.black700
+            }}>
+              Paid Loss Ratio
+            </span>
+          </div>
+        </div>
+
+        {/* Time Period Dropdown */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <span style={{
+            ...typography.styles.bodyS,
+            color: colors.blackAndWhite.black700
+          }}>
+            Time period:
+          </span>
+          <select 
+            value={selectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
+            style={{
+              ...typography.styles.bodyS,
+              color: colors.blackAndWhite.black900,
+              backgroundColor: colors.blackAndWhite.white,
+              border: `1px solid ${colors.theme.primary400}`,
+              borderRadius: '4px',
+              padding: '4px 8px',
+              minWidth: '80px'
+            }}
+          >
+            <option value="1year">1 Year</option>
+            <option value="6months">6 months</option>
+            <option value="2years">2 Years</option>
+            <option value="3years">3 Years</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Chart */}
+      <div style={{ height: '421px', overflow: 'visible', outline: 'none', position: 'relative' }}>
+        <ResponsiveContainer width="100%" height="100%" style={{ overflow: 'visible', outline: 'none' }}>
+          <ComposedChart data={finalChartData} margin={{ top: 50, right: 50, left: 15, bottom: 30 }} style={{ overflow: 'visible', outline: 'none' }}>
+            <CartesianGrid strokeDasharray="3 3" stroke={colors.theme.primary450} />
+
+            <XAxis
+              dataKey="month"
+              stroke={colors.theme.primary450}
+              axisLine={{ stroke: colors.blackAndWhite.black900, strokeWidth: 2 }}
+              tickLine={{ stroke: colors.theme.primary450, strokeWidth: 1 }}
+              tickSize={4}
+              tick={{ fontSize: 0 }}
+              interval={0}
+              label={{
+                value: 'Evaluation Date',
+                position: 'insideBottom',
+                offset: -10,
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
+              }}
+            />
+            <YAxis
+              stroke={colors.theme.primary450}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }}
+              tickFormatter={(value) => `${value}%`}
+              label={{
+                value: 'Loss Ratio',
+                angle: -90,
+                position: 'insideLeft',
+                style: { fill: colors.blackAndWhite.black500, ...typography.styles.dataXS }
+              }}
+              domain={[0, 120]}
+              ticks={[0, 20, 40, 60, 80, 100, 120]}
+            />
+
+            {/* Outer uncertainty band (±10%, lighter) */}
+            <Area
+              type="monotone"
+              dataKey="outerBandBase"
+              stroke="none"
+              fill="transparent"
+              stackId="outer"
+              isAnimationActive={false}
+              activeDot={false}
+              connectNulls={false}
+            />
+            <Area
+              type="monotone"
+              dataKey="outerBandHeight"
+              stroke="none"
+              fill="#64EF99"
+              fillOpacity={0.3}
+              stackId="outer"
+              isAnimationActive={false}
+              activeDot={false}
+              connectNulls={false}
+            />
+
+            {/* Inner uncertainty band (±5%, darker) */}
+            <Area
+              type="monotone"
+              dataKey="innerBandBase"
+              stroke="none"
+              fill="transparent"
+              stackId="inner"
+              isAnimationActive={false}
+              activeDot={false}
+              connectNulls={false}
+            />
+            <Area
+              type="monotone"
+              dataKey="innerBandHeight"
+              stroke="none"
+              fill="#64EF99"
+              fillOpacity={0.6}
+              stackId="inner"
+              isAnimationActive={false}
+              activeDot={false}
+              connectNulls={false}
+            />
+
+            {/* Lines */}
+            <Line
+              type="monotone"
+              dataKey="mean"
+              stroke="#0f9342"
+              strokeWidth={2}
+              dot={{ fill: '#0f9342', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#0f9342', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
+              connectNulls={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="reported"
+              stroke="#ffd028"
+              strokeWidth={2}
+              strokeDasharray="5 5"
+              dot={{ fill: '#ffd028', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#ffd028', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
+              connectNulls={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="paid"
+              stroke="#8b68f5"
+              strokeWidth={2}
+              dot={{ fill: '#8b68f5', r: 4, stroke: colors.blackAndWhite.white, strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#8b68f5', stroke: colors.blackAndWhite.white, strokeWidth: 4, filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15))' }}
+              connectNulls={false}
+            />
+
+            <Tooltip content={<ChartTooltip />} cursor={false} />
+          </ComposedChart>
+        </ResponsiveContainer>
+        
+        {/* Date labels and Edit/Download buttons positioned above chart data */}
+        <div style={{
+          position: 'absolute',
+          top: '-5px', // Back to original position above chart
+          left: '75px', // Same alignment as chart data
+          right: '50px', // Same alignment as chart data
+          height: '55px', // More height for date + buttons
+          display: 'flex',
+          zIndex: 2
+        }}>
+          {finalButtonData.map((dataPoint, index) => (
+            <div
+              key={index}
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'flex-end',
+                gap: '4px',
+                borderRight: `1px dashed ${colors.theme.primary450}`,
+                borderLeft: index === 0 ? `1px dashed ${colors.theme.primary450}` : 'none', // Add left border to first button section (May 24)
+                paddingRight: '8px'
+              }}
+            >
+              {/* Date label */}
+              <div style={{
+                ...typography.styles.dataXS,
+                color: colors.blackAndWhite.black900,
+                fontSize: '10px',
+                marginTop: '-6px'
+              }}>
+                {dataPoint.month}
+              </div>
+              
+              {/* Buttons - Special case for last data month */}
+              <div style={{
+                display: 'flex',
+                gap: '2px'
+              }}>
+                {index === finalAddButtonIndex ? (
+                  // Last data month - Single add button without text
+                  <Button
+                    variant="icon"
+                    color="white"
+                    icon={<AddMedium color={colors.blackAndWhite.black900} />}
+                    onClick={() => console.log(`Add new data for ${dataPoint.month}`)}
+                    shape="square"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      padding: '4px',
+                      border: `1px solid ${colors.theme.primary400}`
+                    }}
+                  />
+                ) : (
+                  // Other months - Edit/Download buttons
+                  <>
+                    <Button
+                      variant="icon"
+                      color="white"
+                      icon={<EditSmall color={colors.blackAndWhite.black900} />}
+                      onClick={() => console.log(`Edit ${dataPoint.month}`)}
+                      shape="square"
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        padding: '4px',
+                        border: `1px solid ${colors.theme.primary400}`
+                      }}
+                    />
+                    <Button
+                      variant="icon"
+                      color="white"
+                      icon={<DownloadSmall color={colors.blackAndWhite.black900} />}
+                      onClick={() => console.log(`Download ${dataPoint.month}`)}
+                      shape="square"
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        padding: '4px',
+                        border: `1px solid ${colors.theme.primary400}`
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+const ValuationDashboardContent: React.FC<ValuationDashboardProps> = ({
+  onNavigateToPage,
+  valuationData
+}) => {
+  const colors = useSemanticColors();
+  const settings = useSettings();
+
+  // Provide default data if valuationData is null or undefined
+  const defaultData = {
+    programName: 'Aviation Treaty 2023',
+    evaluationDate: '2024-12-30',
+    reportedLossRatio: '42.2%',
+    currentWrittenPremium: '$20,107,359'
+  };
+  const data = valuationData || defaultData;
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedTriangleType, setSelectedTriangleType] = useState<'on-risk-aqt' | 'development-fit' | 'on-risk-pyt' | null>(null);
+  const [statusData, setStatusData] = useState([
+    { id: '1', date: 'Jan 30, 2025', triangleStatuses: ['reviewed', 'pending', 'add'], officialStatus: 'Reviewed' },
+    { id: '2', date: 'Dec 31, 2024', triangleStatuses: ['reviewed', 'add', 'none'], officialStatus: 'Pending' },
+    { id: '3', date: 'Nov 30, 2024', triangleStatuses: ['reviewed', 'none', 'none'], officialStatus: 'No Valuation' },
+    { id: '4', date: 'Oct 31, 2024', triangleStatuses: ['reviewed', 'pending', 'add'], officialStatus: 'Reviewed' },
+    { id: '5', date: 'Sep 30, 2024', triangleStatuses: ['reviewed', 'pending', 'reviewed'], officialStatus: 'Reviewed' },
+    { id: '6', date: 'Aug 31, 2024', triangleStatuses: ['reviewed', 'reviewed', 'reviewed'], officialStatus: 'Reviewed' },
+    { id: '7', date: 'Jul 31, 2024', triangleStatuses: ['reviewed', 'add', 'none'], officialStatus: 'Pending' },
+  ]);
+  const [currentRowId, setCurrentRowId] = useState<string | null>(null);
+
+  const handleAddTriangleClick = (rowId: string, position: 'left' | 'center' | 'right') => {
+    // Map position to triangle type
+    const triangleTypeMap = {
+      'left': 'on-risk-aqt' as const,
+      'center': 'development-fit' as const,
+      'right': 'on-risk-pyt' as const,
+    };
+
+    setCurrentRowId(rowId);
+    setSelectedTriangleType(triangleTypeMap[position]);
+    setIsUploadModalOpen(true);
+  };
+
+  /**
+   * Handle Triangle Upload Success
+   *
+   * Updates triangle status from 'add' to 'pending-review' after successful upload.
+   * The triangle will show an animated progress icon until it's reviewed and approved.
+   */
+  const handleTriangleAdded = () => {
+    if (!currentRowId || !selectedTriangleType) return;
+
+    // Update the status data to change 'add' to 'pending-review' for the specific triangle
+    setStatusData(prevData =>
+      prevData.map(row => {
+        if (row.id === currentRowId) {
+          const newStatuses = [...row.triangleStatuses];
+          const positionIndex = selectedTriangleType === 'on-risk-aqt' ? 0 :
+                                selectedTriangleType === 'development-fit' ? 1 : 2;
+          if (newStatuses[positionIndex] === 'add') {
+            newStatuses[positionIndex] = 'pending-review';
+          }
+          return { ...row, triangleStatuses: newStatuses };
+        }
+        return row;
+      })
+    );
+
+    setIsUploadModalOpen(false);
+    setSelectedTriangleType(null);
+    setCurrentRowId(null);
+  };
+
+  return (
+      <Layout
+        selectedSidebarItem="analytics"
+        selectedSidebarSubitem="valuation"
+        onNavigate={createPageNavigationHandler(onNavigateToPage, 'analytics-valuation-dashboard')}
+        breadcrumbs={[
+          { label: 'Valuation', onClick: () => onNavigateToPage?.('analytics-valuation'), isActive: false },
+          { label: data.programName, isActive: true }
+        ]}
+        appAction={{
+          app: 'contracts',
+          actionText: 'Explore contract',
+          onClick: () => {
+            console.log(`Navigate to contract for ${data.programName}`);
+            onNavigateToPage?.('contracts-ai-extraction');
+          }
+        }}
+      >
+        {/* Header */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          marginBottom: '40px',
+          flexWrap: 'nowrap',
+          gap: '20px',
+        }}>
+          <div>
+            <h1 style={{
+              ...typography.styles.headlineH2,
+              color: colors.blackAndWhite.black900,
+              margin: '0 0 8px 0',
+              lineHeight: '1.2',
+            }}>
+              <div>
+                <span style={{ color: colors.blackAndWhite.black900 }}>{data.programName}</span>
+                <span style={{ color: colors.blackAndWhite.black500 }}> valuation.</span>
+              </div>
+              <div style={{ color: colors.blackAndWhite.black500 }}>Review and <span style={{ color: colors.blackAndWhite.black900 }}>edit</span> the monthly values.</div>
+            </h1>
+          </div>
+          <Button
+            variant="primary"
+            color="invisible"
+            showIcon={false}
+            onClick={() => onNavigateToPage('analytics-valuation-configuration', { programName: data.programName })}
+            style={{
+              minWidth: '200px',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+              display: 'inline-flex',
+              overflow: 'visible',
+            }}
+          >
+            <span style={{ whiteSpace: 'nowrap' }}>Configuration</span>
+          </Button>
+        </div>
+
+        {/* Chart Section */}
+        <ChartComponent />
+      </Layout>
+  );
+};
+
+export const AnalyticsValuationDashboard: React.FC<ValuationDashboardProps> = (props) => {
+  return (
+    <ThemeProvider initialTheme="analytics">
+      <ValuationDashboardContent {...props} />
+    </ThemeProvider>
+  );
+};
